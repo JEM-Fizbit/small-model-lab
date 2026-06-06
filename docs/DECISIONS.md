@@ -4,6 +4,11 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0009 — Base model resolved: Qwen3-4B (ADR-0002 closed)
+
+**Decision:** Qwen3-4B-Instruct is the TrialScout base model. The measured A/B (ADR-0002) is closed.
+**Why:** Fine-tuned Qwen scored **0.922** overall-structured on the held-out test set (vs 0.368 baseline; valid JSON 1.0; phase 1.0, est_readout 0.99). Gemma 4 E2B could not be fine-tuned via `mlx_lm.lora` — the only MLX-hub build is the multimodal (vision+text) checkpoint, whose nested `language_model.*` weights the LoRA targeting rejects (`140 parameters not in model`); no text-only Gemma 4 E2B 4-bit exists yet. Qwen's near-ceiling score makes the decision robust regardless. Completing the Gemma arm is optional and parked.
+
 ## ADR-0008 — Unattended distillation is cost-capped + pilot-gated
 
 **Decision:** `make_gold.py` enforces a hard dollar cap (aborts before a call that would exceed it), runs a 10-trial pilot and aborts the bulk run if <8/10 are schema-valid, and writes incrementally (resumable). Run unattended overnight with a $25 authorization (internal cap $24).
