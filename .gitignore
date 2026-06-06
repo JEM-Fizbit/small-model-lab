@@ -1,0 +1,40 @@
+# --- Secrets ---
+.env
+.env.local
+.env*.local
+*.pem
+
+# --- Python / uv ---
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- ML artifacts (large — never commit weights or data dumps) ---
+# Model weights, adapters, checkpoints
+*.safetensors
+*.gguf
+*.npz
+*.bin
+checkpoints/
+adapters/
+track-a-nanogpt/out/
+track-b-trialscout/train/adapters/
+
+# Datasets & generated data (regenerable from scripts)
+track-b-trialscout/data/raw/
+track-b-trialscout/data/gold/
+*.jsonl
+# ...but keep small sample/schema fixtures that ARE the contract:
+!track-b-trialscout/schema/*.jsonl
+!**/sample_*.jsonl
+
+# HuggingFace / datasets cache
+.cache/
+
+# --- Notebook outputs are kept (they ARE the learning trail) ---
+# (we intentionally do NOT ignore notebooks/*.ipynb)
+
+# --- OS ---
+.DS_Store
