@@ -38,3 +38,7 @@ track-b-trialscout/data/gold/
 
 # --- OS ---
 .DS_Store
+
+# Phase 3 training byproducts
+track-b-trialscout/train/mlx_data/
+track-b-trialscout/train/logs/
