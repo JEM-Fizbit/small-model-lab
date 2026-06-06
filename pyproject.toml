@@ -19,6 +19,8 @@ dependencies = [
     "matplotlib>=3.9",
     "jupyter>=1.0",
     "pandas>=2.2",
+    "tiktoken>=0.13.0",
+    "tokenizers>=0.22.2",
 ]
 
 [dependency-groups]
