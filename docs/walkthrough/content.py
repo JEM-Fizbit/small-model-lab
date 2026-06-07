@@ -553,8 +553,11 @@ numbers,&rdquo; so each one carries a note on what it does and which way to push
   ("code", "01", "block_size = 128"),
   ("gloss", r"""
 <p>The four shape dials decide capacity: <code>block_size</code> is how far back the model can
-see; <code>n_embd</code> is how many numbers describe each token (its &ldquo;richness&rdquo;);
-<code>n_head</code> is how many relationships attention tracks in parallel; <code>n_layer</code>
+see; <code>n_embd</code> is how many numbers describe each token: that list of numbers is the
+token's <strong>vector</strong> — a vector being simply an ordered list of numbers, e.g.
+<code>[0.31, -1.20, 0.05, …]</code> — and <code>n_embd</code> (256) is how long it is (the
+token's &ldquo;richness&rdquo;); <code>n_head</code> is how many relationships attention tracks
+in parallel; <code>n_layer</code>
 is how many times the whole reasoning block is stacked (depth). The training dials —
 <code>batch_size</code>, <code>learning_rate</code>, <code>max_steps</code> — decide how
 steadily and how long it learns. Bigger or longer is generally better and always slower; the
