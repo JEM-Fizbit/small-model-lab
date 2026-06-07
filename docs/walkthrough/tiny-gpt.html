@@ -257,8 +257,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <p class="lede">We are going to build a language model from nothing — no pre-trained
 weights, no magic — and watch it learn to write. This page walks through the real code
 that did it, line by line, for someone who is curious but doesn't write Python. By the
-end you'll understand, concretely, what people mean when they say a model
-&ldquo;predicts the next word.&rdquo;</p>
+end you'll understand, concretely, how a model &ldquo;predicts the next word&rdquo; —
+and why, strictly, it predicts no such thing.</p>
 
 <div class="bigidea">
   <p><strong>The whole idea, in one sentence:</strong> a GPT is a machine that, given some
@@ -347,6 +347,14 @@ heart a <strong>next-token predictor</strong>. Show it some text and it produces
 possible next chunk of text, a probability: <em>how likely is this to come next?</em> To
 generate, you sample one chunk from those probabilities, glue it on, and ask again. Do that
 in a loop and the machine writes.</p>
+<p>That phrasing — &ldquo;chunk of text,&rdquo; not &ldquo;word&rdquo; — is deliberate. The
+popular line &ldquo;predicts the next word&rdquo; is shorthand: a model predicts the next
+<em>unit</em> of however we chose to slice text up, and that choice is ours to make. Notebook 01
+slices text into single <strong>characters</strong>, so it literally predicts the next letter.
+Notebook 02 slices it into <strong>tokens</strong> — frequent fragments like <code>" the"</code>
+or <code>"ing"</code>, usually a few characters each — so it predicts the next fragment. A whole
+word is then just one or a few of these in a row. The loop is identical either way — predict the
+next unit, append it, ask again — only the <em>grain</em> changes.</p>
 <p>That's the entire trick. The sophistication of a real model isn't a different idea — it's
 the <em>same</em> idea at enormous scale: more data, more parameters, more compute. So if we
 build a <em>tiny</em> one and understand every part, we've understood the shape of the whole
