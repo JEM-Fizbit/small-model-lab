@@ -39,8 +39,10 @@ from pydantic import Field
 ROOT = Path(__file__).resolve().parents[1]  # track-b-trialscout/
 sys.path.insert(0, str(ROOT / "train"))
 sys.path.insert(0, str(ROOT / "data"))
+sys.path.insert(0, str(ROOT / "schema"))
 from format_for_mlx import build_prompt  # noqa: E402  exact prompt the model was trained on
 from fetch_trials import compact  # noqa: E402         CT.gov study object -> compact record
+from normalize import snap_to_enum  # noqa: E402        snap near-miss enum values to schema vocab
 
 # --- config (no magic numbers: every knob named + commented) ---
 BASE_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"  # ADR-0002/0009: Qwen won the A/B
@@ -122,6 +124,7 @@ def _infer(raw_record: dict) -> dict:
     nct = raw_record.get("nct_id") or "unknown"
     # nct_id first for readability; our injected value wins over any the model echoed
     readout = {"nct_id": nct, **{k: v for k, v in obj.items() if k != "nct_id"}}
+    readout = snap_to_enum(readout)  # fix near-miss enum values (casing / out-of-vocab) pre-validation
     errors = sorted(e.message for e in _VALIDATOR.iter_errors(readout))
     return {"_ok": True, "readout": readout, "_schema_valid": not errors, "_schema_errors": errors}
 
