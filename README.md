@@ -15,7 +15,7 @@ Learning, with utility as the target. A small model won't be a good general anal
 
 ## Quick start
 
-> **New to this?** See **[Getting Started](docs/GETTING_STARTED.md)** for a from-zero walkthrough — installing tools, what a Jupyter notebook is, and how to run cells, with no prior coding assumed.
+> **New to this?** See **[Getting Started](docs/GETTING_STARTED.md)** for a from-zero walkthrough — installing tools, what a Jupyter notebook is, and how to run cells, with no prior coding assumed. (Even gentler conceptual primers — terminal, dependencies, Jupyter — live in my [AI Knowledge Hub](https://notion.so/3785d408fa72810a9f5bfd0b686ddab8).)
 >
 > **Requires an Apple-Silicon Mac** (the from-scratch model uses Apple [MLX](https://github.com/ml-explore/mlx), which is Apple-only). First [install `uv`](https://docs.astral.sh/uv/getting-started/installation/) (`curl -LsSf https://astral.sh/uv/install.sh | sh`), then:
 

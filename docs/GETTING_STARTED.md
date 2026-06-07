@@ -3,6 +3,8 @@
 This guide assumes **no prior coding experience**. It takes ~15 minutes and is free.
 
 > Pairs with the plain-English **[walk-through](https://jem-fizbit.github.io/slm-lab/)**, which explains *how* the model works. This page is just *how to run it*.
+>
+> **Want gentler, conceptual primers first?** My public [AI Knowledge Hub](https://notion.so/3785d408fa72810a9f5bfd0b686ddab8) has from-zero guides to the terminal, dependencies, and Jupyter notebooks.
 
 ## Do you even need to install anything?
 
