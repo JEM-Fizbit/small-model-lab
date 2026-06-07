@@ -16,6 +16,18 @@
         "--ServerApp.tornado_settings={'headers': {'Content-Security-Policy': 'frame-ancestors *'}}"
       ],
       "port": 8899
+    },
+    {
+      "name": "walkthrough",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8011",
+        "--directory",
+        "docs/walkthrough"
+      ],
+      "port": 8011
     }
   ]
 }
