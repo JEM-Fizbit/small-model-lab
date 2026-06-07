@@ -274,10 +274,23 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   .hero h1{font-size:36px;}
   body{font-size:17px;}
 }
+/* top nav (between chapters) */
+.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
+  align-items:center;font-family:var(--sans);font-size:14px;}
+.topnav a{color:#aebbdd;text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav a.active{color:#fff;font-weight:700;}
+.topnav .muted{color:#5e6b88;}
+.topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
 {{ pygments_css }}
 </style>
 </head>
 <body>
+
+<nav class="topnav"><div class="inner">
+{% for n in nav %}{% if n.href %}<a href="{{ n.href }}"{% if n.active %} class="active"{% endif %}>{{ n.label }}</a>{% else %}<span class="muted">{{ n.label }}{% if n.note %} <em>({{ n.note }})</em>{% endif %}</span>{% endif %}{% endfor %}
+</div></nav>
 
 <header class="hero"><div class="inner">{{ hero }}</div></header>
 
@@ -321,7 +334,7 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
   &nbsp;·&nbsp; <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
-  started</a> &nbsp;·&nbsp; Part of <strong>slm-lab</strong>, Track A.</p>
+  started</a> &nbsp;·&nbsp; {{ footer_note }}</p>
   <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
   John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
   <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
@@ -1235,3 +1248,98 @@ with no prior coding assumed.</p>
 },
 
 ]
+
+# ---------------------------------------------------------------- LANDING --
+LANDING_META = {"title": "slm-lab — build a small language model, explained"}
+
+LANDING = {
+    "kicker": "slm-lab",
+    "h1": "Build a small language model — and actually understand it",
+    "lede": "A hands-on, no-black-box lab in two chapters: first train a tiny GPT "
+            "<em>from scratch</em> to see every moving part, then fine-tune a real open "
+            "model into a genuinely useful expert. Explained for the curious — no prior "
+            "Python required to read along.",
+}
+
+LANDING_TEMPLATE = r"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{{ meta.title }}</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10182f;color:#eaeefb;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:880px;margin:0 auto;padding:72px 24px 64px;}
+.kicker{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:700;
+  color:#9fb2e8;margin:0 0 14px;}
+h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
+.lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:24px;transition:.15s;}
+a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
+.card .part{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9fb2e8;font-weight:700;}
+.card h2{font-size:21px;margin:8px 0 10px;line-height:1.25;}
+.card p{font-size:15px;line-height:1.55;color:#c2cdee;margin:0 0 16px;}
+.card code{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:.85em;
+  background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;}
+.card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
+.card.soon{opacity:.72;}
+.card.soon .go{color:#7e8bb0;}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+.tag.live{background:#16432f;color:#7fe0b0;}
+.tag.wip{background:#3a3550;color:#b9a9e6;}
+.foot{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
+  font-size:14px;color:#aebbdd;line-height:1.6;}
+.foot a{color:#a9c0ff;text-decoration:none;}
+@media (max-width:680px){.cards{grid-template-columns:1fr;} h1{font-size:32px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">{{ landing.kicker }}</p>
+  <h1>{{ landing.h1 }}</h1>
+  <p class="lede">{{ landing.lede }}</p>
+
+  <div class="cards">
+    <a class="card" href="track-a/">
+      <div class="part">Part 1 · Pre-training</div>
+      <h2>A GPT from scratch <span class="tag live">live</span></h2>
+      <p>Build and train a tiny GPT one piece at a time — tokens, attention, the training
+      loop, <code>y = Wx + b</code>, sampling. Throwaway output by design; the point is to
+      <em>see</em> how it works.</p>
+      <span class="go">Read Part 1 &rarr;</span>
+    </a>
+    {% if track_b_live %}
+    <a class="card" href="track-b/">
+      <div class="part">Part 2 · Post-training</div>
+      <h2>TrialScout: a useful expert <span class="tag live">live</span></h2>
+      <p>Take a <em>pretrained</em> open model and fine-tune/distill it into a measurably
+      useful tool — a clinical-trial record &rarr; a structured readout. Same concepts, now
+      doing a real job.</p>
+      <span class="go">Read Part 2 &rarr;</span>
+    </a>
+    {% else %}
+    <div class="card soon">
+      <div class="part">Part 2 · Post-training</div>
+      <h2>TrialScout: a useful expert <span class="tag wip">in&nbsp;progress</span></h2>
+      <p>Take a <em>pretrained</em> open model and fine-tune/distill it into a measurably
+      useful tool — a clinical-trial record &rarr; a structured readout. Same concepts, now
+      doing a real job.</p>
+      <span class="go">Coming soon</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <p class="foot">
+    Open source (MIT): <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
+    &nbsp;·&nbsp; by John E. Milad &nbsp;·&nbsp; builds on nanoGPT, Apple MLX, and TinyStories.
+  </p>
+</div>
+</body>
+</html>
+"""

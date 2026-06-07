@@ -33,12 +33,11 @@ jobs:
           python-version: "3.12"
       - name: Install build deps
         run: pip install jinja2 pygments
-      - name: Build the walk-through
+      - name: Build the walk-through (multi-page site/)
         run: python docs/walkthrough/build.py
-      - name: Assemble site (single page → index.html)
+      - name: Assemble site
         run: |
-          mkdir -p _site
-          cp docs/walkthrough/tiny-gpt.html _site/index.html
+          rm -rf _site && cp -R docs/walkthrough/site _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
