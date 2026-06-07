@@ -35,7 +35,20 @@ trials are out of distribution; the tools say so rather than guessing.
 - Heavy work (fetch, inference) runs in a worker thread so the async event loop stays responsive.
 - Logs go to **stderr only** (stdout is the MCP channel on stdio).
 
-## Smoke-test (no MCP client needed)
+## Play with it interactively (no MCP client needed)
+
+```bash
+# Interactive REPL: loads the model once, then loops. Type an NCT id, or 'random', or 'help'.
+uv run python track-b-trialscout/serve/ask.py
+#   trial> NCT02942290        → readout for that trial
+#   trial> random             → pick a random trial from the local dataset and read it out
+#   trial> json / md          → switch output format
+#   trial> q                  → quit
+```
+
+This is the hands-on way to *touch* the model directly — same model the server wraps.
+
+## Smoke-test (one-shot, no MCP client needed)
 
 ```bash
 # Fetch one trial, run it end-to-end, print markdown + JSON, then exit.
