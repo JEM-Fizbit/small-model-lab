@@ -1,9 +1,0 @@
-# The public site is ONLY the self-contained walk-through. Everything below is
-# excluded from the Vercel deploy — the buildCommand just copies the one HTML file.
-track-b-trialscout/
-scripts/
-notebooks/
-data/
-.claude/
-*.lock
-*.ipynb
