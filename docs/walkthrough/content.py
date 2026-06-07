@@ -382,7 +382,7 @@ device will run the maths — on an M-series Mac it reports the GPU.</p>
  "blocks": [
   ("prose", r"""
 <p>A model can't read letters; it does arithmetic. So the very first job is
-<strong>tokenization</strong> — a fixed dictionary that maps text to whole numbers and back.
+<strong>tokenisation</strong> — a fixed dictionary that maps text to whole numbers and back.
 Notebook 01 uses the simplest scheme imaginable: <strong>one number per character</strong>.
 Every distinct character it sees — every letter, space, comma — gets its own id. It's
 inefficient, but maximally transparent: you can see <em>exactly</em> what the model sees.</p>
@@ -432,7 +432,7 @@ first part and is tested on the held-out tail.</li>
   ("callout", "key", "The key idea", r"""
 <p>From here on, the model lives entirely in the world of integers. &ldquo;Understanding
 language&rdquo; will turn out to mean &ldquo;getting good at predicting the next integer in the
-ribbon.&rdquo; Tokenization is the bridge between our world and its.</p>
+ribbon.&rdquo; Tokenisation is the bridge between our world and its.</p>
 """),
  ],
 },
@@ -450,7 +450,7 @@ quizzes at once.</p>
 """),
   ("code", "01", "def get_batch", "Grab a stack of random windows; the target is shifted by one."),
   ("gloss", r"""
-<p><b>What this says:</b> pick <code>batch_size</code> random starting points in the data.
+<p><b>In plain terms:</b> pick <code>batch_size</code> random starting points in the data.
 For each, take a window of <code>block_size</code> characters as the input <code>x</code>, and
 the <em>same window slid one place forward</em> as the answer <code>y</code>. Stacking many
 windows together (a &ldquo;batch&rdquo;) lets the GPU practise on all of them simultaneously —
@@ -542,7 +542,8 @@ and values <code>V</code>:</p>
 square root of the head size) keeps those scores from growing too large as the model widens.
 <code>softmax</code> normalises each row into probabilities; the <code>mask</code> adds −∞ to
 future positions so they vanish. Multiplying by <code>V</code> blends the values by those
-probabilities. The code above is a line-for-line translation of this.</p>
+probabilities. The code above implements exactly this — plus the bookkeeping to run several
+attention heads in parallel.</p>
 """),
  ],
 },
@@ -665,9 +666,9 @@ write too.</p>
 """),
   ("code", "01", "def generate(prompt, n_new=400", "Predict one character, append, repeat."),
   ("gloss", r"""
-<p><b>What this says:</b> encode the prompt to numbers, then loop <code>n_new</code> times. Each
+<p><b>Step by step:</b> encode the prompt to numbers, then loop <code>n_new</code> times. Each
 pass takes the scores for the last position, divides by <code>temperature</code> (more on that
-in Part III), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
+in Part IV), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
 character — likelier characters chosen more often, but not always. Glue it on and continue.</p>
 """),
   ("output", "01", "def generate(prompt, n_new=400", "what a from-scratch char-level model writes"),
@@ -704,7 +705,7 @@ what each upgrade buys. One of these — the tokenizer — does most of the work
     <td>reliably reaches a lower final loss</td></tr>
 <tr><td>Gradient clipping</td><td>none</td><td><b>clip to a limit</b></td>
     <td>insurance against sudden training blow-ups</td></tr>
-<tr><td>Capacity / context</td><td>3.3M params, 128</td><td><b>17M params, 256</b></td>
+<tr><td>Capacity / context</td><td>3.2M params, 128</td><td><b>17M params, 256</b></td>
     <td>more room to learn; a whole story fits in view</td></tr>
 </tbody></table>
 """),
@@ -716,9 +717,10 @@ what each upgrade buys. One of these — the tokenizer — does most of the work
  "blocks": [
   ("prose", r"""
 <p>Working one character at a time forces the model to waste most of its capacity re-learning
-how to spell. Real models — and notebook 02 — use <strong>sub-word tokenization</strong>,
-specifically <strong>BPE (Byte-Pair Encoding)</strong>. Starting from raw characters, BPE
-repeatedly merges the most common adjacent pair into a single new token. After enough merges,
+how to spell. Real models — and notebook 02 — use <strong>sub-word tokenisation</strong>,
+specifically <strong>BPE (Byte-Pair Encoding)</strong>. Starting from raw bytes (essentially
+the individual characters), BPE repeatedly merges the most common adjacent pair into a single
+new token. After enough merges,
 frequent chunks like <code>" the"</code>, <code>"ing"</code>, or <code>" robot"</code> each
 become <em>one</em> token. The model then reasons over meaningful units, and coherence appears
 far faster at the same size.</p>
@@ -727,7 +729,7 @@ relevant to these stories — no wasted vocabulary.</p>
 """),
   ("code", "02", "tok = Tokenizer(models.BPE", "Train a byte-level BPE tokenizer on the corpus."),
   ("gloss", r"""
-<p><b>What this says:</b> set up a BPE tokenizer, then <code>train_from_iterator</code> learns
+<p><b>What's happening:</b> set up a BPE tokenizer, then <code>train_from_iterator</code> learns
 the merges from our text, building an 8,192-token vocabulary. We then re-encode the whole
 corpus with it. The print-outs report the <b>compression ratio</b> — characters per token —
 and a round-trip check (encode then decode gets the original text back). At ~4 characters per
@@ -757,7 +759,7 @@ signal, so without damping, the signal compounds layer over layer and explodes.<
 specifically shrink the output of each block's residual path by a factor that depends on depth.
 Tiny change, decisive effect.</p>
 """),
-  ("code", "02", "STD = 0.02", "Same architecture, now with scaled initialization."),
+  ("code", "02", "STD = 0.02", "Same architecture, now with scaled initialisation."),
   ("gloss", r"""
 <p><b>What to notice</b> (you don't need every line): <code>_normal(...)</code> sets a
 parameter's starting values to small random numbers. The important detail is the
@@ -848,13 +850,13 @@ useful,&rdquo; is exactly the gap a <strong>pretrained</strong> model closes: it
 done the equivalent of this training across <em>trillions</em> of tokens and thousands of
 GPU-hours.</p>
 <p>And that is the whole point of building the tiny one first. You've now seen, in real code,
-every mechanism a frontier model uses — tokenization, embeddings, attention, the transformer
+every mechanism a frontier model uses — tokenisation, embeddings, attention, the transformer
 block, the loss, backpropagation, the optimizer, sampling. The giants are not different in
 kind. They are this, scaled.</p>
 """),
   ("callout", "key", "What you now understand end-to-end", r"""
 <ul>
-<li><b>Tokenization</b> — text ↔ numbers (characters, then word-chunks).</li>
+<li><b>Tokenisation</b> — text ↔ numbers (characters, then word-chunks).</li>
 <li><b>Embeddings</b> — turning a token id and its position into a vector of meaning.</li>
 <li><b>Attention</b> — how positions share information, and why looking forward is forbidden.</li>
 <li><b>The transformer block</b> — attention + MLP, held together by residuals and LayerNorm.</li>
@@ -880,7 +882,7 @@ generate text without any retraining at all.</p>
 """),
   ("code", "02", "import tiny_gpt", "Save the trained model so you never retrain just to use it."),
   ("gloss", r"""
-<p><b>What this says:</b> bundle up the three things you need to reuse a model — the learned
+<p><b>What's happening:</b> bundle up the three things you need to reuse a model — the learned
 <b>weights</b>, the <b>tokenizer</b> (so new text is chunked the same way), and the
 <b>config</b> (the shape of the model) — and write them to a checkpoint folder. That trio is,
 in miniature, exactly what &ldquo;downloading a model&rdquo; gives you anywhere.</p>
@@ -898,7 +900,7 @@ instant.</p>
 """),
   ("code", "03", "model, tok, cfg = tiny_gpt.load", "In a notebook: load once, then generate freely."),
   ("gloss", r"""
-<p><b>What this says:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
+<p><b>In plain terms:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
 all the rebuilding above and hands back three things — the <code>model</code>, its
 <code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
 around it just measure how long it took, to make the point: about a second, versus the twenty
@@ -921,7 +923,7 @@ creative but loopier).</p>
 """),
   ("code", "03", "for temp in (0.4, 0.7, 1.0, 1.2)", "Same prompt, rising temperature."),
   ("gloss", r"""
-<p><b>What this says:</b> run the same opening at four temperatures and print each. Reading the
+<p><b>What's happening:</b> run the same opening at four temperatures and print each. Reading the
 results from low to high, you can watch the text loosen — tighter and more repetitive at 0.4,
 freer and stranger by 1.2. It's the most direct way to <em>feel</em> what sampling does, and the
 same knob you'll find in every model's API.</p>
