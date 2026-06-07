@@ -48,7 +48,10 @@ step has the plain idea first, then the actual code in a dark box, then a
 &ldquo;what this says&rdquo; translation. You can skip the code boxes entirely and still
 follow the story — or read them closely and learn to recognise what Python is doing.
 A one-page <a href="#primer">Python primer</a> at the end explains the handful of symbols
-that recur.</p>
+that recur. Every code box is real — pulled straight from the project's Jupyter notebooks,
+which you can read and run yourself: the full source is on
+<a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (linked again, with each notebook,
+at the foot of the page).</p>
 """
 
 # -------------------------------------------------------------- PYTHON PRIMER --
