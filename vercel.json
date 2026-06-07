@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "mkdir -p site && cp docs/walkthrough/tiny-gpt.html site/index.html",
-  "outputDirectory": "site",
-  "cleanUrls": true,
-  "installCommand": "true"
-}

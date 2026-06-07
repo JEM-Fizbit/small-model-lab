@@ -1,0 +1,54 @@
+name: Deploy walk-through to GitHub Pages
+
+# Rebuilds the Track-A walk-through from the notebooks and publishes it.
+# Push to main → rebuild → deploy. Only the lightweight build deps are installed
+# (jinja2 + pygments); MLX/torch are NOT needed to build the page and have no
+# Linux wheels anyway, so we deliberately skip `uv sync`.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/walkthrough/**"
+      - "notebooks/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build deps
+        run: pip install jinja2 pygments
+      - name: Build the walk-through
+        run: python docs/walkthrough/build.py
+      - name: Assemble site (single page → index.html)
+        run: |
+          mkdir -p _site
+          cp docs/walkthrough/tiny-gpt.html _site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
