@@ -172,6 +172,15 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   .hero h1{font-size:36px;}
   body{font-size:17px;}
 }
+/* top nav (between chapters) */
+.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
+  align-items:center;font-family:var(--sans);font-size:14px;}
+.topnav a{color:#aebbdd;text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav a.active{color:#fff;font-weight:700;}
+.topnav .muted{color:#5e6b88;}
+.topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -260,6 +269,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 </head>
 <body>
+
+<nav class="topnav"><div class="inner">
+<a href="../">Home</a><a href="./" class="active">Part 1 · From scratch</a><span class="muted">Part 2 · TrialScout <em>(coming)</em></span>
+</div></nav>
 
 <header class="hero"><div class="inner">
 <p class="kicker">slm-lab · Track A</p>
@@ -1704,7 +1717,7 @@ that show up again and again. Learn these six and Python stops looking like nois
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
   &nbsp;·&nbsp; <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
-  started</a> &nbsp;·&nbsp; Part of <strong>slm-lab</strong>, Track A.</p>
+  started</a> &nbsp;·&nbsp; Part 1 of the <strong>slm-lab</strong> walk-through.</p>
   <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
   John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
   <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the

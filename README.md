@@ -2,7 +2,7 @@
 
 A learn-by-doing lab for **building, fine-tuning, and distilling small language models** on Apple Silicon — paired with a useful biopharma proof-of-concept.
 
-> 📖 **Start here → [How a tiny GPT works](https://jem-fizbit.github.io/slm-lab/)** — an interactive, plain-English walk-through of the from-scratch GPT (Track A), explained for the curious. No Python required.
+> 📖 **Start here → [the slm-lab walk-through](https://jem-fizbit.github.io/slm-lab/)** — an interactive, plain-English guide. **Part 1** builds a tiny GPT from scratch (live); **Part 2** (fine-tuning TrialScout) is in progress. No prior Python required to read along.
 
 Two tracks, one shared environment and eval harness:
 

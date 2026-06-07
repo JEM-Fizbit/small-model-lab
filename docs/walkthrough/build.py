@@ -27,8 +27,6 @@ from pygments.formatters import HtmlFormatter
 
 ROOT = Path(__file__).resolve().parents[2]          # repo root
 NB_DIR = ROOT / "notebooks"
-OUT = Path(__file__).resolve().parent / "tiny-gpt.html"
-
 NOTEBOOKS = {
     "01": NB_DIR / "01_tiny_gpt_from_scratch.ipynb",
     "02": NB_DIR / "02_tiny_gpt_tuned.ipynb",
@@ -170,38 +168,82 @@ def _esc(s: str) -> str:
 
 
 # -------------------------------------------------------------------- assemble --
-def main():
-    import content  # local import so a syntax error there points cleanly here
+SITE = Path(__file__).resolve().parent / "site"   # multi-page output root
 
-    sections = content.SECTIONS
+
+def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note):
+    """Render one chapter page (Track A or Track B) from its sections."""
     rendered = []
     for sec in sections:
         body = "\n".join(render_block(b, sec) for b in sec["blocks"])
         rendered.append({**sec, "body": body})
-
-    # Table of contents grouped by "part"
-    toc = []
-    seen_parts = {}
+    toc, seen = [], {}
     for sec in sections:
         part = sec.get("part")
-        if part and part not in seen_parts:
-            seen_parts[part] = True
+        if part and part not in seen:
+            seen[part] = True
             toc.append({"part": part})
         toc.append({"id": sec["id"], "num": sec.get("num", ""), "title": sec["title"]})
+    return tmpl.render(
+        meta=meta, hero=hero, sections=rendered, toc=toc, primer=primer,
+        nav=nav, footer_note=footer_note, pygments_css=_fmt.get_style_defs(".hl"),
+    )
+
+
+def main():
+    import content  # local import so a syntax error there points cleanly here
 
     env = Environment(loader=BaseLoader(), autoescape=False)
-    tmpl = env.from_string(content.TEMPLATE)
-    html = tmpl.render(
-        meta=content.META,
-        sections=rendered,
-        toc=toc,
-        pygments_css=_fmt.get_style_defs(".hl"),
-        hero=content.HERO,
-        primer=content.PYTHON_PRIMER,
+    page_tmpl = env.from_string(content.TEMPLATE)
+    landing_tmpl = env.from_string(content.LANDING_TEMPLATE)
+
+    written = []
+
+    # --- Track A chapter → site/track-a/ ---
+    nav_a = [
+        {"label": "Home", "href": "../"},
+        {"label": "Part 1 · From scratch", "href": "./", "active": True},
+        {"label": "Part 2 · TrialScout", "href": None, "note": "coming"},
+    ]
+    html_a = _render_chapter(
+        page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
+        primer=content.PYTHON_PRIMER, nav=nav_a,
+        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.",
     )
-    OUT.write_text(html)
-    kb = len(html.encode()) / 1024
-    print(f"wrote {OUT.relative_to(ROOT)}  ({kb:.0f} KB, {len(sections)} sections)")
+    (SITE / "track-a").mkdir(parents=True, exist_ok=True)
+    (SITE / "track-a" / "index.html").write_text(html_a)
+    written.append(("track-a/index.html", len(html_a), len(content.SECTIONS)))
+
+    # --- Track B chapter → site/track-b/  (only when content_b is present) ---
+    try:
+        import content_b
+        nav_b = [
+            {"label": "Home", "href": "../"},
+            {"label": "Part 1 · From scratch", "href": "../track-a/"},
+            {"label": "Part 2 · TrialScout", "href": "./", "active": True},
+        ]
+        html_b = _render_chapter(
+            page_tmpl, meta=content_b.META, hero=content_b.HERO, sections=content_b.SECTIONS,
+            primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_b,
+            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.",
+        )
+        (SITE / "track-b").mkdir(parents=True, exist_ok=True)
+        (SITE / "track-b" / "index.html").write_text(html_b)
+        written.append(("track-b/index.html", len(html_b), len(content_b.SECTIONS)))
+        track_b_live = True
+    except ModuleNotFoundError:
+        track_b_live = False
+
+    # --- Landing hub → site/index.html ---
+    html_l = landing_tmpl.render(meta=content.LANDING_META, landing=content.LANDING,
+                                 track_b_live=track_b_live)
+    SITE.mkdir(parents=True, exist_ok=True)
+    (SITE / "index.html").write_text(html_l)
+    written.append(("index.html (landing)", len(html_l), 0))
+
+    for name, n, secs in written:
+        extra = f", {secs} sections" if secs else ""
+        print(f"wrote site/{name}  ({n/1024:.0f} KB{extra})")
 
 
 if __name__ == "__main__":
