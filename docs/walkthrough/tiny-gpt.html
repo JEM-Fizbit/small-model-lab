@@ -711,10 +711,10 @@ attention heads in parallel.</p>
       </div>
       <div class="prose">
 <p>Attention gathers information across positions. The other half of a transformer block is a
-small <strong>MLP</strong> — a two-layer mini-network applied to each position on its own,
-giving the model room to &ldquo;think&rdquo; about what attention just collected. A
-<strong>block</strong> is simply: attention, then MLP. A GPT is just this block stacked
-<code>n_layer</code> times.</p>
+small <strong>MLP</strong> — two linear layers with a nonlinear &ldquo;bend&rdquo; (a GELU
+activation) between them, applied to each position on its own, giving the model room to
+&ldquo;think&rdquo; about what attention just collected. A <strong>block</strong> is simply:
+attention, then MLP. A GPT is just this block stacked <code>n_layer</code> times.</p>
 <p>Two supporting tricks make deep stacks trainable, and they're worth naming because they're
 everywhere in modern models:</p>
 <ul>
@@ -725,6 +725,29 @@ signal flowing through even a deep stack, which is what makes deep networks lear
 the maths stays stable.</li>
 </ul>
 </div>
+<aside class="callout key"><div class="callout-title">Zoom out — the two operations a neural network is built from</div><div class="callout-body">
+<p>Step back from the details and almost the entire network is just <em>two</em> operations,
+repeated:</p>
+<ul>
+<li><b>The linear layer — <code>y = Wx + b</code>.</b> Take the input numbers <code>x</code>,
+multiply by a grid of <b>weights</b> <code>W</code>, then add a <b>bias</b> <code>b</code>: a
+weighted sum plus an offset. It's the same shape as the line <code>y = mx + c</code> from school,
+just with <code>x</code> a vector and <code>W</code> a matrix. Almost every named box in the code
+is one of these — <code>c_attn</code>, <code>c_proj</code>, both MLP layers, the final
+<code>head</code> — each an <code>nn.Linear</code>, which simply <em>computes</em>
+<code>Wx + b</code>.</li>
+<li><b>The activation — a bend.</b> After a linear step the model applies one simple nonlinear
+function. Without it, stacking linear layers would collapse into a single bigger linear layer, and
+the whole network could only ever draw <em>straight lines</em>. The bend is what lets depth model
+curves. Ours is <b>GELU</b> (a smooth version of ReLU); the famous textbook activations are
+<b>ReLU</b> (keep positives, zero the rest) and the <b>sigmoid</b> (squash any number into 0–1).</li>
+</ul>
+<p>That's the whole kit: <code>Wx + b</code>, then a bend, stacked — plus <em>attention</em> to
+move information between positions, an <em>embedding</em> to turn tokens into vectors at the
+bottom, and the <em>head</em> to read predictions out at the top. Every <code>W</code> and
+<code>b</code> across all of those is a <b>parameter</b> — and &ldquo;training&rdquo; (next
+section) is nothing more than nudging those millions of numbers downhill.</p>
+</div></aside>
 <figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -786,6 +809,29 @@ random. The next section is about fixing that — and the forward pass becomes s
 loop that does it.</p>
 </div>
 <div class="term"><div class="term-tag">what it prints</div><pre>Model built: 3.24M parameters</pre></div>
+<div class="prose">
+<h3>Our model, by the numbers</h3>
+<p>So how big is the thing we just built? (&ldquo;How many neurons?&rdquo; has no clean answer for
+a transformer — the honest measures are its <em>width</em>, its <em>depth</em>, and its
+<em>weight count</em>.)</p>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Property</th><th>Notebook 01 (this model)</th></tr></thead>
+<tbody>
+<tr><td>Transformer blocks — the depth (<code>n_layer</code>)</td><td>4</td></tr>
+<tr><td>Width — numbers describing each token (<code>n_embd</code>)</td><td>256</td></tr>
+<tr><td>Attention heads (<code>n_head</code>)</td><td>8</td></tr>
+<tr><td>MLP hidden units per block (4 × width)</td><td>1,024</td></tr>
+<tr><td><b>Total learnable weights</b> (all the <code>W</code>s and <code>b</code>s)</td><td><b>≈ 3.24 million</b></td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+<p>Where do those 3.24 million weights live? Almost all of them — about 3.16 million — are in the
+four blocks (the attention and MLP <code>Wx + b</code> layers). Only ~56k sit in the two embedding
+tables and ~24k in the output head. Notebook 02 scales every row of that table up — 6 blocks,
+width 384, ≈17 million weights — and that extra capacity is much of what makes its writing better.</p>
+</div>
     </section>
     
     <section id="train">
@@ -1311,6 +1357,8 @@ kind. They are this, scaled.</p>
 <ul>
 <li><b>Tokenisation</b> — text ↔ numbers (characters, then word-chunks).</li>
 <li><b>Embeddings</b> — turning a token id and its position into a vector of meaning.</li>
+<li><b>Weights, biases &amp; activations</b> — every layer is <code>y = Wx + b</code> followed by
+a nonlinear bend (GELU); those W's and b's are exactly the parameters training tunes.</li>
 <li><b>Attention</b> — how positions share information, and why looking forward is forbidden.</li>
 <li><b>The transformer block</b> — attention + MLP, held together by residuals and LayerNorm.</li>
 <li><b>The training loop</b> — the four-step cycle: forward pass → loss → backward pass
