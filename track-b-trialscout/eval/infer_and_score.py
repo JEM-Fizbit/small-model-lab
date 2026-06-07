@@ -15,8 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "train"))
 sys.path.insert(0, str(ROOT / "eval"))
-from format_for_mlx import build_prompt          # exact same prompt as training
-from harness import score                         # same metrics as the baseline
+from format_for_mlx import build_prompt  # noqa: E402  (after sys.path.insert) exact same prompt as training
+from harness import score  # noqa: E402  (after sys.path.insert) same metrics as the baseline
 
 RAW = {json.loads(l)["nct_id"]: json.loads(l)
        for l in (ROOT / "data" / "raw" / "trials.jsonl").read_text().splitlines() if l.strip()}

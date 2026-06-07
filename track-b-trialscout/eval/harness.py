@@ -15,7 +15,7 @@ Run:  uv run python track-b-trialscout/eval/harness.py --baseline majority
 """
 from __future__ import annotations
 import argparse, json
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -14,7 +14,7 @@ SAFETY (this spends money):
 Run:  uv run python track-b-trialscout/train/make_gold.py --target 1500 --cap 24
 """
 from __future__ import annotations
-import argparse, json, os, threading, time, random
+import argparse, json, threading, time, random
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
