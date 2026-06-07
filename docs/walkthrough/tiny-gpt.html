@@ -268,10 +268,12 @@ end you'll understand, concretely, how a model &ldquo;predicts the next word&rdq
 and why, strictly, it predicts no such thing.</p>
 
 <div class="bigidea">
-  <p><strong>The whole idea, in one sentence:</strong> a GPT is a machine that, given some
-  text so far, guesses what comes next — and <em>training</em> is the process of making
-  those guesses less wrong, millions of times, until coherent language falls out.</p>
-  <p>Everything below is just unpacking that sentence: how text becomes numbers, how the
+  <p><strong>The whole idea:</strong> a GPT is a <strong>model</strong> — really a mathematical
+  function with millions of adjustable numbers — that, given some text so far, predicts what
+  comes next. Two algorithms surround it: <em>training</em> tunes those numbers, millions of tiny
+  adjustments, until coherent language falls out; <em>generation</em> runs the function in a loop
+  to write.</p>
+  <p>Everything below is just unpacking that idea: how text becomes numbers, how the
   model &ldquo;looks back&rdquo; at what it has read (<em>attention</em>), how it measures
   its own mistakes, and how it slowly improves.</p>
 </div>
@@ -355,7 +357,7 @@ that recur.</p>
 heart a <strong>next-token predictor</strong>. Show it some text and it produces, for every
 possible next chunk of text, a probability: <em>how likely is this to come next?</em> To
 generate, you sample one chunk from those probabilities, glue it on, and ask again. Do that
-in a loop and the machine writes.</p>
+in a loop and the model writes.</p>
 <p>That phrasing — &ldquo;chunk of text,&rdquo; not &ldquo;word&rdquo; — is deliberate. The
 popular line &ldquo;predicts the next word&rdquo; is shorthand: a model predicts the next
 <em>unit</em> of however we chose to slice text up, and that choice is ours to make. Notebook 01
@@ -1051,7 +1053,7 @@ character — likelier characters chosen more often, but not always. Glue it on 
 <aside class="callout key"><div class="callout-title">This gibberish is the point</div><div class="callout-body">
 <p>It looks like English — real spacing, plausible letter runs, the ghost of words — but it's
 nonsense. That is the <em>correct</em> outcome for a 3-million-parameter model that works one
-letter at a time and trained for four minutes. It proves the whole machine works end to end;
+letter at a time and trained for four minutes. It proves the whole pipeline works end to end;
 it just hasn't the capacity for meaning. Closing the gap between &ldquo;looks like
 language&rdquo; and &ldquo;is coherent&rdquo; is the job of Part III.</p>
 </div></aside>
