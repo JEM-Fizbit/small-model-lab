@@ -33,11 +33,11 @@ uv run python notebooks/chat.py                  # loads in ~1s; type story open
 | Command | Effect |
 |---------|--------|
 | `/temp 0.7` | sampling temperature — low (~0.5) safe/repetitive, high (~1.1) wild |
-| `/tokens 300` | how many tokens to generate (this is what controls reply length) |
-| `/stop` | optional: stop at the first blank line — one paragraph, very short (off by default) |
+| `/tokens 300` | **max** tokens per reply (a cap; the story usually ends on its own first) |
+| `/stop` | toggle stopping at the end-of-story token on/off (on by default) |
 | `/quit` | exit |
 
-**Story length.** Reply length is set by `/tokens` — generation runs for that many tokens. This checkpoint has **no end-of-story token** (training joined stories with `\n\n`, which is also the paragraph break *inside* nearly every story), so the model can't mark where one story ends — at higher `/tokens` it will finish a story and roll straight into a new "Once upon a time…". Use `/tokens` to pick a length. (A clean per-story natural ending would need a retrain with a dedicated end-of-text token.)
+**Story length & the end-of-story token.** The model is trained with a dedicated end-of-text token (`<|endstory|>`, the same trick as GPT-2's `<|endoftext|>`): during training each story is followed by this token, so the model learns to emit it when a story is complete, and generation **stops there** — giving naturally varying, self-contained stories rather than a fixed-length wall of text. `/tokens` is just a safety cap. Toggle `/stop` **off** (or launch `chat.py --no-stop`) to ignore the token and keep generating, which rolls on into new stories. (Earlier checkpoints lacked this token because training joined stories with `\n\n` — also the paragraph break *inside* nearly every story — so there was no boundary to stop on; the producer now inserts a real one. See `notebooks/train_v2_checkpoint.py`.)
 
 ## Tech stack
 

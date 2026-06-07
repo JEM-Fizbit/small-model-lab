@@ -1092,6 +1092,60 @@ interactive prompt — type an opener, watch the story stream in token by token,
 temperature on the fly. It's the from-scratch model turned into something you can actually play
 with.</p>
 """),
+ ],
+},
+
+{
+ "id": "endstory", "num": "18", "title": "Knowing when to stop: the end-of-story token",
+ "blocks": [
+  ("prose", r"""
+<p>You can now generate text and shape it with temperature — but how does the model know when a
+story is <em>over</em>? Left alone, it never stops: it just keeps predicting the next token until
+you cut it off at a token limit. So every reply comes out the same length, and a long one runs
+two stories together.</p>
+<p>The fix is the one every real language model uses: a dedicated <strong>end-of-text
+token</strong> (GPT-2 calls it <code>&lt;|endoftext|&gt;</code>; here it's
+<code>&lt;|endstory|&gt;</code>). A tempting shortcut is to treat the blank line between stories
+as the boundary — but that fails, because the blank line is <em>also</em> the paragraph break
+inside almost every story, so the model can't tell &ldquo;end of paragraph&rdquo; from &ldquo;end
+of story.&rdquo; A reserved token that appears <em>only</em> between stories has no such
+ambiguity.</p>
+"""),
+  ("srccode", "train", "trainer = trainers.BpeTrainer", "data = np.array(ids",
+   "Reserve a special token, then drop it after every story in the training stream."),
+  ("gloss", r"""
+<p><b>What's happening:</b> we add <code>&lt;|endstory|&gt;</code> to the tokenizer as a
+<em>special</em> token — matched as one atomic unit, never split into characters — then build the
+training stream story-by-story, appending that token's id after each one. The model now sees,
+thousands of times over, that a finished story is followed by this exact marker. So it learns to
+produce it precisely when a story is complete.</p>
+"""),
+  ("srccode", "lib", "def stream(model", "emitted = len(gen)",
+   "At generation time, stop the instant that token appears."),
+  ("gloss", r"""
+<p><b>The payoff in code:</b> each step samples the next token; if it's the end-of-story token we
+<code>return</code> immediately — <em>before</em> emitting it — so the story ends cleanly on its
+last real word. If the model never emits it, the <code>n_new</code> cap still ends things
+eventually. That single check is the whole mechanism behind &ldquo;the model decided it was
+done.&rdquo;</p>
+"""),
+  ("rawoutput", """Once upon a time, there was a little girl named Lily. She loved to play outside in the sun and pretend to be a princess. One day, Lily went to the park and saw a little boy who was crying.
+
+"Hello, little boy. What's wrong?" asked Lily.
+
+"I lost my teddy bear," said the boy.
+
+Lily nodded and said, "I will help you find your teddy bear."
+
+Lily was happy to help, and said, "Thank you, I'm glad I could help you." The little boy smiled and said, "Thank you, Lily. You are a good friend.\"""",
+   "a complete story from chat.py — it stopped on its own, well short of the token cap"),
+  ("callout", "key", "Why this small change matters", r"""
+<p>With a real boundary token, stories come out <em>self-contained and naturally varying in
+length</em> — a short tale ends short, a longer one runs on, and neither bleeds into a stray new
+&ldquo;Once upon a time.&rdquo; It's a tiny change to the <em>data</em>, not the model, but it's
+the difference between a fixed-length text dump and something that knows when to stop. Every
+chatbot you've used ends its turn in exactly this way.</p>
+"""),
   ("callout", "key", "The thread that ties it all together", r"""
 <p>Every concept in this walk-through — tokens, attention, the loss, the training loop,
 temperature — reappears, unchanged in spirit, in Track B of this lab, where a real pretrained

@@ -112,7 +112,10 @@ def save_checkpoint(model, tok, cfg, ckpt_dir):
     model.save_weights(str(ckpt / "weights.safetensors"))
     tok.save(str(ckpt / "tokenizer.json"))
     cfg_d = cfg if isinstance(cfg, dict) else vars(cfg)
-    json.dump({k: cfg_d[k] for k in CONFIG_FIELDS}, open(ckpt / "config.json", "w"), indent=2)
+    out_cfg = {k: cfg_d[k] for k in CONFIG_FIELDS}
+    if cfg_d.get("eos_token"):  # the end-of-story token, if this model was trained with one
+        out_cfg["eos_token"] = cfg_d["eos_token"]
+    json.dump(out_cfg, open(ckpt / "config.json", "w"), indent=2)
     return ckpt.resolve()
 
 
@@ -130,44 +133,45 @@ def load(ckpt_dir):
 
 # --- generation ---------------------------------------------------------------
 
-# NOTE: this checkpoint has NO real end-of-story token. Training joined stories with "\n\n",
-# but "\n\n" is also the paragraph break *inside* ~98% of stories — so it can't mark a story
-# boundary. Default to no early stop (generate up to n_new), matching notebook 02's behaviour.
-# Passing stop="\n\n" cuts at the FIRST paragraph (very short). A clean natural ending needs a
-# retrain with a dedicated end-of-text token (see tiny_gpt with <|endstory|> if/when added).
-DEFAULT_STOP = None
+# A model trained with a dedicated end-of-story token (cfg.eos_token, e.g. "<|endstory|>")
+# emits it when a story is complete — exactly how real LMs use <|endoftext|>. Generation stops
+# there, giving naturally varying, self-contained stories. Checkpoints without an eos_token
+# (e.g. the plain notebook-02 save) just run to n_new — stop_at_eos is then a no-op.
 
 
-def stream(model, tok, cfg, prompt, n_new=200, temperature=0.8, stop=DEFAULT_STOP):
+def _eos_id(tok, cfg):
+    name = getattr(cfg, "eos_token", None)
+    return tok.token_to_id(name) if name else None
+
+
+def stream(model, tok, cfg, prompt, n_new=200, temperature=0.8, stop_at_eos=True):
     """Yield text deltas as tokens are produced — for a live 'typing' feel.
 
-    Stops when the model emits `stop` (default the blank-line story separator) or after
-    at most `n_new` tokens, whichever comes first. Pass stop=None for a fixed-length run.
+    Stops when the model emits its end-of-story token (if it has one and stop_at_eos=True),
+    or after at most `n_new` tokens. Set stop_at_eos=False to keep going past story ends.
     """
+    eos = _eos_id(tok, cfg) if stop_at_eos else None
     out = list(tok.encode(prompt).ids)
     idx = mx.array([out])
     prompt_text = tok.decode(out)
     emitted = 0  # chars of generated (post-prompt) text already yielded
     for _ in range(n_new):
         logits = model(idx[:, -cfg.block_size:])[:, -1, :] / temperature
-        next_id = mx.random.categorical(logits).reshape(1, 1)
-        idx = mx.concatenate([idx, next_id], axis=1)
-        out.append(int(next_id.item()))
-        gen = tok.decode(out)[len(prompt_text):]
-        if stop and stop in gen:
-            cut = gen.index(stop)
-            if cut > emitted:
-                yield gen[emitted:cut]
+        next_id = int(mx.random.categorical(logits).item())
+        if next_id == eos:          # story finished — stop before emitting the marker
             return
+        idx = mx.concatenate([idx, mx.array([[next_id]])], axis=1)
+        out.append(next_id)
+        gen = tok.decode(out)[len(prompt_text):]
         if len(gen) > emitted:
             yield gen[emitted:]
             emitted = len(gen)
 
 
-def generate(model, tok, cfg, prompt, n_new=200, temperature=0.8, stop=DEFAULT_STOP):
+def generate(model, tok, cfg, prompt, n_new=200, temperature=0.8, stop_at_eos=True):
     """Return a full completion as a string (prompt + continuation).
 
-    Stops at `stop` (default the blank-line story separator) or after at most `n_new`
-    tokens. Pass stop=None to always generate exactly n_new tokens.
+    Stops at the model's end-of-story token (if any) or after at most `n_new` tokens.
+    Set stop_at_eos=False to always run the full n_new tokens.
     """
-    return prompt + "".join(stream(model, tok, cfg, prompt, n_new, temperature, stop))
+    return prompt + "".join(stream(model, tok, cfg, prompt, n_new, temperature, stop_at_eos))

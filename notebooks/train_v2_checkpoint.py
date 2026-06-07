@@ -26,13 +26,15 @@ from tokenizers import Tokenizer, models, trainers, pre_tokenizers, decoders
 sys.path.insert(0, str(Path(__file__).parent))
 import tiny_gpt  # noqa: E402  (the model class — single source of truth for the architecture)
 
-# ---- config (matches notebook 02) -------------------------------------------
+# ---- config (matches notebook 02, plus a real end-of-story token) -----------
+EOS = "<|endstory|>"  # dedicated end-of-text token (cf. GPT-2's <|endoftext|>) — see below
 cfg = SimpleNamespace(
     block_size=256,   # context length in TOKENS
     n_embd=384,       # width
     n_head=6,
     n_layer=6,        # depth
     vocab_size=8192,  # set precisely after BPE training below
+    eos_token=EOS,    # the model learns to emit this when a story is complete
 )
 N_STORIES = 25000
 batch_size = 32
@@ -64,22 +66,35 @@ try:
     print(f"Loaded {len(stories):,} stories ({len(text):,} chars)")
 except Exception as e:
     print("fallback corpus:", e)
-    text = ("The little robot read a happy story about a fox and a bird by the river. ") * 20000
+    stories = [("The little robot read a happy story about a fox and a bird by the river. ") * 200] * 100
+text = "\n\n".join(stories)
 
-# ---- tokenizer (byte-level BPE) ---------------------------------------------
+# ---- tokenizer (byte-level BPE) + an end-of-story token ---------------------
+# We reserve "<|endstory|>" as a special token and place it BETWEEN stories in the training
+# stream. "\n\n" can't serve as the story boundary because it's also the paragraph break inside
+# nearly every story — so the model could never tell "end of paragraph" from "end of story".
+# With a dedicated token, the model learns to emit it only when a story is truly done, and
+# generation can stop there (natural, self-contained, variable-length stories).
 tok = Tokenizer(models.BPE(unk_token="[UNK]"))
 tok.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
 tok.decoder = decoders.ByteLevel()
-trainer = trainers.BpeTrainer(vocab_size=8192, special_tokens=["[UNK]"], show_progress=False)
+trainer = trainers.BpeTrainer(vocab_size=8192, special_tokens=["[UNK]", EOS], show_progress=False)
 t0 = time.time()
 tok.train_from_iterator([text], trainer)
+tok.add_special_tokens([EOS])           # match "<|endstory|>" atomically when encoding
+eos_id = tok.token_to_id(EOS)
 cfg.vocab_size = tok.get_vocab_size()
-print(f"Trained BPE in {time.time()-t0:.1f}s — vocab_size={cfg.vocab_size}")
+print(f"Trained BPE in {time.time()-t0:.1f}s — vocab_size={cfg.vocab_size}  eos_id={eos_id}")
 
-data = np.array(tok.encode(text).ids, dtype=np.int32)
+# Build the token stream story-by-story, dropping the eos token after each.
+ids = []
+for s in stories:
+    ids.extend(tok.encode(s).ids)
+    ids.append(eos_id)
+data = np.array(ids, dtype=np.int32)
 n_train = int(0.9 * len(data))
 train_data, val_data = data[:n_train], data[n_train:]
-print(f"tokens: {len(data):,}  train {len(train_data):,}  val {len(val_data):,}")
+print(f"tokens: {len(data):,}  ({len(stories):,} stories)  train {len(train_data):,}  val {len(val_data):,}")
 
 
 def get_batch(split):

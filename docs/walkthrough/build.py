@@ -35,10 +35,11 @@ NOTEBOOKS = {
     "03": NB_DIR / "03_tiny_gpt_chat.ipynb",
 }
 
-# Plain-source files (chat.py / tiny_gpt.py) we also quote from, by anchor.
+# Plain-source files (chat.py / tiny_gpt.py / the trainer) we also quote from, by anchor.
 SRC_FILES = {
     "chat": NB_DIR / "chat.py",
     "lib": NB_DIR / "tiny_gpt.py",
+    "train": NB_DIR / "train_v2_checkpoint.py",
 }
 
 _lexer = PythonLexer()
@@ -129,7 +130,7 @@ def render_block(block, ctx):
         caption = block[4] if len(block) > 4 else None
         src = get_src(fkey, start, end)
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
-        name = {"chat": "chat.py", "lib": "tiny_gpt.py"}[fkey]
+        name = {"chat": "chat.py", "lib": "tiny_gpt.py", "train": "train_v2_checkpoint.py"}[fkey]
         return (f'<figure class="codefig"><div class="codebar">'
                 f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
                 f'<span class="srcname">{name}</span></div>{render_code(src)}{cap}</figure>')
