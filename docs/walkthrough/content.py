@@ -429,9 +429,13 @@ learns). One line prints the compute device — confirmation that the Mac's GPU 
   ("code", "01", "MLX device:"),
   ("gloss", r"""
 <p><b>Reading it:</b> the <code>import</code> lines bring in pre-written toolkits.
-<code>mx</code> is the array library (fast number-crunching), <code>nn</code> holds neural-net
-parts (layers, etc.), <code>optim</code> is the optimizer. The last line simply prints which
-device will run the maths — on an M-series Mac it reports the GPU.</p>
+<code>np</code> is <strong>NumPy</strong> — Python's classic, decades-old library for arrays of
+numbers, the workhorse under most of scientific computing (here it does a little data prep on the
+CPU). <code>mx</code> is <strong>MLX</strong>, Apple's array library that runs on the Mac's GPU;
+it's deliberately NumPy-like, so the two look almost identical in use. <code>nn</code> holds the
+neural-net building blocks (layers and such), and <code>optim</code> is the optimizer — the part
+that adjusts the model as it learns. The last line prints which device will run the maths; on an
+M-series Mac it reports the GPU.</p>
 """),
  ],
 },
@@ -729,12 +733,16 @@ and adapts the step size per parameter — but the line above is the heart of it
 },
 
 {
- "id": "curve", "num": "8", "title": "The single most important plot",
+ "id": "curve", "num": "8", "title": "The loss curve — the single most important plot",
  "blocks": [
   ("prose", r"""
-<p>Plotting the loss over time is how every practitioner reads the health of a training run at
-a glance. The faint line is training loss; the bold line is validation loss; the dashed line is
-the &ldquo;knows nothing&rdquo; baseline.</p>
+<p>This plot has a name: the <strong>loss curve</strong> (sometimes <em>learning curve</em>). It
+is the loss from the last section, tracked across the whole training run — so don't confuse it
+with the loss <em>function</em>: the <em>function</em> is the formula that scores a single batch;
+the <em>curve</em> is that score plotted step after step. Reading it is how every practitioner
+judges the health of a run at a glance. The <strong style="color:#2f74c0">blue</strong> line is
+the training loss; the <strong style="color:#d9772b">orange</strong> line (with dots) is the
+validation loss; the grey dashed line is the &ldquo;knows nothing&rdquo; baseline.</p>
 """),
   ("figure", "loss_curve.png", "Notebook 01: both losses falling together toward the floor for a model this size."),
   ("gloss", r"""
