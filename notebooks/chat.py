@@ -27,8 +27,9 @@ def main():
     ap.add_argument("--ckpt", default=DEFAULT_CKPT)
     ap.add_argument("--temp", type=float, default=0.8)
     ap.add_argument("--tokens", type=int, default=200, help="max tokens per reply (a cap, not a target)")
-    ap.add_argument("--no-stop", action="store_true",
-                    help="disable natural stop at the blank-line story end; always generate --tokens tokens")
+    ap.add_argument("--stop-at-para", action="store_true",
+                    help="stop at the first blank line (one paragraph — very short). Off by default; "
+                         "'\\n\\n' is a paragraph break here, not a story end, so there's no clean stop.")
     args = ap.parse_args()
 
     if not Path(args.ckpt, "weights.safetensors").exists():
@@ -38,8 +39,8 @@ def main():
     print(f"loading {args.ckpt} …")
     model, tok, cfg = tiny_gpt.load(args.ckpt)
     temp, ntok = args.temp, args.tokens
-    stop = None if args.no_stop else tiny_gpt.DEFAULT_STOP
-    print(f"ready (temp={temp}, max tokens={ntok}, stop-at-story-end={'off' if stop is None else 'on'}).  "
+    stop = "\n\n" if args.stop_at_para else tiny_gpt.DEFAULT_STOP
+    print(f"ready (temp={temp}, tokens={ntok}, stop-at-blank-line={'on' if stop else 'off'}).  "
           "/temp N  /tokens N  /stop  /quit\n"
           "Type a prompt — it's a TinyStories model, so try 'Once upon a time' style openers.\n")
 
@@ -68,8 +69,8 @@ def main():
                 print("  usage: /tokens 200")
             continue
         if prompt.startswith("/stop"):
-            stop = None if stop else tiny_gpt.DEFAULT_STOP
-            print(f"  stop-at-story-end = {'off' if stop is None else 'on'}")
+            stop = None if stop else "\n\n"
+            print(f"  stop-at-blank-line = {'on (cuts at first paragraph)' if stop else 'off'}")
             continue
 
         print("gpt ▸ ", end="", flush=True)

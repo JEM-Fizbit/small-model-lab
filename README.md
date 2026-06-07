@@ -33,11 +33,11 @@ uv run python notebooks/chat.py                  # loads in ~1s; type story open
 | Command | Effect |
 |---------|--------|
 | `/temp 0.7` | sampling temperature — low (~0.5) safe/repetitive, high (~1.1) wild |
-| `/tokens 300` | **max** tokens per reply (a cap, not a target) |
-| `/stop` | toggle natural stopping on/off (see below) |
+| `/tokens 300` | how many tokens to generate (this is what controls reply length) |
+| `/stop` | optional: stop at the first blank line — one paragraph, very short (off by default) |
 | `/quit` | exit |
 
-**Story length.** By default generation stops at the blank-line story separator the model learned — so you get one tidy, self-contained story (TinyStories are short by design). Toggle `/stop` **off** to ignore that and run to the full `/tokens` length, which rambles on across several concatenated stories; toggle it on again for one-story-at-a-time. (Flags: `chat.py --no-stop --tokens 400` starts in long-ramble mode.)
+**Story length.** Reply length is set by `/tokens` — generation runs for that many tokens. This checkpoint has **no end-of-story token** (training joined stories with `\n\n`, which is also the paragraph break *inside* nearly every story), so the model can't mark where one story ends — at higher `/tokens` it will finish a story and roll straight into a new "Once upon a time…". Use `/tokens` to pick a length. (A clean per-story natural ending would need a retrain with a dedicated end-of-text token.)
 
 ## Tech stack
 
