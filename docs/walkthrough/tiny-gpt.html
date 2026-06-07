@@ -1393,6 +1393,24 @@ every mechanism a frontier model uses — tokenisation, embeddings, attention, t
 block, the loss, backpropagation, the optimizer, sampling. The giants are not different in
 kind. They are this, scaled.</p>
 </div>
+<aside class="callout key"><div class="callout-title">What &ldquo;Once upon a time&rdquo; reveals: the corpus is the model</div><div class="callout-body">
+<p>There's a second limit here, and it has nothing to do with size. Prompt this model with
+&ldquo;Once upon a time&rdquo; and it spins a little fairy tale — but ask it a question, or for a
+fact, or to reason, and it simply can't. It <em>only</em> tells toddler stories, because
+<strong>TinyStories is the entire world it ever saw.</strong> A model learns the shape of its
+training data and nothing outside it: the corpus doesn't merely feed the model, it
+<em>defines</em> it.</p>
+<p><strong>Practically,</strong> that makes the data your single most important design choice — it
+fixes the model's competence, its vocabulary, and its blind spots. Train on legal contracts and it
+speaks legalese; on toddler tales and it speaks toddler. (Track B pulls this lever on purpose:
+feed a model clinical-trial readouts and you get a trial expert.)</p>
+<p><strong>Socially,</strong> this is the root of what people mean by &ldquo;LLM bias.&rdquo; A
+model mirrors its corpus — the patterns, the gaps, the over- and under-representation, the
+omissions of whoever's text dominates — and at web scale that quietly carries human biases and
+blind spots along with the knowledge. Our one narrow corpus shows the mechanism in miniature:
+what goes in is what comes out. The training set is a choice, and every choice leaves its
+fingerprint on the model.</p>
+</div></aside>
 <aside class="callout key"><div class="callout-title">What you now understand end-to-end</div><div class="callout-body">
 <ul>
 <li><b>Tokenisation</b> — text ↔ numbers (characters, then word-chunks).</li>
@@ -1405,6 +1423,8 @@ a nonlinear bend (GELU); those W's and b's are exactly the parameters training t
 (backpropagation) → gradient-descent step.</li>
 <li><b>The loss curve</b> — reading learning versus overfitting.</li>
 <li><b>Autoregressive sampling</b> — generating one token at a time, and what temperature does.</li>
+<li><b>The corpus is the model</b> — training data defines (and biases) what a model can do;
+choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</li>
 </ul>
 </div></aside>
     </section>
