@@ -28,6 +28,17 @@ uv run python notebooks/chat.py                  # loads in ~1s; type story open
 
 (`Run All` on `notebooks/02_tiny_gpt_tuned.ipynb` also saves the checkpoint, at the "9.5 Save" cell.)
 
+**Using the chat REPL.** It's a *TinyStories* model — it continues text, it doesn't answer questions. Feed it story-shaped openers with capitalized names (`Once upon a time, there was a boy named Chester.`), not fragments or questions. In-prompt commands (each prints the resulting state):
+
+| Command | Effect |
+|---------|--------|
+| `/temp 0.7` | sampling temperature — low (~0.5) safe/repetitive, high (~1.1) wild |
+| `/tokens 300` | **max** tokens per reply (a cap, not a target) |
+| `/stop` | toggle natural stopping on/off (see below) |
+| `/quit` | exit |
+
+**Story length.** By default generation stops at the blank-line story separator the model learned — so you get one tidy, self-contained story (TinyStories are short by design). Toggle `/stop` **off** to ignore that and run to the full `/tokens` length, which rambles on across several concatenated stories; toggle it on again for one-story-at-a-time. (Flags: `chat.py --no-stop --tokens 400` starts in long-ramble mode.)
+
 ## Tech stack
 
 | Area | Choice |
