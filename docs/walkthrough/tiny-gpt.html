@@ -9,7 +9,8 @@
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
   --bg:#fbfbfd; --panel:#ffffff; --accent:#3253d6; --accent-soft:#eef2ff;
   --key:#0e7a5f; --key-soft:#e7f6f0; --try:#9a5b00; --try-soft:#fbf1e0;
-  --math:#5a3aa6; --math-soft:#f1ecfb; --code-bg:#272822;
+  --math:#5a3aa6; --math-soft:#f1ecfb; --insight:#a8386a; --insight-soft:#fbecf3;
+  --code-bg:#272822;
   --serif:Charter,"Iowan Old Style",Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
   --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
@@ -139,6 +140,8 @@ section:first-of-type{border-top:none;padding-top:0;}
 .callout.aside .callout-title{color:var(--soft);}
 .callout.math{background:var(--math-soft);border:1px solid #d9ccf3;}
 .callout.math .callout-title{color:var(--math);}
+.callout.insight{background:var(--insight-soft);border:1px solid #eecada;}
+.callout.insight .callout-title{color:var(--insight);}
 .callout.math .formula{font-family:var(--mono);font-size:15px;background:#fff;
   border:1px solid #e1d8f5;border-radius:8px;padding:12px 14px;margin:6px 0 12px;
   text-align:center;color:#33285a;overflow:auto;}
@@ -1393,7 +1396,7 @@ every mechanism a frontier model uses — tokenisation, embeddings, attention, t
 block, the loss, backpropagation, the optimizer, sampling. The giants are not different in
 kind. They are this, scaled.</p>
 </div>
-<aside class="callout key"><div class="callout-title">What &ldquo;Once upon a time&rdquo; reveals: the corpus is the model</div><div class="callout-body">
+<aside class="callout insight"><div class="callout-title">What &ldquo;Once upon a time&rdquo; reveals: the corpus is the model</div><div class="callout-body">
 <p>There's a second limit here, and it has nothing to do with size. Prompt this model with
 &ldquo;Once upon a time&rdquo; and it spins a little fairy tale — but ask it a question, or for a
 fact, or to reason, and it simply can't. It <em>only</em> tells toddler stories, because
