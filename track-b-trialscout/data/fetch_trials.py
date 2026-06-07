@@ -7,7 +7,7 @@ JSONL to data/raw/trials.jsonl.
 Run:  uv run python track-b-trialscout/data/fetch_trials.py --target 1500
 """
 from __future__ import annotations
-import argparse, json, time, sys
+import argparse, json, time
 from pathlib import Path
 import requests
 
