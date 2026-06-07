@@ -28,7 +28,7 @@ HERO = r"""
 <h1>How a tiny GPT works</h1>
 <p class="lede">We are going to build a language model from nothing — no pre-trained
 weights, no magic — and watch it learn to write. This page walks through the real code
-that did it, line by line, for someone who is curious but doesn't write Python. By the
+that did it, line by line, for someone who is curious but doesn't necessarily write Python. By the
 end you'll understand, concretely, how a model &ldquo;predicts the next word&rdquo; —
 and why, strictly, it predicts no such thing.</p>
 
