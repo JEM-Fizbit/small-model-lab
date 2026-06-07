@@ -15,6 +15,9 @@ dependencies = [
     # Teacher (gold-label generation) + Claude-as-judge
     "anthropic>=0.40",
     "python-dotenv>=1.0",
+    # Phase 5: package the winner (Qwen TrialScout) as a callable MCP "expert".
+    "mcp>=1.2",            # FastMCP server SDK (stdio transport)
+    "jsonschema>=4.20",    # validate model output against trial_readout.schema.json
     # Observability: loss curves, eval reports, annotated notebooks
     "matplotlib>=3.9",
     "jupyter>=1.0",
