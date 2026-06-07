@@ -2,6 +2,8 @@
 
 A learn-by-doing lab for **building, fine-tuning, and distilling small language models** on Apple Silicon — paired with a useful biopharma proof-of-concept.
 
+> 📖 **Start here → [How a tiny GPT works](https://jem-fizbit.github.io/slm-lab/)** — an interactive, plain-English walk-through of the from-scratch GPT (Track A), explained for the curious. No Python required.
+
 Two tracks, one shared environment and eval harness:
 
 - **Track A — from scratch** (`notebooks/01_…`, `02_…`): pretrain a tiny GPT on Apple MLX to *understand* every layer — tokenizer, attention, training loop, sampling. Output is throwaway-quality by design; the point is comprehension. Once trained, **save the model and chat with it** (no retraining) via `notebooks/03_tiny_gpt_chat.ipynb` or the terminal REPL `notebooks/chat.py`.
