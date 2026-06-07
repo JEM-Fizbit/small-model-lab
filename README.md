@@ -4,7 +4,7 @@ A learn-by-doing lab for **building, fine-tuning, and distilling small language 
 
 Two tracks, one shared environment and eval harness:
 
-- **Track A — from scratch** (`track-a-nanogpt/`): pretrain a tiny GPT on Apple MLX to *understand* every layer — tokenizer, attention, training loop, sampling. Output is throwaway-quality by design; the point is comprehension.
+- **Track A — from scratch** (`notebooks/01_…`, `02_…`): pretrain a tiny GPT on Apple MLX to *understand* every layer — tokenizer, attention, training loop, sampling. Output is throwaway-quality by design; the point is comprehension.
 - **Track B — TrialScout** (`track-b-trialscout/`): distill/fine-tune a small open model (Qwen3-4B vs Gemma 4 E2B, decided by eval) that turns a **clinical-trial record into a structured, investor-relevant readout**. Ships as an MCP-callable "expert."
 
 ## Why this exists
