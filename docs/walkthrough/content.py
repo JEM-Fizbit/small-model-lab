@@ -253,8 +253,10 @@ dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3
 dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
-  font-family:var(--sans);font-size:13.5px;color:var(--faint);}
+  font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
+footer p{margin:0 0 8px;} footer p:last-child{margin:0;}
 footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
 
 @media (max-width:920px){
   .layout{grid-template-columns:1fr;gap:0;}
@@ -300,10 +302,15 @@ footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-ra
 </div>
 
 <footer>
-  Generated from the live notebooks by <code>docs/walkthrough/build.py</code> —
-  the code and outputs above are pulled straight from
-  <code>notebooks/01_…</code>, <code>02_…</code>, <code>03_…</code>.
-  Part of <strong>slm-lab</strong>, Track A.
+  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
+  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Open source:
+  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
+  &nbsp;·&nbsp; notebooks
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
+  &nbsp;·&nbsp; Part of <strong>slm-lab</strong>, Track A.</p>
 </footer>
 
 </body>
@@ -1090,6 +1097,13 @@ with.</p>
 temperature — reappears, unchanged in spirit, in Track B of this lab, where a real pretrained
 model is fine-tuned into a useful clinical-trial expert. You built the tiny one to <em>see</em>
 the machinery. The same machinery, scaled up and pointed at a real task, is the whole game.</p>
+"""),
+  ("callout", "aside", "Run it yourself", r"""
+<p>Everything here is open source — the three notebooks, the terminal chat, and even the script
+that builds this very page — at
+<a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>. Clone it, run
+<code>uv sync</code>, then open <code>notebooks/01_tiny_gpt_from_scratch.ipynb</code> and train
+your own tiny GPT — about five minutes on an Apple-silicon Mac.</p>
 """),
  ],
 },
