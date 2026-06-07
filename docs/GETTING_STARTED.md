@@ -4,7 +4,7 @@ This guide assumes **no prior coding experience**. It takes ~15 minutes and is f
 
 > Pairs with the plain-English **[walk-through](https://jem-fizbit.github.io/slm-lab/)**, which explains *how* the model works. This page is just *how to run it*.
 >
-> **Want gentler, conceptual primers first?** My public [AI Knowledge Hub](https://notion.so/718881b895cb4666a2fcfc1887b77566) has from-zero guides to the terminal, dependencies, and Jupyter notebooks.
+> **Want gentler, conceptual primers first?** My public [AI Knowledge Hub](https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566) has from-zero guides to the terminal, dependencies, and Jupyter notebooks.
 
 ## Do you even need to install anything?
 
