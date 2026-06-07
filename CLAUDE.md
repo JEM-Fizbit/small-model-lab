@@ -11,6 +11,19 @@ A learn-by-doing lab for **building, fine-tuning, and distilling small language 
 - **Track A** (`notebooks/01_…`, `02_…`, `03_…`): a tiny GPT pretrained *from scratch* on Apple MLX — learning-focused, throwaway output quality by design. The plain-English walk-through is generated from these notebooks by `docs/walkthrough/build.py`.
 - **Track B** (`track-b-trialscout/`): fine-tune/distill a small open model into **TrialScout** (clinical-trial record → structured JSON readout); ships as an MCP-callable expert.
 
+## Repository layout — public / private split (read before committing)
+
+This repo is **public**. Internal/personal material lives in a separate **private** repo, [`JEM-Fizbit/slm-lab-private`](https://github.com/JEM-Fizbit/slm-lab-private), cloned into `_private/` here (gitignored — present locally, never pushed to this repo).
+
+- **Public (this repo):** the learning content — `notebooks/`, the `docs/walkthrough/` builder, the Track B pipeline (`track-b-trialscout/`), `docs/DECISIONS.md` (the *why* trail), `README.md`, `docs/GETTING_STARTED.md`.
+- **Private (`_private/`):** the live `BACKLOG.md`, `HANDOFF.md` (status / "resume here"), the full agent contract (`_private/CLAUDE.md`, with personal context), and `specs/`. Edit and version these *inside* `_private/` — it is its own git repo (`cd _private && git add/commit/push`).
+
+**Rules when working here:**
+- **Do not commit personal/internal content to this public repo** — no live backlog, status/handoff notes, business strategy, absolute home paths (`/Users/…`, `~/Projects/…`), or references to private repos. That content belongs in `_private/`.
+- **Resuming, or looking for status / the task list?** Read **`_private/HANDOFF.md`** and **`_private/BACKLOG.md`** (local, gitignored — not visible on GitHub).
+- The git **history was rewritten (2026-06-08)** to purge such content from all commits — don't reintroduce it.
+- `.mcp.json` is gitignored (local, per-user path); copy `.mcp.json.example` and set your path.
+
 ## Learning-first principle (load-bearing)
 
 This project exists to make the process **learnable — no black boxes**. Every phase ships: an annotated notebook (narrated *why* beside runnable code and live output), loss/eval curves, a `docs/DECISIONS.md` entry per modeling choice, and **no magic numbers** (hyperparameters in commented configs with "try X, watch Y" notes). Notebook outputs are committed on purpose — they ARE the learning trail.
