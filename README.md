@@ -55,4 +55,16 @@ See `BACKLOG.md` for live work and `docs/DECISIONS.md` for locked design decisio
 
 ## License
 
-Personal project — John E. Milad. Base models are Apache-2.0; data sources are public-domain.
+[MIT](LICENSE) © 2026 John E. Milad. Use it, learn from it, build on it.
+
+## Acknowledgments
+
+This lab stands on open work:
+
+- **[nanoGPT](https://github.com/karpathy/nanoGPT)** (Andrej Karpathy, MIT) — the from-scratch GPT in Track A follows its architecture and spirit.
+- **[Apple MLX](https://github.com/ml-explore/mlx)** + `mlx-lm` (MIT) — the local-first training/inference framework.
+- **[TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories)** (Eldan & Li, Microsoft Research; CDLA-Sharing-1.0) — the tiny corpus Track A learns from. *(Not redistributed here — fetched at runtime; only a short sample appears in the notebooks.)*
+- Track B base models — **Qwen3-4B** (Apache-2.0) and **Gemma 4 E2B** (Gemma Terms of Use) — each under its own license.
+- The walk-through page is built with **[Pygments](https://pygments.org/)** (BSD) and **[Jinja2](https://palletsprojects.com/p/jinja/)** (BSD).
+
+Track B's clinical-trial / regulatory data comes from public-domain sources: ClinicalTrials.gov, openFDA, and SEC EDGAR.

@@ -313,6 +313,11 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
   &nbsp;·&nbsp; Part of <strong>slm-lab</strong>, Track A.</p>
+  <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
+  John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
+  <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
+  <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
+  (Eldan &amp; Li, Microsoft Research).</p>
 </footer>
 
 </body>
@@ -643,13 +648,19 @@ the maths stays stable.</li>
 <p>Step back from the details and almost the entire network is just <em>two</em> operations,
 repeated:</p>
 <ul>
-<li><b>The linear layer — <code>y = Wx + b</code>.</b> Take the input numbers <code>x</code>,
-multiply by a grid of <b>weights</b> <code>W</code>, then add a <b>bias</b> <code>b</code>: a
-weighted sum plus an offset. It's the same shape as the line <code>y = mx + c</code> from school,
-just with <code>x</code> a vector and <code>W</code> a matrix. Almost every named box in the code
-is one of these — <code>c_attn</code>, <code>c_proj</code>, both MLP layers, the final
+<li><b>The linear layer — <code>y = Wx + b</code>.</b> The input <code>x</code> is a
+<em>vector</em> — one token's list of numbers (256 of them here). The layer produces a new vector,
+computing <em>each output on its own</em> as a weighted sum of <em>all</em> the inputs, plus a
+single bias:
+<div class="formula">out₁ = w₁,₁·x₁ + w₁,₂·x₂ + … + w₁,ₙ·xₙ + b₁ &nbsp;&nbsp;(one line like this per output)</div>
+Stack those rows of weights into a grid <code>W</code> and the per-output biases into a vector
+<code>b</code>, and the whole layer is <code>y = Wx + b</code> — the line <code>y = mx + c</code>
+from school, vectorised. So <code>b</code> is a <em>vector</em> (one bias per output, not a single
+number), and the <code>W</code>s vastly outnumber the <code>b</code>s. Almost every named box in
+the code is one of these — <code>c_attn</code>, <code>c_proj</code>, both MLP layers, the final
 <code>head</code> — each an <code>nn.Linear</code>, which simply <em>computes</em>
-<code>Wx + b</code>.</li>
+<code>Wx + b</code>. <em>(The code does this to a whole array of tokens at once, but the operation
+is exactly this, per token.)</em></li>
 <li><b>The activation — a bend.</b> After a linear step the model applies one simple nonlinear
 function. Without it, stacking linear layers would collapse into a single bigger linear layer, and
 the whole network could only ever draw <em>straight lines</em>. The bend is what lets depth model
@@ -692,7 +703,7 @@ loop that does it.</p>
 <h3>Our model, by the numbers</h3>
 <p>So how big is the thing we just built? (&ldquo;How many neurons?&rdquo; has no clean answer for
 a transformer — the honest measures are its <em>width</em>, its <em>depth</em>, and its
-<em>weight count</em>.)</p>
+<em>parameter count</em>.)</p>
 """),
   ("table", r"""
 <table>
@@ -702,14 +713,23 @@ a transformer — the honest measures are its <em>width</em>, its <em>depth</em>
 <tr><td>Width — numbers describing each token (<code>n_embd</code>)</td><td>256</td></tr>
 <tr><td>Attention heads (<code>n_head</code>)</td><td>8</td></tr>
 <tr><td>MLP hidden units per block (4 × width)</td><td>1,024</td></tr>
-<tr><td><b>Total learnable weights</b> (all the <code>W</code>s and <code>b</code>s)</td><td><b>≈ 3.24 million</b></td></tr>
+<tr><td><b>Total learnable parameters</b> (every <code>W</code> and <code>b</code>)</td><td><b>≈ 3.24 million</b></td></tr>
 </tbody></table>
 """),
   ("prose", r"""
-<p>Where do those 3.24 million weights live? Almost all of them — about 3.16 million — are in the
-four blocks (the attention and MLP <code>Wx + b</code> layers). Only ~56k sit in the two embedding
-tables and ~24k in the output head. Notebook 02 scales every row of that table up — 6 blocks,
-width 384, ≈17 million weights — and that extra capacity is much of what makes its writing better.</p>
+<p>Where do those 3.24 million <strong>parameters</strong> live? Almost all — ~3.16 million — are
+in the four blocks' <code>Wx + b</code> layers; only ~56k in the two embedding tables and ~24k in
+the output head. (Notebook 02 scales every row up — 6 blocks, width 384, ≈17 million — and that
+extra capacity is much of what makes its writing better.)</p>
+<p>Two things about that number. First, <strong>it <em>is</em> the model's &ldquo;size&rdquo;</strong>
+— the same count meant by &ldquo;a 7-billion-parameter model&rdquo; (distinct from the file size on
+disk, which is roughly the count × a few bytes per number). Second, <strong>who picks those millions
+of values? Not us.</strong> We choose the architecture and the count, and start them as small random
+numbers; <em>training</em> then sets every value by gradient descent, nudging each toward whatever
+lowers the loss. So the <em>process</em> is no black box — it's the loop in the next section. What
+stays opaque is what any <em>single</em> parameter <em>means</em>: the knowledge is smeared across
+all of them, not stored in readable slots. We know precisely how they're set; we mostly can't read
+them — which is the open research field of <strong>interpretability</strong>.</p>
 """),
  ],
 },
@@ -779,6 +799,11 @@ parameter — how much the loss would change if you nudged that parameter a hair
 every parameter and you have the direction of steepest <em>increase</em> in loss; descent steps
 the opposite way:</p>
 <div class="formula">parameter ← parameter − learning_rate × gradient</div>
+<p>Computing <em>all</em> of them — one <code>∂loss/∂parameter</code> per parameter — is what the
+<strong>backward pass</strong> does, by applying the <strong>chain rule</strong> backward through
+the network (each layer's derivative feeding the one before it). That reuse is why
+<strong>backpropagation</strong> gets every derivative in roughly the cost of one extra forward
+pass, instead of re-running the whole model once per parameter.</p>
 <p>The loss itself, cross-entropy, is <code>−log(probability the model gave the correct
 token)</code> — zero when the model is confident and right, large when it's confident and wrong.
 And <code>AdamW</code>, our optimizer, is a refined gradient descent: it keeps a little momentum
