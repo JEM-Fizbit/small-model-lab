@@ -15,8 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "train"))
 sys.path.insert(0, str(ROOT / "eval"))
+sys.path.insert(0, str(ROOT / "schema"))
 from format_for_mlx import build_prompt  # noqa: E402  (after sys.path.insert) exact same prompt as training
 from harness import score  # noqa: E402  (after sys.path.insert) same metrics as the baseline
+from normalize import snap_to_enum  # noqa: E402  same enum-snap the server applies, so eval == deployed
 
 RAW = {json.loads(l)["nct_id"]: json.loads(l)
        for l in (ROOT / "data" / "raw" / "trials.jsonl").read_text().splitlines() if l.strip()}
@@ -66,7 +68,7 @@ def main():
         obj = extract_json(out)
         if obj:
             parsed_ok += 1
-            preds[g["nct_id"]] = {"nct_id": g["nct_id"], **obj}
+            preds[g["nct_id"]] = snap_to_enum({"nct_id": g["nct_id"], **obj})
         if i % 30 == 0:
             print(f"  [{args.label}] {i}/{len(test_set)}  parsed_ok={parsed_ok}", flush=True)
 
