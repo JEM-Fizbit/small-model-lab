@@ -15,6 +15,10 @@ Learning, with utility as the target. A small model won't be a good general anal
 
 ## Quick start
 
+> **New to this?** See **[Getting Started](docs/GETTING_STARTED.md)** for a from-zero walkthrough — installing tools, what a Jupyter notebook is, and how to run cells, with no prior coding assumed.
+>
+> **Requires an Apple-Silicon Mac** (the from-scratch model uses Apple [MLX](https://github.com/ml-explore/mlx), which is Apple-only). First [install `uv`](https://docs.astral.sh/uv/getting-started/installation/) (`curl -LsSf https://astral.sh/uv/install.sh | sh`), then:
+
 ```bash
 uv sync                 # create .venv (Python 3.12) and install deps
 cp .env.example .env    # fill ANTHROPIC_API_KEY before Track B Phase 2 (not needed for Track A)
