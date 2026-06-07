@@ -211,6 +211,11 @@ section:first-of-type{border-top:none;padding-top:0;}
   box-shadow:0 2px 10px rgba(20,28,60,.08);}
 .imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
   margin-top:10px;}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+.diagram text{font-family:var(--sans);}
+.diagram figcaption{margin-top:6px;}
 
 /* callouts */
 .callout{border-radius:10px;padding:16px 20px;margin:22px 0;font-size:16px;
@@ -304,6 +309,52 @@ footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-ra
 </body>
 </html>
 """
+
+# ---------------------------------------------------------------- DIAGRAMS --
+# Hand-drawn inline SVG (no JS, no external assets — keeps the single-file build).
+
+LANDSCAPE_SVG = r'''<svg viewBox="0 0 640 300" role="img" aria-label="A loss landscape shaped like a valley. A ball sits partway up the left slope, with an arrow showing one step downhill toward the point of lowest loss.">
+<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1c2230"/></marker></defs>
+<line x1="62" y1="28" x2="62" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
+<line x1="62" y1="272" x2="612" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
+<text x="50" y="42" text-anchor="end" font-size="12" fill="#8a93a3">high</text>
+<text x="26" y="150" text-anchor="middle" font-size="13" fill="#5a6373" transform="rotate(-90 26 150)">loss (how wrong)</text>
+<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of millions)</text>
+<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#3253d6" stroke-width="3"/>
+<line x1="335" y1="235" x2="335" y2="272" stroke="#0e7a5f" stroke-width="1.5" stroke-dasharray="4 4"/>
+<circle cx="335" cy="235" r="4.5" fill="#0e7a5f"/>
+<text x="346" y="231" font-size="12" fill="#0e7a5f">lowest loss</text>
+<circle cx="188" cy="176" r="11" fill="#e8462e" stroke="#fff" stroke-width="2.5"/>
+<text x="126" y="150" text-anchor="middle" font-size="12" fill="#1c2230">current</text>
+<text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
+<line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
+<text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
+</svg>'''
+
+CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training cycle as a loop of four boxes: forward pass, then loss, then backward pass, then update, then back to the start.">
+<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
+<rect x="15" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">① Forward pass</text>
+<text x="95" y="88" text-anchor="middle" font-size="11" fill="#5a6373">run data → predictions</text>
+<text x="95" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">model(x)</text>
+<rect x="205" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">② Loss</text>
+<text x="285" y="88" text-anchor="middle" font-size="11" fill="#5a6373">how wrong is it?</text>
+<text x="285" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
+<rect x="395" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">③ Backward pass</text>
+<text x="475" y="88" text-anchor="middle" font-size="11" fill="#5a6373">which way is downhill</text>
+<text x="475" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
+<rect x="585" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">④ Update</text>
+<text x="665" y="88" text-anchor="middle" font-size="11" fill="#5a6373">one step downhill</text>
+<text x="665" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
+<line x1="175" y1="80" x2="203" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="365" y1="80" x2="393" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
+<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
+</svg>'''
 
 # ===========================================================================
 #  SECTIONS — the walk-through itself
@@ -594,6 +645,11 @@ built-in sense of order; we must tell it where each token sits.</li>
 <p>The print line counts the model's learnable numbers — its <strong>parameters</strong>. This
 tiny one has about 3.2 million. (Frontier models have hundreds of <em>billions</em> — same
 parts, more of them.)</p>
+<p>Running an input all the way through these layers to produce the logits — that whole
+left-to-right journey, <code>model(idx)</code> — is the model's <strong>forward pass</strong>
+(&ldquo;forward propagation&rdquo;). Right now it produces nonsense, because the weights are
+random. The next section is about fixing that — and the forward pass becomes step one of the
+loop that does it.</p>
 """),
   ("output", "01", "class Block(nn.Module):", "what it prints"),
  ],
@@ -612,25 +668,44 @@ can read as <strong>surprise</strong>: how shocked was the model by the characte
 came next? If it put high probability on the right character, surprise (loss) is low. A model
 that knows nothing and guesses uniformly across a vocabulary of size <em>V</em> has a loss of
 about <code>ln(V)</code> — a baseline we can check against.</p>
+<p><strong>Using the loss — gradient descent.</strong> Knowing how wrong the model is only
+helps if we can act on it. Picture every one of the model's millions of numbers as a dial, and
+the loss as the <em>altitude</em> of a vast, foggy landscape: most dial settings sit high up
+(bad), the best sit in a valley (low loss). We want the valley. We can't see the whole
+landscape — but standing at our current spot we <em>can</em> feel which way is downhill. That
+direction is the <strong>gradient</strong>. Take a small step that way, refeel, step again.
+That repeated downhill shuffle is <strong>gradient descent</strong>, and the size of each step
+is the <code>learning_rate</code>.</p>
 """),
+  ("diagram", LANDSCAPE_SVG,
+   "Gradient descent: the loss is the height of the landscape. The gradient says which way is "
+   "downhill; the learning rate is how big a step you take. One weight is shown — the real model "
+   "descends in millions of dimensions at once."),
   ("code", "01", "optimizer = optim.AdamW(learning_rate=learning_rate)",
    "The loss function, then the training loop."),
   ("gloss", r"""
-<p><b>The loop, step by step</b> (the <code>for step in range(...)</code> block):</p>
-<ul>
-<li><code>x, y = get_batch("train")</code> — grab a fresh stack of windows and their answers.</li>
-<li><code>loss, grads = loss_and_grad(model, x, y)</code> — run the model, measure the loss,
-and compute the <strong>gradients</strong>: for every one of the millions of parameters, which
-direction would reduce the loss. Computing all of them at once is <em>backpropagation</em> —
-the central algorithm of deep learning.</li>
-<li><code>optimizer.update(model, grads)</code> — the optimizer (<code>AdamW</code>) nudges
-every parameter a small step in its improving direction. The step size is the
-<code>learning_rate</code>.</li>
-<li><code>mx.eval(...)</code> — tells the GPU to actually carry out the computation now.</li>
-</ul>
-<p>Repeat a couple of thousand times. Each pass the model is microscopically better; in
-aggregate, language emerges.</p>
+<p><b>The loop is four steps — and every one is a line of code</b> (the
+<code>for step in range(...)</code> block, plus the <code>loss_fn</code> above it):</p>
+<ol>
+<li><b>Forward pass</b> — <code>logits = model(x)</code> (inside <code>loss_fn</code>). Run the
+batch of windows through the network to get its predictions. This is the same forward pass you
+met when we built the model.</li>
+<li><b>Loss</b> — <code>cross_entropy(...)</code>. Score how wrong those predictions are — the
+surprise, one number.</li>
+<li><b>Backward pass</b> — <code>loss, grads = loss_and_grad(model, x, y)</code>. Work backwards
+through the network to get the <b>gradient</b> for every parameter: which way to nudge each one
+to lower the loss. Doing this efficiently, end to end, is <b>backpropagation</b> — the central
+algorithm of deep learning. (One call returns both the loss and all the gradients.)</li>
+<li><b>Gradient-descent step</b> — <code>optimizer.update(model, grads)</code>. Take one small
+step downhill — every parameter at once. The step size is the <code>learning_rate</code>.</li>
+</ol>
+<p><code>mx.eval(...)</code> just tells the GPU to actually run all of that now (MLX is lazy by
+default). Repeat a couple of thousand times: each pass the model is microscopically less wrong,
+and in aggregate, language emerges.</p>
 """),
+  ("diagram", CYCLE_SVG,
+   "One trip round the loop. The forward pass and loss measure how wrong the model is; the "
+   "backward pass and update make it a little less wrong. Then it all repeats."),
   ("output", "01", "optimizer = optim.AdamW(learning_rate=learning_rate)",
    "watching it learn (loss falling)"),
   ("prose", r"""
@@ -638,6 +713,17 @@ aggregate, language emerges.</p>
 baseline (~4.5) and falls fast to ~2.3 as the model picks up the statistics of English. The
 <strong>validation</strong> loss falls alongside the training loss — proof it's learning the
 <em>language</em>, not just memorising these particular stories.</p>
+"""),
+  ("callout", "math", "For the curious — what a gradient is, exactly", r"""
+<p>A <strong>gradient</strong> is just a slope: the derivative of the loss with respect to one
+parameter — how much the loss would change if you nudged that parameter a hair. Collect one for
+every parameter and you have the direction of steepest <em>increase</em> in loss; descent steps
+the opposite way:</p>
+<div class="formula">parameter ← parameter − learning_rate × gradient</div>
+<p>The loss itself, cross-entropy, is <code>−log(probability the model gave the correct
+token)</code> — zero when the model is confident and right, large when it's confident and wrong.
+And <code>AdamW</code>, our optimizer, is a refined gradient descent: it keeps a little momentum
+and adapts the step size per parameter — but the line above is the heart of it.</p>
 """),
  ],
 },
@@ -868,7 +954,8 @@ kind. They are this, scaled.</p>
 <li><b>Embeddings</b> — turning a token id and its position into a vector of meaning.</li>
 <li><b>Attention</b> — how positions share information, and why looking forward is forbidden.</li>
 <li><b>The transformer block</b> — attention + MLP, held together by residuals and LayerNorm.</li>
-<li><b>The training loop</b> — loss → gradients (backpropagation) → an optimizer step.</li>
+<li><b>The training loop</b> — the four-step cycle: forward pass → loss → backward pass
+(backpropagation) → gradient-descent step.</li>
 <li><b>The loss curve</b> — reading learning versus overfitting.</li>
 <li><b>Autoregressive sampling</b> — generating one token at a time, and what temperature does.</li>
 </ul>

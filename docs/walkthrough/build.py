@@ -151,6 +151,10 @@ def render_block(block, ctx):
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
         return (f'<figure class="imgfig"><img src="{img_data_uri(fn)}" alt="{caption}"/>'
                 f'{cap}</figure>')
+    if kind == "diagram":
+        svg, caption = block[1], (block[2] if len(block) > 2 else "")
+        cap = f'<figcaption>{caption}</figcaption>' if caption else ""
+        return f'<figure class="imgfig diagram">{svg}{cap}</figure>'
     if kind == "callout":
         variant, title, html = block[1], block[2], block[3]
         return (f'<aside class="callout {variant}"><div class="callout-title">{title}</div>'
