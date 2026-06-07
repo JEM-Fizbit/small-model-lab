@@ -391,6 +391,23 @@ stories, written with a small vocabulary on purpose, so that a small model can a
 coherent English from them.</p>
 """),
   ("code", "01", "N_STORIES = 4000", "Stream a few thousand stories (no full download)."),
+  ("gloss", r"""
+<p><b>Reading it:</b> <code>N_STORIES = 4000</code> sets how many stories to grab. The
+<code>try:</code> / <code>except:</code> pair is a safety net — &ldquo;<em>attempt</em> this;
+if anything goes wrong, do that instead&rdquo; — so the notebook never hard-fails if you happen
+to be offline.</p>
+<ul>
+<li><code>load_dataset(..., streaming=True)</code> — open the TinyStories dataset as a
+<b>stream</b>: pull stories one at a time on demand, rather than downloading the whole thing.</li>
+<li>the <code>for ... in ds:</code> loop — walk through the stream, tidy each story
+(<code>.strip()</code> trims stray whitespace) and add it to a growing <code>stories</code> list.
+<code>if len(stories) >= N_STORIES: break</code> means &ldquo;once we have 4,000, stop.&rdquo;</li>
+<li><code>text = "\n\n".join(stories)</code> — glue all the stories into one big string, with a
+blank line between each. That single string is the raw material everything downstream learns from.</li>
+<li>the <code>except</code> branch — only runs if the download failed; it swaps in a tiny
+built-in corpus so the rest of the notebook still works.</li>
+</ul>
+"""),
   ("output", "01", "N_STORIES = 4000", "what it prints", 600),
   ("prose", r"""
 <p>Now we build the dictionary and convert the entire corpus into one long ribbon of integers.
@@ -880,6 +897,13 @@ its file. <code>model.eval()</code> flips it into inference mode. From here, gen
 instant.</p>
 """),
   ("code", "03", "model, tok, cfg = tiny_gpt.load", "In a notebook: load once, then generate freely."),
+  ("gloss", r"""
+<p><b>What this says:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
+all the rebuilding above and hands back three things — the <code>model</code>, its
+<code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
+around it just measure how long it took, to make the point: about a second, versus the twenty
+minutes of training. Load once at the top of a session, then generate as often as you like.</p>
+"""),
   ("output", "03", "model, tok, cfg = tiny_gpt.load", "load time"),
  ],
 },

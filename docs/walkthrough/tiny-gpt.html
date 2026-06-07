@@ -449,6 +449,23 @@ coherent English from them.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">[:</span><span class="mi">300</span><span class="p">])</span>
 </pre></div>
 <figcaption>Stream a few thousand stories (no full download).</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>Reading it:</b> <code>N_STORIES = 4000</code> sets how many stories to grab. The
+<code>try:</code> / <code>except:</code> pair is a safety net — &ldquo;<em>attempt</em> this;
+if anything goes wrong, do that instead&rdquo; — so the notebook never hard-fails if you happen
+to be offline.</p>
+<ul>
+<li><code>load_dataset(..., streaming=True)</code> — open the TinyStories dataset as a
+<b>stream</b>: pull stories one at a time on demand, rather than downloading the whole thing.</li>
+<li>the <code>for ... in ds:</code> loop — walk through the stream, tidy each story
+(<code>.strip()</code> trims stray whitespace) and add it to a growing <code>stories</code> list.
+<code>if len(stories) >= N_STORIES: break</code> means &ldquo;once we have 4,000, stop.&rdquo;</li>
+<li><code>text = "\n\n".join(stories)</code> — glue all the stories into one big string, with a
+blank line between each. That single string is the raw material everything downstream learns from.</li>
+<li>the <code>except</code> branch — only runs if the download failed; it swaps in a tiny
+built-in corpus so the rest of the notebook still works.</li>
+</ul>
+</div>
 <div class="term"><div class="term-tag">what it prints</div><pre>Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 Loaded 4000 stories from TinyStories.
 Total characters: 3,394,018
@@ -1270,6 +1287,13 @@ instant.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loaded in </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s  |  config = </span><span class="si">{</span><span class="nb">vars</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 <figcaption>In a notebook: load once, then generate freely.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>What this says:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
+all the rebuilding above and hands back three things — the <code>model</code>, its
+<code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
+around it just measure how long it took, to make the point: about a second, versus the twenty
+minutes of training. Load once at the top of a session, then generate as often as you like.</p>
+</div>
 <div class="term"><div class="term-tag">load time</div><pre></pre></div>
     </section>
     
