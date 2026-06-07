@@ -26,10 +26,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", default=DEFAULT_CKPT)
     ap.add_argument("--temp", type=float, default=0.8)
-    ap.add_argument("--tokens", type=int, default=200, help="max tokens per reply (a cap, not a target)")
-    ap.add_argument("--stop-at-para", action="store_true",
-                    help="stop at the first blank line (one paragraph — very short). Off by default; "
-                         "'\\n\\n' is a paragraph break here, not a story end, so there's no clean stop.")
+    ap.add_argument("--tokens", type=int, default=300, help="max tokens per reply (a cap; the story usually ends first)")
+    ap.add_argument("--no-stop", action="store_true",
+                    help="don't stop at the end-of-story token; keep generating to --tokens (rolls into new stories)")
     args = ap.parse_args()
 
     if not Path(args.ckpt, "weights.safetensors").exists():
@@ -39,8 +38,10 @@ def main():
     print(f"loading {args.ckpt} …")
     model, tok, cfg = tiny_gpt.load(args.ckpt)
     temp, ntok = args.temp, args.tokens
-    stop = "\n\n" if args.stop_at_para else tiny_gpt.DEFAULT_STOP
-    print(f"ready (temp={temp}, tokens={ntok}, stop-at-blank-line={'on' if stop else 'off'}).  "
+    stop_eos = not args.no_stop
+    has_eos = getattr(cfg, "eos_token", None) is not None
+    note = "on" if (stop_eos and has_eos) else ("off" if not stop_eos else "n/a — checkpoint has no eos token")
+    print(f"ready (temp={temp}, max tokens={ntok}, stop-at-story-end={note}).  "
           "/temp N  /tokens N  /stop  /quit\n"
           "Type a prompt — it's a TinyStories model, so try 'Once upon a time' style openers.\n")
 
@@ -69,12 +70,12 @@ def main():
                 print("  usage: /tokens 200")
             continue
         if prompt.startswith("/stop"):
-            stop = None if stop else "\n\n"
-            print(f"  stop-at-blank-line = {'on (cuts at first paragraph)' if stop else 'off'}")
+            stop_eos = not stop_eos
+            print(f"  stop-at-story-end = {'on' if stop_eos else 'off'}")
             continue
 
         print("gpt ▸ ", end="", flush=True)
-        for delta in tiny_gpt.stream(model, tok, cfg, prompt, n_new=ntok, temperature=temp, stop=stop):
+        for delta in tiny_gpt.stream(model, tok, cfg, prompt, n_new=ntok, temperature=temp, stop_at_eos=stop_eos):
             print(delta, end="", flush=True)
         print("\n")
 
