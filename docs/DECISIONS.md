@@ -4,6 +4,25 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0011 — Phase 4 error-mining loop: ran the loop, marginal gain, keep the original adapter
+
+**Decision:** Ran the B6 recursive loop (mine errors → targeted data → retrain). Shipped the free
+deterministic **snap-to-enum** normalizer (off-schema preds 4→0; overall 0.922→0.925). Then augmented
+**train only** with 300 Sonnet-labeled rare-modality trials (+$2.76, no test leakage, val/test frozen),
+clarified the `combination` rule, and retrained `qwen_v2`. Result is a **statistical wash**
+(overall 0.925→0.930, within n=150 noise): modality macro-F1 +0.028 and sponsor → perfect, offset by
+endpoint macro-F1 −0.031, risk_flags −0.008, and one new parse failure. **Production reference stays
+`adapters/qwen`**; `qwen_v2` is retained but not promoted. Full numbers in `eval/PHASE4_RESULTS.md`.
+
+**Why:** Error-mining correctly diagnosed modality's low macro-F1 as a long-tail problem, but the
+*dominant* residual error is the `combination` definitional boundary — partly irreducible teacher-label
+noise. We deliberately did **not** relabel existing gold under a new convention: that moves goalposts vs
+the frozen test, and distillation can't exceed the teacher regardless. So rare-class augmentation helped
+exactly where it had headroom (ADC 0.40→0.60, radiotherapy 0.75→0.88; others already perfect) and no
+further. Keep-the-snap normalizer is a clear keep (reliability); promoting `qwen_v2` is a judgement call,
+not an obvious upgrade, so the known-good adapter remains the reference. The reusable asset is the loop
+itself, not this iteration's delta — iterating again here would be completionism, not value.
+
 ## ADR-0010 — Package TrialScout as a local FastMCP stdio server (Phase 5 / B7)
 
 **Decision:** Ship the winner (Qwen3-4B + LoRA) as a Python **FastMCP stdio** server at `track-b-trialscout/serve/trial_readout_server.py`, exposing two flat-schema tools — `trial_readout(nct_id, …)` (fetches from ClinicalTrials.gov v2, then reads out) and `trial_readout_from_record(record, …)` (offline). The server imports the *exact* training prompt (`build_prompt`) and record shape (`compact`) to avoid train/serve drift, injects `nct_id` (the model was trained to omit it), and validates every output against `schema/trial_readout.schema.json`. Registered for Claude Code via a project-scoped `.mcp.json`.
