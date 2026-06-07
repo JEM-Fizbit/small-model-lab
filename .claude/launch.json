@@ -1,0 +1,21 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "jupyter",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "jupyter",
+        "lab",
+        "--no-browser",
+        "--port=8899",
+        "--ServerApp.token=",
+        "--ServerApp.password=",
+        "--ServerApp.allow_origin=*",
+        "--ServerApp.tornado_settings={'headers': {'Content-Security-Policy': 'frame-ancestors *'}}"
+      ],
+      "port": 8899
+    }
+  ]
+}
