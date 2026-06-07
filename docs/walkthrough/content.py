@@ -34,10 +34,10 @@ and why, strictly, it predicts no such thing.</p>
 
 <div class="bigidea">
   <p><strong>The whole idea:</strong> a GPT is a <strong>model</strong> — really a mathematical
-  function with millions of adjustable numbers — that, given some text so far, predicts what
-  comes next. Two algorithms surround it: <em>training</em> tunes those numbers, millions of tiny
-  adjustments, until coherent language falls out; <em>generation</em> runs the function in a loop
-  to write.</p>
+  function with millions of adjustable numbers, its <strong>parameters</strong> — that, given
+  some text so far, predicts what comes next. Two algorithms surround it: <em>training</em> tunes
+  those parameters, millions of tiny adjustments, until coherent language falls out;
+  <em>generation</em> runs the function in a loop to write.</p>
   <p>Everything below is just unpacking that idea: how text becomes numbers, how the
   model &ldquo;looks back&rdquo; at what it has read (<em>attention</em>), how it measures
   its own mistakes, and how it slowly improves.</p>
@@ -827,6 +827,14 @@ write too.</p>
 pass takes the scores for the last position, divides by <code>temperature</code> (more on that
 in Part IV), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
 character — likelier characters chosen more often, but not always. Glue it on and continue.</p>
+"""),
+  ("callout", "aside", "Generation vs. inference — which is which", r"""
+<p>Each pass through this loop is one step of <strong>inference</strong> — a single forward run
+of the model to get the next-token scores. &ldquo;Inference&rdquo; is the umbrella term for
+<em>using</em> a trained model (any forward pass), as opposed to <em>training</em> it. Wrapping
+inference in this sample-and-append loop, to emit a whole sequence, is what we call
+<strong>generation</strong> (or <em>decoding</em>). So generation isn't a different thing from
+inference — it's inference run autoregressively, one token at a time.</p>
 """),
   ("output", "01", "def generate(prompt, n_new=400", "what a from-scratch char-level model writes"),
   ("callout", "key", "This gibberish is the point", r"""
