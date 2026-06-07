@@ -130,9 +130,12 @@ def load(ckpt_dir):
 
 # --- generation ---------------------------------------------------------------
 
-# Stories were joined with a blank line during training, so an emitted "\n\n" is the
-# model's learned "this story is over" signal — our stand-in for a real EOS token.
-DEFAULT_STOP = "\n\n"
+# NOTE: this checkpoint has NO real end-of-story token. Training joined stories with "\n\n",
+# but "\n\n" is also the paragraph break *inside* ~98% of stories — so it can't mark a story
+# boundary. Default to no early stop (generate up to n_new), matching notebook 02's behaviour.
+# Passing stop="\n\n" cuts at the FIRST paragraph (very short). A clean natural ending needs a
+# retrain with a dedicated end-of-text token (see tiny_gpt with <|endstory|> if/when added).
+DEFAULT_STOP = None
 
 
 def stream(model, tok, cfg, prompt, n_new=200, temperature=0.8, stop=DEFAULT_STOP):
