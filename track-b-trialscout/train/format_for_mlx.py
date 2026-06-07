@@ -18,7 +18,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw" / "trials.jsonl"
+RAW_AUG = ROOT / "data" / "raw" / "augment_rare.jsonl"  # Phase-4 rare-modality trials
 GOLD = ROOT / "data" / "gold"
+AUG_GOLD = GOLD / "augment_rare.jsonl"                   # ...their labels (train-only)
 OUT = ROOT / "train" / "mlx_data"
 
 TARGET_FIELDS = ["phase", "indication", "modality", "primary_endpoint_type",
@@ -49,11 +51,22 @@ def target_json(gold: dict) -> str:
 
 
 def main():
-    raw = {json.loads(l)["nct_id"]: json.loads(l) for l in RAW.read_text().splitlines() if l.strip()}
+    # raw records come from the main pull + (if present) the Phase-4 rare-modality augment
+    raw = {}
+    for rf in [RAW, RAW_AUG]:
+        if rf.exists():
+            for line in rf.read_text().splitlines():
+                if line.strip():
+                    r = json.loads(line)
+                    raw[r["nct_id"]] = r
     OUT.mkdir(parents=True, exist_ok=True)
     # mlx_lm wants files named train.jsonl / valid.jsonl / test.jsonl
     for split, fname in [("train", "train"), ("val", "valid"), ("test", "test")]:
         rows = [json.loads(l) for l in (GOLD / f"{split}.jsonl").read_text().splitlines() if l.strip()]
+        if split == "train" and AUG_GOLD.exists():
+            aug = [json.loads(l) for l in AUG_GOLD.read_text().splitlines() if l.strip()]
+            rows = rows + aug  # augment feeds TRAIN only; val/test stay frozen for a clean delta
+            print(f"  (train augmented with {len(aug)} rare-modality rows -> {len(rows)} total)")
         n = 0
         with (OUT / f"{fname}.jsonl").open("w") as f:
             for g in rows:

@@ -48,7 +48,7 @@ Rules:
 - nct_id: copy verbatim from the record.
 - phase: normalize (e.g. ["PHASE1","PHASE2"] -> "Phase 1/2").
 - indication: concise tumor type + biomarker + line of therapy if stated (e.g. "EGFR T790M+ advanced NSCLC, 2L").
-- modality: the single best-fit modality of the investigational agent. Use "combination" ONLY when two distinct modalities are co-equal (e.g. IO + TKI). A chemo backbone added to a targeted agent is still the targeted agent's modality.
+- modality: the single best-fit modality of the PRIMARY investigational agent. Decide in order: (1) one lead investigational agent -> use ITS modality (a chemo/standard-of-care backbone or an added combination partner does NOT make it "combination"); (2) "combination" ONLY when two+ investigational agents of DIFFERENT modality classes are co-equal with no single lead (e.g. an experimental anti-PD-1 mAb + an experimental TKI); (3) two+ agents of the SAME class (e.g. two small molecules) -> that class, not "combination"; (4) always prefer the SPECIFIC class (antibody-drug conjugate, bispecific, cell therapy, gene therapy, cancer vaccine, oncolytic virus) over "combination" or "other" when the lead agent is one of those.
 - primary_endpoint_type: classify from the primary outcome measure(s). DLT/MTD/PK -> "safety/tolerability" or "pharmacokinetics".
 - sponsor_type: lead_sponsor_class INDUSTRY -> "large pharma" if the name is a top-20 global pharma ({TOP_PHARMA}), else "biotech". OTHER/NETWORK -> "academic/cooperative group". NIH/FED/OTHER_GOV -> "government".
 - est_readout: from primary_completion_date (YYYY-MM): months 01-06 -> "H1 YYYY", 07-12 -> "H2 YYYY". Missing -> "unknown".
@@ -109,11 +109,14 @@ def main():
     ap.add_argument("--target", type=int, default=1500)
     ap.add_argument("--cap", type=float, default=24.0)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--input", type=str, default=str(RAW), help="raw trials JSONL to label")
+    ap.add_argument("--out", type=str, default="all",
+                    help="gold file stem to append to (gold/<stem>.jsonl). 'all' also does the 80/10/10 split.")
     args = ap.parse_args()
     GOLD.mkdir(parents=True, exist_ok=True)
-    all_path = GOLD / "all.jsonl"
+    all_path = GOLD / f"{args.out}.jsonl"
 
-    trials = [json.loads(l) for l in RAW.read_text().splitlines() if l.strip()][:args.target]
+    trials = [json.loads(l) for l in Path(args.input).read_text().splitlines() if l.strip()][:args.target]
     done = set()
     if all_path.exists():
         for l in all_path.read_text().splitlines():
@@ -171,19 +174,26 @@ def main():
                 print(f"  {i}/{len(rest)}  ok={n_ok} bad={n_bad}  ${cost[0]:.2f}  ({time.time()-t0:.0f}s)", flush=True)
     out_f.close()
 
-    # --- SPLIT 80/10/10 (deterministic) ---
     rows = [json.loads(l) for l in all_path.read_text().splitlines() if l.strip()]
-    random.Random(42).shuffle(rows)
-    n = len(rows); a, b = int(0.8*n), int(0.9*n)
-    for name, part in [("train", rows[:a]), ("val", rows[a:b]), ("test", rows[b:])]:
-        (GOLD / f"{name}.jsonl").write_text("".join(json.dumps(r)+"\n" for r in part))
+    n = len(rows)
+    if args.out == "all":
+        # --- SPLIT 80/10/10 (deterministic) — main run only ---
+        random.Random(42).shuffle(rows)
+        a, b = int(0.8*n), int(0.9*n)
+        for name, part in [("train", rows[:a]), ("val", rows[a:b]), ("test", rows[b:])]:
+            (GOLD / f"{name}.jsonl").write_text("".join(json.dumps(r)+"\n" for r in part))
+        split_line = f"- total gold rows: **{n}** (train {a}, val {b-a}, test {n-b})\n"
+    else:
+        # Augment mode: NO split — these rows feed train only (format_for_mlx merges them),
+        # so val/test stay frozen and the eval delta is comparable.
+        split_line = f"- augment gold rows: **{n}** in gold/{args.out}.jsonl (train-only, no split)\n"
 
-    report = (f"# Gold labeling run\n\n"
-              f"- labeled: **{n_ok}** valid, {n_bad} failed\n"
-              f"- total gold rows: **{n}** (train {a}, val {b-a}, test {n-b})\n"
+    report = (f"# Gold labeling run ({args.out})\n\n"
+              f"- labeled this run: **{n_ok}** valid, {n_bad} failed\n"
+              f"{split_line}"
               f"- spend: **${cost[0]:.2f}** (cap ${args.cap})\n"
               f"- teacher: {MODEL}, forced tool-use, prompt-cached prefix\n")
-    (GOLD / "REPORT.md").write_text(report)
+    (GOLD / f"REPORT_{args.out}.md").write_text(report)
     print("\n" + report)
 
 if __name__ == "__main__":
