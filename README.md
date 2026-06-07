@@ -57,7 +57,7 @@ uv run python notebooks/chat.py                  # loads in ~1s; type story open
 
 ## Roadmap
 
-See `BACKLOG.md` for live work and `docs/DECISIONS.md` for locked design decisions. Phase plan: (1) tiny GPT from scratch → (2) trial data pipeline → (3) LoRA fine-tune → (4) recursive eval loop → (5) package as MCP expert.
+See `docs/DECISIONS.md` for the locked design decisions (the *why* trail). Phase plan: (1) tiny GPT from scratch → (2) trial data pipeline → (3) LoRA fine-tune → (4) recursive eval loop → (5) package as MCP expert.
 
 ## License
 
