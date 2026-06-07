@@ -67,7 +67,7 @@ This is the first node in the model-of-experts vision: a narrow fine-tuned model
 ## ADR-0004 — Observability is a first-class deliverable, not a bolt-on
 
 **Decision:** Every phase ships an annotated notebook + live loss/eval curves + a decision-log entry, and hyperparameters live in commented configs (no magic numbers).
-**Why:** The project's primary goal is John learning the process. A working model with an opaque build fails the actual objective. This raises per-phase effort slightly and is worth it.
+**Why:** The project's primary goal is learning the process. A working model with an opaque build fails the actual objective. This raises per-phase effort slightly and is worth it.
 
 ## ADR-0003 — Distillation loop as the "recursive training" analog
 
@@ -82,4 +82,4 @@ This is the first node in the model-of-experts vision: a narrow fine-tuned model
 ## ADR-0001 — Domain & task: biopharma clinical-trial readout
 
 **Decision:** The useful POC (Track B / "TrialScout") is a narrow structured task: clinical-trial record → structured investor-relevant readout (phase, indication, modality, endpoint type, sponsor type, est. readout window, risk flags, short note). Narrowed initially to **oncology**.
-**Why:** Cleanest free + public-domain data (ClinicalTrials.gov, openFDA, SEC EDGAR); sits at the bio ∩ pharma ∩ investing intersection of John's interests; structured-in/structured-out is the shape where small models genuinely win; and Claude is a strong teacher for it, making gold-label generation cheap. The "model of experts / chief of staff" idea is the *deployment frame* (Phase 5: TrialScout as one callable expert), not the training domain.
+**Why:** Cleanest free + public-domain data (ClinicalTrials.gov, openFDA, SEC EDGAR); sits at the bio ∩ pharma ∩ investing intersection of my interests; structured-in/structured-out is the shape where small models genuinely win; and Claude is a strong teacher for it, making gold-label generation cheap. The "model of experts / chief of staff" idea is the *deployment frame* (Phase 5: TrialScout as one callable expert), not the training domain.

@@ -58,18 +58,17 @@ uv run python track-b-trialscout/serve/trial_readout_server.py --selftest NCT029
 
 ## Use it from Claude Code
 
-A project-scoped [`.mcp.json`](../../.mcp.json) at the repo root registers the server as
+A project-scoped `.mcp.json` at the repo root (copy [`.mcp.json.example`](../../.mcp.json.example) → `.mcp.json`) registers the server as
 `trialscout`. Launch Claude Code from the project root and approve it when prompted:
 
 ```bash
-cd ~/Projects/slm-lab && claude
+cd /path/to/slm-lab && claude
 # then, in session:  /mcp        (shows trialscout connected)
 #                    "Give me a TrialScout readout on NCT02942290"
 ```
 
 Prerequisites: `uv sync` has been run, and the LoRA adapter exists at
-`train/adapters/qwen/` (regenerate via Phase 3 if it's missing after a fresh clone — see
-[`docs/HANDOFF.md`](../../docs/HANDOFF.md) §3).
+`train/adapters/qwen/` (regenerate via Phase 3 if it's missing after a fresh clone by re-running the Phase 3 fine-tune).
 
 ## Use it from any other MCP client
 
@@ -77,6 +76,6 @@ Point the client at the same stdio command:
 
 ```
 command: uv
-args:    ["run", "--directory", "/Users/johnemilad/Projects/slm-lab",
+args:    ["run", "--directory", "/ABSOLUTE/PATH/TO/slm-lab",
           "python", "track-b-trialscout/serve/trial_readout_server.py"]
 ```

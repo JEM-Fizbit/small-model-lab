@@ -45,3 +45,9 @@ track-b-trialscout/train/logs/
 
 # Vercel CLI link metadata (local only)
 .vercel
+
+# Private artifacts (cloned from the private slm-lab-private repo; never public)
+_private/
+
+# Local MCP config (copy .mcp.json.example → .mcp.json and set your path)
+.mcp.json
