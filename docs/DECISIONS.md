@@ -4,6 +4,19 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0010 — Package TrialScout as a local FastMCP stdio server (Phase 5 / B7)
+
+**Decision:** Ship the winner (Qwen3-4B + LoRA) as a Python **FastMCP stdio** server at `track-b-trialscout/serve/trial_readout_server.py`, exposing two flat-schema tools — `trial_readout(nct_id, …)` (fetches from ClinicalTrials.gov v2, then reads out) and `trial_readout_from_record(record, …)` (offline). The server imports the *exact* training prompt (`build_prompt`) and record shape (`compact`) to avoid train/serve drift, injects `nct_id` (the model was trained to omit it), and validates every output against `schema/trial_readout.schema.json`. Registered for Claude Code via a project-scoped `.mcp.json`.
+
+**Why:**
+- **Python, not TypeScript** (against the MCP-builder skill's general default): the server must run the MLX model *in-process*, which is Python-only — a TS server would need an IPC hop to a Python worker for zero benefit here.
+- **stdio, not HTTP:** single local user, runs as a subprocess of the client, no network surface, no auth to manage. HTTP would add deployment + DNS-rebinding concerns for nothing.
+- **Flat tool schemas** (`nct_id`/`response_format` at top level) rather than the skill's nested-Pydantic-model arg, because the nested form forces the calling model to wrap every call in a `params` object — a real ergonomics cost for the first "callable expert."
+- **Reuse over reimplementation:** importing `build_prompt`/`compact` guarantees the contract can't silently drift from what produced the 0.922 score; schema validation on each call keeps it a glass box.
+- Lazy single model load (instant startup; first call ≈10 s), heavy work in a worker thread, logs to stderr only (stdout is the MCP channel). A `--selftest NCT…` path proves fetch→infer→validate end-to-end without a client (validate-tiny-before-the-long-run).
+
+This is the first node in the model-of-experts vision: a narrow fine-tuned model exposed as a tool a larger orchestrator can call. Next candidates (B6 error-mining to lift the model; a second expert + a router) build on this surface.
+
 ## ADR-0009 — Base model resolved: Qwen3-4B (ADR-0002 closed)
 
 **Decision:** Qwen3-4B-Instruct is the TrialScout base model. The measured A/B (ADR-0002) is closed.
