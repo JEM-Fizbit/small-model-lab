@@ -22,7 +22,7 @@ from pathlib import Path
 
 from jinja2 import Environment, BaseLoader
 from pygments import highlight
-from pygments.lexers import PythonLexer
+from pygments.lexers import PythonLexer, JsonLexer, TextLexer
 from pygments.formatters import HtmlFormatter
 
 ROOT = Path(__file__).resolve().parents[2]          # repo root
@@ -78,6 +78,18 @@ def get_src(file_key: str, start: str | None = None, end: str | None = None) -> 
     return "\n".join(lines[i0:i1 + 1])
 
 
+def get_file(relpath: str, start: str | None = None, end: str | None = None) -> str:
+    """A slice of any repo file by line-substring anchors (inclusive); whole file if no bounds."""
+    text = (ROOT / relpath).read_text()
+    if start is None and end is None:
+        return text.rstrip("\n")
+    lines = text.splitlines()
+    i0 = next(i for i, ln in enumerate(lines) if start in ln)
+    i1 = (next(i for i, ln in enumerate(lines) if end in ln and i >= i0)
+          if end else len(lines) - 1)
+    return "\n".join(lines[i0:i1 + 1])
+
+
 def get_output(nb_key: str, anchor: str, max_chars: int | None = None) -> str:
     """Concatenated stream/text output of the first code cell containing `anchor`."""
     for c in _code_cells(nb_key):
@@ -107,6 +119,13 @@ def render_code(src: str) -> str:
     return highlight(src, _lexer, _fmt)
 
 
+_LEXERS = {".py": PythonLexer(), ".json": JsonLexer()}
+
+
+def render_code_lang(src: str, suffix: str) -> str:
+    return highlight(src, _LEXERS.get(suffix, TextLexer()), _fmt)
+
+
 def render_block(block, ctx):
     """block is a tuple (kind, *args). Returns an HTML fragment."""
     kind = block[0]
@@ -132,6 +151,19 @@ def render_block(block, ctx):
         return (f'<figure class="codefig"><div class="codebar">'
                 f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
                 f'<span class="srcname">{name}</span></div>{render_code(src)}{cap}</figure>')
+    if kind == "filecode":
+        from pathlib import Path as _P
+        relpath = block[1]
+        caption = block[2] if len(block) > 2 else None
+        start = block[3] if len(block) > 3 else None
+        end = block[4] if len(block) > 4 else None
+        src = get_file(relpath, start, end)
+        cap = f'<figcaption>{caption}</figcaption>' if caption else ""
+        name = _P(relpath).name
+        return (f'<figure class="codefig"><div class="codebar">'
+                f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
+                f'<span class="srcname">{name}</span></div>'
+                f'{render_code_lang(src, _P(relpath).suffix)}{cap}</figure>')
     if kind == "gloss":
         return f'<div class="gloss"><div class="gloss-tag">what this says</div>{block[1]}</div>'
     if kind == "output":
@@ -199,11 +231,22 @@ def main():
 
     written = []
 
+    # Detect whether Part 2 exists, so nav + landing reflect it.
+    try:
+        import content_b
+        track_b_live = True
+    except ModuleNotFoundError:
+        content_b = None
+        track_b_live = False
+
+    part2_a = ({"label": "Part 2 · TrialScout", "href": "../track-b/"} if track_b_live
+               else {"label": "Part 2 · TrialScout", "href": None, "note": "coming"})
+
     # --- Track A chapter → site/track-a/ ---
     nav_a = [
         {"label": "Home", "href": "../"},
         {"label": "Part 1 · From scratch", "href": "./", "active": True},
-        {"label": "Part 2 · TrialScout", "href": None, "note": "coming"},
+        part2_a,
     ]
     html_a = _render_chapter(
         page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
@@ -214,9 +257,8 @@ def main():
     (SITE / "track-a" / "index.html").write_text(html_a)
     written.append(("track-a/index.html", len(html_a), len(content.SECTIONS)))
 
-    # --- Track B chapter → site/track-b/  (only when content_b is present) ---
-    try:
-        import content_b
+    # --- Track B chapter → site/track-b/ ---
+    if track_b_live:
         nav_b = [
             {"label": "Home", "href": "../"},
             {"label": "Part 1 · From scratch", "href": "../track-a/"},
@@ -230,9 +272,6 @@ def main():
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
         (SITE / "track-b" / "index.html").write_text(html_b)
         written.append(("track-b/index.html", len(html_b), len(content_b.SECTIONS)))
-        track_b_live = True
-    except ModuleNotFoundError:
-        track_b_live = False
 
     # --- Landing hub → site/index.html ---
     html_l = landing_tmpl.render(meta=content.LANDING_META, landing=content.LANDING,
