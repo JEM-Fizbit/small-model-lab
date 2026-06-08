@@ -1086,6 +1086,18 @@ embedding's axes.)</p>
 <rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
 <text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg><figcaption>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
+<aside class="callout key"><div class="callout-title">Where do the embeddings come from?</div><div class="callout-body">
+<p>Not from the letters, and not computed on the fly — they're <strong>learned, then looked up</strong>.
+The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
+becomes an integer ID, and that ID simply <em>indexes the table</em> — row #ID <em>is</em> its 256 numbers.
+There's no arithmetic on <code>f-o-x</code>.</p>
+<p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
+other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
+the lookup is deterministic (same token → same row) — but the row was <em>learned</em>, not derived from the
+spelling. (Train again with a different random seed and &ldquo;fox&rdquo; settles on a different,
+equally-good vector.) Tokens used in similar contexts get pushed toward similar rows — which is exactly why
+the clusters above emerge on their own, with no one labelling them.</p>
+</div></aside>
 <figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
