@@ -803,6 +803,136 @@ bottom, and the <em>head</em> to read predictions out at the top. Every <code>W<
 <code>b</code> across all of those is a <b>parameter</b> — and &ldquo;training&rdquo; (next
 section) is nothing more than nudging those millions of numbers downhill.</p>
 </div></aside>
+<figure class="imgfig diagram"><svg viewBox="0 0 860 648" role="img" aria-label="A linear layer. One token becomes a list of 256 numbers (its embedding); one output is a weighted sum of that one token's numbers; stacking a row of weights per output gives W (y=Wx+b); and one such layer is a tiny slice of the whole ~3.2M-parameter model, whose weights are shared across every token.">
+<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<text x="58" y="26" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >① One output is a weighted sum of one token's numbers</text>
+<rect x="46" y="113" width="52" height="34" rx="9" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="72" y="134" text-anchor="middle" font-size="13" fill="#1c2230" font-weight="700" >fox</text>
+<text x="72" y="162" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >one token</text>
+<line x1="102" y1="130" x2="142" y2="130" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<text x="122" y="122" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >becomes</text>
+<text x="180" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >its numbers</text>
+<text x="180" y="63" text-anchor="middle" font-size="10" fill="#5a6373" font-weight="400" >(x — 4 of its 256)</text>
+<rect x="150" y="72" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="90.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="150" y="101" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="119.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="150" y="130" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="148.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="150" y="159" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="177.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="226" y="91.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
+<text x="226" y="120.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
+<text x="226" y="149.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
+<text x="288" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
+<text x="288" y="63" text-anchor="middle" font-size="10" fill="#5a6373" font-weight="400" >(one per number, learned)</text>
+<rect x="240" y="72" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="270.0" y="90.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="240" y="101" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="270.0" y="119.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="240" y="130" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="270.0" y="148.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="159" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="270.0" y="177.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<path d="M306 76 q12 0 12 12 v18 q0 12 12 12 q-12 0 -12 12 v18 q0 12 -12 12" fill="none" stroke="#5a6373" stroke-width="1.3"/>
+<text x="332" y="113" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >add</text>
+<text x="332" y="127" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >them up</text>
+<text x="58" y="206" text-anchor="start" font-size="12.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  b₁</text>
+<text x="58" y="227" text-anchor="start" font-size="12.5" fill="#0e7a5f" font-weight="700" font-family="ui-monospace,Menlo,monospace">     =  0.62</text>
+<text x="58" y="247" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >A token is a word/word-piece, turned into a list of 256 numbers first (its embedding). The column is ONE token — each</text>
+<text x="58" y="261" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >cell is one of its numbers, not a separate token. Multiply each by its weight, sum, add a bias → one output.</text>
+<line x1="40" y1="278" x2="800" y2="278" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="304" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >② A layer has many outputs — one row of weights each. Stack the rows → the matrix W.</text>
+<rect x="80" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="110" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="140" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="170" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="80" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="110" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="140" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="170" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="80" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="110" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="140" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="170" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="78" y="328" width="124" height="34" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="140" y="321" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
+<text x="212" y="350.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" >⋯</text>
+<text x="230" y="350.0" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >← read a row across = output ①'s weights</text>
+<text x="58" y="440" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >each row of W is one output's weights (the top row is output ① above)</text>
+<text x="545" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
+<text x="587" y="321" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x (one token)</text>
+<rect x="560" y="330" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="587.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="560" y="359" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="587.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="560" y="388" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="587.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="560" y="417" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="587.0" y="435.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="621" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
+<text x="661" y="321" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b</text>
+<rect x="636" y="330" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="661.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="636" y="359" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="661.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="636" y="388" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="661.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<text x="693" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
+<text x="733" y="321" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y (outputs)</text>
+<rect x="708" y="330" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="733.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="708" y="359" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="733.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="708" y="388" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="733.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<text x="58" y="470" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
+<line x1="40" y1="490" x2="800" y2="490" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="516" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="536" width="92" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="108.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
+<text x="108.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
+<line x1="155" y1="558.0" x2="165" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="166" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="212.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
+<text x="212.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="259" y1="558.0" x2="269" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="270" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="316.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
+<text x="316.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="363" y1="558.0" x2="373" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="374" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="420.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
+<text x="420.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="467" y1="558.0" x2="477" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="478" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="524.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
+<text x="524.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="571" y1="558.0" x2="581" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="582" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="628.0" y="563" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
+<line x1="675" y1="558.0" x2="685" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="686" y="536" width="92" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="732.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
+<text x="732.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >scores</text>
+<text x="160.0" y="530" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
+<rect x="267" y="533" width="98" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="316.0" y="596" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="620" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >Each block packs several W's (attention + the MLP); the embedding and head are W's too.</text>
+<text x="58" y="638" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >Add them all up → ~3.2M parameters in our tiny GPT — fixed after training, and the same set runs on every token.</text>
+</svg><figcaption>A linear layer, drawn. ① one output is a weighted sum of one token's numbers; ② stack a row of weights per output and you get the matrix W, so the layer is y = Wx + b; ③ one such layer is a tiny slice of the whole ~3.2M-parameter model, whose weights are shared across every token.</figcaption></figure>
+<aside class="callout key"><div class="callout-title">Parameters vs. tokens — the part people mix up</div><div class="callout-body">
+<p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> and <code>b</code> —
+<strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
+weights process every token, at every position. A token is just data flowing through them.</p>
+<p>And the weights in the picture are a tiny slice — <em>one output of one layer</em>. Our tiny GPT stacks
+4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
+the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
+<p>And a linear layer transforms <em>one token at a time</em>. The model's real job — read a <em>string</em>
+of tokens and predict the next — needs tokens to share information, which is <em>attention</em>'s job
+(<a href="#attention">§5</a>), not the linear layers. After the stack, the last position's vector is read
+out to predict the next token.</p>
+</div></aside>
 <figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
