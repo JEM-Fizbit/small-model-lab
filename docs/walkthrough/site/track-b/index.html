@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fine-tuning a small model into a useful expert — TrialScout</title>
+<style>
+:root{
+  --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
+  --bg:#fbfbfd; --panel:#ffffff; --accent:#3253d6; --accent-soft:#eef2ff;
+  --key:#0e7a5f; --key-soft:#e7f6f0; --try:#9a5b00; --try-soft:#fbf1e0;
+  --math:#5a3aa6; --math-soft:#f1ecfb; --insight:#a8386a; --insight-soft:#fbecf3;
+  --code-bg:#272822;
+  --serif:Charter,"Iowan Old Style",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+  font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* hero */
+.hero{background:linear-gradient(165deg,#10182f 0%,#202b4d 60%,#2b3a66 100%);
+  color:#eaeefb;padding:72px 24px 60px;}
+.hero .inner{max-width:760px;margin:0 auto;}
+.hero .kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.18em;
+  font-size:12px;font-weight:600;color:#9fb2e8;margin:0 0 14px;}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:46px;line-height:1.08;
+  margin:0 0 18px;letter-spacing:-.02em;}
+.hero .lede{font-size:20px;line-height:1.6;color:#d4ddf4;margin:0 0 26px;}
+.bigidea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:20px 24px;margin:26px 0;}
+.bigidea p{margin:0 0 10px;font-size:17px;color:#e6ecfb;}
+.bigidea p:last-child{margin:0;color:#c2cdee;font-size:16px;}
+.hero .readnote{font-size:15px;color:#aebbdd;font-family:var(--sans);line-height:1.6;
+  border-top:1px solid rgba(255,255,255,.12);padding-top:20px;margin-top:26px;}
+.hero a{color:#a9c0ff;}
+
+/* layout */
+.layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
+  gap:48px;padding:48px 24px 80px;}
+nav.toc{position:sticky;top:24px;align-self:start;font-family:var(--sans);font-size:14px;
+  max-height:calc(100vh - 48px);overflow:auto;}
+nav.toc .toctitle{text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+  color:var(--faint);font-weight:700;margin:0 0 12px;}
+nav.toc a{display:block;color:var(--soft);text-decoration:none;padding:4px 0;
+  line-height:1.4;border-left:2px solid transparent;padding-left:12px;margin-left:-14px;}
+nav.toc a:hover{color:var(--accent);}
+nav.toc .toc-part{font-weight:700;color:var(--ink);margin:18px 0 6px;font-size:12px;
+  text-transform:uppercase;letter-spacing:.08em;}
+nav.toc .toc-num{color:var(--faint);font-variant-numeric:tabular-nums;
+  display:inline-block;min-width:30px;}
+
+main{min-width:0;max-width:760px;}
+section{margin:0 0 8px;padding:34px 0 6px;border-top:1px solid var(--line);}
+section:first-of-type{border-top:none;padding-top:0;}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin:0 0 14px;}
+.sec-num{font-family:var(--sans);font-weight:700;font-size:13px;color:#fff;
+  background:var(--accent);border-radius:7px;padding:4px 9px;letter-spacing:.02em;
+  white-space:nowrap;flex:none;}
+.sec-head h2{font-family:var(--sans);font-weight:700;font-size:27px;letter-spacing:-.01em;
+  margin:0;line-height:1.15;}
+.part-banner{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:12px;font-weight:700;color:var(--accent);margin:8px 0 0;}
+
+/* prose */
+.prose{margin:0 0 4px;}
+.prose p{margin:0 0 18px;}
+.prose h3{font-family:var(--sans);font-size:19px;font-weight:700;margin:26px 0 10px;}
+.prose strong{font-weight:700;}
+.prose em{font-style:italic;}
+.prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
+  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;}
+.prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
+  border-bottom:1px solid #c5d0f5;}
+.prose a:hover{border-color:var(--accent);}
+
+/* code figures */
+.codefig{margin:22px 0;border-radius:12px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(20,28,60,.10);border:1px solid #2c2d27;}
+.codebar{background:#1f201b;display:flex;align-items:center;gap:7px;padding:9px 14px;}
+.codebar .dot{width:11px;height:11px;border-radius:50%;background:#3a3b34;}
+.codebar .dot:nth-child(1){background:#ff5f56;}
+.codebar .dot:nth-child(2){background:#ffbd2e;}
+.codebar .dot:nth-child(3){background:#27c93f;}
+.codebar .srcname{margin-left:auto;font-family:var(--mono);font-size:12px;color:#9b9c92;}
+.codefig .hl{margin:0;padding:18px 20px;overflow:auto;background:var(--code-bg);
+  font-family:var(--mono);font-size:13.5px;line-height:1.55;}
+.codefig .hl pre{margin:0;}
+.codefig figcaption{font-family:var(--sans);font-size:13px;color:var(--soft);
+  background:#fbfbfc;padding:10px 16px;border-top:1px solid var(--line);}
+
+/* gloss box */
+.gloss{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:16px 20px 6px;margin:18px 0 22px;
+  font-size:16.5px;}
+.gloss-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.12em;
+  font-size:10.5px;font-weight:700;color:var(--accent);margin:0 0 8px;}
+.gloss p{margin:0 0 12px;}
+.gloss ul{margin:0 0 12px;padding-left:22px;}
+.gloss li{margin:0 0 7px;}
+.gloss b{color:var(--ink);}
+
+/* terminal output */
+.term{margin:18px 0 22px;border-radius:10px;overflow:hidden;border:1px solid #d7dbe4;}
+.term-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.1em;
+  font-size:10.5px;font-weight:700;color:var(--soft);background:#eef0f4;
+  padding:7px 14px;border-bottom:1px solid #dde1ea;}
+.term pre{margin:0;padding:14px 16px;background:#f7f8fb;color:#2a3142;
+  font-family:var(--mono);font-size:12.5px;line-height:1.5;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;}
+
+/* figures (images) */
+.imgfig{margin:24px 0;text-align:center;}
+.imgfig img{max-width:100%;border-radius:10px;border:1px solid var(--line);
+  box-shadow:0 2px 10px rgba(20,28,60,.08);}
+.imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
+  margin-top:10px;}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+.diagram text{font-family:var(--sans);}
+.diagram figcaption{margin-top:6px;}
+
+/* callouts */
+.callout{border-radius:10px;padding:16px 20px;margin:22px 0;font-size:16px;
+  font-family:var(--sans);line-height:1.6;}
+.callout-title{font-weight:700;font-size:13px;text-transform:uppercase;
+  letter-spacing:.08em;margin:0 0 8px;}
+.callout-body p{margin:0 0 10px;}
+.callout-body p:last-child{margin:0;}
+.callout-body ul{margin:6px 0 0;padding-left:20px;}
+.callout-body li{margin:0 0 6px;}
+.callout.key{background:var(--key-soft);border:1px solid #bfe6d6;}
+.callout.key .callout-title{color:var(--key);}
+.callout.tryit{background:var(--try-soft);border:1px solid #f0dcb4;}
+.callout.tryit .callout-title{color:var(--try);}
+.callout.aside{background:#f1f3f8;border:1px solid #dfe3ec;}
+.callout.aside .callout-title{color:var(--soft);}
+.callout.math{background:var(--math-soft);border:1px solid #d9ccf3;}
+.callout.math .callout-title{color:var(--math);}
+.callout.insight{background:var(--insight-soft);border:1px solid #eecada;}
+.callout.insight .callout-title{color:var(--insight);}
+.callout.math .formula{font-family:var(--mono);font-size:15px;background:#fff;
+  border:1px solid #e1d8f5;border-radius:8px;padding:12px 14px;margin:6px 0 12px;
+  text-align:center;color:#33285a;overflow:auto;}
+
+/* tables */
+.tablewrap{margin:22px 0;overflow:auto;}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
+  vertical-align:top;}
+th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
+  background:#f6f7fb;font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+td:first-child{font-weight:600;}
+
+/* python primer appendix */
+dl.primer{margin:18px 0;}
+dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3142;}
+dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
+
+footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
+  font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
+footer p{margin:0 0 8px;} footer p:last-child{margin:0;}
+footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
+
+@media (max-width:920px){
+  .layout{grid-template-columns:1fr;gap:0;}
+  nav.toc{display:none;}
+  .hero h1{font-size:36px;}
+  body{font-size:17px;}
+}
+/* top nav (between chapters) */
+.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
+  align-items:center;font-family:var(--sans);font-size:14px;}
+.topnav a{color:#aebbdd;text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav a.active{color:#fff;font-weight:700;}
+.topnav .muted{color:#5e6b88;}
+.topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #49483e }
+.hl { background: #272822; color: #F8F8F2 }
+.hl .c { color: #959077 } /* Comment */
+.hl .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.hl .esc { color: #F8F8F2 } /* Escape */
+.hl .g { color: #F8F8F2 } /* Generic */
+.hl .k { color: #66D9EF } /* Keyword */
+.hl .l { color: #AE81FF } /* Literal */
+.hl .n { color: #F8F8F2 } /* Name */
+.hl .o { color: #FF4689 } /* Operator */
+.hl .x { color: #F8F8F2 } /* Other */
+.hl .p { color: #F8F8F2 } /* Punctuation */
+.hl .ch { color: #959077 } /* Comment.Hashbang */
+.hl .cm { color: #959077 } /* Comment.Multiline */
+.hl .cp { color: #959077 } /* Comment.Preproc */
+.hl .cpf { color: #959077 } /* Comment.PreprocFile */
+.hl .c1 { color: #959077 } /* Comment.Single */
+.hl .cs { color: #959077 } /* Comment.Special */
+.hl .gd { color: #FF4689 } /* Generic.Deleted */
+.hl .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.hl .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #F8F8F2 } /* Generic.Error */
+.hl .gh { color: #F8F8F2 } /* Generic.Heading */
+.hl .gi { color: #A6E22E } /* Generic.Inserted */
+.hl .go { color: #66D9EF } /* Generic.Output */
+.hl .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.hl .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #959077 } /* Generic.Subheading */
+.hl .gt { color: #F8F8F2 } /* Generic.Traceback */
+.hl .kc { color: #66D9EF } /* Keyword.Constant */
+.hl .kd { color: #66D9EF } /* Keyword.Declaration */
+.hl .kn { color: #FF4689 } /* Keyword.Namespace */
+.hl .kp { color: #66D9EF } /* Keyword.Pseudo */
+.hl .kr { color: #66D9EF } /* Keyword.Reserved */
+.hl .kt { color: #66D9EF } /* Keyword.Type */
+.hl .ld { color: #E6DB74 } /* Literal.Date */
+.hl .m { color: #AE81FF } /* Literal.Number */
+.hl .s { color: #E6DB74 } /* Literal.String */
+.hl .na { color: #A6E22E } /* Name.Attribute */
+.hl .nb { color: #F8F8F2 } /* Name.Builtin */
+.hl .nc { color: #A6E22E } /* Name.Class */
+.hl .no { color: #66D9EF } /* Name.Constant */
+.hl .nd { color: #A6E22E } /* Name.Decorator */
+.hl .ni { color: #F8F8F2 } /* Name.Entity */
+.hl .ne { color: #A6E22E } /* Name.Exception */
+.hl .nf { color: #A6E22E } /* Name.Function */
+.hl .nl { color: #F8F8F2 } /* Name.Label */
+.hl .nn { color: #F8F8F2 } /* Name.Namespace */
+.hl .nx { color: #A6E22E } /* Name.Other */
+.hl .py { color: #F8F8F2 } /* Name.Property */
+.hl .nt { color: #FF4689 } /* Name.Tag */
+.hl .nv { color: #F8F8F2 } /* Name.Variable */
+.hl .ow { color: #FF4689 } /* Operator.Word */
+.hl .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.hl .w { color: #F8F8F2 } /* Text.Whitespace */
+.hl .mb { color: #AE81FF } /* Literal.Number.Bin */
+.hl .mf { color: #AE81FF } /* Literal.Number.Float */
+.hl .mh { color: #AE81FF } /* Literal.Number.Hex */
+.hl .mi { color: #AE81FF } /* Literal.Number.Integer */
+.hl .mo { color: #AE81FF } /* Literal.Number.Oct */
+.hl .sa { color: #E6DB74 } /* Literal.String.Affix */
+.hl .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.hl .sc { color: #E6DB74 } /* Literal.String.Char */
+.hl .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.hl .sd { color: #E6DB74 } /* Literal.String.Doc */
+.hl .s2 { color: #E6DB74 } /* Literal.String.Double */
+.hl .se { color: #AE81FF } /* Literal.String.Escape */
+.hl .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.hl .si { color: #E6DB74 } /* Literal.String.Interpol */
+.hl .sx { color: #E6DB74 } /* Literal.String.Other */
+.hl .sr { color: #E6DB74 } /* Literal.String.Regex */
+.hl .s1 { color: #E6DB74 } /* Literal.String.Single */
+.hl .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.hl .bp { color: #F8F8F2 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #A6E22E } /* Name.Function.Magic */
+.hl .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.hl .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.hl .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.hl .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.hl .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="inner">
+<a href="../">Home</a><a href="../track-a/">Part 1 · From scratch</a><a href="./" class="active">Part 2 · TrialScout</a>
+</div></nav>
+
+<header class="hero"><div class="inner">
+<p class="kicker">slm-lab · Part 2 · TrialScout</p>
+<h1>From a toy to a tool</h1>
+<p class="lede">In Part 1 we built a tiny GPT from scratch and hit its ceiling: it learned the
+<em>shape</em> of language but never anything useful. This chapter is the other half of the arc —
+how real models are made <em>useful</em>. We take a <strong>pretrained</strong> open model and
+fine-tune it into <strong>TrialScout</strong>: a small expert that turns an oncology clinical-trial
+record into a structured, investor-relevant readout — running on a laptop, for free.</p>
+
+<div class="bigidea">
+  <p><strong>The whole idea:</strong> a giant model already knows language; we don't re-teach that.
+  We just <em>specialise</em> it for one narrow, structured task — by showing it a few thousand
+  worked examples and nudging a tiny set of its parameters. The result beats a sensible baseline
+  by a mile and nearly matches the expensive model that taught it.</p>
+  <p>Every concept from Part 1 reappears — tokens, attention, the loss, gradient descent — now in
+  service of something that does a job.</p>
+</div>
+
+<p class="readnote"><strong>How to read this.</strong> Same as Part 1: the idea first, then the
+real code, then a plain-English gloss. Track B is more <em>pipeline</em> than algorithm, so the
+code boxes show the load-bearing excerpts (pulled straight from the
+<a href="https://github.com/JEM-Fizbit/slm-lab/tree/main/track-b-trialscout">repo</a>) rather than
+every line. Haven't read <a href="../track-a/">Part 1</a> yet? Start there — this chapter assumes
+its vocabulary.</p>
+</div></header>
+
+<div class="layout">
+  <nav class="toc">
+    <p class="toctitle">Contents</p>
+    
+      <div class="toc-part">Orientation</div>
+      
+    
+      <a href="#shift"><span class="toc-num">0</span>The shift: don't build, adapt</a>
+    
+      <div class="toc-part">Teaching the model the task</div>
+      
+    
+      <a href="#task"><span class="toc-num">1</span>The task, and the contract</a>
+    
+      <a href="#distill"><span class="toc-num">2</span>Distillation: a strong model writes the textbook</a>
+    
+      <a href="#pipeline"><span class="toc-num">3</span>The data pipeline (and not burning money)</a>
+    
+      <div class="toc-part">Fine-tuning</div>
+      
+    
+      <a href="#lora"><span class="toc-num">4</span>LoRA: a small patch on a big model</a>
+    
+      <a href="#eval"><span class="toc-num">5</span>Evaluation: the part that makes it real</a>
+    
+      <div class="toc-part">The result</div>
+      
+    
+      <a href="#result"><span class="toc-num">6</span>The result</a>
+    
+      <a href="#ab"><span class="toc-num">7</span>Decide by eval, not by faith</a>
+    
+      <a href="#ceiling"><span class="toc-num">8</span>Can you beat the teacher? (The error-mining loop)</a>
+    
+      <div class="toc-part">Ship it</div>
+      
+    
+      <a href="#serve"><span class="toc-num">9</span>Packaging it as a callable expert</a>
+    
+      <a href="#arc"><span class="toc-num">10</span>The arc, closed — and running it yourself</a>
+    
+    <div class="toc-part">Reference</div>
+    <a href="#primer"><span class="toc-num">↪</span>Python primer</a>
+  </nav>
+
+  <main>
+    
+    <section id="shift">
+      <p class="part-banner">Part I · Orientation</p>
+      <div class="sec-head">
+        <span class="sec-num">0</span>
+        <h2>The shift: don't build, adapt</h2>
+      </div>
+      <div class="prose">
+<p>Part 1 ended on an honest ceiling: a from-scratch model, trained on a laptop, produces
+believable <em>words</em> but no real knowledge or reasoning. Closing that gap from scratch would
+take what the giants spent — trillions of tokens, thousands of GPU-hours. So we don't.</p>
+<p>Instead we start from a model that has <em>already</em> paid that price: a <strong>pretrained
+open model</strong> (here, Alibaba's Qwen3-4B — 4 billion parameters, freely downloadable). It
+already knows English, clinical jargon, JSON, the lot. Our job is narrow: <strong>specialise</strong>
+it for one task it isn't yet reliable at — reading a trial record and emitting a clean, structured
+readout. That's <em>post-training</em>, and it's how almost every useful model you've met was made.</p>
+</div>
+<aside class="callout key"><div class="callout-title">Why a small model can win here</div><div class="callout-body">
+<p>A 4B model will never be a great general analyst — but it can be excellent at one
+<em>narrow, structured</em> task. Trial-record → fixed-schema-JSON is exactly that shape: bounded
+inputs, a controlled vocabulary out. Get it right and you have an expert that runs locally, costs
+nothing per call, needs no internet, and answers in a second — things a frontier API can't all
+offer at once.</p>
+</div></aside>
+    </section>
+    
+    <section id="task">
+      <p class="part-banner">Part II · Teaching the model the task</p>
+      <div class="sec-head">
+        <span class="sec-num">1</span>
+        <h2>The task, and the contract</h2>
+      </div>
+      <div class="prose">
+<p>Before teaching anything, you have to define the job precisely. TrialScout turns one trial into a
+JSON object with nine fields: <code>nct_id</code>, <code>phase</code>, <code>indication</code>,
+<code>modality</code>, <code>primary_endpoint_type</code>, <code>sponsor_type</code>,
+<code>est_readout</code> (an H1/H2-year window), a list of <code>risk_flags</code>, and a
+≤2-sentence <code>investor_note</code>. Most fields are <strong>enums</strong> — a fixed menu of
+allowed values — which is what makes the task learnable <em>and</em> scorable.</p>
+</div>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">trial_readout.schema.json</span></div><div class="hl"><pre><span></span><span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;small molecule&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;monoclonal antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;antibody-drug conjugate&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bispecific&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="s2">&quot;cell therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gene therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancer vaccine&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radiotherapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oncolytic virus&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="s2">&quot;combination&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Primary therapeutic modality of the investigational agent(s). Use &#39;combination&#39; only when two distinct modalities are co-equal.&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;primary_endpoint_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;overall survival (OS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;progression-free survival (PFS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;objective response rate (ORR)&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="s2">&quot;disease-free survival (DFS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pathologic complete response (pCR)&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="s2">&quot;safety/tolerability&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pharmacokinetics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Category of the primary outcome measure(s).&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;sponsor_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;large pharma&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;biotech&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;academic/cooperative group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;government&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Classify the lead sponsor. &#39;large pharma&#39; = top-20 global pharma; &#39;biotech&#39; = smaller commercial sponsor; map sponsor_class OTHER/NIH/NETWORK to academic/government appropriately.&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;est_readout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Estimated primary readout window derived from primary_completion_date, as &#39;H1 YYYY&#39; / &#39;H2 YYYY&#39;, or &#39;unknown&#39; if absent.&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;risk_flags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;single-arm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;no comparator&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;small enrollment (&lt;50)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;surrogate endpoint&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;early-phase&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;open-label&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;non-randomized&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PK/dose-finding only&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;status: terminated/withdrawn/suspended&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;long timeline (&gt;4y)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;biomarker-restricted&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Investor-relevant risk flags supported by the record. Empty array if none apply.&quot;</span>
+</pre></div>
+<figcaption>The output contract (excerpt): controlled vocabularies the model must pick from.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>What this is:</b> a JSON Schema — the <em>contract</em> for the model's output. Each enum
+(<code>modality</code>, <code>primary_endpoint_type</code>, <code>sponsor_type</code>,
+<code>risk_flags</code>) is a closed list of allowed strings. Constraining the output this way does
+two jobs at once: it makes a small model's task tractable (pick from a menu, don't free-write), and
+it lets us <em>measure</em> correctness later by simple comparison — no human grading the bulk of it.</p>
+</div>
+<aside class="callout aside"><div class="callout-title">Structured-in, structured-out</div><div class="callout-body">
+<p>This shape — a messy record in, a strict object out — is where small models genuinely beat the
+&ldquo;just ask a chatbot&rdquo; approach: it's cheap, deterministic enough to trust, and trivially
+pluggable into a spreadsheet or a pipeline. It's also why the <em>same</em> recipe transfers to any
+extraction task (SEC filings, lab reports, support tickets), not just trials.</p>
+</div></aside>
+    </section>
+    
+    <section id="distill">
+      
+      <div class="sec-head">
+        <span class="sec-num">2</span>
+        <h2>Distillation: a strong model writes the textbook</h2>
+      </div>
+      <div class="prose">
+<p>To fine-tune the student we need thousands of correct examples — trial in, perfect readout out.
+Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
+model (Claude Sonnet) reads each trial and writes the gold answer, and the small student then learns
+to reproduce those answers. The teacher's judgement becomes the student's training data.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet teacher, which writes gold JSON labels, which fine-tune the Qwen student model.">
+<defs><marker id="arD" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<!-- box 1: trials -->
+<rect x="12" y="50" width="165" height="84" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="94" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Oncology trials</text>
+<text x="94" y="100" text-anchor="middle" font-size="11" fill="#5a6373">ClinicalTrials.gov</text>
+<text x="94" y="118" text-anchor="middle" font-size="11" fill="#5a6373">1,500 records</text>
+<!-- box 2: teacher (purple) -->
+<rect x="222" y="50" width="165" height="84" rx="11" fill="#f1ecfb" stroke="#5a3aa6" stroke-width="1.5"/>
+<text x="304" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#33285a">Claude Sonnet</text>
+<text x="304" y="100" text-anchor="middle" font-size="11" fill="#5a3aa6">the teacher</text>
+<text x="304" y="118" text-anchor="middle" font-size="10.5" fill="#5a3aa6">forced tool-use</text>
+<!-- box 3: gold -->
+<rect x="432" y="50" width="165" height="84" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="514" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Gold labels</text>
+<text x="514" y="100" text-anchor="middle" font-size="11" fill="#5a6373">structured JSON</text>
+<text x="514" y="118" text-anchor="middle" font-size="10.5" fill="#5a6373">1,200 train / 150 test</text>
+<!-- box 4: student -->
+<rect x="642" y="50" width="165" height="84" rx="11" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="724" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0c5c47">Qwen3-4B</text>
+<text x="724" y="100" text-anchor="middle" font-size="11" fill="#0e7a5f">the student</text>
+<text x="724" y="118" text-anchor="middle" font-size="10.5" fill="#0e7a5f">learns to reproduce</text>
+<!-- arrows -->
+<line x1="177" y1="92" x2="220" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
+<line x1="387" y1="92" x2="430" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
+<line x1="597" y1="92" x2="640" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
+<text x="198" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">read</text>
+<text x="408" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">writes answers</text>
+<text x="618" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">fine-tune</text>
+</svg><figcaption>Distillation: the expensive teacher (Claude) writes structured answers for thousands of trials; those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce.</figcaption></figure>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">system</span><span class="o">=</span><span class="n">SYS</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
+                <span class="n">tool_choice</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;emit_readout&quot;</span><span class="p">},</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;TRIAL:</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">trial</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Return the readout.&quot;</span><span class="p">}],</span>
+</pre></div>
+<figcaption>The teacher call — Claude is forced to answer through the schema, so every label is valid.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>The key moves:</b></p>
+<ul>
+<li><code>tool_choice={"type": "tool", "name": "emit_readout"}</code> — <b>forced tool-use.</b> The
+teacher can't free-write; it must call the <code>emit_readout</code> tool, whose arguments <em>are</em>
+the schema. So every answer comes back already valid and parseable — no JSON wrangling.</li>
+<li><code>temperature=0</code> — deterministic, no creative drift; we want the teacher's single best call.</li>
+<li><code>system=SYS</code> — the rules + worked examples, marked <em>prompt-cached</em> so the big
+static prefix is billed once, not per trial. That (plus a cap and a pilot gate) kept the whole
+labeling run to about <strong>$14</strong>.</li>
+</ul>
+</div>
+<aside class="callout key"><div class="callout-title">Teacher quality caps student quality</div><div class="callout-body">
+<p>This is the load-bearing rule of distillation: the student can only get as good as the answers it's
+shown. A weak teacher silently ceilings the whole project — so we pay for a strong one (Sonnet), not a
+cheap one. The student will end up <em>near</em> the teacher, never above it. (We'll see that ceiling
+bite, hard, in §8.)</p>
+</div></aside>
+    </section>
+    
+    <section id="pipeline">
+      
+      <div class="sec-head">
+        <span class="sec-num">3</span>
+        <h2>The data pipeline (and not burning money)</h2>
+      </div>
+      <div class="prose">
+<p>Generating labels with a paid API, unattended, demands guardrails. The labeling script fetches
+trials from the free ClinicalTrials.gov API, then calls the teacher with three safety nets: a hard
+<strong>cost cap</strong>, a 10-trial <strong>pilot gate</strong> (abort before the bulk run if quality
+is poor), and <strong>resumable</strong> writes (a crash loses nothing).</p>
+</div>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>    <span class="n">pilot</span> <span class="o">=</span> <span class="n">todo</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- PILOT (10 trials) ---&quot;</span><span class="p">)</span>
+    <span class="n">pilot_ok</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pilot</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">label_one</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">valid</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;readout&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">pilot_ok</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">record</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pilot valid: </span><span class="si">{</span><span class="n">pilot_ok</span><span class="si">}</span><span class="s2">/10  | spent $</span><span class="si">{</span><span class="n">cost</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pilot_ok</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ABORT: pilot quality below 8/10 — not starting bulk run. Inspect data/gold/all.jsonl.&quot;</span><span class="p">)</span>
+        <span class="n">out_f</span><span class="o">.</span><span class="n">close</span><span class="p">();</span> <span class="k">return</span>
+</pre></div>
+<figcaption>The pilot gate: label 10, check validity, and refuse the bulk spend if they're not good.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>What this says:</b> label the first 10 trials, count how many come back schema-valid, and if
+fewer than 8 pass, <em>stop before spending on the other 1,490</em> — a broken prompt fails cheap, not
+at full cost. The bulk loop (not shown) adds the hard dollar cap and appends each result to disk as it
+arrives. The clean gold is then split 80/10/10 into train / validation / test sets.</p>
+</div>
+<aside class="callout aside"><div class="callout-title">Why the held-out test set matters</div><div class="callout-body">
+<p>That final 10% — 150 trials the model never trains on — is the only honest measure of whether it
+learned the <em>task</em> versus memorised the training set. Every score in §6 is on this held-out set.
+Keeping it frozen is what makes the numbers trustworthy.</p>
+</div></aside>
+    </section>
+    
+    <section id="lora">
+      <p class="part-banner">Part III · Fine-tuning</p>
+      <div class="sec-head">
+        <span class="sec-num">4</span>
+        <h2>LoRA: a small patch on a big model</h2>
+      </div>
+      <div class="prose">
+<p>Now the fine-tune. The naïve way — update all 4 billion of Qwen's parameters — needs far more
+memory than a laptop has, and risks the model forgetting everything else it knows. The standard fix is
+<strong>LoRA</strong> (Low-Rank Adaptation): <em>freeze</em> the entire base model and train only a
+small set of extra &ldquo;adapter&rdquo; weights that sit alongside it. You learn a tiny <em>patch</em>,
+not a new model.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big base model is frozen; only a small adapter of weight deltas is trained; together they make TrialScout.">
+<defs><marker id="arL2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
+<!-- base, frozen -->
+<rect x="20" y="35" width="300" height="150" rx="12" fill="#f1f3f8" stroke="#9aa3b5" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="170" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="#4a5468">Qwen3-4B — base</text>
+<text x="170" y="104" text-anchor="middle" font-size="12" fill="#7e8aa0">frozen · 4-bit · ~2 GB</text>
+<text x="170" y="126" text-anchor="middle" font-size="12" fill="#7e8aa0">billions of parameters,</text>
+<text x="170" y="143" text-anchor="middle" font-size="12" fill="#7e8aa0">left untouched ❄</text>
+<!-- plus -->
+<text x="345" y="118" text-anchor="middle" font-size="30" fill="#5a6373">+</text>
+<!-- adapter, trained -->
+<rect x="372" y="72" width="168" height="78" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="2"/>
+<text x="456" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">LoRA adapter</text>
+<text x="456" y="120" text-anchor="middle" font-size="11" fill="#3253d6">28 MB of weight deltas</text>
+<text x="456" y="138" text-anchor="middle" font-size="11" fill="#3253d6">the only part trained</text>
+<!-- arrow to result -->
+<line x1="540" y1="111" x2="566" y2="111" stroke="#3253d6" stroke-width="2" marker-end="url(#arL2)"/>
+<rect x="568" y="76" width="132" height="70" rx="11" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="634" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0c5c47">TrialScout</text>
+<text x="634" y="126" text-anchor="middle" font-size="11" fill="#0e7a5f">base + adapter</text>
+</svg><figcaption>LoRA: the billions of base-model parameters stay frozen; training only adjusts a small adapter (~28 MB of weight deltas). At runtime you load the base and snap the adapter on top.</figcaption></figure>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">run_phase3.py</span></div><div class="hl"><pre><span></span>    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;mlx_lm&quot;</span><span class="p">,</span> <span class="s2">&quot;lora&quot;</span><span class="p">,</span> <span class="s2">&quot;--model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;--train&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;--data&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MLX_DATA</span><span class="p">),</span> <span class="s2">&quot;--fine-tune-type&quot;</span><span class="p">,</span> <span class="s2">&quot;lora&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;--num-layers&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_layers</span><span class="p">),</span> <span class="s2">&quot;--batch-size&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">BATCH</span><span class="p">),</span> <span class="s2">&quot;--iters&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ITERS</span><span class="p">),</span>
+           <span class="s2">&quot;--learning-rate&quot;</span><span class="p">,</span> <span class="n">LR</span><span class="p">,</span> <span class="s2">&quot;--max-seq-length&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MAXSEQ</span><span class="p">),</span>
+           <span class="s2">&quot;--steps-per-report&quot;</span><span class="p">,</span> <span class="s2">&quot;50&quot;</span><span class="p">,</span> <span class="s2">&quot;--steps-per-eval&quot;</span><span class="p">,</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="s2">&quot;--val-batches&quot;</span><span class="p">,</span> <span class="s2">&quot;20&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;--adapter-path&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">adapter</span><span class="p">),</span> <span class="s2">&quot;--grad-checkpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;--mask-prompt&quot;</span><span class="p">,</span> <span class="s2">&quot;--seed&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">]</span>
+</pre></div>
+<figcaption>The actual fine-tune command (MLX's LoRA trainer).</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>Reading the flags:</b> <code>--fine-tune-type lora</code> picks the adapter approach;
+<code>--num-layers 16</code> attaches adapters to the top 16 layers; <code>--iters 700</code>,
+<code>--batch-size 4</code>, <code>--learning-rate 1e-4</code> are the same training-loop dials from
+Part 1 (steps, batch, step-size) — gradient descent, unchanged, just pointed at this task.
+<code>--mask-prompt</code> means the loss is computed only on the <em>answer</em> tokens, not the trial
+text, so the model learns to <em>produce</em> readouts, not echo inputs.</p>
+<p>The result: train loss fell <strong>2.56 → 0.16</strong> in ~50 minutes on the Mac, producing a
+28 MB adapter. That's the whole trained model — a small delta you apply on top of the public base.</p>
+</div>
+    </section>
+    
+    <section id="eval">
+      
+      <div class="sec-head">
+        <span class="sec-num">5</span>
+        <h2>Evaluation: the part that makes it real</h2>
+      </div>
+      <div class="prose">
+<p>In Part 1 we judged the model by <em>reading</em> its output — fine for &ldquo;does this look like
+English?&rdquo;, useless for &ldquo;is this <em>correct</em>?&rdquo;. A useful model needs a real
+scorecard. So the eval harness is a first-class deliverable, not an afterthought: it runs the student
+over the 150 held-out trials and scores each field against the gold answer.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; structured fields are scored by F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+<defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<rect x="12" y="80" width="150" height="64" rx="10" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c2230">Gold test set</text>
+<text x="87" y="124" text-anchor="middle" font-size="10.5" fill="#5a6373">150 held-out trials</text>
+<rect x="205" y="80" width="150" height="64" rx="10" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">TrialScout</text>
+<text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#0e7a5f">predicts a readout</text>
+<rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">8 structured fields</text>
+<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ F1 / accuracy per field</text>
+<rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
+<text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">investor_note (free text)</text>
+<text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#5a6373">→ Claude-as-judge</text>
+<rect x="648" y="78" width="140" height="70" rx="10" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">Overall score</text>
+<text x="718" y="123" text-anchor="middle" font-size="11" fill="#0e7a5f">0.368 → 0.922</text>
+<text x="718" y="139" text-anchor="middle" font-size="9.5" fill="#0e7a5f">vs baseline</text>
+<line x1="162" y1="112" x2="203" y2="112" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="355" y1="104" x2="398" y2="62" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="355" y1="120" x2="398" y2="162" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="610" y1="60" x2="646" y2="100" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="610" y1="164" x2="646" y2="126" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+</svg><figcaption>The eval: for every held-out trial, the student predicts a readout; structured fields are scored by accuracy/F1, the free-text note by a Claude judge, and rolled into one overall score vs the baseline.</figcaption></figure>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">infer_and_score.py</span></div><div class="hl"><pre><span></span>    <span class="n">model</span><span class="p">,</span> <span class="n">tok</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">adapter_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">adapter</span><span class="p">)</span>
+
+    <span class="n">preds</span><span class="p">,</span> <span class="n">parsed_ok</span> <span class="o">=</span> <span class="p">{},</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">RAW</span><span class="p">[</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;nct_id&quot;</span><span class="p">]]</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">apply_chat_template</span><span class="p">(</span>
+            <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">build_prompt</span><span class="p">(</span><span class="n">raw</span><span class="p">)}],</span>
+            <span class="n">add_generation_prompt</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tokenize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">generate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">max_tokens</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">extract_json</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">parsed_ok</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">preds</span><span class="p">[</span><span class="n">g</span><span class="p">[</span><span class="s2">&quot;nct_id&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">snap_to_enum</span><span class="p">({</span><span class="s2">&quot;nct_id&quot;</span><span class="p">:</span> <span class="n">g</span><span class="p">[</span><span class="s2">&quot;nct_id&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">obj</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">30</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_set</span><span class="p">)</span><span class="si">}</span><span class="s2">  parsed_ok=</span><span class="si">{</span><span class="n">parsed_ok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">score</span><span class="p">(</span><span class="n">test_set</span><span class="p">,</span> <span class="n">preds</span><span class="p">)</span>
+</pre></div>
+<figcaption>Load base + adapter, generate a readout per test trial, parse it, and score it.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>What this says:</b> <code>load(model, adapter_path=...)</code> loads the frozen base and snaps the
+LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
+in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
+value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
+compares each structured field to gold — accuracy and macro-F1 per field, set-F1 for the risk-flag list —
+exactly the metrics the baseline was measured with, so the comparison is fair.</p>
+</div>
+<aside class="callout aside"><div class="callout-title">Two kinds of grading</div><div class="callout-body">
+<p>The eight structured fields grade themselves (string match against the enum). The one free-text field,
+<code>investor_note</code>, can't — so it's scored by <strong>Claude-as-judge</strong>: a separate model
+call rates the note for faithfulness. Automatic where possible, model-graded where necessary.</p>
+</div></aside>
+    </section>
+    
+    <section id="result">
+      <p class="part-banner">Part IV · The result</p>
+      <div class="sec-head">
+        <span class="sec-num">6</span>
+        <h2>The result</h2>
+      </div>
+      <div class="prose">
+<p>Here is the payoff, on the 150 trials the model never saw — the fine-tuned Qwen student against the
+&ldquo;majority-class&rdquo; baseline (always guess the most common value for each field), which is the
+floor any real model must clear:</p>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Qwen student</th><th>Lift</th></tr></thead>
+<tbody>
+<tr><td><b>overall structured</b></td><td>0.368</td><td><b>0.922</b></td><td><b>+0.554</b></td></tr>
+<tr><td>valid JSON</td><td>—</td><td>1.000</td><td>—</td></tr>
+<tr><td>phase</td><td>0.447</td><td>1.000</td><td>+0.553</td></tr>
+<tr><td>modality</td><td>0.413</td><td>0.773</td><td>+0.360</td></tr>
+<tr><td>primary_endpoint_type</td><td>0.280</td><td>0.900</td><td>+0.620</td></tr>
+<tr><td>sponsor_type</td><td>0.673</td><td>0.980</td><td>+0.307</td></tr>
+<tr><td>est_readout</td><td>0.033</td><td>0.993</td><td>+0.960</td></tr>
+<tr><td>risk_flags (set-F1)</td><td>0.364</td><td>0.884</td><td>+0.520</td></tr>
+</tbody></table>
+</div>
+<aside class="callout key"><div class="callout-title">What this number means</div><div class="callout-body">
+<p><strong>0.368 → 0.922.</strong> The fine-tuned 4B model — trained for under an hour on a laptop, run
+for free — nearly reproduces the expensive Claude teacher, and produces valid JSON <em>every single
+time</em>. The biggest lifts land where the task is most learnable: <code>est_readout</code> (a
+deterministic date → &ldquo;H1/H2 YYYY&rdquo; rule, 0.03 → 0.99) and <code>phase</code> (perfect). This
+is the win Part 1 was building toward: same machinery — tokens, attention, loss, gradient descent — now
+doing a real job, well.</p>
+</div></aside>
+    </section>
+    
+    <section id="ab">
+      
+      <div class="sec-head">
+        <span class="sec-num">7</span>
+        <h2>Decide by eval, not by faith</h2>
+      </div>
+      <div class="prose">
+<p>Which base model to fine-tune — Qwen3-4B or Google's Gemma 4 E2B? We didn't argue about it; we ran
+both through the <em>same</em> harness and let the score decide. That's the discipline: model choice is a
+measurement, not a preference.</p>
+<p>In the end Qwen won by default and by margin. Gemma 4 E2B <em>failed to train at all</em> — the only
+available checkpoint is a multimodal (vision+text) build whose weights the LoRA trainer couldn't target.
+And Qwen's 0.922 is so near the ceiling that even a perfectly-trained Gemma would have to beat it to flip
+the call — implausible on this task. So the measured decision is Qwen, robustly.</p>
+</div>
+<aside class="callout aside"><div class="callout-title">A failed arm is still a result</div><div class="callout-body">
+<p>&ldquo;Gemma didn't train&rdquo; isn't a gap in the write-up — it's a finding (and a real-world gotcha:
+check whether a checkpoint is text-only before you plan around it). The honest version of an A/B includes
+the arm that didn't work and why it doesn't change the conclusion.</p>
+</div></aside>
+    </section>
+    
+    <section id="ceiling">
+      
+      <div class="sec-head">
+        <span class="sec-num">8</span>
+        <h2>Can you beat the teacher? (The error-mining loop)</h2>
+      </div>
+      <div class="prose">
+<p>The weakest field was <code>modality</code> at 0.77. The obvious next move — and a tempting research
+dream — is a <strong>self-improvement loop</strong>: mine the model's errors, generate targeted new
+training data for exactly those cases, retrain, repeat. So we tried it: snapped near-miss enums for free,
+and added 300 fresh gold examples of the rare modalities the model kept missing.</p>
+<p>The result was a <strong>statistical wash</strong> — overall 0.925 → 0.930, with modality's gain offset
+by a small dip elsewhere. Digging in, the residual <code>modality</code> errors clustered on the genuinely
+ambiguous <code>combination</code> boundary — cases where the <em>teacher's own labels</em> disagree. That's
+not a data-quantity problem; it's <strong>label noise</strong>, and you can't out-data it.</p>
+</div>
+<aside class="callout key"><div class="callout-title">The two ceilings</div><div class="callout-body">
+<p>This is the honest lesson of the whole project: <strong>(1) you can't beat your teacher</strong> — the
+student asymptotes <em>to</em> the teacher, not past it; and <strong>(2) you can't out-data label noise</strong>
+— once the remaining errors are cases the teacher itself gets inconsistently, more examples just teach the
+inconsistency. A <em>legitimately</em> self-improving model would need a cheap, non-gameable <em>verifier</em>
+of truth — not just more teacher labels. That's the real frontier, and the honest place to stop here.</p>
+</div></aside>
+    </section>
+    
+    <section id="serve">
+      <p class="part-banner">Part V · Ship it</p>
+      <div class="sec-head">
+        <span class="sec-num">9</span>
+        <h2>Packaging it as a callable expert</h2>
+      </div>
+      <div class="prose">
+<p>A trained adapter on disk isn't useful yet. The last step makes TrialScout <em>callable</em> — wrapped
+as an <strong>MCP</strong> tool (Model Context Protocol, the standard way to expose a tool to an AI client
+like Claude). Now any assistant can ask it for a readout by trial ID, and it answers locally — no API spend.</p>
+</div>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">trial_readout_server.py</span></div><div class="hl"><pre><span></span><span class="nd">@mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;trial_readout&quot;</span><span class="p">,</span>
+    <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;TrialScout: read out a trial by NCT ID&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;readOnlyHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;destructiveHint&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;idempotentHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;openWorldHint&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># fetches from ClinicalTrials.gov</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">trial_readout</span><span class="p">(</span>
+    <span class="n">nct_id</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ClinicalTrials.gov identifier, e.g. &#39;NCT02942290&#39; (case-insensitive).&quot;</span><span class="p">,</span>
+        <span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^[Nn][Cc][Tt]\d</span><span class="si">{8}</span><span class="s2">$&quot;</span><span class="p">)],</span>
+    <span class="n">response_format</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">ResponseFormat</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&#39;markdown&#39; (human-readable) or &#39;json&#39; (structured object + schema validity).&quot;</span><span class="p">,</span>
+    <span class="p">)]</span> <span class="o">=</span> <span class="n">ResponseFormat</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</pre></div>
+<figcaption>The MCP tool: give it an NCT id, get back a schema-validated readout.</figcaption></figure>
+<div class="gloss"><div class="gloss-tag">what this says</div>
+<p><b>What this says:</b> the <code>@mcp.tool</code> decorator registers <code>trial_readout</code> as a
+callable tool with a typed input (an NCT id, validated by a regex) and a choice of markdown or JSON output.
+Under the hood it fetches the trial from ClinicalTrials.gov, runs the fine-tuned model locally, and validates
+the result against the schema before returning it. The annotations (<code>readOnlyHint</code>,
+<code>idempotentHint</code>) tell the calling assistant it's a safe, repeatable read. This is the &ldquo;callable
+expert&rdquo; the whole pipeline was for.</p>
+</div>
+    </section>
+    
+    <section id="arc">
+      
+      <div class="sec-head">
+        <span class="sec-num">10</span>
+        <h2>The arc, closed — and running it yourself</h2>
+      </div>
+      <div class="prose">
+<p>That's the full arc. Part 1 built a language model from nothing to <em>understand</em> the machinery;
+Part 2 took a pretrained one and <em>specialised</em> it into a measurably useful expert — for the price of
+some patience and about $14 of teacher calls. The giants are not different in kind; they are this, at scale.
+And the techniques here — distillation, LoRA, eval-driven decisions — are exactly how a small team turns a
+big open model into something that does <em>their</em> job.</p>
+</div>
+<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">README.md</span></div><div class="hl"><pre><span></span># 1. Fetch trials (free, public API)
+uv run python track-b-trialscout/data/fetch_trials.py --target 1500
+
+# 2. Distill gold labels with the Claude teacher (SPENDS MONEY — needs ANTHROPIC_API_KEY)
+#    Hard cost cap + 10-trial pilot gate; resumable.
+uv run python track-b-trialscout/train/make_gold.py --target 1500 --cap 24
+
+# 3. Establish the baseline the fine-tuned model must beat
+uv run python track-b-trialscout/eval/harness.py --baseline majority
+
+# (Phase 3) fine-tune, then score the student:
+uv run python track-b-trialscout/eval/harness.py --pred &lt;student_preds.jsonl&gt;
+</pre></div>
+<figcaption>Reproduce it (read-along note below): the four commands of the pipeline.</figcaption></figure>
+<aside class="callout aside"><div class="callout-title">Read-along vs. run-it-yourself</div><div class="callout-body">
+<p>Unlike Part 1, this chapter is mostly <strong>read-along</strong>: the gold dataset and the trained adapter
+are gitignored (regenerable, not committed), and step 2 spends ~$14 of Anthropic API to recreate the labels.
+Everything you need to reproduce it is above and in the
+<a href="https://github.com/JEM-Fizbit/slm-lab/tree/main/track-b-trialscout">repo</a> — but you can absolutely
+just <em>read</em> it and take the method with you.</p>
+</div></aside>
+<aside class="callout key"><div class="callout-title">Where this goes next</div><div class="callout-body">
+<p>The honest finding (§8) points at the real frontier: a model that improves itself needs a
+<em>verifier</em> of truth it can't game, not just more teacher labels. TrialScout proved the
+<em>method</em>; the next chapter of this lab is chasing that harder idea. ← back to
+<a href="../track-a/">Part 1</a> · <a href="../">the lab home</a>.</p>
+</div></aside>
+    </section>
+    
+
+    <section id="primer">
+      <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
+      <div class="prose">
+<p>You don't need this to follow the walk-through — the &ldquo;what this says&rdquo; boxes
+translate everything. But if you want to read the code itself, here are the few patterns
+that show up again and again. Learn these six and Python stops looking like noise.</p>
+
+<dl class="primer">
+  <dt><code>name = something</code></dt>
+  <dd><strong>Assignment.</strong> Give a value a name so you can refer to it later.
+  <code>vocab_size = 90</code> means &ldquo;from now on, <code>vocab_size</code> is 90.&rdquo;
+  The <code>=</code> is &ldquo;set to,&rdquo; not &ldquo;equals&rdquo; in the maths sense.</dd>
+
+  <dt><code>def do_thing(a, b):</code></dt>
+  <dd><strong>Define a function</strong> — a named, reusable recipe. <code>a, b</code> are
+  its inputs. Everything indented underneath belongs to it. Later, <code>do_thing(2, 3)</code>
+  <em>runs</em> the recipe with those inputs.</dd>
+
+  <dt><code>class GPT:</code></dt>
+  <dd><strong>A blueprint</strong> for an object that bundles data and behaviour together.
+  The model itself is one of these. <code>__init__</code> is the setup that runs once when
+  the object is created; <code>__call__</code> is &ldquo;what happens when you use it like a
+  function&rdquo; — so <code>model(x)</code> runs the model on input <code>x</code>.</dd>
+
+  <dt><code>for item in things:</code></dt>
+  <dd><strong>A loop.</strong> Do the indented steps once for each item — the engine of
+  training (&ldquo;for each step, improve a little&rdquo;) and of generation
+  (&ldquo;for each new word, predict one&rdquo;).</dd>
+
+  <dt><code>[ ... ]</code> and indentation</dt>
+  <dd>Square brackets make a <strong>list</strong> (an ordered collection). <strong>Indentation
+  is meaningful</strong> in Python: the spaces aren't decoration — they show what belongs
+  inside a function, loop, or block.</dd>
+
+  <dt><code>x @ y</code> and &ldquo;shapes&rdquo;</dt>
+  <dd>The data flowing through the model lives in <strong>arrays</strong> — grids of numbers.
+  An array's <strong>shape</strong> is its dimensions, e.g. <code>(B, T, C)</code> =
+  (how many examples at once, how many positions in each, how many numbers per position).
+  <code>@</code> is <strong>matrix multiplication</strong> — the bulk-arithmetic operation
+  that does almost all the work in a neural network. <code>mx</code> is Apple's array
+  library (MLX); think &ldquo;the thing that does fast maths on the GPU.&rdquo;</dd>
+</dl>
+</div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
+  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Open source:
+  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
+  &nbsp;·&nbsp; notebooks
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
+  &nbsp;·&nbsp; <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
+  started</a> &nbsp;·&nbsp; Part 2 of the <strong>slm-lab</strong> walk-through.</p>
+  <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
+  John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
+  <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
+  <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
+  (Eldan &amp; Li, Microsoft Research).</p>
+</footer>
+
+</body>
+</html>
