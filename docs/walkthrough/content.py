@@ -417,9 +417,9 @@ CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training c
 #  SECTIONS — the walk-through itself
 # ===========================================================================
 
-LINEAR_SVG = r'''<svg viewBox="0 0 880 656" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers); one output is a weighted sum; stacking a row of weights per output gives W (y=Wx+b) where columns are inputs and rows are outputs; one layer is a tiny slice of the 3.24M-parameter model.">
+LINEAR_SVG = r'''<svg viewBox="0 0 880 742" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers); each output is a weighted sum of all of them plus a bias; y = Wx + b. Outputs are an intermediate vector passed to the next layer, not a prediction. One layer is a tiny slice of the 3.24M-parameter model.">
 <defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① A token → its embedding (256 numbers) — then one output is a weighted sum of them</text>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① A token → its embedding (256 numbers) — then one output is a weighted sum of all of them</text>
 <text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >vocabulary</text>
 <rect x="46" y="70" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >the</text>
@@ -427,7 +427,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 656" role="img" aria-label="A linear laye
 <text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="700" >fox</text>
 <rect x="46" y="130" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >cat</text>
-<text x="72" y="164" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
+<text x="72" y="162" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
 <line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
 <text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
@@ -458,101 +458,104 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 656" role="img" aria-label="A linear laye
 <text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <rect x="238" y="178" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<path d="M302 74 q11 0 11 11 v22 q0 11 11 11 q-11 0 -11 11 v22 q0 11 -11 11" fill="none" stroke="#5a6373" stroke-width="1.2"/>
-<text x="326" y="118" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
-<text x="326" y="131" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
-<text x="58" y="206" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="232" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="248" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
-<line x1="40" y1="267" x2="820" y2="267" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="293" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >② A layer has many outputs — one row of weights each. Stack the rows → the matrix W.</text>
-<rect x="80" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="103.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="126" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="149.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="172" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="195.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="240" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="263.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<text x="222" y="384.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="413.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="442.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="78" y="364" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="160" y="357" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
-<text x="300" y="385.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ①'s weights</text>
-<text x="300" y="400.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="475" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >each row of W is one output's weights (top row = output ① above; showing 3 of many output rows)</text>
-<text x="551" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="593" y="357" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — inputs</text>
-<rect x="566" y="366" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="566" y="393" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="566" y="420" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="566" y="447" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="464.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="566" y="474" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="491.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<text x="628" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="668" y="357" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — outputs</text>
-<rect x="644" y="366" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
-<rect x="644" y="393" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
-<rect x="644" y="420" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
-<text x="700" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="740" y="357" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — outputs</text>
-<rect x="716" y="366" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
-<rect x="716" y="393" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
-<rect x="716" y="420" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
-<text x="58" y="513" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >x has one number per input (matches W's columns); y and b have one per output (W's rows). The two counts are independent — a layer can map, say, 256 inputs → 1,024 outputs.</text>
-<text x="58" y="531" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
-<line x1="40" y1="540" x2="820" y2="540" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="566" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
-<rect x="62" y="586" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="109.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
-<text x="109.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
-<line x1="157" y1="608.0" x2="167" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="168" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="215.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
-<text x="215.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="263" y1="608.0" x2="273" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="274" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="321.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
-<text x="321.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="369" y1="608.0" x2="379" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="380" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="427.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
-<text x="427.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="475" y1="608.0" x2="485" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="486" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="533.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
-<text x="533.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="581" y1="608.0" x2="591" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="592" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="639.0" y="613" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
-<line x1="687" y1="608.0" x2="697" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="698" y="586" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="745.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
-<text x="745.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >scores</text>
-<text x="162.0" y="580" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
-<rect x="271" y="583" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="321.0" y="646" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="670" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k are the embedding tables (each token's own 256-number profile); ~3.16M are the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="688" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#5a6373" stroke-width="1.2"/>
+<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
+<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
+<text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
+<line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="314" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >② A layer has many outputs — one row of weights each. Stack the rows → the matrix W.</text>
+<rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="172" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
+<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ①'s weights</text>
+<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="449" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >each row of W = one output's weights (top row = output ① above; showing 3 of many outputs)</text>
+<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — input</text>
+<rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="566" y="394" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="566" y="421" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
+<text x="666" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — bias</text>
+<rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="644" y="394" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
+<text x="740" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — output</text>
+<rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="716" y="394" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<text x="58" y="489" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each output yᵢ = (row i of W) · ALL of x + bᵢ.  So y₁ = 0.62 — the same value as ① (from all of x); it does NOT pair with x₁.</text>
+<text x="58" y="505" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >x has one number per input (W's columns); the bias b and output y have one per output (W's rows) — counts that can differ.</text>
+<text x="58" y="521" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >These outputs are the layer's result vector, fed to the next layer — NOT a probability or prediction. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="541" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
+<line x1="40" y1="559" x2="820" y2="559" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="585" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="605" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="109.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
+<text x="109.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
+<line x1="157" y1="627.0" x2="167" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="168" y="605" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="215.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
+<text x="215.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="263" y1="627.0" x2="273" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="274" y="605" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="321.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
+<text x="321.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="369" y1="627.0" x2="379" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="380" y="605" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="427.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
+<text x="427.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="475" y1="627.0" x2="485" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="486" y="605" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="533.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
+<text x="533.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="581" y1="627.0" x2="591" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="592" y="605" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="639.0" y="632" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
+<line x1="687" y1="627.0" x2="697" y2="627.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="698" y="605" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="745.0" y="625" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
+<text x="745.0" y="639" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >probs</text>
+<text x="162.0" y="599" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
+<rect x="271" y="602" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="321.0" y="665" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="687" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's outputs feed the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
+<text x="58" y="705" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
+<text x="58" y="723" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg>'''
 
 EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
