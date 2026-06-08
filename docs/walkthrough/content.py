@@ -1317,11 +1317,14 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .foot a{color:#a9c0ff;text-decoration:none;}
 .kicker a{color:#9fb2e8;text-decoration:none;border-bottom:1px solid rgba(159,178,232,.4);}
 .kicker a:hover{color:#cfd9f3;}
-.about{display:flex;gap:26px;align-items:flex-start;margin:8px 0 42px;padding-bottom:36px;
-  border-bottom:1px solid rgba(255,255,255,.12);}
-.about ul.why{margin:2px 0 16px;padding-left:20px;}
-.about ul.why li{font-size:15.5px;line-height:1.55;color:#cfd9f3;margin:0 0 11px;}
-.about ul.why strong{color:#eaeefb;}
+.block{margin:46px 0 0;padding-top:36px;border-top:1px solid rgba(255,255,255,.12);}
+.block h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#9fb2e8;margin:0 0 14px;}
+.block p{font-size:16px;line-height:1.6;color:#cfd9f3;margin:0 0 12px;}
+.why-block ul.why{margin:6px 0 0;padding-left:20px;}
+.why-block ul.why li{font-size:15.5px;line-height:1.55;color:#cfd9f3;margin:0 0 11px;}
+.why-block ul.why strong{color:#eaeefb;}
+.about{display:flex;gap:26px;align-items:flex-start;margin:46px 0 0;padding-top:36px;
+  border-top:1px solid rgba(255,255,255,.12);}
 .about img.avatar{width:104px;height:auto;border-radius:12px;flex:none;
   box-shadow:0 2px 14px rgba(0,0,0,.35);}
 .about h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#9fb2e8;margin:2px 0 12px;}
@@ -1337,32 +1340,6 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
   <p class="kicker"><a href="{{ hub_url }}">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
   <h1>{{ landing.h1 }}</h1>
   <p class="lede">{{ landing.lede }}</p>
-
-  <section class="about">
-    {% if headshot %}<img class="avatar" src="{{ headshot }}" alt="John E. Milad"/>{% endif %}
-    <div class="about-text">
-      <h2>Why I built this</h2>
-      <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
-      deep in modern AI — using it daily, building with it, and working out what's worth knowing. I built
-      slm-lab for three reasons:</p>
-      <ul class="why">
-        <li><strong>The learning tools I wish I'd had.</strong> When I started, explanations were either
-        hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every
-        step narrated in plain English.</li>
-        <li><strong>To make AI's concepts accessible to non-specialists.</strong> You shouldn't need to be
-        an ML engineer to build intuition for how these models actually work — and what they can and can't
-        do. No prior Python required to read along.</li>
-        <li><strong>To leave reusable patterns, not just a demo.</strong> Each chapter is a template you
-        can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2) —
-        distilling a big model's judgement into a small, cheap one, and turning messy, unstructured data
-        into clean structured summaries.</li>
-      </ul>
-      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
-      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, dated library for the AI era: the tools,
-      the practices, and a zero-to-shipping learning path.<br/>
-      <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
-    </div>
-  </section>
 
   <div class="cards">
     <a class="card" href="track-a/">
@@ -1393,6 +1370,37 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     </div>
     {% endif %}
   </div>
+
+  <section class="block why-block">
+    <h2>Why I built this</h2>
+    <p>I built slm-lab for three reasons:</p>
+    <ul class="why">
+      <li><strong>The learning tools I wish I'd had.</strong> When I started, explanations were either
+      hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every
+      step narrated in plain English.</li>
+      <li><strong>To make AI's concepts accessible to non-specialists.</strong> You shouldn't need to be
+      an ML engineer to build intuition for how these models actually work — and what they can and can't
+      do. No prior Python required to read along.</li>
+      <li><strong>To leave reusable patterns, not just a demo.</strong> Each chapter is a template you
+      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2) —
+      distilling a big model's judgement into a small, cheap one, and turning messy, unstructured data
+      into clean structured summaries.</li>
+    </ul>
+  </section>
+
+  <section class="about">
+    {% if headshot %}<img class="avatar" src="{{ headshot }}" alt="John E. Milad"/>{% endif %}
+    <div class="about-text">
+      <h2>About me</h2>
+      <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
+      deep in modern AI — using it daily, building with it, and working out what's worth knowing. slm-lab
+      is one hands-on piece of that.</p>
+      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
+      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, dated library for the AI era: the tools,
+      the practices, and a zero-to-shipping learning path.<br/>
+      <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
+    </div>
+  </section>
 
   <p class="foot">
     Open source (MIT): <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
