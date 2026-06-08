@@ -1396,7 +1396,7 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
       deep in modern AI — using it daily, building with it, and working out what's worth knowing. slm-lab
       is one hands-on piece of that.</p>
       <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
-      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, dated library for the AI era: the tools,
+      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, regularly-updated library for the AI era: the tools,
       the practices, and a zero-to-shipping learning path.<br/>
       <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
     </div>
