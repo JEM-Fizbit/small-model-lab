@@ -398,17 +398,23 @@ offer at once.</p>
         <h2>The task, and the contract</h2>
       </div>
       <div class="prose">
-<p>Before teaching anything, you have to define the job precisely. Every trial has a public record on
-<strong>ClinicalTrials.gov</strong> — the US government registry of studies. Each record is structured
-data: a title, phase, status, lead sponsor, the conditions and drugs under test, the primary outcome
-measure, key dates, enrollment, and trial design. We fetch that record from the registry's API and trim
-it to the ~14 fields that matter — <strong>that trimmed record is TrialScout's input.</strong> Its
-<em>output</em> is a compact nine-field JSON readout: <code>nct_id</code>, <code>phase</code>,
-<code>indication</code>, <code>modality</code>, <code>primary_endpoint_type</code>,
-<code>sponsor_type</code>, <code>est_readout</code> (an H1/H2-year window), a list of
-<code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
-<strong>enums</strong> — a fixed menu of allowed values — which is what makes the task learnable
-<em>and</em> scorable.</p>
+<p>First, the domain — for anyone new to it. A <strong>clinical trial</strong> is a study that tests
+whether a treatment (here, a cancer drug) is safe and actually works. Drug companies run thousands of
+them, and to an investor each one is a potential <em>catalyst</em> — an upcoming result that can move a
+company's value. The trouble is the raw information: every trial is written up in long, inconsistent
+prose, and there are tens of thousands of them. So TrialScout's job is to turn each trial into a short,
+<strong>uniform structured summary</strong> — so a whole <em>population</em> of trials becomes something
+you can scan, filter, compare, and screen at a glance, instead of reading registry pages one at a time.</p>
+<p>Concretely: every trial has a public record on <strong>ClinicalTrials.gov</strong>, the US government
+registry of studies. Each record is semi-structured data — a title, phase, status, lead sponsor, the
+conditions and drugs under test, the primary outcome measure, key dates, enrollment, trial design — plus
+free text. We fetch it from the registry's API and trim it to the ~14 fields that matter:
+<strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
+JSON readout — <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
+<code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (an H1/H2-year
+window), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
+<strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
+trials — and easy to score.</p>
 <p>The work is turning verbose, inconsistent registry data into normalised judgement — reading
 &ldquo;AstraZeneca&rdquo; and writing <code>large pharma</code>, or a raw <code>2026-09</code> completion
 date into <code>H2 2026</code>. That's why it needs a <em>model</em>, not a parser. Here is a real example
