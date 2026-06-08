@@ -154,13 +154,46 @@ offer at once.</p>
  "part_banner": "Part II · Teaching the model the task",
  "blocks": [
   ("prose", r"""
-<p>Before teaching anything, you have to define the job precisely. TrialScout turns one trial into a
-JSON object with nine fields: <code>nct_id</code>, <code>phase</code>, <code>indication</code>,
-<code>modality</code>, <code>primary_endpoint_type</code>, <code>sponsor_type</code>,
-<code>est_readout</code> (an H1/H2-year window), a list of <code>risk_flags</code>, and a
-≤2-sentence <code>investor_note</code>. Most fields are <strong>enums</strong> — a fixed menu of
-allowed values — which is what makes the task learnable <em>and</em> scorable.</p>
+<p>Before teaching anything, you have to define the job precisely. Every trial has a public record on
+<strong>ClinicalTrials.gov</strong> — the US government registry of studies. Each record is structured
+data: a title, phase, status, lead sponsor, the conditions and drugs under test, the primary outcome
+measure, key dates, enrollment, and trial design. We fetch that record from the registry's API and trim
+it to the ~14 fields that matter — <strong>that trimmed record is TrialScout's input.</strong> Its
+<em>output</em> is a compact nine-field JSON readout: <code>nct_id</code>, <code>phase</code>,
+<code>indication</code>, <code>modality</code>, <code>primary_endpoint_type</code>,
+<code>sponsor_type</code>, <code>est_readout</code> (an H1/H2-year window), a list of
+<code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
+<strong>enums</strong> — a fixed menu of allowed values — which is what makes the task learnable
+<em>and</em> scorable.</p>
+<p>The work is turning verbose, inconsistent registry data into normalised judgement — reading
+&ldquo;AstraZeneca&rdquo; and writing <code>large pharma</code>, or a raw <code>2026-09</code> completion
+date into <code>H2 2026</code>. That's why it needs a <em>model</em>, not a parser. Here is a real example
+(one of the project's hand-written reference cases):</p>
 """),
+  ("rawoutput", '''{
+  "brief_title": "A Phase 3 Study of Osimertinib vs Platinum-Pemetrexed in
+                  EGFR T790M-Positive Advanced NSCLC After First-Line EGFR-TKI",
+  "phases": ["PHASE3"],          "overall_status": "COMPLETED",
+  "lead_sponsor": "AstraZeneca", "lead_sponsor_class": "INDUSTRY",
+  "primary_completion_date": "2026-09",
+  "conditions": ["Non-Small Cell Lung Cancer"],
+  "interventions": [{"type": "DRUG", "name": "Osimertinib"},
+                    {"type": "DRUG", "name": "Platinum-Pemetrexed"}],
+  "primary_outcomes": [{"measure": "Progression-free survival (PFS)"}],
+  "enrollment": 419, "allocation": "RANDOMIZED", "masking": "NONE", "n_arms": 2
+}''', "the input — a trial's record from ClinicalTrials.gov (trimmed to ~14 fields)"),
+  ("rawoutput", '''{
+  "phase": "Phase 3",
+  "indication": "EGFR T790M+ advanced NSCLC, 2L",
+  "modality": "small molecule",
+  "primary_endpoint_type": "progression-free survival (PFS)",
+  "sponsor_type": "large pharma",
+  "est_readout": "H2 2026",
+  "risk_flags": ["open-label", "surrogate endpoint"],
+  "investor_note": "Registrational head-to-head of osimertinib vs chemo in resistant EGFR+
+                    NSCLC; a PFS win supports the second-line label expansion. Open-label
+                    design and PFS (not OS) primary are the main read-through caveats."
+}''', "TrialScout's output — the structured readout"),
   ("filecode", "track-b-trialscout/schema/trial_readout.schema.json",
    "The output contract (excerpt): controlled vocabularies the model must pick from.",
    '"modality": {', "Empty array if none apply."),
@@ -189,6 +222,15 @@ Writing those by hand would take an analyst weeks. So we <strong>distill</strong
 model (Claude Sonnet) reads each trial and writes the gold answer, and the small student then learns
 to reproduce those answers. The teacher's judgement becomes the student's training data.</p>
 """),
+  ("prose", r"""
+<p>Step back and name it: this is plain <strong>supervised learning</strong> — training on labeled
+<code>(input → correct output)</code> pairs. Part 1 was <em>self-</em>supervised: the next character was
+a free label already sitting in the text, so nobody had to annotate anything. Here there is no free label
+— we must <em>supply</em> the right readout for each trial. (Done to an already-pretrained model, this is
+called <strong>supervised fine-tuning</strong>.) The only unusual part is <em>where the labels come
+from</em>: not human annotators, but a stronger model. Training a small model on a big model's outputs is
+<strong>knowledge distillation</strong>.</p>
+"""),
   ("diagram", DISTILL_SVG,
    "Distillation: the expensive teacher (Claude) writes structured answers for thousands of trials; "
    "those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce."),
@@ -212,6 +254,13 @@ labeling run to about <strong>$14</strong>.</li>
 shown. A weak teacher silently ceilings the whole project — so we pay for a strong one (Sonnet), not a
 cheap one. The student will end up <em>near</em> the teacher, never above it. (We'll see that ceiling
 bite, hard, in §8.)</p>
+"""),
+  ("callout", "aside", "Automating a job that used to be manual", r"""
+<p>The slow, expensive part of supervised learning has always been <em>getting the labels</em> — a human
+reading each example and hand-writing the answer. Labeling a few thousand trials that way would take an
+analyst weeks. Distillation collapses it to a few hours and about <strong>$14</strong>: the teacher does
+the tedious annotation. Cheap, fast, scalable labeled data is one of the biggest unlocks in modern ML —
+and the same move works for <em>any</em> structured-extraction task, not just trials.</p>
 """),
  ],
 },
@@ -334,6 +383,8 @@ time</em>. The biggest lifts land where the task is most learnable: <code>est_re
 deterministic date → &ldquo;H1/H2 YYYY&rdquo; rule, 0.03 → 0.99) and <code>phase</code> (perfect). This
 is the win Part 1 was building toward: same machinery — tokens, attention, loss, gradient descent — now
 doing a real job, well.</p>
+<p>One field still lags — <code>modality</code>, at 0.77. Can we push it higher by running an improvement
+<em>loop</em>? We try, in <a href="#ceiling">§8</a>.</p>
 """),
  ],
 },
@@ -362,14 +413,18 @@ the arm that didn't work and why it doesn't change the conclusion.</p>
  "id": "ceiling", "num": "8", "title": "Can you beat the teacher? (The error-mining loop)",
  "blocks": [
   ("prose", r"""
-<p>The weakest field was <code>modality</code> at 0.77. The obvious next move — and a tempting research
-dream — is a <strong>self-improvement loop</strong>: mine the model's errors, generate targeted new
-training data for exactly those cases, retrain, repeat. So we tried it: snapped near-miss enums for free,
-and added 300 fresh gold examples of the rare modalities the model kept missing.</p>
-<p>The result was a <strong>statistical wash</strong> — overall 0.925 → 0.930, with modality's gain offset
-by a small dip elsewhere. Digging in, the residual <code>modality</code> errors clustered on the genuinely
-ambiguous <code>combination</code> boundary — cases where the <em>teacher's own labels</em> disagree. That's
-not a data-quantity problem; it's <strong>label noise</strong>, and you can't out-data it.</p>
+<p>The weakest field was <code>modality</code> at 0.77. The natural next move is a
+<strong>recursive improvement loop</strong> — a general pattern worth naming: <em>mine the model's errors
+→ generate targeted new training data for exactly those cases → retrain → measure → repeat</em>, each
+pass trying to climb a little higher. It's the honest, buildable kernel of the &ldquo;self-improving
+AI&rdquo; idea. So we ran one turn of it: snapped near-miss enums for free, then added 300 fresh gold
+examples of the rare modalities the model kept missing.</p>
+<p>It barely moved — a <strong>statistical wash</strong>, overall 0.925 → 0.930, with modality's gain
+offset by a small dip elsewhere. That's the signature of a <strong>plateau</strong>: a loop like this
+climbs at first, then flattens. Digging in showed why — the residual <code>modality</code> errors cluster
+on the genuinely ambiguous <code>combination</code> boundary, cases where the <em>teacher's own labels</em>
+disagree. You can't loop your way out of that with more data; it's <strong>label noise</strong>, and it
+sets a hard ceiling.</p>
 """),
   ("callout", "key", "The two ceilings", r"""
 <p>This is the honest lesson of the whole project: <strong>(1) you can't beat your teacher</strong> — the
