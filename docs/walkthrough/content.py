@@ -142,7 +142,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
 /* layout */
 .layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
   gap:48px;padding:48px 24px 80px;}
-nav.toc{position:sticky;top:24px;align-self:start;font-family:var(--sans);font-size:14px;
+nav.toc{position:sticky;top:64px;align-self:start;font-family:var(--sans);font-size:14px;
   max-height:calc(100vh - 48px);overflow:auto;}
 nav.toc .toctitle{text-transform:uppercase;letter-spacing:.14em;font-size:11px;
   color:var(--faint);font-weight:700;margin:0 0 12px;}
@@ -155,7 +155,7 @@ nav.toc .toc-num{color:var(--faint);font-variant-numeric:tabular-nums;
   display:inline-block;min-width:30px;}
 
 main{min-width:0;max-width:760px;}
-section{margin:0 0 8px;padding:34px 0 6px;border-top:1px solid var(--line);}
+section{margin:0 0 8px;padding:34px 0 6px;border-top:1px solid var(--line);scroll-margin-top:58px;}
 section:first-of-type{border-top:none;padding-top:0;}
 .sec-head{display:flex;align-items:baseline;gap:14px;margin:0 0 14px;}
 .sec-num{font-family:var(--sans);font-weight:700;font-size:13px;color:#fff;
@@ -275,7 +275,8 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   body{font-size:17px;}
 }
 /* top nav (between chapters) */
-.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);}
+.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;top:0;z-index:50;}
 .topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
   align-items:center;font-family:var(--sans);font-size:14px;}
 .topnav a{color:#aebbdd;text-decoration:none;}
@@ -283,6 +284,15 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 .topnav a.active{color:#fff;font-weight:700;}
 .topnav a.hub{margin-left:auto;color:#9fb2e8;}
 .topnav a.hub:hover{color:#fff;}
+/* always-present top/bottom/home control (bottom-right, no JS) */
+.pagenav{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:9px;}
+.pagenav a{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;background:#fff;color:var(--accent);border:1px solid var(--line);
+  text-decoration:none;font-size:18px;line-height:1;box-shadow:0 3px 12px rgba(20,28,60,.16);
+  transition:background .12s,color .12s;}
+.pagenav a:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+@media (max-width:920px){.pagenav{right:12px;bottom:12px;}}
+@media print{.pagenav,.topnav{display:none;}}
 .topnav .muted{color:#5e6b88;}
 .topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
 {{ pygments_css }}
@@ -295,7 +305,13 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 <a class="hub" href="{{ hub_url }}">AI Knowledge Hub ↗</a>
 </div></nav>
 
-<header class="hero"><div class="inner">{{ hero }}</div></header>
+<header class="hero" id="top"><div class="inner">{{ hero }}</div></header>
+
+<nav class="pagenav" aria-label="Page jump">
+  <a href="#top" title="Top" aria-label="Scroll to top">&uarr;</a>
+  <a href="#bottom" title="Bottom" aria-label="Scroll to bottom">&darr;</a>
+  <a href="../" title="Home" aria-label="slm-lab home">&#8962;</a>
+</nav>
 
 <div class="layout">
   <nav class="toc">
@@ -327,7 +343,7 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   </main>
 </div>
 
-<footer>
+<footer id="bottom">
   <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
   is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
   <p>Open source:
