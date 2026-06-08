@@ -1017,6 +1017,18 @@ embedding's axes.)</p>
    "The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each "
    "cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar "
    "patterns; \"the\" differs."),
+  ("callout", "key", "Where do the embeddings come from?", r"""
+<p>Not from the letters, and not computed on the fly — they're <strong>learned, then looked up</strong>.
+The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
+becomes an integer ID, and that ID simply <em>indexes the table</em> — row #ID <em>is</em> its 256 numbers.
+There's no arithmetic on <code>f-o-x</code>.</p>
+<p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
+other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
+the lookup is deterministic (same token → same row) — but the row was <em>learned</em>, not derived from the
+spelling. (Train again with a different random seed and &ldquo;fox&rdquo; settles on a different,
+equally-good vector.) Tokens used in similar contexts get pushed toward similar rows — which is exactly why
+the clusters above emerge on their own, with no one labelling them.</p>
+"""),
   ("code", "01", "class Block(nn.Module):", "One block, then the full GPT assembled from blocks."),
   ("gloss", r"""
 <p><b>The block</b> is the two-line heart: <code>x = x + self.attn(self.ln1(x), mask)</code>
