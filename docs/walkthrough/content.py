@@ -281,6 +281,8 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 .topnav a{color:#aebbdd;text-decoration:none;}
 .topnav a:hover{color:#fff;}
 .topnav a.active{color:#fff;font-weight:700;}
+.topnav a.hub{margin-left:auto;color:#9fb2e8;}
+.topnav a.hub:hover{color:#fff;}
 .topnav .muted{color:#5e6b88;}
 .topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
 {{ pygments_css }}
@@ -290,6 +292,7 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 
 <nav class="topnav"><div class="inner">
 {% for n in nav %}{% if n.href %}<a href="{{ n.href }}"{% if n.active %} class="active"{% endif %}>{{ n.label }}</a>{% else %}<span class="muted">{{ n.label }}{% if n.note %} <em>({{ n.note }})</em>{% endif %}</span>{% endif %}{% endfor %}
+<a class="hub" href="{{ hub_url }}">AI Knowledge Hub ↗</a>
 </div></nav>
 
 <header class="hero"><div class="inner">{{ hero }}</div></header>
@@ -340,6 +343,8 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
   <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
   (Eldan &amp; Li, Microsoft Research).</p>
+  <p>Part of <strong>John E. Milad's</strong> <a href="{{ hub_url }}">AI Knowledge Hub</a> — a
+  curated, hands-on library for the AI era.</p>
 </footer>
 
 </body>
@@ -1296,12 +1301,23 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .foot{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
   font-size:14px;color:#aebbdd;line-height:1.6;}
 .foot a{color:#a9c0ff;text-decoration:none;}
-@media (max-width:680px){.cards{grid-template-columns:1fr;} h1{font-size:32px;}}
+.kicker a{color:#9fb2e8;text-decoration:none;border-bottom:1px solid rgba(159,178,232,.4);}
+.kicker a:hover{color:#cfd9f3;}
+.about{display:flex;gap:26px;align-items:flex-start;margin-top:48px;padding-top:34px;
+  border-top:1px solid rgba(255,255,255,.12);}
+.about img.avatar{width:104px;height:auto;border-radius:12px;flex:none;
+  box-shadow:0 2px 14px rgba(0,0,0,.35);}
+.about h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#9fb2e8;margin:2px 0 12px;}
+.about p{font-size:16px;line-height:1.6;color:#cfd9f3;margin:0 0 14px;}
+.about a{color:#a9c0ff;text-decoration:none;border-bottom:1px solid rgba(169,192,255,.4);}
+.about a.cta-link{display:inline-block;margin-top:2px;font-weight:600;}
+.about a.cta-link:hover{color:#fff;}
+@media (max-width:680px){.cards{grid-template-columns:1fr;} h1{font-size:32px;} .about{flex-direction:column;gap:18px;}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <p class="kicker">{{ landing.kicker }}</p>
+  <p class="kicker"><a href="{{ hub_url }}">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
   <h1>{{ landing.h1 }}</h1>
   <p class="lede">{{ landing.lede }}</p>
 
@@ -1335,9 +1351,26 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     {% endif %}
   </div>
 
+  {% if headshot %}
+  <section class="about">
+    <img class="avatar" src="{{ headshot }}" alt="John E. Milad"/>
+    <div class="about-text">
+      <h2>About</h2>
+      <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few
+      years deep in modern AI — using it daily, building with it, and working out what's worth
+      knowing. slm-lab is one hands-on piece of that.</p>
+      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
+      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, dated library for the AI era:
+      the tools, the practices, and a zero-to-shipping learning path.<br/>
+      <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
+    </div>
+  </section>
+  {% endif %}
+
   <p class="foot">
     Open source (MIT): <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
-    &nbsp;·&nbsp; by John E. Milad &nbsp;·&nbsp; builds on nanoGPT, Apple MLX, and TinyStories.
+    &nbsp;·&nbsp; by John E. Milad &nbsp;·&nbsp; builds on nanoGPT, Apple MLX, and TinyStories.<br/>
+    Part of the <a href="{{ hub_url }}">AI Knowledge Hub</a>.
   </p>
 </div>
 </body>

@@ -201,9 +201,20 @@ def _esc(s: str) -> str:
 
 # -------------------------------------------------------------------- assemble --
 SITE = Path(__file__).resolve().parent / "site"   # multi-page output root
+# slm-lab lives within the public AI Knowledge Hub (cross-branding).
+HUB_URL = "https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566"
 
 
-def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note):
+def _asset_uri(name: str) -> str:
+    """base64 a file from assets/ as a data URI (e.g. the headshot). '' if missing."""
+    p = Path(__file__).resolve().parent / "assets" / name
+    if not p.exists():
+        return ""
+    mime = "image/jpeg" if p.suffix.lower() in (".jpg", ".jpeg") else "image/png"
+    return f"data:{mime};base64," + base64.b64encode(p.read_bytes()).decode()
+
+
+def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, hub_url):
     """Render one chapter page (Track A or Track B) from its sections."""
     rendered = []
     for sec in sections:
@@ -218,7 +229,8 @@ def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note):
         toc.append({"id": sec["id"], "num": sec.get("num", ""), "title": sec["title"]})
     return tmpl.render(
         meta=meta, hero=hero, sections=rendered, toc=toc, primer=primer,
-        nav=nav, footer_note=footer_note, pygments_css=_fmt.get_style_defs(".hl"),
+        nav=nav, footer_note=footer_note, hub_url=hub_url,
+        pygments_css=_fmt.get_style_defs(".hl"),
     )
 
 
@@ -251,7 +263,7 @@ def main():
     html_a = _render_chapter(
         page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
         primer=content.PYTHON_PRIMER, nav=nav_a,
-        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.",
+        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
     )
     (SITE / "track-a").mkdir(parents=True, exist_ok=True)
     (SITE / "track-a" / "index.html").write_text(html_a)
@@ -267,7 +279,7 @@ def main():
         html_b = _render_chapter(
             page_tmpl, meta=content_b.META, hero=content_b.HERO, sections=content_b.SECTIONS,
             primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_b,
-            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.",
+            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
         )
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
         (SITE / "track-b" / "index.html").write_text(html_b)
@@ -275,7 +287,8 @@ def main():
 
     # --- Landing hub → site/index.html ---
     html_l = landing_tmpl.render(meta=content.LANDING_META, landing=content.LANDING,
-                                 track_b_live=track_b_live)
+                                 track_b_live=track_b_live, hub_url=HUB_URL,
+                                 headshot=_asset_uri("jem-headshot.jpg"))
     SITE.mkdir(parents=True, exist_ok=True)
     (SITE / "index.html").write_text(html_l)
     written.append(("index.html (landing)", len(html_l), 0))
