@@ -417,123 +417,253 @@ CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training c
 #  SECTIONS — the walk-through itself
 # ===========================================================================
 
-LINEAR_SVG = r'''<svg viewBox="0 0 860 648" role="img" aria-label="A linear layer. One token becomes a list of 256 numbers (its embedding); one output is a weighted sum of that one token's numbers; stacking a row of weights per output gives W (y=Wx+b); and one such layer is a tiny slice of the whole ~3.2M-parameter model, whose weights are shared across every token.">
+LINEAR_SVG = r'''<svg viewBox="0 0 880 656" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers); one output is a weighted sum; stacking a row of weights per output gives W (y=Wx+b) where columns are inputs and rows are outputs; one layer is a tiny slice of the 3.24M-parameter model.">
 <defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >① One output is a weighted sum of one token's numbers</text>
-<rect x="46" y="113" width="52" height="34" rx="9" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="72" y="134" text-anchor="middle" font-size="13" fill="#1c2230" font-weight="700" >fox</text>
-<text x="72" y="162" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >one token</text>
-<line x1="102" y1="130" x2="142" y2="130" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<text x="122" y="122" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >becomes</text>
-<text x="180" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >its numbers</text>
-<text x="180" y="63" text-anchor="middle" font-size="10" fill="#5a6373" font-weight="400" >(x — 4 of its 256)</text>
-<rect x="150" y="72" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="90.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="150" y="101" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="119.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="150" y="130" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="148.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="150" y="159" width="60" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="177.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="226" y="91.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
-<text x="226" y="120.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
-<text x="226" y="149.5" text-anchor="middle" font-size="15" fill="#5a6373" font-weight="400" >×</text>
-<text x="288" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
-<text x="288" y="63" text-anchor="middle" font-size="10" fill="#5a6373" font-weight="400" >(one per number, learned)</text>
-<rect x="240" y="72" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="270.0" y="90.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="240" y="101" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="270.0" y="119.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="240" y="130" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="270.0" y="148.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="240" y="159" width="60" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="270.0" y="177.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<path d="M306 76 q12 0 12 12 v18 q0 12 12 12 q-12 0 -12 12 v18 q0 12 -12 12" fill="none" stroke="#5a6373" stroke-width="1.3"/>
-<text x="332" y="113" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >add</text>
-<text x="332" y="127" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >them up</text>
-<text x="58" y="206" text-anchor="start" font-size="12.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  b₁</text>
-<text x="58" y="227" text-anchor="start" font-size="12.5" fill="#0e7a5f" font-weight="700" font-family="ui-monospace,Menlo,monospace">     =  0.62</text>
-<text x="58" y="247" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >A token is a word/word-piece, turned into a list of 256 numbers first (its embedding). The column is ONE token — each</text>
-<text x="58" y="261" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >cell is one of its numbers, not a separate token. Multiply each by its weight, sum, add a bias → one output.</text>
-<line x1="40" y1="278" x2="800" y2="278" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="304" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >② A layer has many outputs — one row of weights each. Stack the rows → the matrix W.</text>
-<rect x="80" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="110" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="140" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="170" y="330" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="80" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="110" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="140" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="170" y="360" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="80" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="110" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="140" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="170" y="390" width="30" height="30" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="78" y="328" width="124" height="34" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="140" y="321" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
-<text x="212" y="350.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" >⋯</text>
-<text x="230" y="350.0" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >← read a row across = output ①'s weights</text>
-<text x="58" y="440" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >each row of W is one output's weights (the top row is output ① above)</text>
-<text x="545" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="587" y="321" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x (one token)</text>
-<rect x="560" y="330" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="587.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="560" y="359" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="587.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="560" y="388" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="587.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="560" y="417" width="54" height="29" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="587.0" y="435.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="621" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="661" y="321" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b</text>
-<rect x="636" y="330" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="661.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
-<rect x="636" y="359" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="661.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
-<rect x="636" y="388" width="50" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="661.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
-<text x="693" y="378.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="733" y="321" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y (outputs)</text>
-<rect x="708" y="330" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="733.0" y="348.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
-<rect x="708" y="359" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="733.0" y="377.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
-<rect x="708" y="388" width="50" height="29" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="733.0" y="406.5" text-anchor="middle" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
-<text x="58" y="470" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
-<line x1="40" y1="490" x2="800" y2="490" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="516" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
-<rect x="62" y="536" width="92" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="108.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
-<text x="108.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
-<line x1="155" y1="558.0" x2="165" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="166" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="212.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
-<text x="212.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="259" y1="558.0" x2="269" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="270" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="316.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
-<text x="316.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="363" y1="558.0" x2="373" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="374" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="420.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
-<text x="420.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="467" y1="558.0" x2="477" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="478" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="524.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
-<text x="524.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="571" y1="558.0" x2="581" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="582" y="536" width="92" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="628.0" y="563" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
-<line x1="675" y1="558.0" x2="685" y2="558.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="686" y="536" width="92" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="732.0" y="556" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
-<text x="732.0" y="570" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >scores</text>
-<text x="160.0" y="530" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
-<rect x="267" y="533" width="98" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="316.0" y="596" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="620" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >Each block packs several W's (attention + the MLP); the embedding and head are W's too.</text>
-<text x="58" y="638" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >Add them all up → ~3.2M parameters in our tiny GPT — fixed after training, and the same set runs on every token.</text>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① A token → its embedding (256 numbers) — then one output is a weighted sum of them</text>
+<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >vocabulary</text>
+<rect x="46" y="70" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >the</text>
+<rect x="46" y="100" width="52" height="26" rx="7" fill="#d3e0ff" stroke="#3253d6" stroke-width="2.4"/>
+<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="700" >fox</text>
+<rect x="46" y="130" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >cat</text>
+<text x="72" y="164" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
+<line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
+<text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x — #1–3, then #256)</text>
+<rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="150" y="124" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="150" y="151" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="150" y="178" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="286" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
+<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(one per number)</text>
+<rect x="238" y="70" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="238" y="97" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="238" y="124" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="238" y="151" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="238" y="178" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<path d="M302 74 q11 0 11 11 v22 q0 11 11 11 q-11 0 -11 11 v22 q0 11 -11 11" fill="none" stroke="#5a6373" stroke-width="1.2"/>
+<text x="326" y="118" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
+<text x="326" y="131" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
+<text x="58" y="206" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
+<text x="58" y="232" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="248" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
+<line x1="40" y1="267" x2="820" y2="267" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="293" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >② A layer has many outputs — one row of weights each. Stack the rows → the matrix W.</text>
+<rect x="80" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="103.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="126" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="149.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="172" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="195.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="366" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="263.0" y="384.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="222" y="384.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="395" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="413.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="424" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="442.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="78" y="364" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="160" y="357" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
+<text x="300" y="385.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ①'s weights</text>
+<text x="300" y="400.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="475" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >each row of W is one output's weights (top row = output ① above; showing 3 of many output rows)</text>
+<text x="551" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
+<text x="593" y="357" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — inputs</text>
+<rect x="566" y="366" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="566" y="393" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="566" y="420" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="566" y="447" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="464.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="566" y="474" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="491.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="628" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
+<text x="668" y="357" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — outputs</text>
+<rect x="644" y="366" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="644" y="393" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="644" y="420" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<text x="700" y="411.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
+<text x="740" y="357" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — outputs</text>
+<rect x="716" y="366" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="383.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="716" y="393" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="410.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="716" y="420" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="437.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<text x="58" y="513" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >x has one number per input (matches W's columns); y and b have one per output (W's rows). The two counts are independent — a layer can map, say, 256 inputs → 1,024 outputs.</text>
+<text x="58" y="531" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
+<line x1="40" y1="540" x2="820" y2="540" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="566" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="586" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="109.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
+<text x="109.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
+<line x1="157" y1="608.0" x2="167" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="168" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="215.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
+<text x="215.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="263" y1="608.0" x2="273" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="274" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="321.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
+<text x="321.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="369" y1="608.0" x2="379" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="380" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="427.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
+<text x="427.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="475" y1="608.0" x2="485" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="486" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="533.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
+<text x="533.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="581" y1="608.0" x2="591" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="592" y="586" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="639.0" y="613" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
+<line x1="687" y1="608.0" x2="697" y2="608.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="698" y="586" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="745.0" y="606" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
+<text x="745.0" y="620" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >scores</text>
+<text x="162.0" y="580" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
+<rect x="271" y="583" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="321.0" y="646" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="670" text-anchor="start" font-size="11" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k are the embedding tables (each token's own 256-number profile); ~3.16M are the 4 blocks' shared W's; ~24k the head.</text>
+<text x="58" y="688" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+</svg>'''
+
+EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
+<line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) ↑</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
+<circle cx="395" cy="120" r="4" fill="#3253d6"/>
+<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<circle cx="440" cy="140" r="4" fill="#3253d6"/>
+<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<circle cx="405" cy="168" r="4" fill="#3253d6"/>
+<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<circle cx="455" cy="108" r="4" fill="#3253d6"/>
+<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
+<circle cx="175" cy="150" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="175" y="92" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="155" cy="140" r="4" fill="#3253d6"/>
+<text x="163" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="190" cy="165" r="4" fill="#3253d6"/>
+<text x="198" y="169" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
+<circle cx="130" cy="290" r="4" fill="#3253d6"/>
+<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<circle cx="173" cy="278" r="4" fill="#3253d6"/>
+<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
+<circle cx="128" cy="262" r="4" fill="#3253d6"/>
+<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
+</svg>'''
+
+EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
+<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
+<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
+<text x="238" y="223" text-anchor="end" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
+<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
+<text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg>'''
 
 SECTIONS = [
@@ -854,6 +984,27 @@ of tokens and predict the next — needs tokens to share information, which is <
 (<a href="#attention">§5</a>), not the linear layers. After the stack, the last position's vector is read
 out to predict the next token.</p>
 """),
+  ("prose", r"""
+<p>So what <em>are</em> those 256 numbers fox turns into? Here are two honest ways to picture an
+<strong>embedding</strong> — as a position in space, and as a profile of values.</p>
+"""),
+  ("callout", "aside", "Attributes = dimensions", r"""
+<p>A token's embedding is a point in <strong>256-dimensional space</strong> — 256 numbers, one per
+dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
+capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
+concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
+&ldquo;animal-ness&rdquo;, &ldquo;furriness&rdquo;, &ldquo;size&rdquo; — held lightly. (A token's
+<em>values</em> on the dimensions are part of the model's parameters; the dimensions themselves are the
+embedding's axes.)</p>
+"""),
+  ("diagram", EMBED_SCATTER_SVG,
+   "Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings "
+   "cluster. The axes are two of the 256 learned attributes/dimensions — loosely, fuzzy 'animal-ness' / "
+   "'size' (held lightly)."),
+  ("diagram", EMBED_HEATMAP_SVG,
+   "The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each "
+   "cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar "
+   "patterns; \"the\" differs."),
   ("code", "01", "class Block(nn.Module):", "One block, then the full GPT assembled from blocks."),
   ("gloss", r"""
 <p><b>The block</b> is the two-line heart: <code>x = x + self.attn(self.ln1(x), mask)</code>
@@ -1386,7 +1537,7 @@ chatbot you've used ends its turn in exactly this way.</p>
 <p>Every concept in this walk-through — tokens, attention, the loss, the training loop,
 temperature — reappears, unchanged in spirit, in Track B of this lab, where a real pretrained
 model is fine-tuned into a useful clinical-trial expert. You built the tiny one to <em>see</em>
-the machinery. The same machinery, scaled up and pointed at a real task, is the whole game.</p>
+the mechanism. The same mechanism, scaled up and pointed at a real task, is the whole game.</p>
 """),
   ("callout", "aside", "Run it yourself", r"""
 <p>Everything here is open source — the three notebooks, the terminal chat, and even the script
