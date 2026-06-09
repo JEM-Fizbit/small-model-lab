@@ -328,7 +328,7 @@ where it's built.</p>
     
       <a href="#embed"><span class="toc-num">3</span>Step 2: tokens become vectors (embeddings)</a>
     
-      <a href="#linear"><span class="toc-num">4</span>Step 3: the one operation everything is built from</a>
+      <a href="#linear"><span class="toc-num">4</span>Step 3: the linear layer (the core operation)</a>
     
       <a href="#activation"><span class="toc-num">5</span>Step 4: the bend (activations)</a>
     
@@ -339,9 +339,9 @@ where it's built.</p>
     
       <a href="#learn"><span class="toc-num">7</span>How it learns: loss, gradients, gradient descent</a>
     
-      <a href="#generate"><span class="toc-num">8</span>Generating text — and the one knob, temperature</a>
+      <a href="#generate"><span class="toc-num">8</span>Generating text, and the one knob: temperature</a>
     
-      <a href="#ceiling"><span class="toc-num">9</span>The honest ceiling — and where this goes</a>
+      <a href="#ceiling"><span class="toc-num">9</span>The honest ceiling, and where this goes</a>
     
     
   </nav>
@@ -534,7 +534,7 @@ the clusters above emerge on their own, with no one labelling them.</p>
       
       <div class="sec-head">
         <span class="sec-num">4</span>
-        <h2>Step 3: the one operation everything is built from</h2>
+        <h2>Step 3: the linear layer (the core operation)</h2>
       </div>
       <div class="prose">
 <p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
@@ -757,7 +757,7 @@ the next token hidden, let it guess, and measure how wrong the guess was with a 
 number smaller, over and over.</p>
 <p>The trick is knowing <em>which way</em> to nudge each of the millions of parameters. That's the
 <strong>gradient</strong>: for every parameter, the slope of the loss, telling you which direction, and how hard,
-reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it millions of
+reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it a few thousand
 times and coherent language emerges. This is <strong>gradient descent</strong>.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 640 300" role="img" aria-label="A loss landscape shaped like a valley. A ball sits partway up the left slope, with an arrow showing one step downhill toward the point of lowest loss.">
@@ -776,7 +776,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
-</svg><figcaption>Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower. Repeat millions of times and it settles near a valley: low loss, good predictions.</figcaption></figure>
+</svg><figcaption>Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower. Repeat a few thousand times and it settles near a valley: low loss, good predictions.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -816,7 +816,7 @@ gradient efficiently. It's the engine that makes training millions of parameters
       
       <div class="sec-head">
         <span class="sec-num">8</span>
-        <h2>Generating text — and the one knob, temperature</h2>
+        <h2>Generating text, and the one knob: temperature</h2>
       </div>
       <div class="prose">
 <p>Once trained, the model <em>generates</em> by running its prediction in a loop: feed the text so far,
@@ -834,7 +834,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
       
       <div class="sec-head">
         <span class="sec-num">9</span>
-        <h2>The honest ceiling — and where this goes</h2>
+        <h2>The honest ceiling, and where this goes</h2>
       </div>
       <div class="prose">
 <p>That's the whole machine: text → tokens → embeddings → stacks of (attention + <code>Wx+b</code> + a bend)
