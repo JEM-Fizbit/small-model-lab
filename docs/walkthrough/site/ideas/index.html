@@ -121,6 +121,7 @@ section:first-of-type{border-top:none;padding-top:0;}
   box-shadow:0 2px 10px rgba(20,28,60,.08);}
 .imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
   margin-top:10px;}
+.fignum{font-weight:700;color:var(--accent);margin-right:8px;scroll-margin-top:64px;}
 .diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
   padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
 .diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
@@ -396,7 +397,7 @@ for real, from the tiny model this lab builds in Part 1:</p>
 <text x="355" y="229" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">19.9%</text>
 <text x="30" y="266" font-size="10.5" fill="#5a6373">The scores sum to 100% across all 8,192 chunks. Training (§7) nudges the weights so the chunk that actually came next</text>
 <text x="30" y="282" font-size="10.5" fill="#5a6373">gets a bigger share; generating (§8) means picking from this menu, appending, and scoring again.</text>
-</svg><figcaption>One real prediction from the tiny tuned model this lab builds in Part 1: given the text so far, it puts a score on every chunk in its vocabulary. “park” isn't a stored fact; it's the strongest statistical echo of the stories it read.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>One real prediction from the tiny tuned model this lab builds in Part 1: given the text so far, it puts a score on every chunk in its vocabulary. “park” isn't a stored fact; it's the strongest statistical echo of the stories it read.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">A model is a function, not a mind</div><div class="callout-body">
 <p>It helps to picture a giant mathematical function: text in → a probability for every possible next
 token out. The function's behaviour is fixed by its <strong>parameters</strong>: millions of numbers
@@ -485,7 +486,7 @@ way to chop, and the choice matters enormously:</p>
 <text x="553" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#244</text>
 <text x="30" y="276" font-size="10.5" fill="#5a6373">Same text: 4 numbers instead of 16 (␣ marks the space each chunk carries). The model now reasons over meaningful pieces,</text>
 <text x="30" y="292" font-size="10.5" fill="#5a6373">and the same context window holds ~4× more story — most of the v1 → v2 quality leap in Part 1.</text>
-</svg><figcaption>The same sentence, tokenized two ways — with the real numbers from Part 1's notebooks: character IDs from notebook 01's vocabulary, BPE chunk IDs from notebook 02's.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways — with the real numbers from Part 1's notebooks: character IDs from notebook 01's vocabulary, BPE chunk IDs from notebook 02's.</figcaption></figure>
 <div class="prose">
 <p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
 pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
@@ -565,13 +566,13 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="600" y="243" text-anchor="middle" font-size="9" fill="#8a93a3">256 numbers</text>
 <text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#1c2230">fox · cat · dog → similar rows (similar meaning)</text>
 <text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#1c2230">“the” → different</text>
-</svg><figcaption>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 256 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 256 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;size&#8221; ↑</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
 <text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
@@ -583,12 +584,12 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
 <circle cx="455" cy="108" r="4" fill="#3253d6"/>
 <text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
-<circle cx="175" cy="150" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="175" y="92" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
-<circle cx="155" cy="140" r="4" fill="#3253d6"/>
-<text x="163" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
-<circle cx="190" cy="165" r="4" fill="#3253d6"/>
-<text x="198" y="169" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="262" cy="200" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="262" y="142" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="242" cy="190" r="4" fill="#3253d6"/>
+<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="277" cy="215" r="4" fill="#3253d6"/>
+<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
 <circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
 <circle cx="130" cy="290" r="4" fill="#3253d6"/>
@@ -597,7 +598,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
 <circle cx="128" cy="262" r="4" fill="#3253d6"/>
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
-</svg><figcaption>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions: loosely, fuzzy 'animal-ness' / 'size' (held lightly).</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions — loosely, 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
 <text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
 <text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
@@ -674,7 +675,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.5"/>
 <rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
 <text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
-</svg><figcaption>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
 <p>A token's embedding is a point in <strong>256-dimensional space</strong>: 256 numbers, one per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
@@ -859,7 +860,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
-</svg><figcaption>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
 <p>A token doesn't <em>have</em> parameters. The parameters (every <code>W</code> and <code>b</code>)
 <strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
@@ -944,7 +945,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
-</svg><figcaption>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball starts high on one slope and a dotted gradient-descent path of real downhill steps curves to the lowest point of the valley.">
 <defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8462e"/></marker></defs>
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
@@ -987,7 +988,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="52" y="210" font-size="12" fill="#5a6373" transform="rotate(-64 52 210)">loss (height) ↑</text>
 <text x="470" y="336" font-size="12" fill="#5a6373">weight 1 →</text>
 <text x="120" y="336" font-size="12" fill="#5a6373">← weight 2</text>
-</svg><figcaption>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1014,7 +1015,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
-</svg><figcaption>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1083,7 +1084,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#9a5b00" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#5a6373">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#5a6373">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
