@@ -171,34 +171,41 @@ JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, 
 <strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
 trials, and easy to score.</p>
 <p>The work is turning verbose, inconsistent registry data into normalised judgement: reading
-&ldquo;AstraZeneca&rdquo; and writing <code>large pharma</code>, or a raw <code>2026-09</code> completion
-date into <code>H2 2026</code>. That's why it needs a <em>model</em>, not a parser. Here is a real example
-(one of the project's hand-written reference cases):</p>
+&ldquo;Merck Sharp &amp; Dohme LLC&rdquo; and writing <code>large pharma</code>, or a raw
+<code>2021-06-08</code> completion date into <code>H1 2021</code>. That's why it needs a <em>model</em>,
+not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's actual output:</p>
 """),
   ("rawoutput", '''{
-  "brief_title": "A Phase 3 Study of Osimertinib vs Platinum-Pemetrexed in
-                  EGFR T790M-Positive Advanced NSCLC After First-Line EGFR-TKI",
-  "phases": ["PHASE3"],          "overall_status": "ACTIVE_NOT_RECRUITING",
-  "lead_sponsor": "AstraZeneca", "lead_sponsor_class": "INDUSTRY",
-  "primary_completion_date": "2026-09",
-  "conditions": ["Non-Small Cell Lung Cancer"],
-  "interventions": [{"type": "DRUG", "name": "Osimertinib"},
-                    {"type": "DRUG", "name": "Platinum-Pemetrexed"}],
-  "primary_outcomes": [{"measure": "Progression-free survival (PFS)"}],
-  "enrollment": 419, "allocation": "RANDOMIZED", "masking": "NONE", "n_arms": 2
-}''', "the input: a trial's record from ClinicalTrials.gov (trimmed to ~14 fields)"),
+  "brief_title": "Safety and Efficacy of Vicriviroc (MK-7690) in Combination With
+                  Pembrolizumab (MK-3475) in Advanced/Metastatic Microsatellite
+                  Stable (MSS) Colorectal Cancer (CRC)",
+  "phases": ["PHASE2"],          "overall_status": "COMPLETED",
+  "lead_sponsor": "Merck Sharp & Dohme LLC", "lead_sponsor_class": "INDUSTRY",
+  "primary_completion_date": "2021-06-08",
+  "conditions": ["Colorectal Neoplasms"],
+  "interventions": [{"type": "DRUG", "name": "Vicriviroc"},
+                    {"type": "BIOLOGICAL", "name": "Pembrolizumab"}],
+  "primary_outcomes": [{"measure": "Objective Response Rate (ORR) per RECIST 1.1"}],
+  "enrollment": 41, "allocation": "RANDOMIZED", "masking": "NONE", "n_arms": 2
+}''', "the input: NCT03631407's record from ClinicalTrials.gov (trimmed)"),
   ("rawoutput", '''{
-  "phase": "Phase 3",
-  "indication": "EGFR T790M+ advanced NSCLC, 2L",
-  "modality": "small molecule",
-  "primary_endpoint_type": "progression-free survival (PFS)",
+  "nct_id": "NCT03631407",
+  "phase": "Phase 2",
+  "indication": "Microsatellite stable (MSS) advanced/metastatic colorectal cancer",
+  "modality": "combination",
+  "primary_endpoint_type": "objective response rate (ORR)",
   "sponsor_type": "large pharma",
-  "est_readout": "H2 2026",
-  "risk_flags": ["open-label", "surrogate endpoint"],
-  "investor_note": "Registrational head-to-head of osimertinib vs chemo in resistant EGFR+
-                    NSCLC; a PFS win supports the second-line label expansion. Open-label
-                    design and PFS (not OS) primary are the main read-through caveats."
-}''', "TrialScout's output: the structured readout"),
+  "est_readout": "H1 2021",
+  "risk_flags": ["open-label", "surrogate endpoint", "biomarker-restricted",
+                 "small enrollment (<50)"],
+  "investor_note": "This randomized Phase 2 trial tests whether adding vicriviroc (a CCR5
+                    inhibitor) to pembrolizumab (anti-PD-1) improves ORR over pembrolizumab
+                    alone in MSS-CRC, a population historically excluded from checkpoint
+                    benefit — a positive result could support a new combination in this
+                    immunotherapy-resistant subgroup. Key caveats are the small actual
+                    enrollment of 41, ORR as a surrogate endpoint, and the biomarker-restricted
+                    (MSS only) population limiting addressable market breadth."
+}''', "TrialScout's actual output for this real trial"),
   ("filecode", "track-b-trialscout/schema/trial_readout.schema.json",
    "The output contract (excerpt): controlled vocabularies the model must pick from.",
    '"modality": {', "Empty array if none apply."),
