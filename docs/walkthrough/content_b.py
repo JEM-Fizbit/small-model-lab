@@ -398,10 +398,10 @@ doing a real job, well.</p>
  "id": "ab", "num": "7", "title": "Decide by eval, not by faith",
  "blocks": [
   ("prose", r"""
-<p>Which base model to fine-tune, Qwen3-4B or Google's Gemma 3n E2B? We didn't argue about it; we ran
+<p>Which base model to fine-tune, Qwen3-4B or Google's Gemma 4 E2B? We didn't argue about it; we ran
 both through the <em>same</em> harness and let the score decide. That's the discipline: model choice is a
 measurement, not a preference.</p>
-<p>In the end Qwen won by default and by margin. Gemma 3n E2B <em>failed to train at all</em>: the only
+<p>In the end Qwen won by default and by margin. Gemma 4 E2B <em>failed to train at all</em>: the only
 available checkpoint is a multimodal (vision+text) build whose weights the LoRA trainer couldn't target.
 And Qwen's 0.922 is so near the ceiling that even a perfectly-trained Gemma would have to beat it to flip
 the call, implausible on this task. So the measured decision is Qwen, robustly.</p>
