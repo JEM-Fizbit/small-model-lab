@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>How a language model works — the ideas</title>
+<title>How a language model works: the ideas</title>
 <style>
 :root{
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
@@ -290,7 +290,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <header class="hero" id="top"><div class="inner">
 <p class="kicker">slm-lab · Part 0 · Concepts</p>
 <h1>How a language model works</h1>
-<p class="lede">The ideas, in plain English, with no code — what a language model actually <em>is</em>,
+<p class="lede">The ideas, in plain English, with no code: what a language model actually <em>is</em>,
 how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. Read this first;
 then <a href="../track-a/">Part 1</a> builds every one of these ideas in real, runnable code, and
 <a href="../track-b/">Part 2</a> fine-tunes a real model into a useful expert.</p>
@@ -298,14 +298,14 @@ then <a href="../track-a/">Part 1</a> builds every one of these ideas in real, r
 <div class="bigidea">
   <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
   function</strong> with millions of adjustable numbers (its <strong>parameters</strong>) that, given
-  some text so far, predicts what comes next. <em>Training</em> tunes those numbers — millions of tiny
-  nudges — until coherent language falls out. <em>Generation</em> runs the function in a loop to write.</p>
+  some text so far, predicts what comes next. <em>Training</em> tunes those numbers (millions of tiny
+  nudges) until coherent language falls out. <em>Generation</em> runs the function in a loop to write.</p>
   <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
   what it has read, how it measures its own mistakes, and how it slowly improves.</p>
 </div>
 
 <p class="readnote"><strong>No Python here.</strong> This page is concepts and pictures only. Every idea
-reappears as real code in <a href="../track-a/">Part 1 · Pre-training</a> — each section links across to
+reappears as real code in <a href="../track-a/">Part 1 · Pre-training</a>; each section links across to
 where it's built.</p>
 </div></header>
 
@@ -324,20 +324,20 @@ where it's built.</p>
     
       <a href="#what"><span class="toc-num">1</span>What a model actually does</a>
     
-      <a href="#tokens"><span class="toc-num">2</span>Step 1 — text becomes numbers (tokens)</a>
+      <a href="#tokens"><span class="toc-num">2</span>Step 1: text becomes numbers (tokens)</a>
     
-      <a href="#embed"><span class="toc-num">3</span>Step 2 — tokens become vectors (embeddings)</a>
+      <a href="#embed"><span class="toc-num">3</span>Step 2: tokens become vectors (embeddings)</a>
     
-      <a href="#linear"><span class="toc-num">4</span>Step 3 — the one operation everything is built from</a>
+      <a href="#linear"><span class="toc-num">4</span>Step 3: the one operation everything is built from</a>
     
-      <a href="#activation"><span class="toc-num">5</span>Step 4 — the bend (activations)</a>
+      <a href="#activation"><span class="toc-num">5</span>Step 4: the bend (activations)</a>
     
-      <a href="#attention"><span class="toc-num">6</span>Step 5 — attention: letting tokens talk</a>
+      <a href="#attention"><span class="toc-num">6</span>Step 5: attention, letting tokens talk</a>
     
       <div class="toc-part">Learning</div>
       
     
-      <a href="#learn"><span class="toc-num">7</span>How it learns — loss, gradients, gradient descent</a>
+      <a href="#learn"><span class="toc-num">7</span>How it learns: loss, gradients, gradient descent</a>
     
       <a href="#generate"><span class="toc-num">8</span>Generating text — and the one knob, temperature</a>
     
@@ -356,16 +356,16 @@ where it's built.</p>
       </div>
       <div class="prose">
 <p>Strip away the mystique and a language model does one narrow thing: <strong>given the text so far,
-it predicts what comes next.</strong> Not whole thoughts — the next small chunk (a <em>token</em>:
+it predicts what comes next.</strong> Not whole thoughts, just the next small chunk (a <em>token</em>:
 a word or word-piece). To write a sentence it just does this over and over, each new token appended and
 fed back in. That's it. Everything else is machinery in service of making that one prediction good.</p>
 <p>So &ldquo;a model that writes&rdquo; is really a model that <em>scores what's likely next</em>, run in
-a loop. The skill isn't generating — it's the prediction underneath.</p>
+a loop. The skill isn't generating; it's the prediction underneath.</p>
 </div>
 <aside class="callout key"><div class="callout-title">A model is a function, not a mind</div><div class="callout-body">
 <p>It helps to picture a giant mathematical function: text in → a probability for every possible next
-token out. The function's behaviour is fixed by its <strong>parameters</strong> — millions of numbers
-set during training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote: just numbers, multiplied
+token out. The function's behaviour is fixed by its <strong>parameters</strong>: millions of numbers
+set during training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote, just numbers, multiplied
 and added, shaped by training to make good predictions.</p>
 </div></aside>
     </section>
@@ -374,14 +374,14 @@ and added, shaped by training to make good predictions.</p>
       
       <div class="sec-head">
         <span class="sec-num">2</span>
-        <h2>Step 1 — text becomes numbers (tokens)</h2>
+        <h2>Step 1: text becomes numbers (tokens)</h2>
       </div>
       <div class="prose">
 <p>A model can't do arithmetic on letters, so the first move is to turn text into numbers. The text is
-chopped into <strong>tokens</strong> — common chunks (whole words like <code>fox</code>, or word-pieces),
+chopped into <strong>tokens</strong>: common chunks (whole words like <code>fox</code>, or word-pieces),
 each with an integer <strong>ID</strong> (its index in a fixed list called the <em>vocabulary</em>).
 &ldquo;fox&rdquo; might be token #1234. That's all a token is to the model: an ID.</p>
-<p>The reverse runs at the end — the model's predicted ID is mapped back to its chunk of text, and the
+<p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
 pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
 </div>
     </section>
@@ -390,11 +390,11 @@ pieces are glued together into words. <a href="../track-a/#data">Part 1 builds t
       
       <div class="sec-head">
         <span class="sec-num">3</span>
-        <h2>Step 2 — tokens become vectors (embeddings)</h2>
+        <h2>Step 2: tokens become vectors (embeddings)</h2>
       </div>
       <div class="prose">
-<p>An ID like #1234 carries no <em>meaning</em> — #1235 isn't &ldquo;one more&rdquo; than fox. So each
-token is turned into a <strong>list of numbers</strong> — its <strong>embedding</strong> (256 numbers in
+<p>An ID like #1234 carries no <em>meaning</em>: #1235 isn't &ldquo;one more&rdquo; than fox. So each
+token is turned into a <strong>list of numbers</strong>, its <strong>embedding</strong> (256 numbers in
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 </div>
@@ -429,7 +429,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
 <circle cx="128" cy="262" r="4" fill="#3253d6"/>
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
-</svg><figcaption>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions — loosely, fuzzy 'animal-ness' / 'size' (held lightly).</figcaption></figure>
+</svg><figcaption>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions: loosely, fuzzy 'animal-ness' / 'size' (held lightly).</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
 <text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
 <text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
@@ -508,7 +508,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg><figcaption>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
-<p>A token's embedding is a point in <strong>256-dimensional space</strong> — 256 numbers, one per
+<p>A token's embedding is a point in <strong>256-dimensional space</strong>: 256 numbers, one per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
 capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
 concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
@@ -517,15 +517,15 @@ concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as
 embedding's axes.)</p>
 </div></aside>
 <aside class="callout key"><div class="callout-title">Where do the embeddings come from?</div><div class="callout-body">
-<p>Not from the letters, and not computed on the fly — they're <strong>learned, then looked up</strong>.
+<p>Not from the letters, and not computed on the fly: they're <strong>learned, then looked up</strong>.
 The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
-becomes an integer ID, and that ID simply <em>indexes the table</em> — row #ID <em>is</em> its 256 numbers.
+becomes an integer ID, and that ID simply <em>indexes the table</em>; row #ID <em>is</em> its 256 numbers.
 There's no arithmetic on <code>f-o-x</code>.</p>
 <p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
 other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
-the lookup is deterministic (same token → same row) — but the row was <em>learned</em>, not derived from the
+the lookup is deterministic (same token → same row), but the row was <em>learned</em>, not derived from the
 spelling. (Train again with a different random seed and &ldquo;fox&rdquo; settles on a different,
-equally-good vector.) Tokens used in similar contexts get pushed toward similar rows — which is exactly why
+equally-good vector.) Tokens used in similar contexts get pushed toward similar rows, which is exactly why
 the clusters above emerge on their own, with no one labelling them.</p>
 </div></aside>
     </section>
@@ -534,13 +534,13 @@ the clusters above emerge on their own, with no one labelling them.</p>
       
       <div class="sec-head">
         <span class="sec-num">4</span>
-        <h2>Step 3 — the one operation everything is built from</h2>
+        <h2>Step 3: the one operation everything is built from</h2>
       </div>
       <div class="prose">
 <p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
 <code>y = Wx + b</code>. It takes a vector of numbers in and produces a new vector out, where each output
 is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-output weight-rows into a grid
-<code>W</code> and the offsets into a vector <code>b</code>, and that's the whole layer — the school-line
+<code>W</code> and the offsets into a vector <code>b</code>, and that's the whole layer: the school-line
 <code>y = mx + c</code>, vectorised. The diagram below builds it from one output up to the whole model.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
@@ -557,7 +557,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
 <text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x — #1–3, then #256)</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x: #1–3, then #256)</text>
 <rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
@@ -588,10 +588,10 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
 <text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
 <text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
 <line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked — one row of weights each → the matrix W (so y = Wx + b)</text>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix W (so y = Wx + b)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
 <rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
@@ -619,9 +619,9 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
 <text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ① (the neuron above)</text>
 <text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown — each row is a different output (its own neuron)</text>
+<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
 <text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — inputs</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x: inputs</text>
 <rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
@@ -633,7 +633,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
 <text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — biases</text>
+<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b: biases</text>
 <rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
 <rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
@@ -643,7 +643,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <rect x="644" y="421" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — outputs</text>
+<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y: outputs</text>
 <rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
 <text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
 <rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
@@ -653,12 +653,12 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <text x="58" y="491" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x — it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs — m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT — not a single number — passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
 <rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
 <text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
@@ -690,17 +690,17 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg><figcaption>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
-<aside class="callout key"><div class="callout-title">Parameters vs. tokens — the part people mix up</div><div class="callout-body">
-<p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> and <code>b</code> —
+<aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
+<p>A token doesn't <em>have</em> parameters. The parameters (every <code>W</code> and <code>b</code>)
 <strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
 weights process every token, at every position. A token is just data flowing through them.</p>
-<p>And the weights in the picture are a tiny slice — <em>one output of one layer</em>. Our tiny GPT stacks
+<p>And the weights in the picture are a tiny slice: <em>one output of one layer</em>. Our tiny GPT stacks
 4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
 the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
-<p>And a linear layer transforms <em>one token at a time</em>. The model's real job — read a <em>string</em>
-of tokens and predict the next — needs tokens to share information, which is <em>attention</em>'s job
+<p>And a linear layer transforms <em>one token at a time</em>. The model's real job (read a <em>string</em>
+of tokens and predict the next) needs tokens to share information, which is <em>attention</em>'s job
 (next section), not the linear layers. After the stack, the last position's vector is read out to predict
 the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
 </div></aside>
@@ -710,12 +710,12 @@ the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
       
       <div class="sec-head">
         <span class="sec-num">5</span>
-        <h2>Step 4 — the bend (activations)</h2>
+        <h2>Step 4: the bend (activations)</h2>
       </div>
       <div class="prose">
 <p>Stacking linear layers alone is pointless: a stack of straight-line operations collapses into one
 straight line, and the model could only ever draw <em>lines</em>. So after each linear step the model
-applies one simple <strong>nonlinear</strong> function — a <em>bend</em>. That bend is what lets depth
+applies one simple <strong>nonlinear</strong> function: a <em>bend</em>. That bend is what lets depth
 model curves and combinations, not just proportions.</p>
 <p>Ours is <strong>GELU</strong> (a smooth version of ReLU). The famous textbook ones are <strong>ReLU</strong>
 (keep positives, zero the rest) and the <strong>sigmoid</strong> (squash any number into 0–1). The whole kit
@@ -727,13 +727,13 @@ is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas b
       
       <div class="sec-head">
         <span class="sec-num">6</span>
-        <h2>Step 5 — attention: letting tokens talk</h2>
+        <h2>Step 5: attention, letting tokens talk</h2>
       </div>
       <div class="prose">
-<p>Linear layers process each token on its own. But meaning depends on context — &ldquo;bank&rdquo; near
+<p>Linear layers process each token on its own. But meaning depends on context: &ldquo;bank&rdquo; near
 &ldquo;river&rdquo; vs near &ldquo;money.&rdquo; <strong>Attention</strong> is the one step where positions
 <em>look at each other</em>: each token forms a query and asks &ldquo;which earlier tokens matter to me?&rdquo;,
-then pulls in a blend of their information. It's how the model carries context forward — the part that makes
+then pulls in a blend of their information. It's how the model carries context forward, the part that makes
 it a <em>language</em> model and not a bag of independent words.</p>
 </div>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
@@ -748,15 +748,15 @@ builds attention →</a></p>
       <p class="part-banner">Part 0 · How learning works</p>
       <div class="sec-head">
         <span class="sec-num">7</span>
-        <h2>How it learns — loss, gradients, gradient descent</h2>
+        <h2>How it learns: loss, gradients, gradient descent</h2>
       </div>
       <div class="prose">
 <p>Where do the millions of parameters come from? <strong>Training.</strong> Show the model real text with
-the next token hidden, let it guess, and measure how wrong the guess was with a single number — the
+the next token hidden, let it guess, and measure how wrong the guess was with a single number: the
 <strong>loss</strong> (low = confident and right; high = wrong). Training is nothing more than making that
 number smaller, over and over.</p>
 <p>The trick is knowing <em>which way</em> to nudge each of the millions of parameters. That's the
-<strong>gradient</strong> — for every parameter, the slope of the loss: which direction, and how hard,
+<strong>gradient</strong>: for every parameter, the slope of the loss, telling you which direction, and how hard,
 reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it millions of
 times and coherent language emerges. This is <strong>gradient descent</strong>.</p>
 </div>
@@ -776,7 +776,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
-</svg><figcaption>Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower. Repeat millions of times and it settles near a valley — low loss, good predictions.</figcaption></figure>
+</svg><figcaption>Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower. Repeat millions of times and it settles near a valley: low loss, good predictions.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -821,10 +821,10 @@ gradient efficiently. It's the engine that makes training millions of parameters
       <div class="prose">
 <p>Once trained, the model <em>generates</em> by running its prediction in a loop: feed the text so far,
 get a probability for every next token, pick one, append it, repeat. &ldquo;Inference&rdquo; and
-&ldquo;generation&rdquo; are the same thing — running the function forward (no learning).</p>
+&ldquo;generation&rdquo; are the same thing: running the function forward (no learning).</p>
 <p>How you <em>pick</em> from the probabilities is the one knob worth feeling: <strong>temperature</strong>.
-Low temperature (~0.5) always grabs the most likely token — safe, repetitive. High (~1.1) samples more
-adventurously — varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
+Low temperature (~0.5) always grabs the most likely token: safe, repetitive. High (~1.1) samples more
+adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
 &ldquo;creative,&rdquo; and it changes nothing in the model — only how its output is sampled.
 <a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>
 </div>
@@ -838,18 +838,18 @@ adventurously — varied, riskier, sometimes incoherent. It's the dial between &
       </div>
       <div class="prose">
 <p>That's the whole machine: text → tokens → embeddings → stacks of (attention + <code>Wx+b</code> + a bend)
-→ a final prediction, all tuned by gradient descent. A <em>frontier</em> model is exactly this, scaled up —
+→ a final prediction, all tuned by gradient descent. A <em>frontier</em> model is exactly this, scaled up:
 more dimensions, more layers, vastly more text and compute. Same ideas; different magnitude.</p>
 <p>A from-scratch tiny model trained on a laptop will produce believable <em>shapes</em> of language but no
 real knowledge — that's the honest ceiling, and it's the point: you can see every moving part. To get
 something <em>useful</em>, you start from a model that has already paid the scale cost and
-<strong>specialise</strong> it — which is Part 2.</p>
+<strong>specialise</strong> it, which is Part 2.</p>
 </div>
 <aside class="callout key"><div class="callout-title">Now see it built</div><div class="callout-body">
 <p>Every idea here is built in real, runnable code next: <strong><a href="../track-a/">Part 1 ·
 Pre-training</a></strong> trains this tiny GPT from scratch, one piece at a time. Then
 <strong><a href="../track-b/">Part 2 · Post-training</a></strong> fine-tunes a real open model into a
-useful clinical-trial expert — the same concepts, doing a real job. ← back to
+useful clinical-trial expert, the same concepts doing a real job. ← back to
 <a href="../">the lab home</a>.</p>
 </div></aside>
     </section>
