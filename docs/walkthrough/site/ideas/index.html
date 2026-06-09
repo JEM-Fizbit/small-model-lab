@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>How a language model works: the ideas</title>
+<meta name="description" content="Part 0 · Concepts: the plain-English principles behind the build, no code."/>
+<meta property="og:title" content="How a language model works: the ideas"/>
+<meta property="og:description" content="Part 0 · Concepts: the plain-English principles behind the build, no code."/>
+<meta property="og:type" content="article"/>
 <style>
 :root{
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
@@ -172,6 +176,12 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   .hero h1{font-size:36px;}
   body{font-size:17px;}
 }
+/* phones: dense diagrams scroll sideways instead of shrinking to illegibility */
+@media (max-width:680px){
+  .diagram{overflow-x:auto;}
+  .diagram svg{min-width:640px;}
+  .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
+}
 /* top nav (between chapters) */
 .topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
   position:sticky;top:0;z-index:50;}
@@ -324,15 +334,15 @@ where it's built.</p>
     
       <a href="#what"><span class="toc-num">1</span>What a model actually does</a>
     
-      <a href="#tokens"><span class="toc-num">2</span>Step 1: text becomes numbers (tokens)</a>
+      <a href="#tokens"><span class="toc-num">2</span>Text becomes numbers (tokens)</a>
     
-      <a href="#embed"><span class="toc-num">3</span>Step 2: tokens become vectors (embeddings)</a>
+      <a href="#embed"><span class="toc-num">3</span>Tokens become vectors (embeddings)</a>
     
-      <a href="#linear"><span class="toc-num">4</span>Step 3: the linear layer (the core operation)</a>
+      <a href="#linear"><span class="toc-num">4</span>The linear layer (the core operation)</a>
     
-      <a href="#activation"><span class="toc-num">5</span>Step 4: the bend (activations)</a>
+      <a href="#activation"><span class="toc-num">5</span>The bend (activations)</a>
     
-      <a href="#attention"><span class="toc-num">6</span>Step 5: attention, letting tokens talk</a>
+      <a href="#attention"><span class="toc-num">6</span>Attention: letting tokens talk</a>
     
       <div class="toc-part">Learning</div>
       
@@ -374,7 +384,7 @@ and added, shaped by training to make good predictions.</p>
       
       <div class="sec-head">
         <span class="sec-num">2</span>
-        <h2>Step 1: text becomes numbers (tokens)</h2>
+        <h2>Text becomes numbers (tokens)</h2>
       </div>
       <div class="prose">
 <p>A model can't do arithmetic on letters, so the first move is to turn text into numbers. The text is
@@ -390,7 +400,7 @@ pieces are glued together into words. <a href="../track-a/#data">Part 1 builds t
       
       <div class="sec-head">
         <span class="sec-num">3</span>
-        <h2>Step 2: tokens become vectors (embeddings)</h2>
+        <h2>Tokens become vectors (embeddings)</h2>
       </div>
       <div class="prose">
 <p>An ID like #1234 carries no <em>meaning</em>: #1235 isn't &ldquo;one more&rdquo; than fox. So each
@@ -402,8 +412,8 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) ↑</text>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;size&#8221; ↑</text>
 <text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
@@ -534,7 +544,7 @@ the clusters above emerge on their own, with no one labelling them.</p>
       
       <div class="sec-head">
         <span class="sec-num">4</span>
-        <h2>Step 3: the linear layer (the core operation)</h2>
+        <h2>The linear layer (the core operation)</h2>
       </div>
       <div class="prose">
 <p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
@@ -710,7 +720,7 @@ the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
       
       <div class="sec-head">
         <span class="sec-num">5</span>
-        <h2>Step 4: the bend (activations)</h2>
+        <h2>The bend (activations)</h2>
       </div>
       <div class="prose">
 <p>Stacking linear layers alone is pointless: a stack of straight-line operations collapses into one
@@ -727,7 +737,7 @@ is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas b
       
       <div class="sec-head">
         <span class="sec-num">6</span>
-        <h2>Step 5: attention, letting tokens talk</h2>
+        <h2>Attention: letting tokens talk</h2>
       </div>
       <div class="prose">
 <p>Linear layers process each token on its own. But meaning depends on context: &ldquo;bank&rdquo; near
@@ -823,7 +833,7 @@ gradient efficiently. It's the engine that makes training millions of parameters
 get a probability for every next token, pick one, append it, repeat. &ldquo;Inference&rdquo; and
 &ldquo;generation&rdquo; are the same thing: running the function forward (no learning).</p>
 <p>How you <em>pick</em> from the probabilities is the one knob worth feeling: <strong>temperature</strong>.
-Low temperature (~0.5) always grabs the most likely token: safe, repetitive. High (~1.1) samples more
+Low temperature (~0.5) almost always grabs the most likely token: safe, repetitive. High (~1.1) samples more
 adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
 &ldquo;creative,&rdquo; and it changes nothing in the model — only how its output is sampled.
 <a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>
@@ -860,8 +870,7 @@ useful clinical-trial expert, the same concepts doing a real job. ← back to
 </div>
 
 <footer id="bottom">
-  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
-  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Hand-authored concepts, assembled by <code>build.py</code> — no code on this page by design; every idea here is built in real, runnable code in Part 1, where each code block is pulled straight from the live notebooks.</p>
   <p>Open source:
   <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
   &nbsp;·&nbsp; notebooks

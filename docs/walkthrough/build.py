@@ -214,7 +214,7 @@ def _asset_uri(name: str) -> str:
     return f"data:{mime};base64," + base64.b64encode(p.read_bytes()).decode()
 
 
-def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, hub_url):
+def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, footer_gen, hub_url):
     """Render one chapter page (Track A or Track B) from its sections."""
     rendered = []
     for sec in sections:
@@ -229,7 +229,7 @@ def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, hub
         toc.append({"id": sec["id"], "num": sec.get("num", ""), "title": sec["title"]})
     return tmpl.render(
         meta=meta, hero=hero, sections=rendered, toc=toc, primer=primer,
-        nav=nav, footer_note=footer_note, hub_url=hub_url,
+        nav=nav, footer_note=footer_note, footer_gen=footer_gen, hub_url=hub_url,
         pygments_css=_fmt.get_style_defs(".hl"),
     )
 
@@ -279,7 +279,11 @@ def main():
         html0 = _render_chapter(
             page_tmpl, meta=content_concepts.META, hero=content_concepts.HERO,
             sections=content_concepts.SECTIONS, primer="", nav=nav_for("ideas"),
-            footer_note="Part 0 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
+            footer_note="Part 0 of the <strong>slm-lab</strong> walk-through.",
+            footer_gen="Hand-authored concepts, assembled by <code>build.py</code> — no code on "
+                       "this page by design; every idea here is built in real, runnable code in "
+                       'Part 1, where each code block is pulled straight from the live notebooks.',
+            hub_url=HUB_URL,
         )
         (SITE / "ideas").mkdir(parents=True, exist_ok=True)
         (SITE / "ideas" / "index.html").write_text(html0)
@@ -289,7 +293,11 @@ def main():
     html_a = _render_chapter(
         page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
         primer=content.PYTHON_PRIMER, nav=nav_for("track-a"),
-        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
+        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.",
+        footer_gen="Generated from the live notebooks by <code>build.py</code> — every code block "
+                   "and output above is pulled straight from the Jupyter notebooks, so what you "
+                   "read is what actually ran.",
+        hub_url=HUB_URL,
     )
     (SITE / "track-a").mkdir(parents=True, exist_ok=True)
     (SITE / "track-a" / "index.html").write_text(html_a)
@@ -300,7 +308,11 @@ def main():
         html_b = _render_chapter(
             page_tmpl, meta=content_b.META, hero=content_b.HERO, sections=content_b.SECTIONS,
             primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_for("track-b"),
-            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
+            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.",
+            footer_gen="Generated from the live repo by <code>build.py</code> — every code excerpt "
+                       "above is pulled straight from the Track B source files, so what you read "
+                       "is what actually runs.",
+            hub_url=HUB_URL,
         )
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
         (SITE / "track-b" / "index.html").write_text(html_b)

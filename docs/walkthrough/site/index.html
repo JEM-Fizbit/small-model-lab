@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>slm-lab: build a small language model, explained</title>
+<meta name="description" content="A hands-on, no-black-box lab: the concepts, a tiny GPT built from scratch, and a real open model fine-tuned into a useful expert — explained for the curious."/>
+<meta property="og:title" content="slm-lab: build a small language model, explained"/>
+<meta property="og:description" content="A hands-on, no-black-box lab: the concepts, a tiny GPT built from scratch, and a real open model fine-tuned into a useful expert — explained for the curious."/>
+<meta property="og:type" content="website"/>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#10182f;color:#eaeefb;
@@ -15,10 +19,10 @@ body{margin:0;background:#10182f;color:#eaeefb;
 h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
 .lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
-.card{display:flex;flex-direction:column;}
+.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:24px;transition:.15s;}
 .card .go{margin-top:auto;}
-.card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:24px;transition:.15s;}
 a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
 .card .part{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9fb2e8;font-weight:700;}
 .card h2{font-size:21px;margin:8px 0 10px;line-height:1.25;}

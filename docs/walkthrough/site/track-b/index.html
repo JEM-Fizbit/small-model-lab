@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Fine-tuning a small model into a useful expert: TrialScout</title>
+<meta name="description" content="Part 2: take a pretrained open model and make it do a real job, locally and for free."/>
+<meta property="og:title" content="Fine-tuning a small model into a useful expert: TrialScout"/>
+<meta property="og:description" content="Part 2: take a pretrained open model and make it do a real job, locally and for free."/>
+<meta property="og:type" content="article"/>
 <style>
 :root{
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
@@ -172,6 +176,12 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   .hero h1{font-size:36px;}
   body{font-size:17px;}
 }
+/* phones: dense diagrams scroll sideways instead of shrinking to illegibility */
+@media (max-width:680px){
+  .diagram{overflow-x:auto;}
+  .diagram svg{min-width:640px;}
+  .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
+}
 /* top nav (between chapters) */
 .topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
   position:sticky;top:0;z-index:50;}
@@ -298,7 +308,7 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
 
 <div class="bigidea">
   <p><strong>The whole idea:</strong> a giant model already knows language; we don't re-teach that.
-  We just <em>specialise</em> it for one narrow, structured task, by showing it a few thousand
+  We just <em>specialise</em> it for one narrow, structured task, by showing it ~1,500
   worked examples and nudging a tiny set of its parameters. The result beats a sensible baseline
   by a mile and nearly matches the expensive model that taught it.</p>
   <p>Every concept from Part 1 reappears (tokens, attention, the loss, gradient descent), now in
@@ -360,8 +370,7 @@ its vocabulary.</p>
     
       <a href="#arc"><span class="toc-num">10</span>The arc, closed: running it yourself</a>
     
-    <div class="toc-part">Reference</div>
-    <a href="#primer"><span class="toc-num">↪</span>Python primer</a>
+    
   </nav>
 
   <main>
@@ -386,7 +395,7 @@ readout. That's <em>post-training</em>, and it's how almost every useful model y
 <p>A 4B model will never be a great general analyst, but it can be excellent at one
 <em>narrow, structured</em> task. Trial-record → fixed-schema-JSON is exactly that shape: bounded
 inputs, a controlled vocabulary out. Get it right and you have an expert that runs locally, costs
-nothing per call, needs no internet, and answers in a second: things a frontier API can't all
+nothing per call, needs no internet, and answers in seconds: things a frontier API can't all
 offer at once.</p>
 </div></aside>
     </section>
@@ -408,7 +417,7 @@ you can scan, filter, compare, and screen at a glance, instead of reading regist
 <p>Concretely: every trial has a public record on <strong>ClinicalTrials.gov</strong>, the US government
 registry of studies. Each record is semi-structured data (a title, phase, status, lead sponsor, the
 conditions and drugs under test, the primary outcome measure, key dates, enrollment, trial design) plus
-free text. We fetch it from the registry's API and trim it to the ~14 fields that matter:
+free text. We fetch it from the registry's API and trim it to the ~20 fields that matter:
 <strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
 JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
 <code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
@@ -506,8 +515,8 @@ extraction task (SEC filings, lab reports, support tickets), not just trials.</p
         <h2>Distillation: a strong model writes the textbook</h2>
       </div>
       <div class="prose">
-<p>To fine-tune the student we need thousands of correct examples: trial in, perfect readout out.
-Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
+<p>To fine-tune the student we need a pile of correct examples (1,500 here): trial in, perfect readout
+out. Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
 model (Claude Sonnet) reads each trial and writes the gold answer, and the small student then learns
 to reproduce those answers. The teacher's judgement becomes the student's training data.</p>
 </div>
@@ -549,7 +558,7 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <text x="198" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">read</text>
 <text x="408" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">writes answers</text>
 <text x="618" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">fine-tune</text>
-</svg><figcaption>Distillation: the expensive teacher (Claude) writes structured answers for thousands of trials; those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce.</figcaption></figure>
+</svg><figcaption>Distillation: the expensive teacher (Claude) writes structured answers for 1,500 trials; those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="n">system</span><span class="o">=</span><span class="n">SYS</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
@@ -577,7 +586,7 @@ bite, hard, in §8.)</p>
 </div></aside>
 <aside class="callout aside"><div class="callout-title">Automating a job that used to be manual</div><div class="callout-body">
 <p>The slow, expensive part of supervised learning has always been <em>getting the labels</em>: a human
-reading each example and hand-writing the answer. Labeling a few thousand trials that way would take an
+reading each example and hand-writing the answer. Labeling 1,500 trials that way would take an
 analyst weeks. Distillation collapses it to a few hours and about <strong>$14</strong>: the teacher does
 the tedious annotation. Cheap, fast, scalable labeled data is one of the biggest unlocks in modern ML,
 and the same move works for <em>any</em> structured-extraction task, not just trials.</p>
@@ -689,7 +698,7 @@ English?&rdquo;, useless for &ldquo;is this <em>correct</em>?&rdquo;. A useful m
 scorecard. So the eval harness is a first-class deliverable, not an afterthought: it runs the student
 over the 150 held-out trials and scores each field against the gold answer.</p>
 </div>
-<figure class="imgfig diagram"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; structured fields are scored by F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+<figure class="imgfig diagram"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c2230">Gold test set</text>
@@ -698,8 +707,8 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 <text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">TrialScout</text>
 <text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#0e7a5f">predicts a readout</text>
 <rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
-<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">8 structured fields</text>
-<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ F1 / accuracy per field</text>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">6 structured fields</text>
+<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ accuracy / F1 per field</text>
 <rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
 <text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">investor_note (free text)</text>
 <text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#5a6373">→ Claude-as-judge</text>
@@ -737,13 +746,16 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
 in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
 value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
-compares each structured field to gold (accuracy and macro-F1 per field, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives against misses, 1.0 perfect),
-exactly the metrics the baseline was measured with, so the comparison is fair.</p>
+compares the six scoreable fields to gold (accuracy and macro-F1 for the four enums, exact match for
+<code>est_readout</code>, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives
+against misses, 1.0 perfect), exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 </div>
 <aside class="callout aside"><div class="callout-title">Two kinds of grading</div><div class="callout-body">
-<p>The eight structured fields grade themselves (string match against the enum). The one free-text field,
-<code>investor_note</code>, can't, so it's scored by <strong>Claude-as-judge</strong>: a separate model
-call rates the note for faithfulness. Automatic where possible, model-graded where necessary.</p>
+<p>Six structured fields grade themselves: the four enums by string match, <code>est_readout</code> by
+exact match, and the <code>risk_flags</code> set by overlap. Free text can't: <code>investor_note</code>
+is scored by <strong>Claude-as-judge</strong> (a separate model call rates the note for faithfulness),
+and <code>indication</code>, free text too, isn't auto-scored at all. Automatic where possible,
+model-graded where necessary.</p>
 </div></aside>
     </section>
     
@@ -919,56 +931,12 @@ just <em>read</em> it and take the method with you.</p>
     </section>
     
 
-    <section id="primer">
-      <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
-      <div class="prose">
-<p>You don't need this to follow the walk-through; the &ldquo;what this says&rdquo; boxes
-translate everything. But if you want to read the code itself, here are the few patterns
-that show up again and again. Learn these six and Python stops looking like noise.</p>
-
-<dl class="primer">
-  <dt><code>name = something</code></dt>
-  <dd><strong>Assignment.</strong> Give a value a name so you can refer to it later.
-  <code>vocab_size = 90</code> means &ldquo;from now on, <code>vocab_size</code> is 90.&rdquo;
-  The <code>=</code> is &ldquo;set to,&rdquo; not &ldquo;equals&rdquo; in the maths sense.</dd>
-
-  <dt><code>def do_thing(a, b):</code></dt>
-  <dd><strong>Define a function</strong>, a named, reusable recipe. <code>a, b</code> are
-  its inputs. Everything indented underneath belongs to it. Later, <code>do_thing(2, 3)</code>
-  <em>runs</em> the recipe with those inputs.</dd>
-
-  <dt><code>class GPT:</code></dt>
-  <dd><strong>A blueprint</strong> for an object that bundles data and behaviour together.
-  The model itself is one of these. <code>__init__</code> is the setup that runs once when
-  the object is created; <code>__call__</code> is &ldquo;what happens when you use it like a
-  function&rdquo;; so <code>model(x)</code> runs the model on input <code>x</code>.</dd>
-
-  <dt><code>for item in things:</code></dt>
-  <dd><strong>A loop.</strong> Do the indented steps once for each item: the engine of
-  training (&ldquo;for each step, improve a little&rdquo;) and of generation
-  (&ldquo;for each new word, predict one&rdquo;).</dd>
-
-  <dt><code>[ ... ]</code> and indentation</dt>
-  <dd>Square brackets make a <strong>list</strong> (an ordered collection). <strong>Indentation
-  is meaningful</strong> in Python: the spaces aren't decoration, they show what belongs
-  inside a function, loop, or block.</dd>
-
-  <dt><code>x @ y</code> and &ldquo;shapes&rdquo;</dt>
-  <dd>The data flowing through the model lives in <strong>arrays</strong>, grids of numbers.
-  An array's <strong>shape</strong> is its dimensions, e.g. <code>(B, T, C)</code> =
-  (how many examples at once, how many positions in each, how many numbers per position).
-  <code>@</code> is <strong>matrix multiplication</strong>, the bulk-arithmetic operation
-  that does almost all the work in a neural network. <code>mx</code> is Apple's array
-  library (MLX); think &ldquo;the thing that does fast maths on the GPU.&rdquo;</dd>
-</dl>
-</div>
-    </section>
+    
   </main>
 </div>
 
 <footer id="bottom">
-  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
-  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Generated from the live repo by <code>build.py</code> — every code excerpt above is pulled straight from the Track B source files, so what you read is what actually runs.</p>
   <p>Open source:
   <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
   &nbsp;·&nbsp; notebooks
