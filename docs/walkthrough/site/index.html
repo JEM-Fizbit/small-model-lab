@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>slm-lab — build a small language model, explained</title>
+<title>slm-lab: build a small language model, explained</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#10182f;color:#eaeefb;
@@ -14,7 +14,9 @@ body{margin:0;background:#10182f;color:#eaeefb;
   color:#9fb2e8;margin:0 0 14px;}
 h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
 .lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
+.card{display:flex;flex-direction:column;}
+.card .go{margin-top:auto;}
 .card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:24px;transition:.15s;}
 a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
@@ -26,7 +28,6 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
 .card.soon{opacity:.72;}
 .card.soon .go{color:#7e8bb0;}
-.card.start{margin-bottom:20px;border-color:rgba(127,224,176,.32);background:rgba(127,224,176,.06);}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
 .tag.live{background:#16432f;color:#7fe0b0;}
@@ -57,24 +58,24 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 <body>
 <div class="wrap">
   <p class="kicker"><a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
-  <h1>Build a small language model — and actually understand it</h1>
+  <h1>Build a small language model, and actually understand it</h1>
   <p class="lede">A hands-on, no-black-box lab. Start with the <em>concepts</em> (no code), then <em>build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open model into a useful expert. Explained for the curious.</p>
 
-  
-  <a class="card start" href="ideas/">
-    <div class="part">Part 0 · Concepts</div>
-    <h2>How a language model works <span class="tag live">start here</span></h2>
-    <p>The plain-English ideas, no code — what a model <em>is</em>, how text becomes numbers, what
-    &ldquo;learning&rdquo; means, and how the pieces fit, with diagrams. The grounding for Parts 1 &amp; 2.</p>
-    <span class="go">Read Part 0 &rarr;</span>
-  </a>
-  
   <div class="cards">
+    
+    <a class="card" href="ideas/">
+      <div class="part">Part 0 · Concepts</div>
+      <h2>How a language model works <span class="tag live">start here</span></h2>
+      <p>The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes
+      numbers, and what &ldquo;learning&rdquo; really means, with diagrams. The grounding for Parts 1 and 2.</p>
+      <span class="go">Read Part 0 &rarr;</span>
+    </a>
+    
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>
       <h2>A GPT from scratch <span class="tag live">live</span></h2>
-      <p>Build and train a tiny GPT one piece at a time — tokens, attention, the training
-      loop, <code>y = Wx + b</code>, sampling. Throwaway output by design; the point is to
+      <p>Build and train a tiny GPT one piece at a time: tokens, attention, the training loop,
+      <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to
       <em>see</em> how it works.</p>
       <span class="go">Read Part 1 &rarr;</span>
     </a>
@@ -82,9 +83,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     <a class="card" href="track-b/">
       <div class="part">Part 2 · Post-training</div>
       <h2>TrialScout: a useful expert <span class="tag live">live</span></h2>
-      <p>Take a <em>pretrained</em> open model and fine-tune/distill it into a measurably
-      useful tool — a clinical-trial record &rarr; a structured readout. Same concepts, now
-      doing a real job.</p>
+      <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
+      turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Read Part 2 &rarr;</span>
     </a>
     
@@ -98,10 +98,10 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
       hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every
       step narrated in plain English.</li>
       <li><strong>To make AI's concepts accessible to non-specialists.</strong> You shouldn't need to be
-      an ML engineer to build intuition for how these models actually work — and what they can and can't
+      an ML engineer to build intuition for how these models actually work, and what they can and can't
       do. No prior Python required to read along.</li>
       <li><strong>To leave reusable patterns, not just a demo.</strong> Each chapter is a template you
-      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2) —
+      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2):
       distilling a big model's judgement into a small, cheap one, and turning messy, unstructured data
       into clean structured summaries.</li>
     </ul>
@@ -112,10 +112,10 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     <div class="about-text">
       <h2>About me</h2>
       <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
-      deep in modern AI — using it daily, building with it, and working out what's worth knowing. slm-lab
+      deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab
       is one hands-on piece of that.</p>
       <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
-      <a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> — a curated, regularly-updated library for the AI era: the tools,
+      <a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools,
       the practices, and a zero-to-shipping learning path.<br/>
       <a class="cta-link" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">Explore the AI Knowledge Hub &rarr;</a></p>
     </div>

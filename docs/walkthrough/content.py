@@ -18,20 +18,20 @@ Block tuple kinds (handled in build.render_block):
 """
 
 META = {
-    "title": "Build a tiny GPT from scratch — Part 1 · Pre-training",
-    "subtitle": "Pre-training a language model from nothing, on a laptop — the real code, explained.",
+    "title": "Build a tiny GPT from scratch: Part 1 · Pre-training",
+    "subtitle": "Pre-training a language model from nothing, on a laptop: the real code, explained.",
 }
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
 <p class="kicker">slm-lab · Part 1 · Pre-training</p>
 <h1>Build a tiny GPT — from scratch</h1>
-<p class="lede">This is the <strong>build</strong>: we train a language model from nothing — no
-pre-trained weights, no magic — and watch it learn to write, walking through the <em>real code</em>
+<p class="lede">This is the <strong>build</strong>: we train a language model from nothing (no
+pre-trained weights, no magic) and watch it learn to write, walking through the <em>real code</em>
 line by line, for someone who is curious but doesn't necessarily write Python.</p>
 
 <div class="bigidea">
-  <p><strong>New to the ideas?</strong> Read <a href="../ideas/">Part 0 · Concepts</a> first — with no
+  <p><strong>New to the ideas?</strong> Read <a href="../ideas/">Part 0 · Concepts</a> first. With no
   code, it explains what a model <em>is</em>, how text becomes numbers, what &ldquo;learning&rdquo; means,
   and how the pieces fit (with all the diagrams). This page assumes that groundwork and focuses on
   building it; each step links back to the matching idea in Part 0.</p>
@@ -39,9 +39,9 @@ line by line, for someone who is curious but doesn't necessarily write Python.</
 
 <p class="readnote"><strong>How to read this.</strong> Top to bottom. Each step is the plain idea in a
 line or two, then the actual code in a dark box, then a &ldquo;what this says&rdquo; translation. You can
-skip the code boxes entirely and still follow along — or read them closely and learn to recognise what
+skip the code boxes entirely and still follow along, or read them closely and learn to recognise what
 Python is doing. A one-page <a href="#primer">Python primer</a> at the end explains the handful of symbols
-that recur. Every code box is real — pulled straight from the project's Jupyter notebooks (code, notes,
+that recur. Every code box is real, pulled straight from the project's Jupyter notebooks (code, notes,
 and live results in one document you run in your browser), which you can read and run yourself: the full
 source is on <a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (with each notebook and a
 from-zero <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">setup
@@ -50,7 +50,7 @@ guide</a> at the foot of the page).</p>
 
 # -------------------------------------------------------------- PYTHON PRIMER --
 PYTHON_PRIMER = r"""
-<p>You don't need this to follow the walk-through — the &ldquo;what this says&rdquo; boxes
+<p>You don't need this to follow the walk-through; the &ldquo;what this says&rdquo; boxes
 translate everything. But if you want to read the code itself, here are the few patterns
 that show up again and again. Learn these six and Python stops looking like noise.</p>
 
@@ -61,7 +61,7 @@ that show up again and again. Learn these six and Python stops looking like nois
   The <code>=</code> is &ldquo;set to,&rdquo; not &ldquo;equals&rdquo; in the maths sense.</dd>
 
   <dt><code>def do_thing(a, b):</code></dt>
-  <dd><strong>Define a function</strong> — a named, reusable recipe. <code>a, b</code> are
+  <dd><strong>Define a function</strong>, a named, reusable recipe. <code>a, b</code> are
   its inputs. Everything indented underneath belongs to it. Later, <code>do_thing(2, 3)</code>
   <em>runs</em> the recipe with those inputs.</dd>
 
@@ -69,23 +69,23 @@ that show up again and again. Learn these six and Python stops looking like nois
   <dd><strong>A blueprint</strong> for an object that bundles data and behaviour together.
   The model itself is one of these. <code>__init__</code> is the setup that runs once when
   the object is created; <code>__call__</code> is &ldquo;what happens when you use it like a
-  function&rdquo; — so <code>model(x)</code> runs the model on input <code>x</code>.</dd>
+  function&rdquo;; so <code>model(x)</code> runs the model on input <code>x</code>.</dd>
 
   <dt><code>for item in things:</code></dt>
-  <dd><strong>A loop.</strong> Do the indented steps once for each item — the engine of
+  <dd><strong>A loop.</strong> Do the indented steps once for each item: the engine of
   training (&ldquo;for each step, improve a little&rdquo;) and of generation
   (&ldquo;for each new word, predict one&rdquo;).</dd>
 
   <dt><code>[ ... ]</code> and indentation</dt>
   <dd>Square brackets make a <strong>list</strong> (an ordered collection). <strong>Indentation
-  is meaningful</strong> in Python: the spaces aren't decoration — they show what belongs
+  is meaningful</strong> in Python: the spaces aren't decoration, they show what belongs
   inside a function, loop, or block.</dd>
 
   <dt><code>x @ y</code> and &ldquo;shapes&rdquo;</dt>
-  <dd>The data flowing through the model lives in <strong>arrays</strong> — grids of numbers.
+  <dd>The data flowing through the model lives in <strong>arrays</strong>, grids of numbers.
   An array's <strong>shape</strong> is its dimensions, e.g. <code>(B, T, C)</code> =
   (how many examples at once, how many positions in each, how many numbers per position).
-  <code>@</code> is <strong>matrix multiplication</strong> — the bulk-arithmetic operation
+  <code>@</code> is <strong>matrix multiplication</strong>, the bulk-arithmetic operation
   that does almost all the work in a neural network. <code>mx</code> is Apple's array
   library (MLX); think &ldquo;the thing that does fast maths on the GPU.&rdquo;</dd>
 </dl>
@@ -423,7 +423,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
 <text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x — #1–3, then #256)</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x: #1–3, then #256)</text>
 <rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
@@ -454,10 +454,10 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
 <text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
 <text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
 <line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked — one row of weights each → the matrix W (so y = Wx + b)</text>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix W (so y = Wx + b)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
 <rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
@@ -485,9 +485,9 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
 <text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ① (the neuron above)</text>
 <text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown — each row is a different output (its own neuron)</text>
+<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
 <text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — inputs</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x: inputs</text>
 <rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
@@ -499,7 +499,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
 <text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — biases</text>
+<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b: biases</text>
 <rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
 <rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
@@ -509,7 +509,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <rect x="644" y="421" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — outputs</text>
+<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y: outputs</text>
 <rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
 <text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
 <rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
@@ -519,12 +519,12 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <text x="58" y="491" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x — it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs — m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT — not a single number — passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
 <rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
 <text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
 <text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
@@ -556,7 +556,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg>'''
 
 EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
@@ -679,30 +679,30 @@ SECTIONS = [
  "part_banner": "Stage 1 · Orientation",
  "blocks": [
   ("prose", r"""
-<p>This page is the <strong>build</strong>. For <em>what</em> a model is and how it works — next-token
-prediction, tokens, embeddings, attention, training — see <a href="../ideas/">Part 0 · Concepts</a>
+<p>This page is the <strong>build</strong>. For <em>what</em> a model is and how it works (next-token
+prediction, tokens, embeddings, attention, training) see <a href="../ideas/">Part 0 · Concepts</a>
 (no code); we lean on it throughout. The one thing worth restating here: a real model is the
 <em>same</em> idea at enormous scale, so building a <em>tiny</em> one where every part is visible teaches
 the shape of the whole field.</p>
-<p>We do it in <strong>two passes</strong> — which separates <em>knowing the parts</em> from
+<p>We do it in <strong>two passes</strong>, which separates <em>knowing the parts</em> from
 <em>knowing what matters</em>:</p>
 """),
   ("table", r"""
 <table>
 <thead><tr><th>Pass</th><th>What it does</th><th>Result</th></tr></thead>
 <tbody>
-<tr><td>Notebook 01 — <em>from scratch</em></td>
+<tr><td>Notebook 01 (<em>from scratch</em>)</td>
     <td>The simplest possible GPT, working one <strong>character</strong> at a time, built
     from raw parts so every moving piece is visible.</td>
     <td>English-shaped <strong>gibberish</strong>, on purpose. The goal is transparency, not quality.</td></tr>
-<tr><td>Notebook 02 — <em>tuned</em></td>
+<tr><td>Notebook 02 (<em>tuned</em>)</td>
     <td>Same architecture, plus the handful of upgrades that genuinely move quality
     (chiefly: working in word-chunks, not letters).</td>
-    <td>Recognisable <strong>little stories</strong> — the ceiling of a from-scratch model on a laptop.</td></tr>
+    <td>Recognisable <strong>little stories</strong>, the ceiling of a from-scratch model on a laptop.</td></tr>
 </tbody></table>
 """),
   ("callout", "key", "Why two passes", r"""
-<p>The jump from gibberish to coherent stories — same architecture, a few changes — is the
+<p>The jump from gibberish to coherent stories (same architecture, a few changes) is the
 most instructive thing in the project. It separates <em>knowing the parts</em> from
 <em>knowing what matters</em>. We build the parts first (the from-scratch pass), then turn the dials (the tuned pass).</p>
 """),
@@ -724,16 +724,16 @@ download.</p>
   ("prose", r"""
 <p>Every program starts by laying its tools on the bench. Here we load the array library, the
 neural-network building blocks, and the optimizer (the part that will adjust the model as it
-learns). One line prints the compute device — confirmation that the Mac's GPU is in play.</p>
+learns). One line prints the compute device, confirming the Mac's GPU is in play.</p>
 """),
   ("code", "01", "MLX device:"),
   ("gloss", r"""
 <p><b>Reading it:</b> the <code>import</code> lines bring in pre-written toolkits.
-<code>np</code> is <strong>NumPy</strong> — Python's classic, decades-old library for arrays of
+<code>np</code> is <strong>NumPy</strong>, Python's classic, decades-old library for arrays of
 numbers, the workhorse under most of scientific computing (here it does a little data prep on the
 CPU). <code>mx</code> is <strong>MLX</strong>, Apple's array library that runs on the Mac's GPU;
 it's deliberately NumPy-like, so the two look almost identical in use. <code>nn</code> holds the
-neural-net building blocks (layers and such), and <code>optim</code> is the optimizer — the part
+neural-net building blocks (layers and such), and <code>optim</code> is the optimizer, the part
 that adjusts the model as it learns. The last line prints which device will run the maths; on an
 M-series Mac it reports the GPU.</p>
 """),
@@ -745,9 +745,9 @@ M-series Mac it reports the GPU.</p>
  "blocks": [
   ("prose", r"""
 <p>A model can't read letters; it does arithmetic. So the very first job is
-<strong>tokenisation</strong> — a fixed dictionary that maps text to whole numbers and back.
+<strong>tokenisation</strong>, a fixed dictionary that maps text to whole numbers and back.
 Notebook 01 uses the simplest scheme imaginable: <strong>one number per character</strong>.
-Every distinct character it sees — every letter, space, comma — gets its own id. It's
+Every distinct character it sees (every letter, space, comma) gets its own id. It's
 inefficient, but maximally transparent: you can see <em>exactly</em> what the model sees.</p>
 <p>The text itself is <strong>TinyStories</strong>: thousands of very simple children's
 stories, written with a small vocabulary on purpose, so that a small model can actually learn
@@ -756,38 +756,38 @@ coherent English from them.</p>
   ("code", "01", "N_STORIES = 4000", "Stream a few thousand stories (no full download)."),
   ("gloss", r"""
 <p><b>Reading it:</b> <code>N_STORIES = 4000</code> sets how many stories to grab. The
-<code>try:</code> / <code>except:</code> pair is a safety net — &ldquo;<em>attempt</em> this;
-if anything goes wrong, do that instead&rdquo; — so the notebook never hard-fails if you happen
+<code>try:</code> / <code>except:</code> pair is a safety net (&ldquo;<em>attempt</em> this;
+if anything goes wrong, do that instead&rdquo;) so the notebook never hard-fails if you happen
 to be offline.</p>
 <ul>
-<li><code>load_dataset(..., streaming=True)</code> — open the TinyStories dataset as a
+<li><code>load_dataset(..., streaming=True)</code>: open the TinyStories dataset as a
 <b>stream</b>: pull stories one at a time on demand, rather than downloading the whole thing.</li>
-<li>the <code>for ... in ds:</code> loop — walk through the stream, tidy each story
-(<code>.strip()</code> trims stray whitespace) and add it to a growing <code>stories</code> list.
+<li>the <code>for ... in ds:</code> loop walks through the stream, tidies each story
+(<code>.strip()</code> trims stray whitespace) and adds it to a growing <code>stories</code> list.
 <code>if len(stories) >= N_STORIES: break</code> means &ldquo;once we have 4,000, stop.&rdquo;</li>
-<li><code>text = "\n\n".join(stories)</code> — glue all the stories into one big string, with a
+<li><code>text = "\n\n".join(stories)</code> glues all the stories into one big string, with a
 blank line between each. That single string is the raw material everything downstream learns from.</li>
-<li>the <code>except</code> branch — only runs if the download failed; it swaps in a tiny
+<li>the <code>except</code> branch only runs if the download failed; it swaps in a tiny
 built-in corpus so the rest of the notebook still works.</li>
 </ul>
 """),
   ("output", "01", "N_STORIES = 4000", "what it prints", 600),
   ("prose", r"""
 <p>Now we build the dictionary and convert the entire corpus into one long ribbon of integers.
-The last 10% is held back as a <strong>validation set</strong> — text the model never trains
-on — which later lets us tell genuine learning apart from mere memorising.</p>
+The last 10% is held back as a <strong>validation set</strong> (text the model never trains
+on) which later lets us tell genuine learning apart from mere memorising.</p>
 """),
   ("code", "01", "chars = sorted(set(text))"),
   ("gloss", r"""
 <p><b>Line by line:</b></p>
 <ul>
-<li><code>chars = sorted(set(text))</code> — find every <em>distinct</em> character and put
+<li><code>chars = sorted(set(text))</code> finds every <em>distinct</em> character and puts
 them in a fixed order. That ordered list <em>is</em> the vocabulary.</li>
-<li><code>stoi</code> / <code>itos</code> — two lookup tables: <b>s</b>tring-<b>to</b>-<b>i</b>nteger
+<li><code>stoi</code> / <code>itos</code> are two lookup tables: <b>s</b>tring-<b>to</b>-<b>i</b>nteger
 and back. (&ldquo;<code>a</code> is 27,&rdquo; &ldquo;27 is <code>a</code>.&rdquo;)</li>
-<li><code>encode</code> / <code>decode</code> — small recipes that run those lookups over a
+<li><code>encode</code> / <code>decode</code> are small recipes that run those lookups over a
 whole string. Encode turns text into numbers; decode turns numbers back into text.</li>
-<li><code>train_data, val_data</code> — split the encoded ribbon 90/10. The model studies the
+<li><code>train_data, val_data</code> split the encoded ribbon 90/10. The model studies the
 first part and is tested on the held-out tail.</li>
 </ul>
 """),
@@ -816,13 +816,13 @@ quizzes at once.</p>
 <p><b>In plain terms:</b> pick <code>batch_size</code> random starting points in the data.
 For each, take a window of <code>block_size</code> characters as the input <code>x</code>, and
 the <em>same window slid one place forward</em> as the answer <code>y</code>. Stacking many
-windows together (a &ldquo;batch&rdquo;) lets the GPU practise on all of them simultaneously —
-that's what makes training fast.</p>
+windows together (a &ldquo;batch&rdquo;) lets the GPU practise on all of them simultaneously,
+which is what makes training fast.</p>
 """),
   ("callout", "aside", "Why &ldquo;shifted by one&rdquo; is clever", r"""
 <p>It means we never have to label data by hand. The text <em>is</em> its own answer key:
 the next character is always sitting right there. This is why language models can train on raw
-text from the internet — the supervision is free.</p>
+text from the internet: the supervision is free.</p>
 """),
  ],
 },
@@ -832,7 +832,7 @@ text from the internet — the supervision is free.</p>
  "blocks": [
   ("prose", r"""
 <p>Before building the model we choose its size and how hard it will train. These are
-<strong>hyperparameters</strong> — settings <em>we</em> pick, as opposed to the millions of
+<strong>hyperparameters</strong>: settings <em>we</em> pick, as opposed to the millions of
 numbers the model will learn on its own. A founding principle of this lab is &ldquo;no magic
 numbers,&rdquo; so each one carries a note on what it does and which way to push it.</p>
 """),
@@ -840,12 +840,12 @@ numbers,&rdquo; so each one carries a note on what it does and which way to push
   ("gloss", r"""
 <p>The four shape dials decide capacity: <code>block_size</code> is how far back the model can
 see; <code>n_embd</code> is how many numbers describe each token: that list of numbers is the
-token's <strong>vector</strong> — a vector being simply an ordered list of numbers, e.g.
-<code>[0.31, -1.20, 0.05, …]</code> — and <code>n_embd</code> (256) is how long it is (the
+token's <strong>vector</strong> (a vector being simply an ordered list of numbers, e.g.
+<code>[0.31, -1.20, 0.05, …]</code>) and <code>n_embd</code> (256) is how long it is (the
 token's &ldquo;richness&rdquo;); <code>n_head</code> is how many relationships attention tracks
 in parallel; <code>n_layer</code>
-is how many times the whole reasoning block is stacked (depth). The training dials —
-<code>batch_size</code>, <code>learning_rate</code>, <code>max_steps</code> — decide how
+is how many times the whole reasoning block is stacked (depth). The training dials
+(<code>batch_size</code>, <code>learning_rate</code>, <code>max_steps</code>) decide how
 steadily and how long it learns. Bigger or longer is generally better and always slower; the
 art is the balance.</p>
 """),
@@ -853,21 +853,21 @@ art is the balance.</p>
 },
 
 {
- "id": "attention", "num": "5", "title": "Attention — the heart of it",
+ "id": "attention", "num": "5", "title": "Attention: the heart of it",
  "blocks": [
   ("prose", r"""
 <p>This is the one idea that makes a transformer a transformer. Everything else is plumbing.</p>
 <p><strong>The intuition.</strong> To predict the next word, a position needs to pull in
-relevant context from earlier words — but <em>which</em> earlier words matters, and it depends
+relevant context from earlier words, but <em>which</em> earlier words matters, and it depends
 on the sentence. In &ldquo;the dragon looked at the boy and <u>it</u>…&rdquo;, the word
 &ldquo;it&rdquo; should pay attention to &ldquo;dragon.&rdquo; <strong>Attention</strong> is
 the mechanism that lets every position decide, on the fly, how much to listen to each earlier
 position.</p>
 <p>The standard analogy is a <em>search</em>. Each token emits three things:</p>
 <ul>
-<li>a <strong>query</strong> — &ldquo;here's what I'm looking for,&rdquo;</li>
-<li>a <strong>key</strong> — &ldquo;here's what I'm about,&rdquo; and</li>
-<li>a <strong>value</strong> — &ldquo;here's what I'll hand over if you attend to me.&rdquo;</li>
+<li>a <strong>query</strong>: &ldquo;here's what I'm looking for,&rdquo;</li>
+<li>a <strong>key</strong>: &ldquo;here's what I'm about,&rdquo; and</li>
+<li>a <strong>value</strong>: &ldquo;here's what I'll hand over if you attend to me.&rdquo;</li>
 </ul>
 <p>A token compares its query against every earlier token's key. Good matches get high
 attention; the token then takes a weighted blend of those tokens' values. Strong match → big
@@ -875,7 +875,7 @@ say in the blend. That blend is how information moves between positions.</p>
 """),
   ("callout", "key", "Causal = no peeking", r"""
 <p>When predicting the next character, a token may only look <em>backward</em>. If it could see
-the future, the &ldquo;guess the next character&rdquo; game would be trivial — it would just
+the future, the &ldquo;guess the next character&rdquo; game would be trivial: it would just
 read the answer. We enforce this with a <strong>mask</strong> that blocks every forward-looking
 connection. This is what the &ldquo;causal&rdquo; in <em>causal self-attention</em> means.</p>
 """),
@@ -883,20 +883,20 @@ connection. This is what the &ldquo;causal&rdquo; in <em>causal self-attention</
   ("gloss", r"""
 <p><b>The mask</b> (<code>causal_mask</code>) builds a grid where allowed (past) connections
 are 0 and forbidden (future) ones are a huge negative number. Added to the raw scores, those
-−1,000,000,000 entries become effectively zero probability after the next step — future tokens
+−1,000,000,000 entries become effectively zero probability after the next step: future tokens
 are silenced.</p>
 <p><b>Inside the attention</b> (<code>__call__</code>), reading the important lines:</p>
 <ul>
-<li><code>q, k, v = mx.split(self.c_attn(x), 3, …)</code> — one matrix multiply produces all
+<li><code>q, k, v = mx.split(self.c_attn(x), 3, …)</code>: one matrix multiply produces all
 three vectors (query, key, value) for every token at once, then splits them apart.</li>
-<li>the <code>reshape</code>/<code>transpose</code> lines — split the work across several
+<li>the <code>reshape</code>/<code>transpose</code> lines split the work across several
 attention <em>heads</em>, so the model can track multiple kinds of relationship in parallel
 (one head might follow grammar, another who-did-what).</li>
-<li><code>scores = q @ transpose(k) … + mask</code> — compare every query against every key
-(that's the match score), scale for stability, and add the mask to block the future.</li>
-<li><code>weights = mx.softmax(scores)</code> — turn raw scores into clean percentages that sum
+<li><code>scores = q @ transpose(k) … + mask</code> compares every query against every key
+(that's the match score), scales for stability, and adds the mask to block the future.</li>
+<li><code>weights = mx.softmax(scores)</code> turns raw scores into clean percentages that sum
 to 100% across the allowed past.</li>
-<li><code>out = weights @ v</code> — the weighted blend of values. <em>This single line is
+<li><code>out = weights @ v</code> is the weighted blend of values. <em>This single line is
 where information actually flows between positions.</em></li>
 </ul>
 """),
@@ -908,7 +908,7 @@ and values <code>V</code>:</p>
 square root of the head size) keeps those scores from growing too large as the model widens.
 <code>softmax</code> normalises each row into probabilities; the <code>mask</code> adds −∞ to
 future positions so they vanish. Multiplying by <code>V</code> blends the values by those
-probabilities. The code above implements exactly this — plus the bookkeeping to run several
+probabilities. The code above implements exactly this, plus the bookkeeping to run several
 attention heads in parallel.</p>
 """),
  ],
@@ -919,26 +919,26 @@ attention heads in parallel.</p>
  "blocks": [
   ("prose", r"""
 <p>Attention gathers information across positions. The other half of a transformer block is a
-small <strong>MLP</strong> — two linear layers with a nonlinear &ldquo;bend&rdquo; (a GELU
+small <strong>MLP</strong>: two linear layers with a nonlinear &ldquo;bend&rdquo; (a GELU
 activation) between them, applied to each position on its own, giving the model room to
 &ldquo;think&rdquo; about what attention just collected. A <strong>block</strong> is simply:
 attention, then MLP. A GPT is just this block stacked <code>n_layer</code> times.</p>
 <p>Two supporting tricks make deep stacks trainable, and they're worth naming because they're
 everywhere in modern models:</p>
 <ul>
-<li><strong>Residual connections</strong> — <code>x = x + sublayer(x)</code>. Instead of
+<li><strong>Residual connections</strong> (<code>x = x + sublayer(x)</code>). Instead of
 replacing its input, each sub-layer <em>adds an adjustment</em> to it. This keeps a clean
 signal flowing through even a deep stack, which is what makes deep networks learnable at all.</li>
-<li><strong>LayerNorm</strong> — a normalisation step that keeps the numbers in a sane range so
+<li><strong>LayerNorm</strong>: a normalisation step that keeps the numbers in a sane range so
 the maths stays stable.</li>
 </ul>
 """),
   ("prose", r"""
-<p>Almost all of a block is two operations: a <strong>linear layer</strong> (<code>y = Wx + b</code> —
+<p>Almost all of a block is two operations: a <strong>linear layer</strong> (<code>y = Wx + b</code>,
 a weighted sum) and a nonlinear <strong>activation</strong> (a &ldquo;bend,&rdquo; GELU here). Stacked
 with attention, an <em>embedding</em> at the bottom and a <em>head</em> at the top, that's the whole
-network. The <em>why</em>, with the diagrams — what a linear layer computes, what an embedding is, how the
-256 numbers form a &ldquo;meaning space&rdquo; — is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
+network. The <em>why</em>, with the diagrams (what a linear layer computes, what an embedding is, how the
+256 numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
 Here we build the block in code.</p>
 """),
   ("code", "01", "class Block(nn.Module):", "One block, then the full GPT assembled from blocks."),
@@ -948,56 +948,56 @@ Here we build the block in code.</p>
 think, add back). That &ldquo;add back&rdquo; is the residual connection.</p>
 <p><b>The full GPT</b> wires the ends on:</p>
 <ul>
-<li><code>self.tok</code> — an <b>embedding</b> table turning each token id into a vector of
+<li><code>self.tok</code> is an <b>embedding</b> table turning each token id into a vector of
 <code>n_embd</code> learnable numbers (its meaning, to be discovered during training).</li>
-<li><code>self.pos</code> — a second embedding for <em>position</em>, because attention has no
+<li><code>self.pos</code> is a second embedding for <em>position</em>, because attention has no
 built-in sense of order; we must tell it where each token sits.</li>
-<li><code>self.blocks</code> — the stack of transformer blocks, run in sequence.</li>
-<li><code>self.head</code> — a final layer that turns each position's vector into a
+<li><code>self.blocks</code> is the stack of transformer blocks, run in sequence.</li>
+<li><code>self.head</code> is a final layer that turns each position's vector into a
 <strong>score for every possible next character</strong>. Those scores are called
 <em>logits</em>; they're the model's raw opinion about what comes next.</li>
 </ul>
-<p>The print line counts the model's learnable numbers — its <strong>parameters</strong>. This
-tiny one has about 3.2 million. (Frontier models have hundreds of <em>billions</em> — same
+<p>The print line counts the model's learnable numbers, its <strong>parameters</strong>. This
+tiny one has about 3.2 million. (Frontier models have hundreds of <em>billions</em>: same
 parts, more of them.)</p>
-<p>Running an input all the way through these layers to produce the logits — that whole
-left-to-right journey, <code>model(idx)</code> — is the model's <strong>forward pass</strong>
+<p>Running an input all the way through these layers to produce the logits (that whole
+left-to-right journey, <code>model(idx)</code>) is the model's <strong>forward pass</strong>
 (&ldquo;forward propagation&rdquo;). Right now it produces nonsense, because the weights are
-random. The next section is about fixing that — and the forward pass becomes step one of the
+random. The next section is about fixing that, and the forward pass becomes step one of the
 loop that does it.</p>
 """),
   ("output", "01", "class Block(nn.Module):", "what it prints"),
   ("prose", r"""
 <h3>Our model, by the numbers</h3>
 <p>So how big is the thing we just built? (&ldquo;How many neurons?&rdquo; has no clean answer for
-a transformer — the honest measures are its <em>width</em>, its <em>depth</em>, and its
+a transformer: the honest measures are its <em>width</em>, its <em>depth</em>, and its
 <em>parameter count</em>.)</p>
 """),
   ("table", r"""
 <table>
 <thead><tr><th>Property</th><th>Notebook 01 (this model)</th></tr></thead>
 <tbody>
-<tr><td>Transformer blocks — the depth (<code>n_layer</code>)</td><td>4</td></tr>
-<tr><td>Width — numbers describing each token (<code>n_embd</code>)</td><td>256</td></tr>
+<tr><td>Transformer blocks, the depth (<code>n_layer</code>)</td><td>4</td></tr>
+<tr><td>Width, numbers describing each token (<code>n_embd</code>)</td><td>256</td></tr>
 <tr><td>Attention heads (<code>n_head</code>)</td><td>8</td></tr>
 <tr><td>MLP hidden units per block (4 × width)</td><td>1,024</td></tr>
 <tr><td><b>Total learnable parameters</b> (every <code>W</code> and <code>b</code>)</td><td><b>≈ 3.24 million</b></td></tr>
 </tbody></table>
 """),
   ("prose", r"""
-<p>Where do those 3.24 million <strong>parameters</strong> live? Almost all — ~3.16 million — are
+<p>Where do those 3.24 million <strong>parameters</strong> live? Almost all (~3.16 million) are
 in the four blocks' <code>Wx + b</code> layers; only ~56k in the two embedding tables and ~24k in
-the output head. (Notebook 02 scales every row up — 6 blocks, width 384, ≈17 million — and that
+the output head. (Notebook 02 scales every row up to 6 blocks, width 384, ≈17 million, and that
 extra capacity is much of what makes its writing better.)</p>
-<p>Two things about that number. First, <strong>it <em>is</em> the model's &ldquo;size&rdquo;</strong>
-— the same count meant by &ldquo;a 7-billion-parameter model&rdquo; (distinct from the file size on
+<p>Two things about that number. First, <strong>it <em>is</em> the model's &ldquo;size&rdquo;</strong>,
+the same count meant by &ldquo;a 7-billion-parameter model&rdquo; (distinct from the file size on
 disk, which is roughly the count × a few bytes per number). Second, <strong>who picks those millions
 of values? Not us.</strong> We choose the architecture and the count, and start them as small random
 numbers; <em>training</em> then sets every value by gradient descent, nudging each toward whatever
-lowers the loss. So the <em>process</em> is no black box — it's the loop in the next section. What
+lowers the loss. So the <em>process</em> is no black box; it's the loop in the next section. What
 stays opaque is what any <em>single</em> parameter <em>means</em>: the knowledge is smeared across
 all of them, not stored in readable slots. We know precisely how they're set; we mostly can't read
-them — which is the open research field of <strong>interpretability</strong>.</p>
+them, which is the open research field of <strong>interpretability</strong>.</p>
 """),
  ],
 },
@@ -1006,29 +1006,29 @@ them — which is the open research field of <strong>interpretability</strong>.<
  "id": "train", "num": "7", "title": "Training: making the guesses less wrong",
  "blocks": [
   ("prose", r"""
-<p>A freshly built model is random — its guesses are no better than chance. <strong>Training</strong> is
-the loop that fixes that: <em>measure</em> how wrong each guess is (the <strong>loss</strong> — read it as
+<p>A freshly built model is random; its guesses are no better than chance. <strong>Training</strong> is
+the loop that fixes that: <em>measure</em> how wrong each guess is (the <strong>loss</strong>, read it as
 &ldquo;surprise&rdquo;), then <em>nudge</em> every parameter a little to lower it (<strong>gradient
-descent</strong>). The <em>why</em> — loss, gradients, backpropagation, the downhill-in-a-landscape
-picture — is in <a href="../ideas/#learn">Part 0 · Concepts</a>. Here is that loop, in code.</p>
+descent</strong>). The <em>why</em> (loss, gradients, backpropagation, the downhill-in-a-landscape
+picture) is in <a href="../ideas/#learn">Part 0 · Concepts</a>. Here is that loop, in code.</p>
 """),
   ("code", "01", "optimizer = optim.AdamW(learning_rate=learning_rate)",
    "The loss function, then the training loop."),
   ("gloss", r"""
-<p><b>The loop is four steps — and every one is a line of code</b> (the
+<p><b>The loop is four steps, and every one is a line of code</b> (the
 <code>for step in range(...)</code> block, plus the <code>loss_fn</code> above it):</p>
 <ol>
-<li><b>Forward pass</b> — <code>logits = model(x)</code> (inside <code>loss_fn</code>). Run the
+<li><b>Forward pass</b>: <code>logits = model(x)</code> (inside <code>loss_fn</code>). Run the
 batch of windows through the network to get its predictions. This is the same forward pass you
 met when we built the model.</li>
-<li><b>Loss</b> — <code>cross_entropy(...)</code>. Score how wrong those predictions are — the
+<li><b>Loss</b>: <code>cross_entropy(...)</code>. Score how wrong those predictions are, the
 surprise, one number.</li>
-<li><b>Backward pass</b> — <code>loss, grads = loss_and_grad(model, x, y)</code>. Work backwards
+<li><b>Backward pass</b>: <code>loss, grads = loss_and_grad(model, x, y)</code>. Work backwards
 through the network to get the <b>gradient</b> for every parameter: which way to nudge each one
-to lower the loss. Doing this efficiently, end to end, is <b>backpropagation</b> — the central
+to lower the loss. Doing this efficiently, end to end, is <b>backpropagation</b>, the central
 algorithm of deep learning. (One call returns both the loss and all the gradients.)</li>
-<li><b>Gradient-descent step</b> — <code>optimizer.update(model, grads)</code>. Take one small
-step downhill — every parameter at once. The step size is the <code>learning_rate</code>.</li>
+<li><b>Gradient-descent step</b>: <code>optimizer.update(model, grads)</code>. Take one small
+step downhill, every parameter at once. The step size is the <code>learning_rate</code>.</li>
 </ol>
 <p><code>mx.eval(...)</code> just tells the GPU to actually run all of that now (MLX is lazy by
 default). Repeat a couple of thousand times: each pass the model is microscopically less wrong,
@@ -1039,18 +1039,18 @@ and in aggregate, language emerges.</p>
   ("prose", r"""
 <p>Read that output top to bottom: the loss starts near the &ldquo;knows nothing&rdquo;
 baseline (~4.5) and falls fast to ~2.3 as the model picks up the statistics of English. The
-<strong>validation</strong> loss falls alongside the training loss — proof it's learning the
+<strong>validation</strong> loss falls alongside the training loss: proof it's learning the
 <em>language</em>, not just memorising these particular stories.</p>
 """),
  ],
 },
 
 {
- "id": "curve", "num": "8", "title": "The loss curve — the single most important plot",
+ "id": "curve", "num": "8", "title": "The loss curve: the single most important plot",
  "blocks": [
   ("prose", r"""
 <p>This plot has a name: the <strong>loss curve</strong> (sometimes <em>learning curve</em>). It
-is the loss from the last section, tracked across the whole training run — so don't confuse it
+is the loss from the last section, tracked across the whole training run, so don't confuse it
 with the loss <em>function</em>: the <em>function</em> is the formula that scores a single batch;
 the <em>curve</em> is that score plotted step after step. Reading it is how every practitioner
 judges the health of a run at a glance. The <strong style="color:#2f74c0">blue</strong> line is
@@ -1062,7 +1062,7 @@ validation loss; the grey dashed line is the &ldquo;knows nothing&rdquo; baselin
 <p><b>How to read it:</b> a healthy run drops fast, then flattens. The crucial signal is the
 gap between the two lines. While validation loss keeps falling, the model is genuinely
 <b>learning</b>. If validation loss ever turned <em>upward</em> while training loss kept
-dropping, that widening gap would be <b>overfitting</b> — the model memorising its study
+dropping, that widening gap would be <b>overfitting</b>: the model memorising its study
 material instead of learning the general pattern. Here both fall together: no overfitting, just
 the natural floor for a model this small.</p>
 """),
@@ -1070,13 +1070,13 @@ the natural floor for a model this small.</p>
 },
 
 {
- "id": "generate", "num": "9", "title": "Generating text — and the honest result",
+ "id": "generate", "num": "9", "title": "Generating text, and the honest result",
  "blocks": [
   ("prose", r"""
 <p>Now we let it write. Generation is a loop: feed in a prompt, look at the model's scores for
 the <em>next</em> character, turn them into probabilities, and <strong>sample</strong> one.
 Append it, then feed the whole thing back in and repeat. This one-step-at-a-time process is
-called <strong>autoregressive</strong> generation — and it's exactly how the largest models
+called <strong>autoregressive</strong> generation, and it's exactly how the largest models
 write too.</p>
 """),
   ("code", "01", "def generate(prompt, n_new=400", "Predict one character, append, repeat."),
@@ -1084,19 +1084,19 @@ write too.</p>
 <p><b>Step by step:</b> encode the prompt to numbers, then loop <code>n_new</code> times. Each
 pass takes the scores for the last position, divides by <code>temperature</code> (more on that
 in Part IV), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
-character — likelier characters chosen more often, but not always. Glue it on and continue.</p>
+character (likelier characters chosen more often, but not always). Glue it on and continue.</p>
 """),
   ("callout", "aside", "Generation vs. inference — which is which", r"""
-<p>Each pass through this loop is one step of <strong>inference</strong> — a single forward run
+<p>Each pass through this loop is one step of <strong>inference</strong>: a single forward run
 of the model to get the next-token scores. &ldquo;Inference&rdquo; is the umbrella term for
 <em>using</em> a trained model (any forward pass), as opposed to <em>training</em> it. Wrapping
 inference in this sample-and-append loop, to emit a whole sequence, is what we call
 <strong>generation</strong> (or <em>decoding</em>). So generation isn't a different thing from
-inference — it's inference run autoregressively, one token at a time.</p>
+inference; it's inference run autoregressively, one token at a time.</p>
 """),
   ("output", "01", "def generate(prompt, n_new=400", "what a from-scratch char-level model writes"),
   ("callout", "key", "This gibberish is the point", r"""
-<p>It looks like English — real spacing, plausible letter runs, the ghost of words — but it's
+<p>It looks like English (real spacing, plausible letter runs, the ghost of words) but it's
 nonsense. That is the <em>correct</em> outcome for a 3-million-parameter model that works one
 letter at a time and trained for four minutes. It proves the whole pipeline works end to end;
 it just hasn't the capacity for meaning. Closing the gap between &ldquo;looks like
@@ -1114,14 +1114,14 @@ language&rdquo; and &ldquo;is coherent&rdquo; is the job of Part III.</p>
   ("prose", r"""
 <p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the five changes that
 actually improve a from-scratch run. Holding the architecture fixed is deliberate: it isolates
-what each upgrade buys. One of these — the tokenizer — does most of the work.</p>
+what each upgrade buys. One of these, the tokenizer, does most of the work.</p>
 """),
   ("table", r"""
 <table>
 <thead><tr><th>Upgrade</th><th>Notebook 01</th><th>Notebook 02</th><th>Why it helps</th></tr></thead>
 <tbody>
 <tr><td>Tokenizer</td><td>one per character</td><td><b>8k word-chunks (BPE)</b></td>
-    <td>the big win — the model reasons in word-pieces, not letters</td></tr>
+    <td>the big win: the model reasons in word-pieces, not letters</td></tr>
 <tr><td>Weight init</td><td>framework default</td><td><b>scaled init</b></td>
     <td>stops a deep stack from blowing up at the start</td></tr>
 <tr><td>Learning rate</td><td>constant</td><td><b>warm-up → decay</b></td>
@@ -1140,7 +1140,7 @@ what each upgrade buys. One of these — the tokenizer — does most of the work
  "blocks": [
   ("prose", r"""
 <p>Working one character at a time forces the model to waste most of its capacity re-learning
-how to spell. Real models — and notebook 02 — use <strong>sub-word tokenisation</strong>,
+how to spell. Real models (and notebook 02) use <strong>sub-word tokenisation</strong>,
 specifically <strong>BPE (Byte-Pair Encoding)</strong>. Starting from raw bytes (essentially
 the individual characters), BPE repeatedly merges the most common adjacent pair into a single
 new token. After enough merges,
@@ -1148,20 +1148,20 @@ frequent chunks like <code>" the"</code>, <code>"ing"</code>, or <code>" robot"<
 become <em>one</em> token. The model then reasons over meaningful units, and coherence appears
 far faster at the same size.</p>
 <p>Crucially, we <em>train</em> the tokenizer on our own corpus, so all 8,192 tokens are
-relevant to these stories — no wasted vocabulary.</p>
+relevant to these stories: no wasted vocabulary.</p>
 """),
   ("code", "02", "tok = Tokenizer(models.BPE", "Train a byte-level BPE tokenizer on the corpus."),
   ("gloss", r"""
 <p><b>What's happening:</b> set up a BPE tokenizer, then <code>train_from_iterator</code> learns
 the merges from our text, building an 8,192-token vocabulary. We then re-encode the whole
-corpus with it. The print-outs report the <b>compression ratio</b> — characters per token —
+corpus with it. The print-outs report the <b>compression ratio</b> (characters per token)
 and a round-trip check (encode then decode gets the original text back). At ~4 characters per
 token, sequences are roughly 4× shorter, so the model effectively sees 4× more story within the
 same context window.</p>
 """),
   ("output", "02", "tok = Tokenizer(models.BPE", "what it prints"),
   ("callout", "aside", "Notice the tokens for &ldquo;Once upon a time&rdquo;", r"""
-<p>It encodes to just four numbers — four chunks, not sixteen characters. That compression is
+<p>It encodes to just four numbers: four chunks, not sixteen characters. That compression is
 the whole point: fewer, more meaningful units for the model to reason over. This is also a
 preview of Track B, where a model is fine-tuned for clinical-trial readouts using exactly this
 sub-word idea.</p>
@@ -1186,15 +1186,15 @@ Tiny change, decisive effect.</p>
   ("gloss", r"""
 <p><b>What to notice</b> (you don't need every line): <code>_normal(...)</code> sets a
 parameter's starting values to small random numbers. The important detail is the
-<code>STD / math.sqrt(2 * n_layer)</code> on the <code>c_proj</code> and second MLP layer —
+<code>STD / math.sqrt(2 * n_layer)</code> on the <code>c_proj</code> and second MLP layer,
 the two places where each block writes back into the residual stream. Scaling those down by an
 amount that grows with depth keeps the signal's size stable from the first layer to the last.
-Everything else — attention, the block, the embeddings, the head — is identical to notebook 01.</p>
+Everything else (attention, the block, the embeddings, the head) is identical to notebook 01.</p>
 """),
   ("output", "02", "STD = 0.02", "model size"),
   ("callout", "aside", "Same idea, written tighter", r"""
-<p>You'll notice this code is more densely packed than notebook 01's. It's the same components —
-attention, block, GPT — just written compactly now that the concepts are familiar. If you can
+<p>You'll notice this code is more densely packed than notebook 01's. It's the same components
+(attention, block, GPT) just written compactly now that the concepts are familiar. If you can
 read notebook 01's version, you can read this one.</p>
 """),
  ],
@@ -1204,12 +1204,12 @@ read notebook 01's version, you can read this one.</p>
  "id": "schedule", "num": "13", "title": "A smarter training schedule",
  "blocks": [
   ("prose", r"""
-<p>Two upgrades live in the training loop. Both are about <em>stability</em> — letting us train
+<p>Two upgrades live in the training loop. Both are about <em>stability</em>: letting us train
 harder without things breaking.</p>
 <ul>
 <li><strong>Learning-rate schedule.</strong> Instead of a constant step size, we
-<em>warm up</em> — start near zero and ramp up over the first stretch (a cold, random model
-hates big steps) — then <em>cosine-decay</em> smoothly back down. The gentle landing lets the
+<em>warm up</em> (start near zero and ramp up over the first stretch; a cold, random model
+hates big steps), then <em>cosine-decay</em> smoothly back down. The gentle landing lets the
 model settle into a better solution.</li>
 <li><strong>Gradient clipping.</strong> Before each update, if the proposed change is freakishly
 large, scale it back to a ceiling. Cheap insurance against one bad batch blowing up the run.</li>
@@ -1220,14 +1220,14 @@ large, scale it back to a ceiling. Cheap insurance against one bad batch blowing
 <p><b>The new parts vs notebook 01:</b> the three <code>schedule</code> lines build the
 learning-rate curve (ramp up, then ease down), handed to the optimizer instead of a fixed
 number. Inside the loop, <code>optim.clip_grad_norm(grads, grad_clip)</code> is the one extra
-line — it caps the size of each update. The rest of the loop is the same grab-batch → measure →
+line, which caps the size of each update. The rest of the loop is the same grab-batch → measure →
 nudge rhythm from before.</p>
 """),
   ("figure", "loss_curve_tuned.png",
    "Left: a longer, steadier descent than notebook 01. Right: the learning rate ramping up, then decaying."),
   ("gloss", r"""
 <p>The right-hand panel is the schedule made visible: the rate climbs during warm-up, then
-follows a smooth cosine curve down to its floor. The left panel shows the payoff — a cleaner,
+follows a smooth cosine curve down to its floor. The left panel shows the payoff: a cleaner,
 deeper descent than the constant-rate run. (The loss values aren't directly comparable to
 notebook 01's, because the vocabulary is different now; it's the <em>shape</em> that matters.)</p>
 """),
@@ -1238,21 +1238,21 @@ notebook 01's, because the vocabulary is different now; it's the <em>shape</em> 
  "id": "result", "num": "14", "title": "The payoff: from gibberish to little stories",
  "blocks": [
   ("prose", r"""
-<p>Same generation loop as before — but now each step samples a word-chunk, not a single
+<p>Same generation loop as before, but now each step samples a word-chunk, not a single
 letter. Here is what the tuned model writes, at two different temperatures:</p>
 """),
   ("output", "02", "def generate(prompt, n_new=200", "what the tuned model writes", 1400),
   ("callout", "key", "Look what changed", r"""
 <p>Real words. Names that persist across sentences (&ldquo;Timmy,&rdquo; &ldquo;Jack&rdquo;).
 Dialogue with quotation marks. The arc of a little story. It still wanders and contradicts
-itself — it's a 17-million-parameter model trained for twenty minutes on a laptop — but set it
+itself (it's a 17-million-parameter model trained for twenty minutes on a laptop) but set it
 beside the character-level gibberish from Part II and the leap is unmistakable. <em>Same
 architecture.</em> The difference is almost entirely the five upgrades, and mostly the tokenizer.</p>
 """),
   ("callout", "tryit", "Want to feel each upgrade?", r"""
-<p>The notebooks invite an <em>ablation</em> — turn one upgrade off, re-run, compare:</p>
+<p>The notebooks invite an <em>ablation</em>: turn one upgrade off, re-run, compare.</p>
 <ul>
-<li><b>Tokenizer:</b> notebook 01 already <em>is</em> the &ldquo;no-BPE&rdquo; version — compare
+<li><b>Tokenizer:</b> notebook 01 already <em>is</em> the &ldquo;no-BPE&rdquo; version; compare
 its samples to these.</li>
 <li><b>Init:</b> remove the depth-scaling and watch the early loss misbehave.</li>
 <li><b>Schedule:</b> swap in a constant learning rate; the final loss creeps up.</li>
@@ -1263,7 +1263,7 @@ its samples to these.</li>
 },
 
 {
- "id": "ceiling", "num": "15", "title": "The honest ceiling — and where this leads",
+ "id": "ceiling", "num": "15", "title": "The honest ceiling, and where this leads",
  "blocks": [
   ("prose", r"""
 <p>Even fully tuned, this is a 17-million-parameter model that trained for under an hour on
@@ -1273,41 +1273,41 @@ useful,&rdquo; is exactly the gap a <strong>pretrained</strong> model closes: it
 done the equivalent of this training across <em>trillions</em> of tokens and thousands of
 GPU-hours.</p>
 <p>And that is the whole point of building the tiny one first. You've now seen, in real code,
-every mechanism a frontier model uses — tokenisation, embeddings, attention, the transformer
+every mechanism a frontier model uses: tokenisation, embeddings, attention, the transformer
 block, the loss, backpropagation, the optimizer, sampling. The giants are not different in
 kind. They are this, scaled.</p>
 """),
   ("callout", "insight", "What &ldquo;Once upon a time&rdquo; reveals: the corpus is the model", r"""
 <p>There's a second limit here, and it has nothing to do with size. Prompt this model with
-&ldquo;Once upon a time&rdquo; and it spins a little fairy tale — but ask it a question, or for a
+&ldquo;Once upon a time&rdquo; and it spins a little fairy tale, but ask it a question, or for a
 fact, or to reason, and it simply can't. It <em>only</em> tells toddler stories, because
 <strong>TinyStories is the entire world it ever saw.</strong> A model learns the shape of its
 training data and nothing outside it: the corpus doesn't merely feed the model, it
 <em>defines</em> it.</p>
-<p><strong>Practically,</strong> that makes the data your single most important design choice — it
+<p><strong>Practically,</strong> that makes the data your single most important design choice: it
 fixes the model's competence, its vocabulary, and its blind spots. Train on legal contracts and it
 speaks legalese; on toddler tales and it speaks toddler. (Track B pulls this lever on purpose:
 feed a model clinical-trial readouts and you get a trial expert.)</p>
 <p><strong>Socially,</strong> this is the root of what people mean by &ldquo;LLM bias.&rdquo; A
-model mirrors its corpus — the patterns, the gaps, the over- and under-representation, the
-omissions of whoever's text dominates — and at web scale that quietly carries human biases and
+model mirrors its corpus (the patterns, the gaps, the over- and under-representation, the
+omissions of whoever's text dominates) and at web scale that quietly carries human biases and
 blind spots along with the knowledge. Our one narrow corpus shows the mechanism in miniature:
 what goes in is what comes out. The training set is a choice, and every choice leaves its
 fingerprint on the model.</p>
 """),
   ("callout", "key", "What you now understand end-to-end", r"""
 <ul>
-<li><b>Tokenisation</b> — text ↔ numbers (characters, then word-chunks).</li>
-<li><b>Embeddings</b> — turning a token id and its position into a vector of meaning.</li>
-<li><b>Weights, biases &amp; activations</b> — every layer is <code>y = Wx + b</code> followed by
+<li><b>Tokenisation</b>: text ↔ numbers (characters, then word-chunks).</li>
+<li><b>Embeddings</b>: turning a token id and its position into a vector of meaning.</li>
+<li><b>Weights, biases &amp; activations</b>: every layer is <code>y = Wx + b</code> followed by
 a nonlinear bend (GELU); those W's and b's are exactly the parameters training tunes.</li>
-<li><b>Attention</b> — how positions share information, and why looking forward is forbidden.</li>
-<li><b>The transformer block</b> — attention + MLP, held together by residuals and LayerNorm.</li>
-<li><b>The training loop</b> — the four-step cycle: forward pass → loss → backward pass
+<li><b>Attention</b>: how positions share information, and why looking forward is forbidden.</li>
+<li><b>The transformer block</b>: attention + MLP, held together by residuals and LayerNorm.</li>
+<li><b>The training loop</b>: the four-step cycle: forward pass → loss → backward pass
 (backpropagation) → gradient-descent step.</li>
-<li><b>The loss curve</b> — reading learning versus overfitting.</li>
-<li><b>Autoregressive sampling</b> — generating one token at a time, and what temperature does.</li>
-<li><b>The corpus is the model</b> — training data defines (and biases) what a model can do;
+<li><b>The loss curve</b>: reading learning versus overfitting.</li>
+<li><b>Autoregressive sampling</b>: generating one token at a time, and what temperature does.</li>
+<li><b>The corpus is the model</b>: training data defines (and biases) what a model can do;
 choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</li>
 </ul>
 """),
@@ -1322,22 +1322,22 @@ choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</l
  "blocks": [
   ("prose", r"""
 <p>Training took twenty-odd minutes. You should only ever pay that <em>once</em>. The last cell
-of notebook 02 saves the trained model — its parameters, its tokenizer, and its configuration —
+of notebook 02 saves the trained model (its parameters, its tokenizer, and its configuration)
 to a folder on disk. After that, a separate, tiny program can reload it in about a second and
 generate text without any retraining at all.</p>
 """),
   ("code", "02", "import tiny_gpt", "Save the trained model so you never retrain just to use it."),
   ("gloss", r"""
-<p><b>What's happening:</b> bundle up the three things you need to reuse a model — the learned
-<b>weights</b>, the <b>tokenizer</b> (so new text is chunked the same way), and the
-<b>config</b> (the shape of the model) — and write them to a checkpoint folder. That trio is,
+<p><b>What's happening:</b> bundle up the three things you need to reuse a model (the learned
+<b>weights</b>, the <b>tokenizer</b> so new text is chunked the same way, and the
+<b>config</b>, the shape of the model) and write them to a checkpoint folder. That trio is,
 in miniature, exactly what &ldquo;downloading a model&rdquo; gives you anywhere.</p>
 """),
   ("prose", r"""
 <p>Reloading is the mirror image. A small library, <code>tiny_gpt.py</code>, rebuilds the model
 from the config, pours the saved weights back in, and loads the tokenizer:</p>
 """),
-  ("srccode", "lib", "def load(ckpt_dir):", "return model, tok, cfg", "tiny_gpt.load — rebuild and reload in ~1 second."),
+  ("srccode", "lib", "def load(ckpt_dir):", "return model, tok, cfg", "tiny_gpt.load: rebuild and reload in ~1 second."),
   ("gloss", r"""
 <p><b>The shape of it:</b> read the config, construct an empty model of that shape,
 <code>load_weights</code> fills it with the trained numbers, and the tokenizer is read back from
@@ -1347,7 +1347,7 @@ instant.</p>
   ("code", "03", "model, tok, cfg = tiny_gpt.load", "In a notebook: load once, then generate freely."),
   ("gloss", r"""
 <p><b>In plain terms:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
-all the rebuilding above and hands back three things — the <code>model</code>, its
+all the rebuilding above and hands back three things: the <code>model</code>, its
 <code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
 around it just measure how long it took, to make the point: about a second, versus the twenty
 minutes of training. Load once at the top of a session, then generate as often as you like.</p>
@@ -1361,22 +1361,22 @@ minutes of training. Load once at the top of a session, then generate as often a
  "blocks": [
   ("prose", r"""
 <p>You met <code>temperature</code> in the generation code. It's the single most tangible dial
-in all of language modelling, and the cheapest to experiment with — no retraining, just re-run.
+in all of language modelling, and the cheapest to experiment with: no retraining, just re-run.
 It controls how boldly the model samples: <strong>low</strong> temperature makes it play it
-safe (pick the likeliest token almost every time — coherent but repetitive);
-<strong>high</strong> temperature makes it adventurous (give unlikely tokens a real chance —
+safe (pick the likeliest token almost every time, coherent but repetitive);
+<strong>high</strong> temperature makes it adventurous (give unlikely tokens a real chance,
 creative but loopier).</p>
 """),
   ("code", "03", "for temp in (0.4, 0.7, 1.0, 1.2)", "Same prompt, rising temperature."),
   ("gloss", r"""
 <p><b>What's happening:</b> run the same opening at four temperatures and print each. Reading the
-results from low to high, you can watch the text loosen — tighter and more repetitive at 0.4,
+results from low to high, you can watch the text loosen: tighter and more repetitive at 0.4,
 freer and stranger by 1.2. It's the most direct way to <em>feel</em> what sampling does, and the
 same knob you'll find in every model's API.</p>
 """),
   ("prose", r"""
 <p>There's also a small terminal program, <code>chat.py</code>, that wraps all of this into an
-interactive prompt — type an opener, watch the story stream in token by token, adjust the
+interactive prompt: type an opener, watch the story stream in token by token, adjust the
 temperature on the fly. It's the from-scratch model turned into something you can actually play
 with.</p>
 """),
@@ -1387,14 +1387,14 @@ with.</p>
  "id": "endstory", "num": "18", "title": "Knowing when to stop: the end-of-story token",
  "blocks": [
   ("prose", r"""
-<p>You can now generate text and shape it with temperature — but how does the model know when a
+<p>You can now generate text and shape it with temperature, but how does the model know when a
 story is <em>over</em>? Left alone, it never stops: it just keeps predicting the next token until
 you cut it off at a token limit. So every reply comes out the same length, and a long one runs
 two stories together.</p>
 <p>The fix is the one every real language model uses: a dedicated <strong>end-of-text
 token</strong> (GPT-2 calls it <code>&lt;|endoftext|&gt;</code>; here it's
 <code>&lt;|endstory|&gt;</code>). A tempting shortcut is to treat the blank line between stories
-as the boundary — but that fails, because the blank line is <em>also</em> the paragraph break
+as the boundary, but that fails, because the blank line is <em>also</em> the paragraph break
 inside almost every story, so the model can't tell &ldquo;end of paragraph&rdquo; from &ldquo;end
 of story.&rdquo; A reserved token that appears <em>only</em> between stories has no such
 ambiguity.</p>
@@ -1403,7 +1403,7 @@ ambiguity.</p>
    "Reserve a special token, then drop it after every story in the training stream."),
   ("gloss", r"""
 <p><b>What's happening:</b> we add <code>&lt;|endstory|&gt;</code> to the tokenizer as a
-<em>special</em> token — matched as one atomic unit, never split into characters — then build the
+<em>special</em> token (matched as one atomic unit, never split into characters) then build the
 training stream story-by-story, appending that token's id after each one. The model now sees,
 thousands of times over, that a finished story is followed by this exact marker. So it learns to
 produce it precisely when a story is complete.</p>
@@ -1412,7 +1412,7 @@ produce it precisely when a story is complete.</p>
    "At generation time, stop the instant that token appears."),
   ("gloss", r"""
 <p><b>The payoff in code:</b> each step samples the next token; if it's the end-of-story token we
-<code>return</code> immediately — <em>before</em> emitting it — so the story ends cleanly on its
+<code>return</code> immediately (<em>before</em> emitting it) so the story ends cleanly on its
 last real word. If the model never emits it, the <code>n_new</code> cap still ends things
 eventually. That single check is the whole mechanism behind &ldquo;the model decided it was
 done.&rdquo;</p>
@@ -1426,30 +1426,30 @@ done.&rdquo;</p>
 Lily nodded and said, "I will help you find your teddy bear."
 
 Lily was happy to help, and said, "Thank you, I'm glad I could help you." The little boy smiled and said, "Thank you, Lily. You are a good friend.\"""",
-   "a complete story from chat.py — it stopped on its own, well short of the token cap"),
+   "a complete story from chat.py: it stopped on its own, well short of the token cap"),
   ("callout", "key", "Why this small change matters", r"""
 <p>With a real boundary token, stories come out <em>self-contained and naturally varying in
-length</em> — a short tale ends short, a longer one runs on, and neither bleeds into a stray new
+length</em>: a short tale ends short, a longer one runs on, and neither bleeds into a stray new
 &ldquo;Once upon a time.&rdquo; It's a tiny change to the <em>data</em>, not the model, but it's
 the difference between a fixed-length text dump and something that knows when to stop. Every
 chatbot you've used ends its turn in exactly this way.</p>
 """),
   ("callout", "key", "The thread that ties it all together", r"""
-<p>Every concept in this walk-through — tokens, attention, the loss, the training loop,
-temperature — reappears, unchanged in spirit, in Track B of this lab, where a real pretrained
+<p>Every concept in this walk-through (tokens, attention, the loss, the training loop,
+temperature) reappears, unchanged in spirit, in Track B of this lab, where a real pretrained
 model is fine-tuned into a useful clinical-trial expert. You built the tiny one to <em>see</em>
 the mechanism. The same mechanism, scaled up and pointed at a real task, is the whole game.</p>
 """),
   ("callout", "aside", "Run it yourself", r"""
-<p>Everything here is open source — the three notebooks, the terminal chat, and even the script
-that builds this very page — at
+<p>Everything here is open source (the three notebooks, the terminal chat, and even the script
+that builds this very page) at
 <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>.</p>
 <p><strong>Just want to look?</strong> The notebooks render on GitHub <em>with their outputs</em>,
 so you can read the real code and its results without installing anything.</p>
 <p><strong>Want to run and chat with your own tiny GPT?</strong> You'll need an Apple-Silicon Mac
 (the code uses Apple's MLX). The
 <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">Getting Started
-guide</a> takes you from zero — install, open a notebook, run it, chat — in about fifteen minutes,
+guide</a> takes you from zero (install, open a notebook, run it, chat) in about fifteen minutes,
 with no prior coding assumed.</p>
 """),
  ],
@@ -1458,11 +1458,11 @@ with no prior coding assumed.</p>
 ]
 
 # ---------------------------------------------------------------- LANDING --
-LANDING_META = {"title": "slm-lab — build a small language model, explained"}
+LANDING_META = {"title": "slm-lab: build a small language model, explained"}
 
 LANDING = {
     "kicker": "slm-lab",
-    "h1": "Build a small language model — and actually understand it",
+    "h1": "Build a small language model, and actually understand it",
     "lede": "A hands-on, no-black-box lab. Start with the <em>concepts</em> (no code), then "
             "<em>build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open "
             "model into a useful expert. Explained for the curious.",
@@ -1484,7 +1484,9 @@ body{margin:0;background:#10182f;color:#eaeefb;
   color:#9fb2e8;margin:0 0 14px;}
 h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
 .lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
+.card{display:flex;flex-direction:column;}
+.card .go{margin-top:auto;}
 .card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:24px;transition:.15s;}
 a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
@@ -1496,7 +1498,6 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
 .card.soon{opacity:.72;}
 .card.soon .go{color:#7e8bb0;}
-.card.start{margin-bottom:20px;border-color:rgba(127,224,176,.32);background:rgba(127,224,176,.06);}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
 .tag.live{background:#16432f;color:#7fe0b0;}
@@ -1530,21 +1531,21 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
   <h1>{{ landing.h1 }}</h1>
   <p class="lede">{{ landing.lede }}</p>
 
-  {% if concepts_live %}
-  <a class="card start" href="ideas/">
-    <div class="part">Part 0 · Concepts</div>
-    <h2>How a language model works <span class="tag live">start here</span></h2>
-    <p>The plain-English ideas, no code — what a model <em>is</em>, how text becomes numbers, what
-    &ldquo;learning&rdquo; means, and how the pieces fit, with diagrams. The grounding for Parts 1 &amp; 2.</p>
-    <span class="go">Read Part 0 &rarr;</span>
-  </a>
-  {% endif %}
   <div class="cards">
+    {% if concepts_live %}
+    <a class="card" href="ideas/">
+      <div class="part">Part 0 · Concepts</div>
+      <h2>How a language model works <span class="tag live">start here</span></h2>
+      <p>The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes
+      numbers, and what &ldquo;learning&rdquo; really means, with diagrams. The grounding for Parts 1 and 2.</p>
+      <span class="go">Read Part 0 &rarr;</span>
+    </a>
+    {% endif %}
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>
       <h2>A GPT from scratch <span class="tag live">live</span></h2>
-      <p>Build and train a tiny GPT one piece at a time — tokens, attention, the training
-      loop, <code>y = Wx + b</code>, sampling. Throwaway output by design; the point is to
+      <p>Build and train a tiny GPT one piece at a time: tokens, attention, the training loop,
+      <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to
       <em>see</em> how it works.</p>
       <span class="go">Read Part 1 &rarr;</span>
     </a>
@@ -1552,18 +1553,16 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     <a class="card" href="track-b/">
       <div class="part">Part 2 · Post-training</div>
       <h2>TrialScout: a useful expert <span class="tag live">live</span></h2>
-      <p>Take a <em>pretrained</em> open model and fine-tune/distill it into a measurably
-      useful tool — a clinical-trial record &rarr; a structured readout. Same concepts, now
-      doing a real job.</p>
+      <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
+      turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Read Part 2 &rarr;</span>
     </a>
     {% else %}
     <div class="card soon">
       <div class="part">Part 2 · Post-training</div>
       <h2>TrialScout: a useful expert <span class="tag wip">in&nbsp;progress</span></h2>
-      <p>Take a <em>pretrained</em> open model and fine-tune/distill it into a measurably
-      useful tool — a clinical-trial record &rarr; a structured readout. Same concepts, now
-      doing a real job.</p>
+      <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
+      turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Coming soon</span>
     </div>
     {% endif %}
@@ -1577,10 +1576,10 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
       hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every
       step narrated in plain English.</li>
       <li><strong>To make AI's concepts accessible to non-specialists.</strong> You shouldn't need to be
-      an ML engineer to build intuition for how these models actually work — and what they can and can't
+      an ML engineer to build intuition for how these models actually work, and what they can and can't
       do. No prior Python required to read along.</li>
       <li><strong>To leave reusable patterns, not just a demo.</strong> Each chapter is a template you
-      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2) —
+      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2):
       distilling a big model's judgement into a small, cheap one, and turning messy, unstructured data
       into clean structured summaries.</li>
     </ul>
@@ -1591,10 +1590,10 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     <div class="about-text">
       <h2>About me</h2>
       <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
-      deep in modern AI — using it daily, building with it, and working out what's worth knowing. slm-lab
+      deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab
       is one hands-on piece of that.</p>
       <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
-      <a href="{{ hub_url }}">AI Knowledge Hub</a> — a curated, regularly-updated library for the AI era: the tools,
+      <a href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools,
       the practices, and a zero-to-shipping learning path.<br/>
       <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
     </div>
