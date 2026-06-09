@@ -98,6 +98,10 @@ TEMPLATE = r"""<!doctype html>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>{{ meta.title }}</title>
+<meta name="description" content="{{ meta.subtitle }}"/>
+<meta property="og:title" content="{{ meta.title }}"/>
+<meta property="og:description" content="{{ meta.subtitle }}"/>
+<meta property="og:type" content="article"/>
 <style>
 :root{
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
@@ -266,6 +270,12 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   .hero h1{font-size:36px;}
   body{font-size:17px;}
 }
+/* phones: dense diagrams scroll sideways instead of shrinking to illegibility */
+@media (max-width:680px){
+  .diagram{overflow-x:auto;}
+  .diagram svg{min-width:640px;}
+  .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
+}
 /* top nav (between chapters) */
 .topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
   position:sticky;top:0;z-index:50;}
@@ -336,8 +346,7 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 </div>
 
 <footer id="bottom">
-  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
-  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>{{ footer_gen }}</p>
   <p>Open source:
   <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
   &nbsp;·&nbsp; notebooks
@@ -563,8 +572,8 @@ EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedd
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) ↑</text>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;size&#8221; ↑</text>
 <text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
@@ -771,6 +780,8 @@ blank line between each. That single string is the raw material everything downs
 <li>the <code>except</code> branch only runs if the download failed; it swaps in a tiny
 built-in corpus so the rest of the notebook still works.</li>
 </ul>
+<p>(The &ldquo;unauthenticated requests&rdquo; warning you'll see in the output below is
+harmless: the dataset is public and needs no login; setting a token just lifts rate limits.)</p>
 """),
   ("output", "01", "N_STORIES = 4000", "what it prints", 600),
   ("prose", r"""
@@ -1323,7 +1334,7 @@ choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</l
   ("prose", r"""
 <p>Training took twenty-odd minutes. You should only ever pay that <em>once</em>. The last cell
 of notebook 02 saves the trained model (its parameters, its tokenizer, and its configuration)
-to a folder on disk. After that, a separate, tiny program can reload it in about a second and
+to a folder on disk. After that, a separate, tiny program can reload it in under a second and
 generate text without any retraining at all.</p>
 """),
   ("code", "02", "import tiny_gpt", "Save the trained model so you never retrain just to use it."),
@@ -1337,7 +1348,7 @@ in miniature, exactly what &ldquo;downloading a model&rdquo; gives you anywhere.
 <p>Reloading is the mirror image. A small library, <code>tiny_gpt.py</code>, rebuilds the model
 from the config, pours the saved weights back in, and loads the tokenizer:</p>
 """),
-  ("srccode", "lib", "def load(ckpt_dir):", "return model, tok, cfg", "tiny_gpt.load: rebuild and reload in ~1 second."),
+  ("srccode", "lib", "def load(ckpt_dir):", "return model, tok, cfg", "tiny_gpt.load: rebuild and reload in under a second."),
   ("gloss", r"""
 <p><b>The shape of it:</b> read the config, construct an empty model of that shape,
 <code>load_weights</code> fills it with the trained numbers, and the tokenizer is read back from
@@ -1349,8 +1360,8 @@ instant.</p>
 <p><b>In plain terms:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
 all the rebuilding above and hands back three things: the <code>model</code>, its
 <code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
-around it just measure how long it took, to make the point: about a second, versus the twenty
-minutes of training. Load once at the top of a session, then generate as often as you like.</p>
+around it just measure how long it took, to make the point: a fraction of a second, versus the
+twenty minutes of training. Load once at the top of a session, then generate as often as you like.</p>
 """),
   ("output", "03", "model, tok, cfg = tiny_gpt.load", "load time"),
  ],
@@ -1458,7 +1469,12 @@ with no prior coding assumed.</p>
 ]
 
 # ---------------------------------------------------------------- LANDING --
-LANDING_META = {"title": "slm-lab: build a small language model, explained"}
+LANDING_META = {
+    "title": "slm-lab: build a small language model, explained",
+    "description": "A hands-on, no-black-box lab: the concepts, a tiny GPT built from "
+                   "scratch, and a real open model fine-tuned into a useful expert — "
+                   "explained for the curious.",
+}
 
 LANDING = {
     "kicker": "slm-lab",
@@ -1474,6 +1490,10 @@ LANDING_TEMPLATE = r"""<!doctype html>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>{{ meta.title }}</title>
+<meta name="description" content="{{ meta.description }}"/>
+<meta property="og:title" content="{{ meta.title }}"/>
+<meta property="og:description" content="{{ meta.description }}"/>
+<meta property="og:type" content="website"/>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#10182f;color:#eaeefb;
@@ -1485,10 +1505,10 @@ body{margin:0;background:#10182f;color:#eaeefb;
 h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
 .lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
-.card{display:flex;flex-direction:column;}
+.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:24px;transition:.15s;}
 .card .go{margin-top:auto;}
-.card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:24px;transition:.15s;}
 a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
 .card .part{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9fb2e8;font-weight:700;}
 .card h2{font-size:21px;margin:8px 0 10px;line-height:1.25;}

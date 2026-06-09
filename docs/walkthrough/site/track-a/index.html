@@ -4,6 +4,10 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Build a tiny GPT from scratch: Part 1 · Pre-training</title>
+<meta name="description" content="Pre-training a language model from nothing, on a laptop: the real code, explained."/>
+<meta property="og:title" content="Build a tiny GPT from scratch: Part 1 · Pre-training"/>
+<meta property="og:description" content="Pre-training a language model from nothing, on a laptop: the real code, explained."/>
+<meta property="og:type" content="article"/>
 <style>
 :root{
   --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
@@ -171,6 +175,12 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
   nav.toc{display:none;}
   .hero h1{font-size:36px;}
   body{font-size:17px;}
+}
+/* phones: dense diagrams scroll sideways instead of shrinking to illegibility */
+@media (max-width:680px){
+  .diagram{overflow-x:auto;}
+  .diagram svg{min-width:640px;}
+  .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
 }
 /* top nav (between chapters) */
 .topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
@@ -511,6 +521,8 @@ blank line between each. That single string is the raw material everything downs
 <li>the <code>except</code> branch only runs if the download failed; it swaps in a tiny
 built-in corpus so the rest of the notebook still works.</li>
 </ul>
+<p>(The &ldquo;unauthenticated requests&rdquo; warning you'll see in the output below is
+harmless: the dataset is public and needs no login; setting a token just lifts rate limits.)</p>
 </div>
 <div class="term"><div class="term-tag">what it prints</div><pre>Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 Loaded 4000 stories from TinyStories.
@@ -1367,7 +1379,7 @@ choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</l
       <div class="prose">
 <p>Training took twenty-odd minutes. You should only ever pay that <em>once</em>. The last cell
 of notebook 02 saves the trained model (its parameters, its tokenizer, and its configuration)
-to a folder on disk. After that, a separate, tiny program can reload it in about a second and
+to a folder on disk. After that, a separate, tiny program can reload it in under a second and
 generate text without any retraining at all.</p>
 </div>
 <figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="c1"># --- Save this trained model so you never retrain just to *use* it ---</span>
@@ -1402,7 +1414,7 @@ from the config, pours the saved weights back in, and loads the tokenizer:</p>
     <span class="n">tok</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ckpt</span> <span class="o">/</span> <span class="s2">&quot;tokenizer.json&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">cfg</span>
 </pre></div>
-<figcaption>tiny_gpt.load: rebuild and reload in ~1 second.</figcaption></figure>
+<figcaption>tiny_gpt.load: rebuild and reload in under a second.</figcaption></figure>
 <div class="gloss"><div class="gloss-tag">what this says</div>
 <p><b>The shape of it:</b> read the config, construct an empty model of that shape,
 <code>load_weights</code> fills it with the trained numbers, and the tokenizer is read back from
@@ -1421,10 +1433,10 @@ instant.</p>
 <p><b>In plain terms:</b> one line, <code>tiny_gpt.load("checkpoints/tiny_gpt_v2")</code>, does
 all the rebuilding above and hands back three things: the <code>model</code>, its
 <code>tok</code>enizer, and its <code>cfg</code> (configuration). The <code>time</code> calls
-around it just measure how long it took, to make the point: about a second, versus the twenty
-minutes of training. Load once at the top of a session, then generate as often as you like.</p>
+around it just measure how long it took, to make the point: a fraction of a second, versus the
+twenty minutes of training. Load once at the top of a session, then generate as often as you like.</p>
 </div>
-<div class="term"><div class="term-tag">load time</div><pre></pre></div>
+<div class="term"><div class="term-tag">load time</div><pre>loaded in 0.06s  |  config = {'block_size': 256, 'n_embd': 384, 'n_head': 6, 'n_layer': 6, 'vocab_size': 8192, 'eos_token': '&lt;|endstory|&gt;'}</pre></div>
     </section>
     
     <section id="temperature">
@@ -1619,8 +1631,7 @@ that show up again and again. Learn these six and Python stops looking like nois
 </div>
 
 <footer id="bottom">
-  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
-  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
   <p>Open source:
   <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
   &nbsp;·&nbsp; notebooks

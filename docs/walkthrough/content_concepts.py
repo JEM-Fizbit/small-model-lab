@@ -62,7 +62,7 @@ and added, shaped by training to make good predictions.</p>
 },
 
 {
- "id": "tokens", "num": "2", "title": "Step 1: text becomes numbers (tokens)",
+ "id": "tokens", "num": "2", "title": "Text becomes numbers (tokens)",
  "blocks": [
   ("prose", r"""
 <p>A model can't do arithmetic on letters, so the first move is to turn text into numbers. The text is
@@ -76,7 +76,7 @@ pieces are glued together into words. <a href="../track-a/#data">Part 1 builds t
 },
 
 {
- "id": "embed", "num": "3", "title": "Step 2: tokens become vectors (embeddings)",
+ "id": "embed", "num": "3", "title": "Tokens become vectors (embeddings)",
  "blocks": [
   ("prose", r"""
 <p>An ID like #1234 carries no <em>meaning</em>: #1235 isn't &ldquo;one more&rdquo; than fox. So each
@@ -117,7 +117,7 @@ the clusters above emerge on their own, with no one labelling them.</p>
 },
 
 {
- "id": "linear", "num": "4", "title": "Step 3: the linear layer (the core operation)",
+ "id": "linear", "num": "4", "title": "The linear layer (the core operation)",
  "blocks": [
   ("prose", r"""
 <p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
@@ -147,7 +147,7 @@ the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
 },
 
 {
- "id": "activation", "num": "5", "title": "Step 4: the bend (activations)",
+ "id": "activation", "num": "5", "title": "The bend (activations)",
  "blocks": [
   ("prose", r"""
 <p>Stacking linear layers alone is pointless: a stack of straight-line operations collapses into one
@@ -162,7 +162,7 @@ is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas b
 },
 
 {
- "id": "attention", "num": "6", "title": "Step 5: attention, letting tokens talk",
+ "id": "attention", "num": "6", "title": "Attention: letting tokens talk",
  "blocks": [
   ("prose", r"""
 <p>Linear layers process each token on its own. But meaning depends on context: &ldquo;bank&rdquo; near
@@ -222,7 +222,7 @@ gradient efficiently. It's the engine that makes training millions of parameters
 get a probability for every next token, pick one, append it, repeat. &ldquo;Inference&rdquo; and
 &ldquo;generation&rdquo; are the same thing: running the function forward (no learning).</p>
 <p>How you <em>pick</em> from the probabilities is the one knob worth feeling: <strong>temperature</strong>.
-Low temperature (~0.5) always grabs the most likely token: safe, repetitive. High (~1.1) samples more
+Low temperature (~0.5) almost always grabs the most likely token: safe, repetitive. High (~1.1) samples more
 adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
 &ldquo;creative,&rdquo; and it changes nothing in the model — only how its output is sampled.
 <a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>

@@ -13,6 +13,10 @@ META = {
     "subtitle": "Part 2: take a pretrained open model and make it do a real job, locally and for free.",
 }
 
+# No Python primer on this chapter: Part 2's code is pipeline excerpts, and the primer
+# (which explains Part 1's notebook patterns) lives where readers are sent first.
+PYTHON_PRIMER = ""
+
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
 <p class="kicker">slm-lab · Part 2 · Post-training</p>
@@ -25,7 +29,7 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
 
 <div class="bigidea">
   <p><strong>The whole idea:</strong> a giant model already knows language; we don't re-teach that.
-  We just <em>specialise</em> it for one narrow, structured task, by showing it a few thousand
+  We just <em>specialise</em> it for one narrow, structured task, by showing it ~1,500
   worked examples and nudging a tiny set of its parameters. The result beats a sensible baseline
   by a mile and nearly matches the expensive model that taught it.</p>
   <p>Every concept from Part 1 reappears (tokens, attention, the loss, gradient descent), now in
@@ -94,7 +98,7 @@ LORA_SVG = r'''<svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big b
 <text x="634" y="126" text-anchor="middle" font-size="11" fill="#0e7a5f">base + adapter</text>
 </svg>'''
 
-EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; structured fields are scored by F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c2230">Gold test set</text>
@@ -103,8 +107,8 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">TrialScout</text>
 <text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#0e7a5f">predicts a readout</text>
 <rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
-<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">8 structured fields</text>
-<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ F1 / accuracy per field</text>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">6 structured fields</text>
+<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ accuracy / F1 per field</text>
 <rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
 <text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">investor_note (free text)</text>
 <text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#5a6373">→ Claude-as-judge</text>
@@ -142,7 +146,7 @@ readout. That's <em>post-training</em>, and it's how almost every useful model y
 <p>A 4B model will never be a great general analyst, but it can be excellent at one
 <em>narrow, structured</em> task. Trial-record → fixed-schema-JSON is exactly that shape: bounded
 inputs, a controlled vocabulary out. Get it right and you have an expert that runs locally, costs
-nothing per call, needs no internet, and answers in a second: things a frontier API can't all
+nothing per call, needs no internet, and answers in seconds: things a frontier API can't all
 offer at once.</p>
 """),
  ],
@@ -164,7 +168,7 @@ you can scan, filter, compare, and screen at a glance, instead of reading regist
 <p>Concretely: every trial has a public record on <strong>ClinicalTrials.gov</strong>, the US government
 registry of studies. Each record is semi-structured data (a title, phase, status, lead sponsor, the
 conditions and drugs under test, the primary outcome measure, key dates, enrollment, trial design) plus
-free text. We fetch it from the registry's API and trim it to the ~14 fields that matter:
+free text. We fetch it from the registry's API and trim it to the ~20 fields that matter:
 <strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
 JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
 <code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
@@ -229,8 +233,8 @@ extraction task (SEC filings, lab reports, support tickets), not just trials.</p
  "id": "distill", "num": "2", "title": "Distillation: a strong model writes the textbook",
  "blocks": [
   ("prose", r"""
-<p>To fine-tune the student we need thousands of correct examples: trial in, perfect readout out.
-Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
+<p>To fine-tune the student we need a pile of correct examples (1,500 here): trial in, perfect readout
+out. Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
 model (Claude Sonnet) reads each trial and writes the gold answer, and the small student then learns
 to reproduce those answers. The teacher's judgement becomes the student's training data.</p>
 """),
@@ -244,7 +248,7 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <strong>knowledge distillation</strong>.</p>
 """),
   ("diagram", DISTILL_SVG,
-   "Distillation: the expensive teacher (Claude) writes structured answers for thousands of trials; "
+   "Distillation: the expensive teacher (Claude) writes structured answers for 1,500 trials; "
    "those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce."),
   ("filecode", "track-b-trialscout/train/make_gold.py",
    "The teacher call: Claude is forced to answer through the schema, so every label is valid.",
@@ -269,7 +273,7 @@ bite, hard, in §8.)</p>
 """),
   ("callout", "aside", "Automating a job that used to be manual", r"""
 <p>The slow, expensive part of supervised learning has always been <em>getting the labels</em>: a human
-reading each example and hand-writing the answer. Labeling a few thousand trials that way would take an
+reading each example and hand-writing the answer. Labeling 1,500 trials that way would take an
 analyst weeks. Distillation collapses it to a few hours and about <strong>$14</strong>: the teacher does
 the tedious annotation. Cheap, fast, scalable labeled data is one of the biggest unlocks in modern ML,
 and the same move works for <em>any</em> structured-extraction task, not just trials.</p>
@@ -354,13 +358,16 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
 in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
 value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
-compares each structured field to gold (accuracy and macro-F1 per field, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives against misses, 1.0 perfect),
-exactly the metrics the baseline was measured with, so the comparison is fair.</p>
+compares the six scoreable fields to gold (accuracy and macro-F1 for the four enums, exact match for
+<code>est_readout</code>, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives
+against misses, 1.0 perfect), exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 """),
   ("callout", "aside", "Two kinds of grading", r"""
-<p>The eight structured fields grade themselves (string match against the enum). The one free-text field,
-<code>investor_note</code>, can't, so it's scored by <strong>Claude-as-judge</strong>: a separate model
-call rates the note for faithfulness. Automatic where possible, model-graded where necessary.</p>
+<p>Six structured fields grade themselves: the four enums by string match, <code>est_readout</code> by
+exact match, and the <code>risk_flags</code> set by overlap. Free text can't: <code>investor_note</code>
+is scored by <strong>Claude-as-judge</strong> (a separate model call rates the note for faithfulness),
+and <code>indication</code>, free text too, isn't auto-scored at all. Automatic where possible,
+model-graded where necessary.</p>
 """),
  ],
 },
