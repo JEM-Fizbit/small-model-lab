@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>How a language model works — the ideas</title>
+<style>
+:root{
+  --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
+  --bg:#fbfbfd; --panel:#ffffff; --accent:#3253d6; --accent-soft:#eef2ff;
+  --key:#0e7a5f; --key-soft:#e7f6f0; --try:#9a5b00; --try-soft:#fbf1e0;
+  --math:#5a3aa6; --math-soft:#f1ecfb; --insight:#a8386a; --insight-soft:#fbecf3;
+  --code-bg:#272822;
+  --serif:Charter,"Iowan Old Style",Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+  font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* hero */
+.hero{background:linear-gradient(165deg,#10182f 0%,#202b4d 60%,#2b3a66 100%);
+  color:#eaeefb;padding:72px 24px 60px;}
+.hero .inner{max-width:760px;margin:0 auto;}
+.hero .kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.18em;
+  font-size:12px;font-weight:600;color:#9fb2e8;margin:0 0 14px;}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:46px;line-height:1.08;
+  margin:0 0 18px;letter-spacing:-.02em;}
+.hero .lede{font-size:20px;line-height:1.6;color:#d4ddf4;margin:0 0 26px;}
+.bigidea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:20px 24px;margin:26px 0;}
+.bigidea p{margin:0 0 10px;font-size:17px;color:#e6ecfb;}
+.bigidea p:last-child{margin:0;color:#c2cdee;font-size:16px;}
+.hero .readnote{font-size:15px;color:#aebbdd;font-family:var(--sans);line-height:1.6;
+  border-top:1px solid rgba(255,255,255,.12);padding-top:20px;margin-top:26px;}
+.hero a{color:#a9c0ff;}
+
+/* layout */
+.layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
+  gap:48px;padding:48px 24px 80px;}
+nav.toc{position:sticky;top:64px;align-self:start;font-family:var(--sans);font-size:14px;
+  max-height:calc(100vh - 48px);overflow:auto;}
+nav.toc .toctitle{text-transform:uppercase;letter-spacing:.14em;font-size:11px;
+  color:var(--faint);font-weight:700;margin:0 0 12px;}
+nav.toc a{display:block;color:var(--soft);text-decoration:none;padding:4px 0;
+  line-height:1.4;border-left:2px solid transparent;padding-left:12px;margin-left:-14px;}
+nav.toc a:hover{color:var(--accent);}
+nav.toc .toc-part{font-weight:700;color:var(--ink);margin:18px 0 6px;font-size:12px;
+  text-transform:uppercase;letter-spacing:.08em;}
+nav.toc .toc-num{color:var(--faint);font-variant-numeric:tabular-nums;
+  display:inline-block;min-width:30px;}
+
+main{min-width:0;max-width:760px;}
+section{margin:0 0 8px;padding:34px 0 6px;border-top:1px solid var(--line);scroll-margin-top:58px;}
+section:first-of-type{border-top:none;padding-top:0;}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin:0 0 14px;}
+.sec-num{font-family:var(--sans);font-weight:700;font-size:13px;color:#fff;
+  background:var(--accent);border-radius:7px;padding:4px 9px;letter-spacing:.02em;
+  white-space:nowrap;flex:none;}
+.sec-head h2{font-family:var(--sans);font-weight:700;font-size:27px;letter-spacing:-.01em;
+  margin:0;line-height:1.15;}
+.part-banner{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:12px;font-weight:700;color:var(--accent);margin:8px 0 0;}
+
+/* prose */
+.prose{margin:0 0 4px;}
+.prose p{margin:0 0 18px;}
+.prose h3{font-family:var(--sans);font-size:19px;font-weight:700;margin:26px 0 10px;}
+.prose strong{font-weight:700;}
+.prose em{font-style:italic;}
+.prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
+  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;}
+.prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
+  border-bottom:1px solid #c5d0f5;}
+.prose a:hover{border-color:var(--accent);}
+
+/* code figures */
+.codefig{margin:22px 0;border-radius:12px;overflow:hidden;
+  box-shadow:0 2px 10px rgba(20,28,60,.10);border:1px solid #2c2d27;}
+.codebar{background:#1f201b;display:flex;align-items:center;gap:7px;padding:9px 14px;}
+.codebar .dot{width:11px;height:11px;border-radius:50%;background:#3a3b34;}
+.codebar .dot:nth-child(1){background:#ff5f56;}
+.codebar .dot:nth-child(2){background:#ffbd2e;}
+.codebar .dot:nth-child(3){background:#27c93f;}
+.codebar .srcname{margin-left:auto;font-family:var(--mono);font-size:12px;color:#9b9c92;}
+.codefig .hl{margin:0;padding:18px 20px;overflow:auto;background:var(--code-bg);
+  font-family:var(--mono);font-size:13.5px;line-height:1.55;}
+.codefig .hl pre{margin:0;}
+.codefig figcaption{font-family:var(--sans);font-size:13px;color:var(--soft);
+  background:#fbfbfc;padding:10px 16px;border-top:1px solid var(--line);}
+
+/* gloss box */
+.gloss{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:16px 20px 6px;margin:18px 0 22px;
+  font-size:16.5px;}
+.gloss-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.12em;
+  font-size:10.5px;font-weight:700;color:var(--accent);margin:0 0 8px;}
+.gloss p{margin:0 0 12px;}
+.gloss ul{margin:0 0 12px;padding-left:22px;}
+.gloss li{margin:0 0 7px;}
+.gloss b{color:var(--ink);}
+
+/* terminal output */
+.term{margin:18px 0 22px;border-radius:10px;overflow:hidden;border:1px solid #d7dbe4;}
+.term-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.1em;
+  font-size:10.5px;font-weight:700;color:var(--soft);background:#eef0f4;
+  padding:7px 14px;border-bottom:1px solid #dde1ea;}
+.term pre{margin:0;padding:14px 16px;background:#f7f8fb;color:#2a3142;
+  font-family:var(--mono);font-size:12.5px;line-height:1.5;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;}
+
+/* figures (images) */
+.imgfig{margin:24px 0;text-align:center;}
+.imgfig img{max-width:100%;border-radius:10px;border:1px solid var(--line);
+  box-shadow:0 2px 10px rgba(20,28,60,.08);}
+.imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
+  margin-top:10px;}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+.diagram text{font-family:var(--sans);}
+.diagram figcaption{margin-top:6px;}
+
+/* callouts */
+.callout{border-radius:10px;padding:16px 20px;margin:22px 0;font-size:16px;
+  font-family:var(--sans);line-height:1.6;}
+.callout-title{font-weight:700;font-size:13px;text-transform:uppercase;
+  letter-spacing:.08em;margin:0 0 8px;}
+.callout-body p{margin:0 0 10px;}
+.callout-body p:last-child{margin:0;}
+.callout-body ul{margin:6px 0 0;padding-left:20px;}
+.callout-body li{margin:0 0 6px;}
+.callout.key{background:var(--key-soft);border:1px solid #bfe6d6;}
+.callout.key .callout-title{color:var(--key);}
+.callout.tryit{background:var(--try-soft);border:1px solid #f0dcb4;}
+.callout.tryit .callout-title{color:var(--try);}
+.callout.aside{background:#f1f3f8;border:1px solid #dfe3ec;}
+.callout.aside .callout-title{color:var(--soft);}
+.callout.math{background:var(--math-soft);border:1px solid #d9ccf3;}
+.callout.math .callout-title{color:var(--math);}
+.callout.insight{background:var(--insight-soft);border:1px solid #eecada;}
+.callout.insight .callout-title{color:var(--insight);}
+.callout.math .formula{font-family:var(--mono);font-size:15px;background:#fff;
+  border:1px solid #e1d8f5;border-radius:8px;padding:12px 14px;margin:6px 0 12px;
+  text-align:center;color:#33285a;overflow:auto;}
+
+/* tables */
+.tablewrap{margin:22px 0;overflow:auto;}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
+  vertical-align:top;}
+th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
+  background:#f6f7fb;font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+td:first-child{font-weight:600;}
+
+/* python primer appendix */
+dl.primer{margin:18px 0;}
+dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3142;}
+dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
+
+footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
+  font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
+footer p{margin:0 0 8px;} footer p:last-child{margin:0;}
+footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
+
+@media (max-width:920px){
+  .layout{grid-template-columns:1fr;gap:0;}
+  nav.toc{display:none;}
+  .hero h1{font-size:36px;}
+  body{font-size:17px;}
+}
+/* top nav (between chapters) */
+.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;top:0;z-index:50;}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
+  align-items:center;font-family:var(--sans);font-size:14px;}
+.topnav a{color:#aebbdd;text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav a.active{color:#fff;font-weight:700;}
+.topnav a.hub{margin-left:auto;color:#9fb2e8;}
+.topnav a.hub:hover{color:#fff;}
+/* always-present top/bottom/home control (bottom-right, no JS) */
+.pagenav{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:9px;}
+.pagenav a{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;background:#fff;color:var(--accent);border:1px solid var(--line);
+  text-decoration:none;font-size:18px;line-height:1;box-shadow:0 3px 12px rgba(20,28,60,.16);
+  transition:background .12s,color .12s;}
+.pagenav a:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+@media (max-width:920px){.pagenav{right:12px;bottom:12px;}}
+@media print{.pagenav,.topnav{display:none;}}
+.topnav .muted{color:#5e6b88;}
+.topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #49483e }
+.hl { background: #272822; color: #F8F8F2 }
+.hl .c { color: #959077 } /* Comment */
+.hl .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.hl .esc { color: #F8F8F2 } /* Escape */
+.hl .g { color: #F8F8F2 } /* Generic */
+.hl .k { color: #66D9EF } /* Keyword */
+.hl .l { color: #AE81FF } /* Literal */
+.hl .n { color: #F8F8F2 } /* Name */
+.hl .o { color: #FF4689 } /* Operator */
+.hl .x { color: #F8F8F2 } /* Other */
+.hl .p { color: #F8F8F2 } /* Punctuation */
+.hl .ch { color: #959077 } /* Comment.Hashbang */
+.hl .cm { color: #959077 } /* Comment.Multiline */
+.hl .cp { color: #959077 } /* Comment.Preproc */
+.hl .cpf { color: #959077 } /* Comment.PreprocFile */
+.hl .c1 { color: #959077 } /* Comment.Single */
+.hl .cs { color: #959077 } /* Comment.Special */
+.hl .gd { color: #FF4689 } /* Generic.Deleted */
+.hl .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.hl .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #F8F8F2 } /* Generic.Error */
+.hl .gh { color: #F8F8F2 } /* Generic.Heading */
+.hl .gi { color: #A6E22E } /* Generic.Inserted */
+.hl .go { color: #66D9EF } /* Generic.Output */
+.hl .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.hl .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #959077 } /* Generic.Subheading */
+.hl .gt { color: #F8F8F2 } /* Generic.Traceback */
+.hl .kc { color: #66D9EF } /* Keyword.Constant */
+.hl .kd { color: #66D9EF } /* Keyword.Declaration */
+.hl .kn { color: #FF4689 } /* Keyword.Namespace */
+.hl .kp { color: #66D9EF } /* Keyword.Pseudo */
+.hl .kr { color: #66D9EF } /* Keyword.Reserved */
+.hl .kt { color: #66D9EF } /* Keyword.Type */
+.hl .ld { color: #E6DB74 } /* Literal.Date */
+.hl .m { color: #AE81FF } /* Literal.Number */
+.hl .s { color: #E6DB74 } /* Literal.String */
+.hl .na { color: #A6E22E } /* Name.Attribute */
+.hl .nb { color: #F8F8F2 } /* Name.Builtin */
+.hl .nc { color: #A6E22E } /* Name.Class */
+.hl .no { color: #66D9EF } /* Name.Constant */
+.hl .nd { color: #A6E22E } /* Name.Decorator */
+.hl .ni { color: #F8F8F2 } /* Name.Entity */
+.hl .ne { color: #A6E22E } /* Name.Exception */
+.hl .nf { color: #A6E22E } /* Name.Function */
+.hl .nl { color: #F8F8F2 } /* Name.Label */
+.hl .nn { color: #F8F8F2 } /* Name.Namespace */
+.hl .nx { color: #A6E22E } /* Name.Other */
+.hl .py { color: #F8F8F2 } /* Name.Property */
+.hl .nt { color: #FF4689 } /* Name.Tag */
+.hl .nv { color: #F8F8F2 } /* Name.Variable */
+.hl .ow { color: #FF4689 } /* Operator.Word */
+.hl .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.hl .w { color: #F8F8F2 } /* Text.Whitespace */
+.hl .mb { color: #AE81FF } /* Literal.Number.Bin */
+.hl .mf { color: #AE81FF } /* Literal.Number.Float */
+.hl .mh { color: #AE81FF } /* Literal.Number.Hex */
+.hl .mi { color: #AE81FF } /* Literal.Number.Integer */
+.hl .mo { color: #AE81FF } /* Literal.Number.Oct */
+.hl .sa { color: #E6DB74 } /* Literal.String.Affix */
+.hl .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.hl .sc { color: #E6DB74 } /* Literal.String.Char */
+.hl .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.hl .sd { color: #E6DB74 } /* Literal.String.Doc */
+.hl .s2 { color: #E6DB74 } /* Literal.String.Double */
+.hl .se { color: #AE81FF } /* Literal.String.Escape */
+.hl .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.hl .si { color: #E6DB74 } /* Literal.String.Interpol */
+.hl .sx { color: #E6DB74 } /* Literal.String.Other */
+.hl .sr { color: #E6DB74 } /* Literal.String.Regex */
+.hl .s1 { color: #E6DB74 } /* Literal.String.Single */
+.hl .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.hl .bp { color: #F8F8F2 } /* Name.Builtin.Pseudo */
+.hl .fm { color: #A6E22E } /* Name.Function.Magic */
+.hl .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.hl .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.hl .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.hl .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.hl .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="inner">
+<a href="../">Home</a><a href="./" class="active">Part 0 · Concepts</a><a href="../track-a/">Part 1 · Pre-training</a><a href="../track-b/">Part 2 · Post-training</a>
+<a class="hub" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub ↗</a>
+</div></nav>
+
+<header class="hero" id="top"><div class="inner">
+<p class="kicker">slm-lab · Part 0 · Concepts</p>
+<h1>How a language model works</h1>
+<p class="lede">The ideas, in plain English, with no code — what a language model actually <em>is</em>,
+how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. Read this first;
+then <a href="../track-a/">Part 1</a> builds every one of these ideas in real, runnable code, and
+<a href="../track-b/">Part 2</a> fine-tunes a real model into a useful expert.</p>
+
+<div class="bigidea">
+  <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
+  function</strong> with millions of adjustable numbers (its <strong>parameters</strong>) that, given
+  some text so far, predicts what comes next. <em>Training</em> tunes those numbers — millions of tiny
+  nudges — until coherent language falls out. <em>Generation</em> runs the function in a loop to write.</p>
+  <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
+  what it has read, how it measures its own mistakes, and how it slowly improves.</p>
+</div>
+
+<p class="readnote"><strong>No Python here.</strong> This page is concepts and pictures only. Every idea
+reappears as real code in <a href="../track-a/">Part 1 · Pre-training</a> — each section links across to
+where it's built.</p>
+</div></header>
+
+<nav class="pagenav" aria-label="Page jump">
+  <a href="#top" title="Top" aria-label="Scroll to top">&uarr;</a>
+  <a href="#bottom" title="Bottom" aria-label="Scroll to bottom">&darr;</a>
+  <a href="../" title="Home" aria-label="slm-lab home">&#8962;</a>
+</nav>
+
+<div class="layout">
+  <nav class="toc">
+    <p class="toctitle">Contents</p>
+    
+      <div class="toc-part">The idea</div>
+      
+    
+      <a href="#what"><span class="toc-num">1</span>What a model actually does</a>
+    
+      <a href="#tokens"><span class="toc-num">2</span>Step 1 — text becomes numbers (tokens)</a>
+    
+      <a href="#embed"><span class="toc-num">3</span>Step 2 — tokens become vectors (embeddings)</a>
+    
+      <a href="#linear"><span class="toc-num">4</span>Step 3 — the one operation everything is built from</a>
+    
+      <a href="#activation"><span class="toc-num">5</span>Step 4 — the bend (activations)</a>
+    
+      <a href="#attention"><span class="toc-num">6</span>Step 5 — attention: letting tokens talk</a>
+    
+      <div class="toc-part">Learning</div>
+      
+    
+      <a href="#learn"><span class="toc-num">7</span>How it learns — loss, gradients, gradient descent</a>
+    
+      <a href="#generate"><span class="toc-num">8</span>Generating text — and the one knob, temperature</a>
+    
+      <a href="#ceiling"><span class="toc-num">9</span>The honest ceiling — and where this goes</a>
+    
+    
+  </nav>
+
+  <main>
+    
+    <section id="what">
+      <p class="part-banner">Part 0 · Concepts</p>
+      <div class="sec-head">
+        <span class="sec-num">1</span>
+        <h2>What a model actually does</h2>
+      </div>
+      <div class="prose">
+<p>Strip away the mystique and a language model does one narrow thing: <strong>given the text so far,
+it predicts what comes next.</strong> Not whole thoughts — the next small chunk (a <em>token</em>:
+a word or word-piece). To write a sentence it just does this over and over, each new token appended and
+fed back in. That's it. Everything else is machinery in service of making that one prediction good.</p>
+<p>So &ldquo;a model that writes&rdquo; is really a model that <em>scores what's likely next</em>, run in
+a loop. The skill isn't generating — it's the prediction underneath.</p>
+</div>
+<aside class="callout key"><div class="callout-title">A model is a function, not a mind</div><div class="callout-body">
+<p>It helps to picture a giant mathematical function: text in → a probability for every possible next
+token out. The function's behaviour is fixed by its <strong>parameters</strong> — millions of numbers
+set during training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote: just numbers, multiplied
+and added, shaped by training to make good predictions.</p>
+</div></aside>
+    </section>
+    
+    <section id="tokens">
+      
+      <div class="sec-head">
+        <span class="sec-num">2</span>
+        <h2>Step 1 — text becomes numbers (tokens)</h2>
+      </div>
+      <div class="prose">
+<p>A model can't do arithmetic on letters, so the first move is to turn text into numbers. The text is
+chopped into <strong>tokens</strong> — common chunks (whole words like <code>fox</code>, or word-pieces),
+each with an integer <strong>ID</strong> (its index in a fixed list called the <em>vocabulary</em>).
+&ldquo;fox&rdquo; might be token #1234. That's all a token is to the model: an ID.</p>
+<p>The reverse runs at the end — the model's predicted ID is mapped back to its chunk of text, and the
+pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
+</div>
+    </section>
+    
+    <section id="embed">
+      
+      <div class="sec-head">
+        <span class="sec-num">3</span>
+        <h2>Step 2 — tokens become vectors (embeddings)</h2>
+      </div>
+      <div class="prose">
+<p>An ID like #1234 carries no <em>meaning</em> — #1235 isn't &ldquo;one more&rdquo; than fox. So each
+token is turned into a <strong>list of numbers</strong> — its <strong>embedding</strong> (256 numbers in
+our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
+space,&rdquo; where tokens used in similar ways land near each other.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
+<line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) ↑</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
+<circle cx="395" cy="120" r="4" fill="#3253d6"/>
+<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<circle cx="440" cy="140" r="4" fill="#3253d6"/>
+<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<circle cx="405" cy="168" r="4" fill="#3253d6"/>
+<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<circle cx="455" cy="108" r="4" fill="#3253d6"/>
+<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
+<circle cx="175" cy="150" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="175" y="92" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="155" cy="140" r="4" fill="#3253d6"/>
+<text x="163" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="190" cy="165" r="4" fill="#3253d6"/>
+<text x="198" y="169" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
+<circle cx="130" cy="290" r="4" fill="#3253d6"/>
+<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<circle cx="173" cy="278" r="4" fill="#3253d6"/>
+<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
+<circle cx="128" cy="262" r="4" fill="#3253d6"/>
+<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
+</svg><figcaption>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions — loosely, fuzzy 'animal-ness' / 'size' (held lightly).</figcaption></figure>
+<figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
+<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
+<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
+<text x="238" y="223" text-anchor="end" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
+<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.5"/>
+<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
+<text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
+</svg><figcaption>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
+<aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
+<p>A token's embedding is a point in <strong>256-dimensional space</strong> — 256 numbers, one per
+dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
+capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
+concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
+&ldquo;animal-ness&rdquo;, &ldquo;furriness&rdquo;, &ldquo;size&rdquo; — held lightly. (A token's
+<em>values</em> on the dimensions are part of the model's parameters; the dimensions themselves are the
+embedding's axes.)</p>
+</div></aside>
+<aside class="callout key"><div class="callout-title">Where do the embeddings come from?</div><div class="callout-body">
+<p>Not from the letters, and not computed on the fly — they're <strong>learned, then looked up</strong>.
+The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
+becomes an integer ID, and that ID simply <em>indexes the table</em> — row #ID <em>is</em> its 256 numbers.
+There's no arithmetic on <code>f-o-x</code>.</p>
+<p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
+other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
+the lookup is deterministic (same token → same row) — but the row was <em>learned</em>, not derived from the
+spelling. (Train again with a different random seed and &ldquo;fox&rdquo; settles on a different,
+equally-good vector.) Tokens used in similar contexts get pushed toward similar rows — which is exactly why
+the clusters above emerge on their own, with no one labelling them.</p>
+</div></aside>
+    </section>
+    
+    <section id="linear">
+      
+      <div class="sec-head">
+        <span class="sec-num">4</span>
+        <h2>Step 3 — the one operation everything is built from</h2>
+      </div>
+      <div class="prose">
+<p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
+<code>y = Wx + b</code>. It takes a vector of numbers in and produces a new vector out, where each output
+is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-output weight-rows into a grid
+<code>W</code> and the offsets into a vector <code>b</code>, and that's the whole layer — the school-line
+<code>y = mx + c</code>, vectorised. The diagram below builds it from one output up to the whole model.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
+<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
+<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >vocabulary</text>
+<rect x="46" y="70" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >the</text>
+<rect x="46" y="100" width="52" height="26" rx="7" fill="#d3e0ff" stroke="#3253d6" stroke-width="2.4"/>
+<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="700" >fox</text>
+<rect x="46" y="130" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >cat</text>
+<text x="72" y="162" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
+<line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
+<text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x — #1–3, then #256)</text>
+<rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="150" y="124" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="150" y="151" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="150" y="178" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
+<text x="286" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
+<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(one per number)</text>
+<rect x="238" y="70" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="238" y="97" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="238" y="124" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="238" y="151" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="238" y="178" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#5a6373" stroke-width="1.2"/>
+<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
+<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
+<text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05 — the letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension — see the embedding figure below.</text>
+<line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked — one row of weights each → the matrix W (so y = Wx + b)</text>
+<rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="172" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<rect x="80" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="126" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="172" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<rect x="240" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
+<text x="103.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
+<text x="149.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
+<text x="195.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
+<text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
+<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
+<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ① (the neuron above)</text>
+<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown — each row is a different output (its own neuron)</text>
+<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x — inputs</text>
+<rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="566" y="394" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="566" y="421" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
+<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b — biases</text>
+<rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="644" y="394" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<rect x="644" y="421" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
+<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y — outputs</text>
+<rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="716" y="394" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<rect x="716" y="421" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x — it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs — m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT — not a single number — passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
+<line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out — one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
+<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
+<line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="168" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
+<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="274" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
+<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="380" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="486" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
+<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
+<line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="592" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
+<text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
+<line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="698" y="621" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
+<text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
+<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >probs</text>
+<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
+<rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
+<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice — the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+</svg><figcaption>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
+<aside class="callout key"><div class="callout-title">Parameters vs. tokens — the part people mix up</div><div class="callout-body">
+<p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> and <code>b</code> —
+<strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
+weights process every token, at every position. A token is just data flowing through them.</p>
+<p>And the weights in the picture are a tiny slice — <em>one output of one layer</em>. Our tiny GPT stacks
+4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
+the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
+<p>And a linear layer transforms <em>one token at a time</em>. The model's real job — read a <em>string</em>
+of tokens and predict the next — needs tokens to share information, which is <em>attention</em>'s job
+(next section), not the linear layers. After the stack, the last position's vector is read out to predict
+the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
+</div></aside>
+    </section>
+    
+    <section id="activation">
+      
+      <div class="sec-head">
+        <span class="sec-num">5</span>
+        <h2>Step 4 — the bend (activations)</h2>
+      </div>
+      <div class="prose">
+<p>Stacking linear layers alone is pointless: a stack of straight-line operations collapses into one
+straight line, and the model could only ever draw <em>lines</em>. So after each linear step the model
+applies one simple <strong>nonlinear</strong> function — a <em>bend</em>. That bend is what lets depth
+model curves and combinations, not just proportions.</p>
+<p>Ours is <strong>GELU</strong> (a smooth version of ReLU). The famous textbook ones are <strong>ReLU</strong>
+(keep positives, zero the rest) and the <strong>sigmoid</strong> (squash any number into 0–1). The whole kit
+is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas below.</p>
+</div>
+    </section>
+    
+    <section id="attention">
+      
+      <div class="sec-head">
+        <span class="sec-num">6</span>
+        <h2>Step 5 — attention: letting tokens talk</h2>
+      </div>
+      <div class="prose">
+<p>Linear layers process each token on its own. But meaning depends on context — &ldquo;bank&rdquo; near
+&ldquo;river&rdquo; vs near &ldquo;money.&rdquo; <strong>Attention</strong> is the one step where positions
+<em>look at each other</em>: each token forms a query and asks &ldquo;which earlier tokens matter to me?&rdquo;,
+then pulls in a blend of their information. It's how the model carries context forward — the part that makes
+it a <em>language</em> model and not a bag of independent words.</p>
+</div>
+<aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
+<p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
+place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
+up rich, context-aware meaning before it ever makes a prediction. <a href="../track-a/#attention">Part 1
+builds attention →</a></p>
+</div></aside>
+    </section>
+    
+    <section id="learn">
+      <p class="part-banner">Part 0 · How learning works</p>
+      <div class="sec-head">
+        <span class="sec-num">7</span>
+        <h2>How it learns — loss, gradients, gradient descent</h2>
+      </div>
+      <div class="prose">
+<p>Where do the millions of parameters come from? <strong>Training.</strong> Show the model real text with
+the next token hidden, let it guess, and measure how wrong the guess was with a single number — the
+<strong>loss</strong> (low = confident and right; high = wrong). Training is nothing more than making that
+number smaller, over and over.</p>
+<p>The trick is knowing <em>which way</em> to nudge each of the millions of parameters. That's the
+<strong>gradient</strong> — for every parameter, the slope of the loss: which direction, and how hard,
+reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it millions of
+times and coherent language emerges. This is <strong>gradient descent</strong>.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 640 300" role="img" aria-label="A loss landscape shaped like a valley. A ball sits partway up the left slope, with an arrow showing one step downhill toward the point of lowest loss.">
+<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1c2230"/></marker></defs>
+<line x1="62" y1="28" x2="62" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
+<line x1="62" y1="272" x2="612" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
+<text x="50" y="42" text-anchor="end" font-size="12" fill="#8a93a3">high</text>
+<text x="26" y="150" text-anchor="middle" font-size="13" fill="#5a6373" transform="rotate(-90 26 150)">loss (how wrong)</text>
+<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of millions)</text>
+<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#3253d6" stroke-width="3"/>
+<line x1="335" y1="235" x2="335" y2="272" stroke="#0e7a5f" stroke-width="1.5" stroke-dasharray="4 4"/>
+<circle cx="335" cy="235" r="4.5" fill="#0e7a5f"/>
+<text x="346" y="231" font-size="12" fill="#0e7a5f">lowest loss</text>
+<circle cx="188" cy="176" r="11" fill="#e8462e" stroke="#fff" stroke-width="2.5"/>
+<text x="126" y="150" text-anchor="middle" font-size="12" fill="#1c2230">current</text>
+<text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
+<line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
+<text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
+</svg><figcaption>Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower. Repeat millions of times and it settles near a valley — low loss, good predictions.</figcaption></figure>
+<div class="prose">
+<p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 760 250" role="img" aria-label="The training cycle as a loop of four boxes: forward pass, then loss, then backward pass, then update, then back to the start.">
+<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
+<rect x="15" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">① Forward pass</text>
+<text x="95" y="88" text-anchor="middle" font-size="11" fill="#5a6373">run data → predictions</text>
+<text x="95" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">model(x)</text>
+<rect x="205" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">② Loss</text>
+<text x="285" y="88" text-anchor="middle" font-size="11" fill="#5a6373">how wrong is it?</text>
+<text x="285" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
+<rect x="395" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">③ Backward pass</text>
+<text x="475" y="88" text-anchor="middle" font-size="11" fill="#5a6373">which way is downhill</text>
+<text x="475" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
+<rect x="585" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">④ Update</text>
+<text x="665" y="88" text-anchor="middle" font-size="11" fill="#5a6373">one step downhill</text>
+<text x="665" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
+<line x1="175" y1="80" x2="203" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="365" y1="80" x2="393" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
+<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
+<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
+</svg><figcaption>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+<aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
+<p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
+scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
+gradient efficiently. It's the engine that makes training millions of parameters feasible.
+<a href="../track-a/#train">Part 1 runs the training loop →</a></p>
+</div></aside>
+    </section>
+    
+    <section id="generate">
+      
+      <div class="sec-head">
+        <span class="sec-num">8</span>
+        <h2>Generating text — and the one knob, temperature</h2>
+      </div>
+      <div class="prose">
+<p>Once trained, the model <em>generates</em> by running its prediction in a loop: feed the text so far,
+get a probability for every next token, pick one, append it, repeat. &ldquo;Inference&rdquo; and
+&ldquo;generation&rdquo; are the same thing — running the function forward (no learning).</p>
+<p>How you <em>pick</em> from the probabilities is the one knob worth feeling: <strong>temperature</strong>.
+Low temperature (~0.5) always grabs the most likely token — safe, repetitive. High (~1.1) samples more
+adventurously — varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
+&ldquo;creative,&rdquo; and it changes nothing in the model — only how its output is sampled.
+<a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>
+</div>
+    </section>
+    
+    <section id="ceiling">
+      
+      <div class="sec-head">
+        <span class="sec-num">9</span>
+        <h2>The honest ceiling — and where this goes</h2>
+      </div>
+      <div class="prose">
+<p>That's the whole machine: text → tokens → embeddings → stacks of (attention + <code>Wx+b</code> + a bend)
+→ a final prediction, all tuned by gradient descent. A <em>frontier</em> model is exactly this, scaled up —
+more dimensions, more layers, vastly more text and compute. Same ideas; different magnitude.</p>
+<p>A from-scratch tiny model trained on a laptop will produce believable <em>shapes</em> of language but no
+real knowledge — that's the honest ceiling, and it's the point: you can see every moving part. To get
+something <em>useful</em>, you start from a model that has already paid the scale cost and
+<strong>specialise</strong> it — which is Part 2.</p>
+</div>
+<aside class="callout key"><div class="callout-title">Now see it built</div><div class="callout-body">
+<p>Every idea here is built in real, runnable code next: <strong><a href="../track-a/">Part 1 ·
+Pre-training</a></strong> trains this tiny GPT from scratch, one piece at a time. Then
+<strong><a href="../track-b/">Part 2 · Post-training</a></strong> fine-tunes a real open model into a
+useful clinical-trial expert — the same concepts, doing a real job. ← back to
+<a href="../">the lab home</a>.</p>
+</div></aside>
+    </section>
+    
+
+    
+  </main>
+</div>
+
+<footer id="bottom">
+  <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above
+  is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
+  <p>Open source:
+  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
+  &nbsp;·&nbsp; notebooks
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
+  &nbsp;·&nbsp; <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
+  started</a> &nbsp;·&nbsp; Part 0 of the <strong>slm-lab</strong> walk-through.</p>
+  <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
+  John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
+  <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
+  <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
+  (Eldan &amp; Li, Microsoft Research).</p>
+  <p>Part of <strong>John E. Milad's</strong> <a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> — a
+  curated, hands-on library for the AI era.</p>
+</footer>
+
+</body>
+</html>

@@ -243,7 +243,13 @@ def main():
 
     written = []
 
-    # Detect whether Part 2 exists, so nav + landing reflect it.
+    # Detect optional chapters, so nav + landing reflect what's present.
+    try:
+        import content_concepts
+        concepts_live = True
+    except ModuleNotFoundError:
+        content_concepts = None
+        concepts_live = False
     try:
         import content_b
         track_b_live = True
@@ -251,34 +257,49 @@ def main():
         content_b = None
         track_b_live = False
 
-    part2_a = ({"label": "Part 2 · TrialScout", "href": "../track-b/"} if track_b_live
-               else {"label": "Part 2 · TrialScout", "href": None, "note": "coming"})
+    def nav_for(active):
+        """Top-nav for a chapter page (all chapters live at site/<slug>/)."""
+        def href(slug):
+            return "./" if slug == active else f"../{slug}/"
+        items = [{"label": "Home", "href": "../"}]
+        if concepts_live:
+            items.append({"label": "Part 0 · Concepts", "href": href("ideas"),
+                          "active": active == "ideas"})
+        items.append({"label": "Part 1 · Pre-training", "href": href("track-a"),
+                      "active": active == "track-a"})
+        if track_b_live:
+            items.append({"label": "Part 2 · Post-training", "href": href("track-b"),
+                          "active": active == "track-b"})
+        else:
+            items.append({"label": "Part 2 · Post-training", "href": None, "note": "coming"})
+        return items
 
-    # --- Track A chapter → site/track-a/ ---
-    nav_a = [
-        {"label": "Home", "href": "../"},
-        {"label": "Part 1 · From scratch", "href": "./", "active": True},
-        part2_a,
-    ]
+    # --- Part 0 · Concepts → site/ideas/  (no code → no Python primer) ---
+    if concepts_live:
+        html0 = _render_chapter(
+            page_tmpl, meta=content_concepts.META, hero=content_concepts.HERO,
+            sections=content_concepts.SECTIONS, primer="", nav=nav_for("ideas"),
+            footer_note="Part 0 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
+        )
+        (SITE / "ideas").mkdir(parents=True, exist_ok=True)
+        (SITE / "ideas" / "index.html").write_text(html0)
+        written.append(("ideas/index.html", len(html0), len(content_concepts.SECTIONS)))
+
+    # --- Part 1 · Pre-training → site/track-a/ ---
     html_a = _render_chapter(
         page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
-        primer=content.PYTHON_PRIMER, nav=nav_a,
+        primer=content.PYTHON_PRIMER, nav=nav_for("track-a"),
         footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
     )
     (SITE / "track-a").mkdir(parents=True, exist_ok=True)
     (SITE / "track-a" / "index.html").write_text(html_a)
     written.append(("track-a/index.html", len(html_a), len(content.SECTIONS)))
 
-    # --- Track B chapter → site/track-b/ ---
+    # --- Part 2 · Post-training → site/track-b/ ---
     if track_b_live:
-        nav_b = [
-            {"label": "Home", "href": "../"},
-            {"label": "Part 1 · From scratch", "href": "../track-a/"},
-            {"label": "Part 2 · TrialScout", "href": "./", "active": True},
-        ]
         html_b = _render_chapter(
             page_tmpl, meta=content_b.META, hero=content_b.HERO, sections=content_b.SECTIONS,
-            primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_b,
+            primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_for("track-b"),
             footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.", hub_url=HUB_URL,
         )
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
@@ -287,8 +308,8 @@ def main():
 
     # --- Landing hub → site/index.html ---
     html_l = landing_tmpl.render(meta=content.LANDING_META, landing=content.LANDING,
-                                 track_b_live=track_b_live, hub_url=HUB_URL,
-                                 headshot=_asset_uri("jem-headshot.jpg"))
+                                 track_b_live=track_b_live, concepts_live=concepts_live,
+                                 hub_url=HUB_URL, headshot=_asset_uri("jem-headshot.jpg"))
     SITE.mkdir(parents=True, exist_ok=True)
     (SITE / "index.html").write_text(html_l)
     written.append(("index.html (landing)", len(html_l), 0))

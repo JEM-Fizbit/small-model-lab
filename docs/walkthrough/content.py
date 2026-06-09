@@ -18,42 +18,34 @@ Block tuple kinds (handled in build.render_block):
 """
 
 META = {
-    "title": "How a tiny GPT works — a guided walk-through",
-    "subtitle": "Building a language model from nothing, on a laptop — explained for the curious.",
+    "title": "Build a tiny GPT from scratch — Part 1 · Pre-training",
+    "subtitle": "Pre-training a language model from nothing, on a laptop — the real code, explained.",
 }
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
-<p class="kicker">slm-lab · Track A</p>
-<h1>How a tiny GPT works</h1>
-<p class="lede">We are going to build a language model from nothing — no pre-trained
-weights, no magic — and watch it learn to write. This page walks through the real code
-that did it, line by line, for someone who is curious but doesn't necessarily write Python. By the
-end you'll understand, concretely, how a model &ldquo;predicts the next word&rdquo; —
-and why, strictly, it predicts no such thing.</p>
+<p class="kicker">slm-lab · Part 1 · Pre-training</p>
+<h1>Build a tiny GPT — from scratch</h1>
+<p class="lede">This is the <strong>build</strong>: we train a language model from nothing — no
+pre-trained weights, no magic — and watch it learn to write, walking through the <em>real code</em>
+line by line, for someone who is curious but doesn't necessarily write Python.</p>
 
 <div class="bigidea">
-  <p><strong>The whole idea:</strong> a GPT is a <strong>model</strong> — really a mathematical
-  function with millions of adjustable numbers, its <strong>parameters</strong> — that, given
-  some text so far, predicts what comes next. Two algorithms surround it: <em>training</em> tunes
-  those parameters, millions of tiny adjustments, until coherent language falls out;
-  <em>generation</em> runs the function in a loop to write.</p>
-  <p>Everything below is just unpacking that idea: how text becomes numbers, how the
-  model &ldquo;looks back&rdquo; at what it has read (<em>attention</em>), how it measures
-  its own mistakes, and how it slowly improves.</p>
+  <p><strong>New to the ideas?</strong> Read <a href="../ideas/">Part 0 · Concepts</a> first — with no
+  code, it explains what a model <em>is</em>, how text becomes numbers, what &ldquo;learning&rdquo; means,
+  and how the pieces fit (with all the diagrams). This page assumes that groundwork and focuses on
+  building it; each step links back to the matching idea in Part 0.</p>
 </div>
 
-<p class="readnote"><strong>How to read this.</strong> Top to bottom, like an essay. Each
-step has the plain idea first, then the actual code in a dark box, then a
-&ldquo;what this says&rdquo; translation. You can skip the code boxes entirely and still
-follow the story — or read them closely and learn to recognise what Python is doing.
-A one-page <a href="#primer">Python primer</a> at the end explains the handful of symbols
-that recur. Every code box is real — pulled straight from the project's Jupyter notebooks (a
-notebook is just code, notes, and results together in one document you run in your browser), which
-you can read and run yourself: the full source is on
-<a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (linked again, with each notebook and a
+<p class="readnote"><strong>How to read this.</strong> Top to bottom. Each step is the plain idea in a
+line or two, then the actual code in a dark box, then a &ldquo;what this says&rdquo; translation. You can
+skip the code boxes entirely and still follow along — or read them closely and learn to recognise what
+Python is doing. A one-page <a href="#primer">Python primer</a> at the end explains the handful of symbols
+that recur. Every code box is real — pulled straight from the project's Jupyter notebooks (code, notes,
+and live results in one document you run in your browser), which you can read and run yourself: the full
+source is on <a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (with each notebook and a
 from-zero <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">setup
-guide</a>, at the foot of the page).</p>
+guide</a> at the foot of the page).</p>
 """
 
 # -------------------------------------------------------------- PYTHON PRIMER --
@@ -320,8 +312,8 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
       {% if t.part %}<div class="toc-part">{{ t.part }}</div>
       {% else %}<a href="#{{ t.id }}"><span class="toc-num">{{ t.num }}</span>{{ t.title }}</a>{% endif %}
     {% endfor %}
-    <div class="toc-part">Reference</div>
-    <a href="#primer"><span class="toc-num">↪</span>Python primer</a>
+    {% if primer %}<div class="toc-part">Reference</div>
+    <a href="#primer"><span class="toc-num">↪</span>Python primer</a>{% endif %}
   </nav>
 
   <main>
@@ -336,10 +328,10 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
     </section>
     {% endfor %}
 
-    <section id="primer">
+    {% if primer %}<section id="primer">
       <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
       <div class="prose">{{ primer }}</div>
-    </section>
+    </section>{% endif %}
   </main>
 </div>
 
@@ -684,26 +676,16 @@ SECTIONS = [
 {
  "id": "what", "num": "0", "title": "What we're actually building",
  "part": "Orientation",
- "part_banner": "Part I · Orientation",
+ "part_banner": "Stage 1 · Orientation",
  "blocks": [
   ("prose", r"""
-<p>A &ldquo;GPT&rdquo; — the architecture behind ChatGPT, Claude, and the rest — is at
-heart a <strong>next-token predictor</strong>. Show it some text and it produces, for every
-possible next chunk of text, a probability: <em>how likely is this to come next?</em> To
-generate, you sample one chunk from those probabilities, glue it on, and ask again. Do that
-in a loop and the model writes.</p>
-<p>That phrasing — &ldquo;chunk of text,&rdquo; not &ldquo;word&rdquo; — is deliberate. The
-popular line &ldquo;predicts the next word&rdquo; is shorthand: a model predicts the next
-<em>unit</em> of however we chose to slice text up, and that choice is ours to make. Notebook 01
-slices text into single <strong>characters</strong>, so it literally predicts the next letter.
-Notebook 02 slices it into <strong>tokens</strong> — frequent fragments like <code>" the"</code>
-or <code>"ing"</code>, usually a few characters each — so it predicts the next fragment. A whole
-word is then just one or a few of these in a row. The loop is identical either way — predict the
-next unit, append it, ask again — only the <em>grain</em> changes.</p>
-<p>That's the entire trick. The sophistication of a real model isn't a different idea — it's
-the <em>same</em> idea at enormous scale: more data, more parameters, more compute. So if we
-build a <em>tiny</em> one and understand every part, we've understood the shape of the whole
-field. That is exactly what Track A of this lab does, in two passes:</p>
+<p>This page is the <strong>build</strong>. For <em>what</em> a model is and how it works — next-token
+prediction, tokens, embeddings, attention, training — see <a href="../ideas/">Part 0 · Concepts</a>
+(no code); we lean on it throughout. The one thing worth restating here: a real model is the
+<em>same</em> idea at enormous scale, so building a <em>tiny</em> one where every part is visible teaches
+the shape of the whole field.</p>
+<p>We do it in <strong>two passes</strong> — which separates <em>knowing the parts</em> from
+<em>knowing what matters</em>:</p>
 """),
   ("table", r"""
 <table>
@@ -722,7 +704,7 @@ field. That is exactly what Track A of this lab does, in two passes:</p>
   ("callout", "key", "Why two passes", r"""
 <p>The jump from gibberish to coherent stories — same architecture, a few changes — is the
 most instructive thing in the project. It separates <em>knowing the parts</em> from
-<em>knowing what matters</em>. We'll build the parts in Part II and turn the dials in Part III.</p>
+<em>knowing what matters</em>. We build the parts first (the from-scratch pass), then turn the dials (the tuned pass).</p>
 """),
   ("callout", "aside", "A note on hardware", r"""
 <p>All of this runs locally on an Apple-silicon Mac using <strong>MLX</strong>, Apple's
@@ -737,7 +719,7 @@ download.</p>
 {
  "id": "setup", "num": "1", "title": "Setup: the toolbox",
  "part": "Building it from scratch",
- "part_banner": "Part II · Building it from scratch (notebook 01)",
+ "part_banner": "Stage 2 · Building it from scratch (notebook 01)",
  "blocks": [
   ("prose", r"""
 <p>Every program starts by laying its tools on the bench. Here we load the array library, the
@@ -951,83 +933,13 @@ signal flowing through even a deep stack, which is what makes deep networks lear
 the maths stays stable.</li>
 </ul>
 """),
-  ("callout", "key", "Zoom out — the two operations a neural network is built from", r"""
-<p>Step back from the details and almost the entire network is just <em>two</em> operations,
-repeated:</p>
-<ul>
-<li><b>The linear layer — <code>y = Wx + b</code>.</b> The input <code>x</code> is a
-<em>vector</em> — one token's list of numbers (256 of them here). The layer produces a new vector,
-computing <em>each output on its own</em> as a weighted sum of <em>all</em> the inputs, plus a
-single bias:
-<div class="formula">out₁ = w₁,₁·x₁ + w₁,₂·x₂ + … + w₁,ₙ·xₙ + b₁ &nbsp;&nbsp;(one line like this per output)</div>
-Stack those rows of weights into a grid <code>W</code> and the per-output biases into a vector
-<code>b</code>, and the whole layer is <code>y = Wx + b</code> — the line <code>y = mx + c</code>
-from school, vectorised. So <code>b</code> is a <em>vector</em> (one bias per output, not a single
-number), and the <code>W</code>s vastly outnumber the <code>b</code>s. Almost every named box in
-the code is one of these — <code>c_attn</code>, <code>c_proj</code>, both MLP layers, the final
-<code>head</code> — each an <code>nn.Linear</code>, which simply <em>computes</em>
-<code>Wx + b</code>. <em>(The code does this to a whole array of tokens at once, but the operation
-is exactly this, per token.)</em></li>
-<li><b>The activation — a bend.</b> After a linear step the model applies one simple nonlinear
-function. Without it, stacking linear layers would collapse into a single bigger linear layer, and
-the whole network could only ever draw <em>straight lines</em>. The bend is what lets depth model
-curves. Ours is <b>GELU</b> (a smooth version of ReLU); the famous textbook activations are
-<b>ReLU</b> (keep positives, zero the rest) and the <b>sigmoid</b> (squash any number into 0–1).</li>
-</ul>
-<p>That's the whole kit: <code>Wx + b</code>, then a bend, stacked — plus <em>attention</em> to
-move information between positions, an <em>embedding</em> to turn tokens into vectors at the
-bottom, and the <em>head</em> to read predictions out at the top. Every <code>W</code> and
-<code>b</code> across all of those is a <b>parameter</b> — and &ldquo;training&rdquo; (next
-section) is nothing more than nudging those millions of numbers downhill.</p>
-"""),
-  ("diagram", LINEAR_SVG,
-   "A linear layer, drawn. ① one output is a weighted sum of one token's numbers; ② stack a row of "
-   "weights per output and you get the matrix W, so the layer is y = Wx + b; ③ one such layer is a tiny "
-   "slice of the whole ~3.2M-parameter model, whose weights are shared across every token."),
-  ("callout", "key", "Parameters vs. tokens — the part people mix up", r"""
-<p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> and <code>b</code> —
-<strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
-weights process every token, at every position. A token is just data flowing through them.</p>
-<p>And the weights in the picture are a tiny slice — <em>one output of one layer</em>. Our tiny GPT stacks
-4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
-the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
-<p>And a linear layer transforms <em>one token at a time</em>. The model's real job — read a <em>string</em>
-of tokens and predict the next — needs tokens to share information, which is <em>attention</em>'s job
-(<a href="#attention">§5</a>), not the linear layers. After the stack, the last position's vector is read
-out to predict the next token.</p>
-"""),
   ("prose", r"""
-<p>So what <em>are</em> those 256 numbers fox turns into? Here are two honest ways to picture an
-<strong>embedding</strong> — as a position in space, and as a profile of values.</p>
-"""),
-  ("callout", "aside", "Attributes = dimensions", r"""
-<p>A token's embedding is a point in <strong>256-dimensional space</strong> — 256 numbers, one per
-dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
-capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
-concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
-&ldquo;animal-ness&rdquo;, &ldquo;furriness&rdquo;, &ldquo;size&rdquo; — held lightly. (A token's
-<em>values</em> on the dimensions are part of the model's parameters; the dimensions themselves are the
-embedding's axes.)</p>
-"""),
-  ("diagram", EMBED_SCATTER_SVG,
-   "Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings "
-   "cluster. The axes are two of the 256 learned attributes/dimensions — loosely, fuzzy 'animal-ness' / "
-   "'size' (held lightly)."),
-  ("diagram", EMBED_HEATMAP_SVG,
-   "The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each "
-   "cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar "
-   "patterns; \"the\" differs."),
-  ("callout", "key", "Where do the embeddings come from?", r"""
-<p>Not from the letters, and not computed on the fly — they're <strong>learned, then looked up</strong>.
-The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
-becomes an integer ID, and that ID simply <em>indexes the table</em> — row #ID <em>is</em> its 256 numbers.
-There's no arithmetic on <code>f-o-x</code>.</p>
-<p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
-other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
-the lookup is deterministic (same token → same row) — but the row was <em>learned</em>, not derived from the
-spelling. (Train again with a different random seed and &ldquo;fox&rdquo; settles on a different,
-equally-good vector.) Tokens used in similar contexts get pushed toward similar rows — which is exactly why
-the clusters above emerge on their own, with no one labelling them.</p>
+<p>Almost all of a block is two operations: a <strong>linear layer</strong> (<code>y = Wx + b</code> —
+a weighted sum) and a nonlinear <strong>activation</strong> (a &ldquo;bend,&rdquo; GELU here). Stacked
+with attention, an <em>embedding</em> at the bottom and a <em>head</em> at the top, that's the whole
+network. The <em>why</em>, with the diagrams — what a linear layer computes, what an embedding is, how the
+256 numbers form a &ldquo;meaning space&rdquo; — is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
+Here we build the block in code.</p>
 """),
   ("code", "01", "class Block(nn.Module):", "One block, then the full GPT assembled from blocks."),
   ("gloss", r"""
@@ -1094,28 +1006,12 @@ them — which is the open research field of <strong>interpretability</strong>.<
  "id": "train", "num": "7", "title": "Training: making the guesses less wrong",
  "blocks": [
   ("prose", r"""
-<p>A freshly built model is random — its parameters are noise, and its guesses are no better
-than chance. <strong>Training</strong> is the loop that fixes that. It needs two things: a way
-to <em>measure</em> how wrong a guess is, and a way to <em>nudge</em> every parameter to be a
-little less wrong next time.</p>
-<p><strong>Measuring wrongness — the loss.</strong> We use <em>cross-entropy</em>, which you
-can read as <strong>surprise</strong>: how shocked was the model by the character that actually
-came next? If it put high probability on the right character, surprise (loss) is low. A model
-that knows nothing and guesses uniformly across a vocabulary of size <em>V</em> has a loss of
-about <code>ln(V)</code> — a baseline we can check against.</p>
-<p><strong>Using the loss — gradient descent.</strong> Knowing how wrong the model is only
-helps if we can act on it. Picture every one of the model's millions of numbers as a dial, and
-the loss as the <em>altitude</em> of a vast, foggy landscape: most dial settings sit high up
-(bad), the best sit in a valley (low loss). We want the valley. We can't see the whole
-landscape — but standing at our current spot we <em>can</em> feel which way is downhill. That
-direction is the <strong>gradient</strong>. Take a small step that way, refeel, step again.
-That repeated downhill shuffle is <strong>gradient descent</strong>, and the size of each step
-is the <code>learning_rate</code>.</p>
+<p>A freshly built model is random — its guesses are no better than chance. <strong>Training</strong> is
+the loop that fixes that: <em>measure</em> how wrong each guess is (the <strong>loss</strong> — read it as
+&ldquo;surprise&rdquo;), then <em>nudge</em> every parameter a little to lower it (<strong>gradient
+descent</strong>). The <em>why</em> — loss, gradients, backpropagation, the downhill-in-a-landscape
+picture — is in <a href="../ideas/#learn">Part 0 · Concepts</a>. Here is that loop, in code.</p>
 """),
-  ("diagram", LANDSCAPE_SVG,
-   "Gradient descent: the loss is the height of the landscape. The gradient says which way is "
-   "downhill; the learning rate is how big a step you take. One weight is shown — the real model "
-   "descends in millions of dimensions at once."),
   ("code", "01", "optimizer = optim.AdamW(learning_rate=learning_rate)",
    "The loss function, then the training loop."),
   ("gloss", r"""
@@ -1138,9 +1034,6 @@ step downhill — every parameter at once. The step size is the <code>learning_r
 default). Repeat a couple of thousand times: each pass the model is microscopically less wrong,
 and in aggregate, language emerges.</p>
 """),
-  ("diagram", CYCLE_SVG,
-   "One trip round the loop. The forward pass and loss measure how wrong the model is; the "
-   "backward pass and update make it a little less wrong. Then it all repeats."),
   ("output", "01", "optimizer = optim.AdamW(learning_rate=learning_rate)",
    "watching it learn (loss falling)"),
   ("prose", r"""
@@ -1148,22 +1041,6 @@ and in aggregate, language emerges.</p>
 baseline (~4.5) and falls fast to ~2.3 as the model picks up the statistics of English. The
 <strong>validation</strong> loss falls alongside the training loss — proof it's learning the
 <em>language</em>, not just memorising these particular stories.</p>
-"""),
-  ("callout", "math", "For the curious — what a gradient is, exactly", r"""
-<p>A <strong>gradient</strong> is just a slope: the derivative of the loss with respect to one
-parameter — how much the loss would change if you nudged that parameter a hair. Collect one for
-every parameter and you have the direction of steepest <em>increase</em> in loss; descent steps
-the opposite way:</p>
-<div class="formula">parameter ← parameter − learning_rate × gradient</div>
-<p>Computing <em>all</em> of them — one <code>∂loss/∂parameter</code> per parameter — is what the
-<strong>backward pass</strong> does, by applying the <strong>chain rule</strong> backward through
-the network (each layer's derivative feeding the one before it). That reuse is why
-<strong>backpropagation</strong> gets every derivative in roughly the cost of one extra forward
-pass, instead of re-running the whole model once per parameter.</p>
-<p>The loss itself, cross-entropy, is <code>−log(probability the model gave the correct
-token)</code> — zero when the model is confident and right, large when it's confident and wrong.
-And <code>AdamW</code>, our optimizer, is a refined gradient descent: it keeps a little momentum
-and adapts the step size per parameter — but the line above is the heart of it.</p>
 """),
  ],
 },
@@ -1232,7 +1109,7 @@ language&rdquo; and &ldquo;is coherent&rdquo; is the job of Part III.</p>
 {
  "id": "upgrades", "num": "10", "title": "The upgrades that move quality",
  "part": "Making it good",
- "part_banner": "Part III · The upgrades that move quality (notebook 02)",
+ "part_banner": "Stage 3 · The upgrades that move quality (notebook 02)",
  "blocks": [
   ("prose", r"""
 <p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the five changes that
@@ -1441,7 +1318,7 @@ choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</l
 {
  "id": "use", "num": "16", "title": "Using the model you built",
  "part": "Use the thing you built",
- "part_banner": "Part IV · Use the thing you built (notebook 03)",
+ "part_banner": "Stage 4 · Use the thing you built (notebook 03)",
  "blocks": [
   ("prose", r"""
 <p>Training took twenty-odd minutes. You should only ever pay that <em>once</em>. The last cell
@@ -1586,8 +1463,9 @@ LANDING_META = {"title": "slm-lab — build a small language model, explained"}
 LANDING = {
     "kicker": "slm-lab",
     "h1": "Build a small language model — and actually understand it",
-    "lede": "A hands-on, no-black-box lab: build a tiny language model from scratch, then "
-            "fine-tune a real open model into a useful expert. Two chapters, explained for the curious.",
+    "lede": "A hands-on, no-black-box lab. Start with the <em>concepts</em> (no code), then "
+            "<em>build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open "
+            "model into a useful expert. Explained for the curious.",
 }
 
 LANDING_TEMPLATE = r"""<!doctype html>
@@ -1618,6 +1496,7 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
 .card.soon{opacity:.72;}
 .card.soon .go{color:#7e8bb0;}
+.card.start{margin-bottom:20px;border-color:rgba(127,224,176,.32);background:rgba(127,224,176,.06);}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
 .tag.live{background:#16432f;color:#7fe0b0;}
@@ -1651,6 +1530,15 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
   <h1>{{ landing.h1 }}</h1>
   <p class="lede">{{ landing.lede }}</p>
 
+  {% if concepts_live %}
+  <a class="card start" href="ideas/">
+    <div class="part">Part 0 · Concepts</div>
+    <h2>How a language model works <span class="tag live">start here</span></h2>
+    <p>The plain-English ideas, no code — what a model <em>is</em>, how text becomes numbers, what
+    &ldquo;learning&rdquo; means, and how the pieces fit, with diagrams. The grounding for Parts 1 &amp; 2.</p>
+    <span class="go">Read Part 0 &rarr;</span>
+  </a>
+  {% endif %}
   <div class="cards">
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>

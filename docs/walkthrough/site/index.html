@@ -26,6 +26,7 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
 .card.soon{opacity:.72;}
 .card.soon .go{color:#7e8bb0;}
+.card.start{margin-bottom:20px;border-color:rgba(127,224,176,.32);background:rgba(127,224,176,.06);}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
 .tag.live{background:#16432f;color:#7fe0b0;}
@@ -57,8 +58,17 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 <div class="wrap">
   <p class="kicker"><a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
   <h1>Build a small language model — and actually understand it</h1>
-  <p class="lede">A hands-on, no-black-box lab: build a tiny language model from scratch, then fine-tune a real open model into a useful expert. Two chapters, explained for the curious.</p>
+  <p class="lede">A hands-on, no-black-box lab. Start with the <em>concepts</em> (no code), then <em>build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open model into a useful expert. Explained for the curious.</p>
 
+  
+  <a class="card start" href="ideas/">
+    <div class="part">Part 0 · Concepts</div>
+    <h2>How a language model works <span class="tag live">start here</span></h2>
+    <p>The plain-English ideas, no code — what a model <em>is</em>, how text becomes numbers, what
+    &ldquo;learning&rdquo; means, and how the pieces fit, with diagrams. The grounding for Parts 1 &amp; 2.</p>
+    <span class="go">Read Part 0 &rarr;</span>
+  </a>
+  
   <div class="cards">
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>
