@@ -466,7 +466,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
 <text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
 <line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix W (so y = Wx + b)</text>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#b5731a">W</tspan> (so <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
 <text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
 <rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
@@ -531,7 +531,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
 <text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
 <text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
-<text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  y = Wx + b.</text>
+<text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
 <text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
 <rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
