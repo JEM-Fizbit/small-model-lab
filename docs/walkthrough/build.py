@@ -126,9 +126,13 @@ def render_code_lang(src: str, suffix: str) -> str:
     return highlight(src, _LEXERS.get(suffix, TextLexer()), _fmt)
 
 
-def render_block(block, ctx):
-    """block is a tuple (kind, *args). Returns an HTML fragment."""
+def render_block(block, ctx, fig_no=None):
+    """block is a tuple (kind, *args). Returns an HTML fragment.
+    fig_no: page-wide figure number for "figure"/"diagram" blocks (auto-assigned
+    by _render_chapter so captions read "Fig. N · …" and can be referenced)."""
     kind = block[0]
+    fig_tag = (f'<span class="fignum" id="fig-{fig_no}">Fig.&nbsp;{fig_no}</span>'
+               if fig_no else "")
     if kind == "prose":
         return f'<div class="prose">{block[1]}</div>'
     if kind == "code":
@@ -179,12 +183,14 @@ def render_block(block, ctx):
                 f'<pre>{_esc(text)}</pre></div>')
     if kind == "figure":
         fn, caption = block[1], (block[2] if len(block) > 2 else "")
-        cap = f'<figcaption>{caption}</figcaption>' if caption else ""
+        cap = (f'<figcaption>{fig_tag}{caption}</figcaption>'
+               if caption or fig_tag else "")
         return (f'<figure class="imgfig"><img src="{img_data_uri(fn)}" alt="{caption}"/>'
                 f'{cap}</figure>')
     if kind == "diagram":
         svg, caption = block[1], (block[2] if len(block) > 2 else "")
-        cap = f'<figcaption>{caption}</figcaption>' if caption else ""
+        cap = (f'<figcaption>{fig_tag}{caption}</figcaption>'
+               if caption or fig_tag else "")
         return f'<figure class="imgfig diagram">{svg}{cap}</figure>'
     if kind == "callout":
         variant, title, html = block[1], block[2], block[3]
@@ -216,10 +222,16 @@ def _asset_uri(name: str) -> str:
 
 def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, footer_gen, hub_url):
     """Render one chapter page (Track A or Track B) from its sections."""
-    rendered = []
+    rendered, fig_no = [], 0
     for sec in sections:
-        body = "\n".join(render_block(b, sec) for b in sec["blocks"])
-        rendered.append({**sec, "body": body})
+        parts = []
+        for b in sec["blocks"]:
+            if b[0] in ("figure", "diagram"):
+                fig_no += 1
+                parts.append(render_block(b, sec, fig_no))
+            else:
+                parts.append(render_block(b, sec))
+        rendered.append({**sec, "body": "\n".join(parts)})
     toc, seen = [], {}
     for sec in sections:
         part = sec.get("part")

@@ -355,8 +355,9 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
    "similar words get similar rows."),
   ("diagram", EMBED_SCATTER_SVG,
    "Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings "
-   "cluster. The axes are two of the 256 learned attributes/dimensions: loosely, fuzzy 'animal-ness' / "
-   "'size' (held lightly)."),
+   "cluster. The axes are two of the 256 learned attributes/dimensions — loosely, 'animal-ness' across "
+   "and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low "
+   "(held lightly)."),
   ("diagram", EMBED_HEATMAP_SVG,
    "The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each "
    "cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar "

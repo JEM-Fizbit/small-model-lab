@@ -215,6 +215,7 @@ section:first-of-type{border-top:none;padding-top:0;}
   box-shadow:0 2px 10px rgba(20,28,60,.08);}
 .imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
   margin-top:10px;}
+.fignum{font-weight:700;color:var(--accent);margin-right:8px;scroll-margin-top:64px;}
 .diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
   padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
 .diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
@@ -573,7 +574,7 @@ EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedd
 <line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
 <text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;size&#8221; ↑</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
 <text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
@@ -585,12 +586,12 @@ EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedd
 <text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
 <circle cx="455" cy="108" r="4" fill="#3253d6"/>
 <text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
-<circle cx="175" cy="150" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="175" y="92" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
-<circle cx="155" cy="140" r="4" fill="#3253d6"/>
-<text x="163" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
-<circle cx="190" cy="165" r="4" fill="#3253d6"/>
-<text x="198" y="169" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="262" cy="200" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="262" y="142" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="242" cy="190" r="4" fill="#3253d6"/>
+<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="277" cy="215" r="4" fill="#3253d6"/>
+<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
 <circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
 <circle cx="130" cy="290" r="4" fill="#3253d6"/>
