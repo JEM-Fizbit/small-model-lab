@@ -15,7 +15,7 @@ META = {
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
-<p class="kicker">slm-lab · Part 2 · TrialScout</p>
+<p class="kicker">slm-lab · Part 2 · Post-training</p>
 <h1>From a toy to a tool</h1>
 <p class="lede">In Part 1 we built a tiny GPT from scratch and hit its ceiling: it learned the
 <em>shape</em> of language but never anything useful. This chapter is the other half of the arc:
@@ -33,7 +33,7 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
 </div>
 
 <p class="readnote"><strong>How to read this.</strong> Same as Part 1: the idea first, then the
-real code, then a plain-English gloss. Track B is more <em>pipeline</em> than algorithm, so the
+real code, then a plain-English gloss. Part 2 is more <em>pipeline</em> than algorithm, so the
 code boxes show the load-bearing excerpts (pulled straight from the
 <a href="https://github.com/JEM-Fizbit/slm-lab/tree/main/track-b-trialscout">repo</a>) rather than
 every line. Haven't read <a href="../track-a/">Part 1</a> yet? Start there; this chapter assumes
@@ -126,7 +126,7 @@ SECTIONS = [
 
 {
  "id": "shift", "num": "0", "title": "The shift: don't build, adapt",
- "part": "Orientation", "part_banner": "Part I · Orientation",
+ "part": "Orientation", "part_banner": "Stage 1 · Orientation",
  "blocks": [
   ("prose", r"""
 <p>Part 1 ended on an honest ceiling: a from-scratch model, trained on a laptop, produces
@@ -151,7 +151,7 @@ offer at once.</p>
 {
  "id": "task", "num": "1", "title": "The task, and the contract",
  "part": "Teaching the model the task",
- "part_banner": "Part II · Teaching the model the task",
+ "part_banner": "Stage 2 · Teaching the model the task",
  "blocks": [
   ("prose", r"""
 <p>First, the domain, for anyone new to it. A <strong>clinical trial</strong> is a study that tests
@@ -167,8 +167,7 @@ conditions and drugs under test, the primary outcome measure, key dates, enrollm
 free text. We fetch it from the registry's API and trim it to the ~14 fields that matter:
 <strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
 JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
-<code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (an H1/H2-year
-window), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
+<code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
 <strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
 trials, and easy to score.</p>
 <p>The work is turning verbose, inconsistent registry data into normalised judgement: reading
@@ -179,7 +178,7 @@ date into <code>H2 2026</code>. That's why it needs a <em>model</em>, not a pars
   ("rawoutput", '''{
   "brief_title": "A Phase 3 Study of Osimertinib vs Platinum-Pemetrexed in
                   EGFR T790M-Positive Advanced NSCLC After First-Line EGFR-TKI",
-  "phases": ["PHASE3"],          "overall_status": "COMPLETED",
+  "phases": ["PHASE3"],          "overall_status": "ACTIVE_NOT_RECRUITING",
   "lead_sponsor": "AstraZeneca", "lead_sponsor_class": "INDUSTRY",
   "primary_completion_date": "2026-09",
   "conditions": ["Non-Small Cell Lung Cancer"],
@@ -299,7 +298,7 @@ Keeping it frozen is what makes the numbers trustworthy.</p>
 
 {
  "id": "lora", "num": "4", "title": "LoRA: a small patch on a big model",
- "part": "Fine-tuning", "part_banner": "Part III · Fine-tuning",
+ "part": "Fine-tuning", "part_banner": "Stage 3 · Fine-tuning",
  "blocks": [
   ("prose", r"""
 <p>Now the fine-tune. The naïve way (update all 4 billion of Qwen's parameters) needs far more
@@ -348,7 +347,7 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
 in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
 value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
-compares each structured field to gold (accuracy and macro-F1 per field, set-F1 for the risk-flag list),
+compares each structured field to gold (accuracy and macro-F1 per field, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives against misses, 1.0 perfect),
 exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 """),
   ("callout", "aside", "Two kinds of grading", r"""
@@ -361,7 +360,7 @@ call rates the note for faithfulness. Automatic where possible, model-graded whe
 
 {
  "id": "result", "num": "6", "title": "The result",
- "part": "The result", "part_banner": "Part IV · The result",
+ "part": "The result", "part_banner": "Stage 4 · The result",
  "blocks": [
   ("prose", r"""
 <p>Here is the payoff, on the 150 trials the model never saw: the fine-tuned Qwen student against the
@@ -399,10 +398,10 @@ doing a real job, well.</p>
  "id": "ab", "num": "7", "title": "Decide by eval, not by faith",
  "blocks": [
   ("prose", r"""
-<p>Which base model to fine-tune, Qwen3-4B or Google's Gemma 4 E2B? We didn't argue about it; we ran
+<p>Which base model to fine-tune, Qwen3-4B or Google's Gemma 3n E2B? We didn't argue about it; we ran
 both through the <em>same</em> harness and let the score decide. That's the discipline: model choice is a
 measurement, not a preference.</p>
-<p>In the end Qwen won by default and by margin. Gemma 4 E2B <em>failed to train at all</em>: the only
+<p>In the end Qwen won by default and by margin. Gemma 3n E2B <em>failed to train at all</em>: the only
 available checkpoint is a multimodal (vision+text) build whose weights the LoRA trainer couldn't target.
 And Qwen's 0.922 is so near the ceiling that even a perfectly-trained Gemma would have to beat it to flip
 the call, implausible on this task. So the measured decision is Qwen, robustly.</p>
@@ -423,9 +422,9 @@ the arm that didn't work and why it doesn't change the conclusion.</p>
 <strong>recursive improvement loop</strong>, a general pattern worth naming: <em>mine the model's errors
 → generate targeted new training data for exactly those cases → retrain → measure → repeat</em>, each
 pass trying to climb a little higher. It's the honest, buildable kernel of the &ldquo;self-improving
-AI&rdquo; idea. So we ran one turn of it: snapped near-miss enums for free, then added 300 fresh gold
+AI&rdquo; idea. So we ran one turn of it: snapped near-miss enums for free (auto-correcting almost-right values to the nearest allowed one; that alone nudged overall 0.922 → 0.925), then added 300 fresh gold
 examples of the rare modalities the model kept missing.</p>
-<p>It barely moved: a <strong>statistical wash</strong>, overall 0.925 → 0.930, with modality's gain
+<p>It barely moved further: a <strong>statistical wash</strong>, overall 0.925 → 0.930, with modality's gain
 offset by a small dip elsewhere. That's the signature of a <strong>plateau</strong>: a loop like this
 climbs at first, then flattens. Digging in showed why: the residual <code>modality</code> errors cluster
 on the genuinely ambiguous <code>combination</code> boundary, cases where the <em>teacher's own labels</em>
@@ -444,7 +443,7 @@ of truth, not just more teacher labels. That's the real frontier, and the honest
 
 {
  "id": "serve", "num": "9", "title": "Packaging it as a callable expert",
- "part": "Ship it", "part_banner": "Part V · Ship it",
+ "part": "Ship it", "part_banner": "Stage 5 · Ship it",
  "blocks": [
   ("prose", r"""
 <p>A trained adapter on disk isn't useful yet. The last step makes TrialScout <em>callable</em>: wrapped

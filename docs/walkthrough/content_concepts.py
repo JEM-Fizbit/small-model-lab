@@ -117,7 +117,7 @@ the clusters above emerge on their own, with no one labelling them.</p>
 },
 
 {
- "id": "linear", "num": "4", "title": "Step 3: the one operation everything is built from",
+ "id": "linear", "num": "4", "title": "Step 3: the linear layer (the core operation)",
  "blocks": [
   ("prose", r"""
 <p>Almost the entire network is one operation, repeated: the <strong>linear layer</strong>,
@@ -191,12 +191,12 @@ the next token hidden, let it guess, and measure how wrong the guess was with a 
 number smaller, over and over.</p>
 <p>The trick is knowing <em>which way</em> to nudge each of the millions of parameters. That's the
 <strong>gradient</strong>: for every parameter, the slope of the loss, telling you which direction, and how hard,
-reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it millions of
+reduces the error. Nudge every parameter a little down its slope, and the loss drops. Do it a few thousand
 times and coherent language emerges. This is <strong>gradient descent</strong>.</p>
 """),
   ("diagram", LANDSCAPE_SVG,
    "Gradient descent: picture the loss as a landscape and the model as a ball. The gradient is the "
-   "downhill direction; each training step rolls the ball one step lower. Repeat millions of times and "
+   "downhill direction; each training step rolls the ball one step lower. Repeat a few thousand times and "
    "it settles near a valley: low loss, good predictions."),
   ("prose", r"""
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
@@ -215,7 +215,7 @@ gradient efficiently. It's the engine that makes training millions of parameters
 },
 
 {
- "id": "generate", "num": "8", "title": "Generating text — and the one knob, temperature",
+ "id": "generate", "num": "8", "title": "Generating text, and the one knob: temperature",
  "blocks": [
   ("prose", r"""
 <p>Once trained, the model <em>generates</em> by running its prediction in a loop: feed the text so far,
@@ -231,7 +231,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 },
 
 {
- "id": "ceiling", "num": "9", "title": "The honest ceiling — and where this goes",
+ "id": "ceiling", "num": "9", "title": "The honest ceiling, and where this goes",
  "blocks": [
   ("prose", r"""
 <p>That's the whole machine: text → tokens → embeddings → stacks of (attention + <code>Wx+b</code> + a bend)

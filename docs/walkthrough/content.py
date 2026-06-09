@@ -749,6 +749,7 @@ M-series Mac it reports the GPU.</p>
 Notebook 01 uses the simplest scheme imaginable: <strong>one number per character</strong>.
 Every distinct character it sees (every letter, space, comma) gets its own id. It's
 inefficient, but maximally transparent: you can see <em>exactly</em> what the model sees.</p>
+<p>(<a href="../ideas/#tokens">Part 0</a> described a token as a word or word-piece; here we start one notch simpler, one token per <em>character</em>, for maximum transparency, then switch to word-chunks in <a href="#bpe">§11</a>.)</p>
 <p>The text itself is <strong>TinyStories</strong>: thousands of very simple children's
 stories, written with a small vocabulary on purpose, so that a small model can actually learn
 coherent English from them.</p>
@@ -900,7 +901,7 @@ to 100% across the allowed past.</li>
 where information actually flows between positions.</em></li>
 </ul>
 """),
-  ("callout", "math", "For the curious — the actual formula", r"""
+  ("callout", "math", "For the curious: the actual formula", r"""
 <p>Everything above is one compact equation. For queries <code>Q</code>, keys <code>K</code>,
 and values <code>V</code>:</p>
 <div class="formula">Attention(Q, K, V) = softmax( (Q · Kᵀ) / √d + mask ) · V</div>
@@ -1082,11 +1083,10 @@ write too.</p>
   ("code", "01", "def generate(prompt, n_new=400", "Predict one character, append, repeat."),
   ("gloss", r"""
 <p><b>Step by step:</b> encode the prompt to numbers, then loop <code>n_new</code> times. Each
-pass takes the scores for the last position, divides by <code>temperature</code> (more on that
-in Part IV), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
+pass takes the scores for the last position, divides by <code>temperature</code> (more on that under temperature, below), and <code>mx.random.categorical</code> rolls a weighted die to pick the next
 character (likelier characters chosen more often, but not always). Glue it on and continue.</p>
 """),
-  ("callout", "aside", "Generation vs. inference — which is which", r"""
+  ("callout", "aside", "Generation vs. inference: which is which", r"""
 <p>Each pass through this loop is one step of <strong>inference</strong>: a single forward run
 of the model to get the next-token scores. &ldquo;Inference&rdquo; is the umbrella term for
 <em>using</em> a trained model (any forward pass), as opposed to <em>training</em> it. Wrapping
@@ -1097,10 +1097,10 @@ inference; it's inference run autoregressively, one token at a time.</p>
   ("output", "01", "def generate(prompt, n_new=400", "what a from-scratch char-level model writes"),
   ("callout", "key", "This gibberish is the point", r"""
 <p>It looks like English (real spacing, plausible letter runs, the ghost of words) but it's
-nonsense. That is the <em>correct</em> outcome for a 3-million-parameter model that works one
+nonsense. That is the <em>correct</em> outcome for a 3.2-million-parameter model that works one
 letter at a time and trained for four minutes. It proves the whole pipeline works end to end;
 it just hasn't the capacity for meaning. Closing the gap between &ldquo;looks like
-language&rdquo; and &ldquo;is coherent&rdquo; is the job of Part III.</p>
+language&rdquo; and &ldquo;is coherent&rdquo; is the job of the upgrades stage that follows.</p>
 """),
  ],
 },
@@ -1163,7 +1163,7 @@ same context window.</p>
   ("callout", "aside", "Notice the tokens for &ldquo;Once upon a time&rdquo;", r"""
 <p>It encodes to just four numbers: four chunks, not sixteen characters. That compression is
 the whole point: fewer, more meaningful units for the model to reason over. This is also a
-preview of Track B, where a model is fine-tuned for clinical-trial readouts using exactly this
+preview of Part 2, where a model is fine-tuned for clinical-trial readouts using exactly this
 sub-word idea.</p>
 """),
  ],
@@ -1246,7 +1246,7 @@ letter. Here is what the tuned model writes, at two different temperatures:</p>
 <p>Real words. Names that persist across sentences (&ldquo;Timmy,&rdquo; &ldquo;Jack&rdquo;).
 Dialogue with quotation marks. The arc of a little story. It still wanders and contradicts
 itself (it's a 17-million-parameter model trained for twenty minutes on a laptop) but set it
-beside the character-level gibberish from Part II and the leap is unmistakable. <em>Same
+beside the character-level gibberish from the from-scratch pass and the leap is unmistakable. <em>Same
 architecture.</em> The difference is almost entirely the five upgrades, and mostly the tokenizer.</p>
 """),
   ("callout", "tryit", "Want to feel each upgrade?", r"""
@@ -1266,7 +1266,7 @@ its samples to these.</li>
  "id": "ceiling", "num": "15", "title": "The honest ceiling, and where this leads",
  "blocks": [
   ("prose", r"""
-<p>Even fully tuned, this is a 17-million-parameter model that trained for under an hour on
+<p>Even fully tuned, this is a 17-million-parameter model that trained for about twenty minutes on
 simple children's stories. It will produce believable words and short phrases — never reasoning
 or reliable facts. That gap, between &ldquo;looks like language&rdquo; and &ldquo;is actually
 useful,&rdquo; is exactly the gap a <strong>pretrained</strong> model closes: it has already
@@ -1286,7 +1286,7 @@ training data and nothing outside it: the corpus doesn't merely feed the model, 
 <em>defines</em> it.</p>
 <p><strong>Practically,</strong> that makes the data your single most important design choice: it
 fixes the model's competence, its vocabulary, and its blind spots. Train on legal contracts and it
-speaks legalese; on toddler tales and it speaks toddler. (Track B pulls this lever on purpose:
+speaks legalese; on toddler tales and it speaks toddler. (Part 2 pulls this lever on purpose:
 feed a model clinical-trial readouts and you get a trial expert.)</p>
 <p><strong>Socially,</strong> this is the root of what people mean by &ldquo;LLM bias.&rdquo; A
 model mirrors its corpus (the patterns, the gaps, the over- and under-representation, the
@@ -1436,7 +1436,7 @@ chatbot you've used ends its turn in exactly this way.</p>
 """),
   ("callout", "key", "The thread that ties it all together", r"""
 <p>Every concept in this walk-through (tokens, attention, the loss, the training loop,
-temperature) reappears, unchanged in spirit, in Track B of this lab, where a real pretrained
+temperature) reappears, unchanged in spirit, in Part 2 of this lab, where a real pretrained
 model is fine-tuned into a useful clinical-trial expert. You built the tiny one to <em>see</em>
 the mechanism. The same mechanism, scaled up and pointed at a real task, is the whole game.</p>
 """),
