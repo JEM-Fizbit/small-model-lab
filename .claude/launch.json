@@ -28,6 +28,18 @@
         "docs/walkthrough"
       ],
       "port": 8011
+    },
+    {
+      "name": "walkthrough-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8741",
+        "--directory",
+        "docs/walkthrough/site"
+      ],
+      "port": 8741
     }
   ]
 }
