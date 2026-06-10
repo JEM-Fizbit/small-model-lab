@@ -906,14 +906,61 @@ the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
         <h2>The bend (activations)</h2>
       </div>
       <div class="prose">
-<p>Stacking linear layers alone is pointless: a stack of straight-line operations collapses into one
-straight line, and the model could only ever draw <em>lines</em>. So after each linear step the model
-applies one simple <strong>nonlinear</strong> function: a <em>bend</em>. That bend is what lets depth
-model curves and combinations, not just proportions.</p>
+<p>Stacking linear layers has a catch: by itself, it buys nothing. Double a number, then triple it —
+two steps, yet all you've really done is multiply by six, which is one step. Every stack of
+straight-line operations collapses this way into a single straight-line operation. So no matter how
+deep the model went, it could still only draw <em>lines</em>. The fix: after each linear step, apply
+one simple <strong>nonlinear</strong> function — a <em>bend</em>. That bend is what lets depth model
+curves and combinations, not just proportions.</p>
 <p>Ours is <strong>GELU</strong> (a smooth version of ReLU). The famous textbook ones are <strong>ReLU</strong>
 (keep positives, zero the rest) and the <strong>sigmoid</strong> (squash any number into 0–1). The whole kit
 is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas below.</p>
+<p>One natural misreading is worth heading off: these curves aren't there to squash numbers into a
+tidy range. The sigmoid happens to (everything lands between 0 and 1), but ReLU and GELU — the ones
+modern models actually use — are unbounded: a big input sails through nearly unchanged. (Bounded
+activations in fact fell out of favour: their flat tails make the learning signal of §7 vanish.)
+Keeping the network's numbers in a sane, comparable range is a different component's job —
+<strong>LayerNorm</strong>, a normalisation step you'll meet inside the block in
+<a href="../track-a/#block">Part 1</a>. The bend has exactly one job: be <em>not-a-straight-line</em>,
+so stacking layers buys new shapes instead of collapsing into one.</p>
 </div>
+<figure class="imgfig diagram"><svg viewBox="0 0 720 252" role="img" aria-label="The three activation functions as curves: ReLU keeps positives and zeroes negatives (a sharp corner at zero), GELU is its smooth version with a tiny dip below zero (the one our model uses), and the sigmoid is a steep S-curve squashing any input into the range zero to one, flattening against those bounds. A dashed identity line behind the first two shows what no bend would look like.">
+<rect x="22" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
+<line x1="22" y1="147.0" x2="218" y2="147.0" stroke="#c7cdda" stroke-width="1"/>
+<line x1="120.0" y1="42" x2="120.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
+<line x1="87.3" y1="182.0" x2="218.0" y2="42.0" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
+<path d="M 22.0,147.0 L 24.7,147.0 L 27.4,147.0 L 30.2,147.0 L 32.9,147.0 L 35.6,147.0 L 38.3,147.0 L 41.1,147.0 L 43.8,147.0 L 46.5,147.0 L 49.2,147.0 L 51.9,147.0 L 54.7,147.0 L 57.4,147.0 L 60.1,147.0 L 62.8,147.0 L 65.6,147.0 L 68.3,147.0 L 71.0,147.0 L 73.7,147.0 L 76.4,147.0 L 79.2,147.0 L 81.9,147.0 L 84.6,147.0 L 87.3,147.0 L 90.1,147.0 L 92.8,147.0 L 95.5,147.0 L 98.2,147.0 L 100.9,147.0 L 103.7,147.0 L 106.4,147.0 L 109.1,147.0 L 111.8,147.0 L 114.6,147.0 L 117.3,147.0 L 120.0,147.0 L 122.7,144.1 L 125.4,141.2 L 128.2,138.2 L 130.9,135.3 L 133.6,132.4 L 136.3,129.5 L 139.1,126.6 L 141.8,123.7 L 144.5,120.8 L 147.2,117.8 L 149.9,114.9 L 152.7,112.0 L 155.4,109.1 L 158.1,106.2 L 160.8,103.2 L 163.6,100.3 L 166.3,97.4 L 169.0,94.5 L 171.7,91.6 L 174.4,88.7 L 177.2,85.8 L 179.9,82.8 L 182.6,79.9 L 185.3,77.0 L 188.1,74.1 L 190.8,71.2 L 193.5,68.2 L 196.2,65.3 L 198.9,62.4 L 201.7,59.5 L 204.4,56.6 L 207.1,53.7 L 209.8,50.8 L 212.6,47.8 L 215.3,44.9 L 218.0,42.0" fill="none" stroke="#3253d6" stroke-width="2.6"/>
+<text x="120" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">ReLU</text>
+<text x="120" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">keep positives, zero the rest</text>
+<text x="25" y="177" font-size="9" fill="#8a93a3">-3</text>
+<text x="215" y="177" text-anchor="end" font-size="9" fill="#8a93a3">3</text>
+<text x="192" y="141" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
+<rect x="262" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
+<line x1="262" y1="147.0" x2="458" y2="147.0" stroke="#c7cdda" stroke-width="1"/>
+<line x1="360.0" y1="42" x2="360.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
+<line x1="327.3" y1="182.0" x2="458.0" y2="42.0" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
+<path d="M 262.0,147.1 L 264.7,147.2 L 267.4,147.2 L 270.2,147.3 L 272.9,147.3 L 275.6,147.4 L 278.3,147.5 L 281.1,147.6 L 283.8,147.8 L 286.5,148.0 L 289.2,148.1 L 291.9,148.4 L 294.7,148.6 L 297.4,148.9 L 300.1,149.1 L 302.8,149.5 L 305.6,149.8 L 308.3,150.1 L 311.0,150.5 L 313.7,150.9 L 316.4,151.3 L 319.2,151.6 L 321.9,152.0 L 324.6,152.3 L 327.3,152.6 L 330.1,152.8 L 332.8,152.9 L 335.5,153.0 L 338.2,152.9 L 340.9,152.7 L 343.7,152.4 L 346.4,151.9 L 349.1,151.3 L 351.8,150.5 L 354.6,149.5 L 357.3,148.4 L 360.0,147.0 L 362.7,145.4 L 365.4,143.7 L 368.2,141.8 L 370.9,139.6 L 373.6,137.4 L 376.3,134.9 L 379.1,132.3 L 381.8,129.6 L 384.5,126.7 L 387.2,123.7 L 389.9,120.7 L 392.7,117.6 L 395.4,114.4 L 398.1,111.1 L 400.8,107.9 L 403.6,104.6 L 406.3,101.3 L 409.0,98.0 L 411.7,94.7 L 414.4,91.5 L 417.2,88.2 L 419.9,85.0 L 422.6,81.8 L 425.3,78.6 L 428.1,75.4 L 430.8,72.3 L 433.5,69.2 L 436.2,66.1 L 438.9,63.1 L 441.7,60.0 L 444.4,57.0 L 447.1,54.0 L 449.8,51.0 L 452.6,48.0 L 455.3,45.1 L 458.0,42.1" fill="none" stroke="#0e7a5f" stroke-width="2.6"/>
+<text x="360" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#0e7a5f" font-family="ui-monospace,Menlo,monospace">GELU ★</text>
+<text x="360" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">the smooth version — ours</text>
+<text x="265" y="177" font-size="9" fill="#8a93a3">-3</text>
+<text x="455" y="177" text-anchor="end" font-size="9" fill="#8a93a3">3</text>
+<text x="432" y="141" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
+<rect x="502" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
+<line x1="502" y1="172.3" x2="698" y2="172.3" stroke="#c7cdda" stroke-width="1"/>
+<line x1="600.0" y1="42" x2="600.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
+<line x1="502" y1="51.7" x2="698" y2="51.7" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="507" y="47" font-size="9" fill="#8a93a3">1</text>
+<text x="507" y="167" font-size="9" fill="#8a93a3">0</text>
+<path d="M 502.0,172.0 L 504.7,172.0 L 507.4,171.9 L 510.2,171.9 L 512.9,171.8 L 515.6,171.7 L 518.3,171.5 L 521.1,171.4 L 523.8,171.2 L 526.5,171.0 L 529.2,170.8 L 531.9,170.5 L 534.7,170.2 L 537.4,169.8 L 540.1,169.3 L 542.8,168.8 L 545.6,168.2 L 548.3,167.5 L 551.0,166.6 L 553.7,165.6 L 556.4,164.5 L 559.2,163.2 L 561.9,161.7 L 564.6,159.9 L 567.3,158.0 L 570.1,155.7 L 572.8,153.2 L 575.5,150.3 L 578.2,147.2 L 580.9,143.7 L 583.7,139.9 L 586.4,135.8 L 589.1,131.4 L 591.8,126.8 L 594.6,122.0 L 597.3,117.0 L 600.0,112.0 L 602.7,107.0 L 605.4,102.0 L 608.2,97.2 L 610.9,92.6 L 613.6,88.2 L 616.3,84.1 L 619.1,80.3 L 621.8,76.8 L 624.5,73.7 L 627.2,70.8 L 629.9,68.3 L 632.7,66.0 L 635.4,64.1 L 638.1,62.3 L 640.8,60.8 L 643.6,59.5 L 646.3,58.4 L 649.0,57.4 L 651.7,56.5 L 654.4,55.8 L 657.2,55.2 L 659.9,54.7 L 662.6,54.2 L 665.3,53.8 L 668.1,53.5 L 670.8,53.2 L 673.5,53.0 L 676.2,52.8 L 678.9,52.6 L 681.7,52.5 L 684.4,52.3 L 687.1,52.2 L 689.8,52.1 L 692.6,52.1 L 695.3,52.0 L 698.0,52.0" fill="none" stroke="#5a3aa6" stroke-width="2.6"/>
+<text x="600" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#5a3aa6" font-family="ui-monospace,Menlo,monospace">sigmoid</text>
+<text x="600" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">squash anything into 0–1</text>
+<text x="505" y="177" font-size="9" fill="#8a93a3">-6</text>
+<text x="695" y="177" text-anchor="end" font-size="9" fill="#8a93a3">6</text>
+<text x="672" y="166" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
+<text x="92" y="244" font-size="10" fill="#8a93a3">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
+<text x="380" y="232" font-size="10" fill="#0e7a5f" display="none"></text>
+<text x="630" y="244" font-size="10" fill="#0e7a5f">★ what our tiny GPT uses</text>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
     </section>
     
     <section id="attention">
@@ -963,7 +1010,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#a8386a">the best-matching “key”</text>
 <text x="30" y="292" font-size="10.5" fill="#5a6373">“looked”, “at”, “the” get ≈0–1%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#5a6373">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
-</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
@@ -1004,7 +1051,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball starts high on one slope and a dotted gradient-descent path of real downhill steps curves to the lowest point of the valley.">
 <defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8462e"/></marker></defs>
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
@@ -1047,7 +1094,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="52" y="210" font-size="12" fill="#5a6373" transform="rotate(-64 52 210)">loss (height) ↑</text>
 <text x="470" y="336" font-size="12" fill="#5a6373">weight 1 →</text>
 <text x="120" y="336" font-size="12" fill="#5a6373">← weight 2</text>
-</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1074,7 +1121,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
-</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1143,7 +1190,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#9a5b00" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#5a6373">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#5a6373">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
