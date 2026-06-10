@@ -385,7 +385,7 @@ LANDSCAPE_SVG = r'''<svg viewBox="0 0 640 300" role="img" aria-label="A loss lan
 <line x1="62" y1="272" x2="612" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
 <text x="50" y="42" text-anchor="end" font-size="12" fill="#8a93a3">high</text>
 <text x="26" y="150" text-anchor="middle" font-size="13" fill="#5a6373" transform="rotate(-90 26 150)">loss (how wrong)</text>
-<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of millions)</text>
+<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of our model&#8217;s ~3.2 million)</text>
 <path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#3253d6" stroke-width="3"/>
 <line x1="335" y1="235" x2="335" y2="272" stroke="#0e7a5f" stroke-width="1.5" stroke-dasharray="4 4"/>
 <circle cx="335" cy="235" r="4.5" fill="#0e7a5f"/>

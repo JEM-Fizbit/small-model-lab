@@ -205,6 +205,14 @@ def _esc(s: str) -> str:
     return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
+def _externalize_links(html: str) -> str:
+    """External links (absolute http/https hrefs) open in a new tab; internal links are
+    all relative (../track-b/, #fig-7) and keep the current tab. Applied to the final
+    HTML so every page and any future link gets the behaviour automatically."""
+    return re.sub(r'<a (?=[^>]*href="https?://)(?![^>]*\btarget=)',
+                  '<a target="_blank" rel="noopener" ', html)
+
+
 # -------------------------------------------------------------------- assemble --
 SITE = Path(__file__).resolve().parent / "site"   # multi-page output root
 # slm-lab lives within the public AI Knowledge Hub (cross-branding).
@@ -298,7 +306,7 @@ def main():
             hub_url=HUB_URL,
         )
         (SITE / "ideas").mkdir(parents=True, exist_ok=True)
-        (SITE / "ideas" / "index.html").write_text(html0)
+        (SITE / "ideas" / "index.html").write_text(_externalize_links(html0))
         written.append(("ideas/index.html", len(html0), len(content_concepts.SECTIONS)))
 
     # --- Part 1 · Pre-training → site/track-a/ ---
@@ -312,7 +320,7 @@ def main():
         hub_url=HUB_URL,
     )
     (SITE / "track-a").mkdir(parents=True, exist_ok=True)
-    (SITE / "track-a" / "index.html").write_text(html_a)
+    (SITE / "track-a" / "index.html").write_text(_externalize_links(html_a))
     written.append(("track-a/index.html", len(html_a), len(content.SECTIONS)))
 
     # --- Part 2 · Post-training → site/track-b/ ---
@@ -327,7 +335,7 @@ def main():
             hub_url=HUB_URL,
         )
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
-        (SITE / "track-b" / "index.html").write_text(html_b)
+        (SITE / "track-b" / "index.html").write_text(_externalize_links(html_b))
         written.append(("track-b/index.html", len(html_b), len(content_b.SECTIONS)))
 
     # --- Landing hub → site/index.html ---
@@ -335,7 +343,7 @@ def main():
                                  track_b_live=track_b_live, concepts_live=concepts_live,
                                  hub_url=HUB_URL, headshot=_asset_uri("jem-headshot.jpg"))
     SITE.mkdir(parents=True, exist_ok=True)
-    (SITE / "index.html").write_text(html_l)
+    (SITE / "index.html").write_text(_externalize_links(html_l))
     written.append(("index.html (landing)", len(html_l), 0))
 
     for name, n, secs in written:
