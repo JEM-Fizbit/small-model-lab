@@ -36,6 +36,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
   letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
 .tag.live{background:#16432f;color:#7fe0b0;}
 .tag.wip{background:#3a3550;color:#b9a9e6;}
+.tag.opt{background:#2a3450;color:#aebbdd;}
+.tag.gold{background:#46350f;color:#e8c87a;}
 .foot{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
   font-size:14px;color:#aebbdd;line-height:1.6;}
 .foot a{color:#a9c0ff;text-decoration:none;}
@@ -63,21 +65,22 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 <div class="wrap">
   <p class="kicker"><a href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
   <h1>Build a small language model, and actually understand it</h1>
-  <p class="lede">A hands-on, no-black-box lab. Start with the <em>concepts</em> (no code), then <em>build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open model into a useful expert. Explained for the curious.</p>
+  <p class="lede">A hands-on, no-black-box lab. <em>Build</em> a tiny language model from scratch, then <em>fine-tune</em> a real open model into a useful expert — with an optional, code-free <em>concepts</em> primer if you'd like the ideas first. Explained for the curious.</p>
 
   <div class="cards">
     
     <a class="card" href="ideas/">
       <div class="part">Part 0 · Concepts</div>
-      <h2>How a language model works <span class="tag live">start here</span></h2>
+      <h2>How a language model works <span class="tag opt">optional primer</span></h2>
       <p>The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes
-      numbers, and what &ldquo;learning&rdquo; really means, with diagrams. The grounding for Parts 1 and 2.</p>
+      numbers, and what &ldquo;learning&rdquo; really means, with diagrams. Read it first if you like
+      theory; dip back in as Parts 1 and 2 link to it.</p>
       <span class="go">Read Part 0 &rarr;</span>
     </a>
     
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>
-      <h2>A GPT from scratch <span class="tag live">live</span></h2>
+      <h2>A GPT from scratch <span class="tag live">start here</span></h2>
       <p>Build and train a tiny GPT one piece at a time: tokens, attention, the training loop,
       <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to
       <em>see</em> how it works.</p>
@@ -86,7 +89,7 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     
     <a class="card" href="track-b/">
       <div class="part">Part 2 · Post-training</div>
-      <h2>TrialScout: a useful expert <span class="tag live">live</span></h2>
+      <h2>TrialScout: a useful expert <span class="tag gold">the payoff</span></h2>
       <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
       turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Read Part 2 &rarr;</span>
