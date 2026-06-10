@@ -161,8 +161,14 @@ th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
 td:first-child{font-weight:600;}
 
 /* python primer appendix */
+.primer-panel{background:var(--math-soft);border:1px solid #d9ccf3;border-radius:14px;
+  padding:6px 26px 16px;margin-top:10px;}
+section.primer-sec .sec-num{background:var(--math);}
+.primer-kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:12px;font-weight:700;color:var(--math);margin:8px 0 0;}
 dl.primer{margin:18px 0;}
-dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3142;}
+dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#33285a;
+  background:#fff;border:1px solid #e1d8f5;border-radius:8px;padding:7px 12px;display:inline-block;}
 dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
@@ -1584,9 +1590,10 @@ with no prior coding assumed.</p>
     </section>
     
 
-    <section id="primer">
+    <section id="primer" class="primer-sec">
+      <p class="primer-kicker">Reference appendix</p>
       <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
-      <div class="prose">
+      <div class="primer-panel"><div class="prose">
 <p>You don't need this to follow the walk-through; the &ldquo;what this says&rdquo; boxes
 translate everything. But if you want to read the code itself, here are the few patterns
 that show up again and again. Learn these six and Python stops looking like noise.</p>
@@ -1626,7 +1633,7 @@ that show up again and again. Learn these six and Python stops looking like nois
   that does almost all the work in a neural network. <code>mx</code> is Apple's array
   library (MLX); think &ldquo;the thing that does fast maths on the GPU.&rdquo;</dd>
 </dl>
-</div>
+</div></div>
     </section>
   </main>
 </div>

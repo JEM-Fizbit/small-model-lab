@@ -13,9 +13,43 @@ META = {
     "subtitle": "Part 2: take a pretrained open model and make it do a real job, locally and for free.",
 }
 
-# No Python primer on this chapter: Part 2's code is pipeline excerpts, and the primer
-# (which explains Part 1's notebook patterns) lives where readers are sent first.
-PYTHON_PRIMER = ""
+# Part 2's own primer: the pipeline idioms its code excerpts actually use (Part 1's
+# primer covers the reading basics and is linked for those).
+PYTHON_PRIMER = r"""
+<p>Part 2's code is <em>pipeline</em> code, so its recurring patterns differ from Part 1's. (New to
+Python entirely? <a href="../track-a/#primer">Part 1's primer</a> covers the basics: variables,
+functions, classes, loops.) These six cover most of what appears in this chapter's code boxes.</p>
+
+<dl class="primer">
+  <dt>{"phase": "Phase 2", "enrollment": 41}</dt>
+  <dd><strong>A dictionary</strong>: named slots holding values, Python's all-purpose record. It's
+  also exactly the shape of <strong>JSON</strong>, the text format APIs speak, which is why trial
+  records and readouts move through this whole chapter as dictionaries.</dd>
+
+  <dt>client.messages.create(model=..., temperature=0)</dt>
+  <dd><strong>Keyword arguments.</strong> Each <code>name=value</code> names the setting it fills, so
+  a call with many options stays readable. The teacher call in §2 is mostly this.</dd>
+
+  <dt>cmd = ["mlx_lm", "lora", "--iters", "700"]</dt>
+  <dd><strong>A command as a list.</strong> Each item is one word of a terminal command; Python hands
+  the list to the operating system to run. The fine-tune in §4 is launched exactly this way, which is
+  why its code box reads like flags rather than maths.</dd>
+
+  <dt>todo[:10]</dt>
+  <dd><strong>Slicing</strong>: take the first ten items of a list. The pilot gate in §3 labels
+  <code>todo[:10]</code> and checks the results before risking money on the other 1,490.</dd>
+
+  <dt>@mcp.tool(...)</dt>
+  <dd><strong>A decorator</strong>: an <code>@</code> line just above a function that wraps or
+  registers it. In §9 it's the line that tells the MCP server &ldquo;this function is a callable
+  tool.&rdquo;</dd>
+
+  <dt>def trial_readout(nct_id: str) -> str:</dt>
+  <dd><strong>Type hints.</strong> The <code>: str</code> and <code>-&gt; str</code> declare what kind
+  of value goes in and comes out (text, here). Python doesn't enforce them; they're documentation that
+  tools and readers rely on.</dd>
+</dl>
+"""
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
