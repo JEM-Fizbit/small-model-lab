@@ -20,8 +20,9 @@ HERO = r"""
 <p class="kicker">slm-lab · Part 0 · Concepts</p>
 <h1>How a language model works</h1>
 <p class="lede">The ideas, in plain English, with no code: what a language model actually <em>is</em>,
-how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. Read this first;
-then <a href="../track-a/">Part 1</a> builds every one of these ideas in real, runnable code, and
+how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. This chapter is
+optional theory — read it first if you like the <em>why</em> before the <em>how</em>, or skip ahead:
+<a href="../track-a/">Part 1</a> builds every one of these ideas in real, runnable code, and
 <a href="../track-b/">Part 2</a> fine-tunes a real model into a useful expert.</p>
 
 <div class="bigidea">
