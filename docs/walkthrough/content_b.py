@@ -535,8 +535,11 @@ just <em>read</em> it and take the method with you.</p>
   ("callout", "key", "Where this goes next", r"""
 <p>The honest finding (§8) points at the real frontier: a model that improves itself needs a
 <em>verifier</em> of truth it can't game, not just more teacher labels. TrialScout proved the
-<em>method</em>; the next chapter of this lab is chasing that harder idea. ← back to
-<a href="../track-a/">Part 1</a> · <a href="../">the lab home</a>.</p>
+<em>method</em>. That harder idea is where this lab is headed, but the chapter isn't written yet:
+for now, the arc ends here.</p>
+<p>Retrace the arc: <strong><a href="../ideas/">Part 0 · Concepts</a></strong> (the ideas) ·
+<strong><a href="../track-a/">Part 1 · Pre-training</a></strong> (the build) ·
+<a href="../">the lab home</a>.</p>
 """),
  ],
 },

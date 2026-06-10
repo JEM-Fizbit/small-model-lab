@@ -40,8 +40,10 @@ line by line, for someone who is curious but doesn't necessarily write Python.</
 <p class="readnote"><strong>How to read this.</strong> Top to bottom. Each step is the plain idea in a
 line or two, then the actual code in a dark box, then a &ldquo;what this says&rdquo; translation. You can
 skip the code boxes entirely and still follow along, or read them closely and learn to recognise what
-Python is doing. A one-page <a href="#primer">Python primer</a> at the end explains the handful of symbols
-that recur. Every code box is real, pulled straight from the project's Jupyter notebooks (code, notes,
+Python is doing. One tip up front: the muted grey text after a <code>#</code> in the code is a
+<em>comment</em>, a note for you that the computer ignores entirely (and this project comments
+generously, on purpose). A one-page <a href="#primer">Python primer</a> at the end explains the handful
+of symbols that recur. Every code box is real, pulled straight from the project's Jupyter notebooks (code, notes,
 and live results in one document you run in your browser), which you can read and run yourself: the full
 source is on <a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (with each notebook and a
 from-zero <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">setup
@@ -52,9 +54,16 @@ guide</a> at the foot of the page).</p>
 PYTHON_PRIMER = r"""
 <p>You don't need this to follow the walk-through; the &ldquo;what this says&rdquo; boxes
 translate everything. But if you want to read the code itself, here are the few patterns
-that show up again and again. Learn these six and Python stops looking like noise.</p>
+that show up again and again. Learn these seven and Python stops looking like noise.</p>
 
 <dl class="primer">
+  <dt><code># a comment, like this</code></dt>
+  <dd><strong>A comment.</strong> Anything from a <code>#</code> to the end of the line is ignored by
+  the computer entirely: it's a note for the human reader, nothing more. In the dark code boxes,
+  comments are the muted grey text. This project comments heavily on purpose (the &ldquo;no magic
+  numbers&rdquo; rule: every setting carries a note on what it does), so a good share of what you'll
+  see in the code is notes, not instructions.</dd>
+
   <dt><code>name = something</code></dt>
   <dd><strong>Assignment.</strong> Give a value a name so you can refer to it later.
   <code>vocab_size = 90</code> means &ldquo;from now on, <code>vocab_size</code> is 90.&rdquo;
@@ -261,9 +270,11 @@ section.primer-sec .sec-num{background:var(--math);}
 .primer-kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
   font-size:12px;font-weight:700;color:var(--math);margin:8px 0 0;}
 dl.primer{margin:18px 0;}
-dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#33285a;
-  background:#fff;border:1px solid #e1d8f5;border-radius:8px;padding:7px 12px;display:inline-block;}
-dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
+dl.primer dt{display:block;font-family:var(--mono);font-size:13.5px;color:#33285a;
+  background:#f8f5fd;border:1px solid #e1d8f5;border-bottom:1px dashed #e9e1f7;
+  border-radius:10px 10px 0 0;padding:10px 16px 9px;margin:18px 0 0;}
+dl.primer dd{margin:0 0 18px;font-size:15.5px;background:#fff;
+  border:1px solid #e1d8f5;border-top:none;border-radius:0 0 10px 10px;padding:11px 16px 13px;}
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
   font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
@@ -1455,9 +1466,9 @@ chatbot you've used ends its turn in exactly this way.</p>
 """),
   ("callout", "key", "The thread that ties it all together", r"""
 <p>Every concept in this walk-through (tokens, attention, the loss, the training loop,
-temperature) reappears, unchanged in spirit, in Part 2 of this lab, where a real pretrained
-model is fine-tuned into a useful clinical-trial expert. You built the tiny one to <em>see</em>
-the mechanism. The same mechanism, scaled up and pointed at a real task, is the whole game.</p>
+temperature) reappears, unchanged in spirit, in <a href="../track-b/">Part 2</a> of this lab, where a
+real pretrained model is fine-tuned into a useful clinical-trial expert. You built the tiny one to
+<em>see</em> the mechanism. The same mechanism, scaled up and pointed at a real task, is the whole game.</p>
 """),
   ("callout", "aside", "Run it yourself", r"""
 <p>Everything here is open source (the three notebooks, the terminal chat, and even the script
@@ -1470,6 +1481,12 @@ so you can read the real code and its results without installing anything.</p>
 <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">Getting Started
 guide</a> takes you from zero (install, open a notebook, run it, chat) in about fifteen minutes,
 with no prior coding assumed.</p>
+"""),
+  ("callout", "key", "Where to next", r"""
+<p>That closes the build. The payoff is <strong><a href="../track-b/">Part 2 · Post-training</a></strong>:
+start from a big pretrained open model and fine-tune it into a useful clinical-trial expert, the same
+machinery you just built, now doing a real job. Want the ideas without the code, first or again?
+<strong><a href="../ideas/">Part 0 · Concepts</a></strong>. ← back to <a href="../">the lab home</a>.</p>
 """),
  ],
 },
