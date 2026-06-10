@@ -255,8 +255,14 @@ th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
 td:first-child{font-weight:600;}
 
 /* python primer appendix */
+.primer-panel{background:var(--math-soft);border:1px solid #d9ccf3;border-radius:14px;
+  padding:6px 26px 16px;margin-top:10px;}
+section.primer-sec .sec-num{background:var(--math);}
+.primer-kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:12px;font-weight:700;color:var(--math);margin:8px 0 0;}
 dl.primer{margin:18px 0;}
-dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3142;}
+dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#33285a;
+  background:#fff;border:1px solid #e1d8f5;border-radius:8px;padding:7px 12px;display:inline-block;}
 dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
@@ -339,9 +345,10 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
     </section>
     {% endfor %}
 
-    {% if primer %}<section id="primer">
+    {% if primer %}<section id="primer" class="primer-sec">
+      <p class="primer-kicker">Reference appendix</p>
       <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
-      <div class="prose">{{ primer }}</div>
+      <div class="primer-panel"><div class="prose">{{ primer }}</div></div>
     </section>{% endif %}
   </main>
 </div>
@@ -1512,7 +1519,9 @@ h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
 .card .go{margin-top:auto;}
 a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
 .card .part{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9fb2e8;font-weight:700;}
-.card h2{font-size:21px;margin:8px 0 10px;line-height:1.25;}
+.card h2{font-size:21px;margin:8px 0 0;line-height:1.25;min-height:53px;}
+.card .tagrow{margin:8px 0 12px;}
+@media (max-width:680px){.card h2{min-height:0;}}
 .card p{font-size:15px;line-height:1.55;color:#c2cdee;margin:0 0 16px;}
 .card code{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:.85em;
   background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;}
@@ -1520,7 +1529,7 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .card.soon{opacity:.72;}
 .card.soon .go{color:#7e8bb0;}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle;}
+  letter-spacing:.06em;padding:2px 8px;border-radius:6px;}
 .tag.live{background:#16432f;color:#7fe0b0;}
 .tag.wip{background:#3a3550;color:#b9a9e6;}
 .tag.opt{background:#2a3450;color:#aebbdd;}
@@ -1558,7 +1567,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     {% if concepts_live %}
     <a class="card" href="ideas/">
       <div class="part">Part 0 · Concepts</div>
-      <h2>How a language model works <span class="tag opt">optional primer</span></h2>
+      <h2>How a language model works</h2>
+      <div class="tagrow"><span class="tag opt">optional primer</span></div>
       <p>The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes
       numbers, and what &ldquo;learning&rdquo; really means, with diagrams. Read it first if you like
       theory; dip back in as Parts 1 and 2 link to it.</p>
@@ -1567,7 +1577,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     {% endif %}
     <a class="card" href="track-a/">
       <div class="part">Part 1 · Pre-training</div>
-      <h2>A GPT from scratch <span class="tag live">start here</span></h2>
+      <h2>A GPT from scratch</h2>
+      <div class="tagrow"><span class="tag live">start here</span></div>
       <p>Build and train a tiny GPT one piece at a time: tokens, attention, the training loop,
       <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to
       <em>see</em> how it works.</p>
@@ -1576,7 +1587,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     {% if track_b_live %}
     <a class="card" href="track-b/">
       <div class="part">Part 2 · Post-training</div>
-      <h2>TrialScout: a useful expert <span class="tag gold">the payoff</span></h2>
+      <h2>TrialScout: a useful expert</h2>
+      <div class="tagrow"><span class="tag gold">the payoff</span></div>
       <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
       turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Read Part 2 &rarr;</span>
@@ -1584,7 +1596,8 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
     {% else %}
     <div class="card soon">
       <div class="part">Part 2 · Post-training</div>
-      <h2>TrialScout: a useful expert <span class="tag wip">in&nbsp;progress</span></h2>
+      <h2>TrialScout: a useful expert</h2>
+      <div class="tagrow"><span class="tag wip">in&nbsp;progress</span></div>
       <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
       turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
       <span class="go">Coming soon</span>

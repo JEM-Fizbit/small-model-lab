@@ -427,12 +427,20 @@ each with an integer <strong>ID</strong> (its index in a fixed list called the <
 way to chop, and the choice matters enormously:</p>
 """),
   ("diagram", TOKENIZE_SVG,
-   "The same sentence, tokenized two ways — real numbers from Part 1's notebooks (character IDs "
-   "from notebook 01, BPE chunk IDs from notebook 02) — and, below, what happens to words the "
-   "corpus saw rarely: the same tokenizer splits them into reusable, often meaningful pieces."),
+   "The same sentence, tokenized two ways, with real numbers from Part 1's notebooks (character "
+   "IDs from notebook 01, BPE chunk IDs from notebook 02). Below them: what happens to words the "
+   "corpus saw rarely; the same tokenizer splits them into reusable, often meaningful pieces."),
   ("prose", r"""
 <p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
 pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
+"""),
+  ("callout", "key", "The ID itself means nothing", r"""
+<p>Don't read anything into the numbers: an ID is a <strong>coat-check ticket</strong>, not a
+description. #1234 says nothing about foxes, and #1235 is not &ldquo;one more&rdquo; than fox; renumber
+the whole vocabulary, retrain, and you'd get an equally good model. (In practice IDs reflect the order
+the tokenizer learned its chunks, but the model never uses the number <em>as a number</em> — only as a
+reference: &ldquo;fetch row #1234.&rdquo;) Where <em>meaning</em> enters is what that row holds: the
+<strong>embedding</strong>, next.</p>
 """),
  ],
 },
@@ -441,8 +449,8 @@ pieces are glued together into words. <a href="../track-a/#data">Part 1 builds t
  "id": "embed", "num": "3", "title": "Tokens become vectors (embeddings)",
  "blocks": [
   ("prose", r"""
-<p>An ID like #1234 carries no <em>meaning</em>: #1235 isn't &ldquo;one more&rdquo; than fox. So each
-token is turned into a <strong>list of numbers</strong>, its <strong>embedding</strong> (256 numbers in
+<p>If the ID is just a ticket, where does <em>meaning</em> live? In what the ticket fetches: each
+token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</strong> (256 numbers in
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 """),
@@ -467,6 +475,11 @@ concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as
 &ldquo;animal-ness&rdquo;, &ldquo;furriness&rdquo;, &ldquo;size&rdquo; — held lightly. (A token's
 <em>values</em> on the dimensions are part of the model's parameters; the dimensions themselves are the
 embedding's axes.)</p>
+<p>If you like your philosophy, this should ring a bell: it's <strong>Plato's Theory of Forms</strong>,
+rediscovered by gradient descent. Each dimension is an ideal quality, a Form, that no actual word
+embodies perfectly, and a token's coordinate on it measures how much the word <em>participates</em> in
+that Form. The model has never seen a fox; from text alone it has assembled a realm of abstractions, of
+which every particular &ldquo;fox&rdquo; on the page is an imperfect shadow.</p>
 """),
   ("callout", "key", "Where do the embeddings come from?", r"""
 <p>Not from the letters, and not computed on the fly: they're <strong>learned, then looked up</strong>.
@@ -517,20 +530,20 @@ the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
  "id": "activation", "num": "5", "title": "The bend (activations)",
  "blocks": [
   ("prose", r"""
-<p>Stacking linear layers has a catch: by itself, it buys nothing. Double a number, then triple it —
-two steps, yet all you've really done is multiply by six, which is one step. Every stack of
+<p>Stacking linear layers has a catch: by itself, it buys nothing. Double a number, then triple it.
+Two steps, yet all you've really done is multiply by six, which is one step. Every stack of
 straight-line operations collapses this way into a single straight-line operation. So no matter how
 deep the model went, it could still only draw <em>lines</em>. The fix: after each linear step, apply
-one simple <strong>nonlinear</strong> function — a <em>bend</em>. That bend is what lets depth model
+one simple <strong>nonlinear</strong> function, a <em>bend</em>. That bend is what lets depth model
 curves and combinations, not just proportions.</p>
 <p>Ours is <strong>GELU</strong> (a smooth version of ReLU). The famous textbook ones are <strong>ReLU</strong>
 (keep positives, zero the rest) and the <strong>sigmoid</strong> (squash any number into 0–1). The whole kit
 is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas below.</p>
 <p>One natural misreading is worth heading off: these curves aren't there to squash numbers into a
-tidy range. The sigmoid happens to (everything lands between 0 and 1), but ReLU and GELU — the ones
-modern models actually use — are unbounded: a big input sails through nearly unchanged. (Bounded
+tidy range. The sigmoid happens to (everything lands between 0 and 1), but ReLU and GELU, the ones
+modern models actually use, are unbounded: a big input sails through nearly unchanged. (Bounded
 activations in fact fell out of favour: their flat tails make the learning signal of §7 vanish.)
-Keeping the network's numbers in a sane, comparable range is a different component's job —
+Keeping the network's numbers in a sane, comparable range is a different component's job:
 <strong>LayerNorm</strong>, a normalisation step you'll meet inside the block in
 <a href="../track-a/#block">Part 1</a>. The bend has exactly one job: be <em>not-a-straight-line</em>,
 so stacking layers buys new shapes instead of collapsing into one.</p>
@@ -553,7 +566,7 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
 <em>look at each other</em>: each token forms a query and asks &ldquo;which earlier tokens matter to me?&rdquo;,
 then pulls in a blend of their information. It's how the model carries context forward, the part that makes
 it a <em>language</em> model and not a bag of independent words.</p>
-<p>And this isn't a metaphor — it's measurable. Here is the sentence from above, run through the
+<p>And this isn't a metaphor; it's measurable. Here is the sentence from above, run through the
 trained Part 1 model, with one attention head's actual weights drawn as arcs:</p>
 """),
   ("diagram", ATTENTION_SVG,
@@ -565,6 +578,11 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
 up rich, context-aware meaning before it ever makes a prediction. <a href="../track-a/#attention">Part 1
 builds attention →</a></p>
+<p>The field agrees about the &ldquo;heart&rdquo; part: the 2017 paper that introduced the transformer
+(the architecture behind every model in this lab, and behind GPT, Claude, and Gemini) announced it in
+its title: <a href="https://arxiv.org/abs/1706.03762">&ldquo;Attention Is All You Need&rdquo;</a>.
+Attention itself wasn't new; the breakthrough was showing that with enough of it, the rest of the old
+machinery could be thrown away.</p>
 """),
  ],
 },
@@ -633,10 +651,13 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <p>That's the whole machine: text → tokens → embeddings → stacks of (attention + <code>Wx+b</code> + a bend)
 → a final prediction, all tuned by gradient descent. A <em>frontier</em> model is exactly this, scaled up:
 more dimensions, more layers, vastly more text and compute. Same ideas; different magnitude.</p>
-<p>A from-scratch tiny model trained on a laptop will produce believable <em>shapes</em> of language but no
-real knowledge — that's the honest ceiling, and it's the point: you can see every moving part. To get
-something <em>useful</em>, you start from a model that has already paid the scale cost and
-<strong>specialise</strong> it, which is Part 2.</p>
+<p>And the honest ceiling: Part 1's tiny GPT produces believable <em>shapes</em> of language, never
+knowledge or reasoning. That holds even for the tuned version that writes coherent little stories. A
+laptop's worth of training can't buy more, and that's fine: the tiny build is for <em>seeing every moving
+part</em>, not for using. Getting something <em>useful</em> is a different move entirely. Part 2 sets the
+tiny model aside and starts from a <strong>big pretrained open model</strong> (4 billion parameters,
+trained at a scale no laptop can touch; that cost was paid by someone else), then
+<strong>specialises</strong> it for one narrow job.</p>
 """),
   ("callout", "key", "Now see it built", r"""
 <p>Every idea here is built in real, runnable code next: <strong><a href="../track-a/">Part 1 ·

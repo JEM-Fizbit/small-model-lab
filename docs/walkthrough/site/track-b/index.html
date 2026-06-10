@@ -161,8 +161,14 @@ th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
 td:first-child{font-weight:600;}
 
 /* python primer appendix */
+.primer-panel{background:var(--math-soft);border:1px solid #d9ccf3;border-radius:14px;
+  padding:6px 26px 16px;margin-top:10px;}
+section.primer-sec .sec-num{background:var(--math);}
+.primer-kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
+  font-size:12px;font-weight:700;color:var(--math);margin:8px 0 0;}
 dl.primer{margin:18px 0;}
-dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#2a3142;}
+dl.primer dt{font-family:var(--mono);font-size:14px;margin:18px 0 6px;color:#33285a;
+  background:#fff;border:1px solid #e1d8f5;border-radius:8px;padding:7px 12px;display:inline-block;}
 dl.primer dd{margin:0 0 4px 0;font-size:16.5px;}
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
@@ -371,7 +377,8 @@ its vocabulary.</p>
     
       <a href="#arc"><span class="toc-num">10</span>The arc, closed: running it yourself</a>
     
-    
+    <div class="toc-part">Reference</div>
+    <a href="#primer"><span class="toc-num">↪</span>Python primer</a>
   </nav>
 
   <main>
@@ -932,7 +939,45 @@ just <em>read</em> it and take the method with you.</p>
     </section>
     
 
-    
+    <section id="primer" class="primer-sec">
+      <p class="primer-kicker">Reference appendix</p>
+      <div class="sec-head"><span class="sec-num">↪</span><h2>Python primer</h2></div>
+      <div class="primer-panel"><div class="prose">
+<p>Part 2's code is <em>pipeline</em> code, so its recurring patterns differ from Part 1's. (New to
+Python entirely? <a href="../track-a/#primer">Part 1's primer</a> covers the basics: variables,
+functions, classes, loops.) These six cover most of what appears in this chapter's code boxes.</p>
+
+<dl class="primer">
+  <dt>{"phase": "Phase 2", "enrollment": 41}</dt>
+  <dd><strong>A dictionary</strong>: named slots holding values, Python's all-purpose record. It's
+  also exactly the shape of <strong>JSON</strong>, the text format APIs speak, which is why trial
+  records and readouts move through this whole chapter as dictionaries.</dd>
+
+  <dt>client.messages.create(model=..., temperature=0)</dt>
+  <dd><strong>Keyword arguments.</strong> Each <code>name=value</code> names the setting it fills, so
+  a call with many options stays readable. The teacher call in §2 is mostly this.</dd>
+
+  <dt>cmd = ["mlx_lm", "lora", "--iters", "700"]</dt>
+  <dd><strong>A command as a list.</strong> Each item is one word of a terminal command; Python hands
+  the list to the operating system to run. The fine-tune in §4 is launched exactly this way, which is
+  why its code box reads like flags rather than maths.</dd>
+
+  <dt>todo[:10]</dt>
+  <dd><strong>Slicing</strong>: take the first ten items of a list. The pilot gate in §3 labels
+  <code>todo[:10]</code> and checks the results before risking money on the other 1,490.</dd>
+
+  <dt>@mcp.tool(...)</dt>
+  <dd><strong>A decorator</strong>: an <code>@</code> line just above a function that wraps or
+  registers it. In §9 it's the line that tells the MCP server &ldquo;this function is a callable
+  tool.&rdquo;</dd>
+
+  <dt>def trial_readout(nct_id: str) -> str:</dt>
+  <dd><strong>Type hints.</strong> The <code>: str</code> and <code>-&gt; str</code> declare what kind
+  of value goes in and comes out (text, here). Python doesn't enforce them; they're documentation that
+  tools and readers rely on.</dd>
+</dl>
+</div></div>
+    </section>
   </main>
 </div>
 
