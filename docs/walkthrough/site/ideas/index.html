@@ -419,7 +419,7 @@ each with an integer <strong>ID</strong> (its index in a fixed list called the <
 &ldquo;fox&rdquo; might be token #1234. That's all a token is to the model: an ID. There's more than one
 way to chop, and the choice matters enormously:</p>
 </div>
-<figure class="imgfig diagram"><svg viewBox="0 0 720 312" role="img" aria-label="Tokenization two ways: the sentence Once upon a time as 16 per-character numbers (notebook 01), then as 4 BPE word-chunks with their real token ids (notebook 02).">
+<figure class="imgfig diagram"><svg viewBox="0 0 720 470" role="img" aria-label="Tokenization: the sentence Once upon a time as 16 per-character numbers (notebook 01), as 4 BPE word-chunks with their real token ids (notebook 02), and three words showing how frequency sets chunk size: butterfly is one chunk, thunderstorm two, unbelievable five.">
 <text x="30" y="26" font-size="13" font-weight="700" fill="#1c2230">① One number per <tspan fill="#3253d6">character</tspan> — how the from-scratch model (notebook 01) reads</text>
 <rect x="30" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
 <text x="50.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">O</text>
@@ -486,7 +486,30 @@ way to chop, and the choice matters enormously:</p>
 <text x="553" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#244</text>
 <text x="30" y="276" font-size="10.5" fill="#5a6373">Same text: 4 numbers instead of 16 (␣ marks the space each chunk carries). The model now reasons over meaningful pieces,</text>
 <text x="30" y="292" font-size="10.5" fill="#5a6373">and the same context window holds ~4× more story — most of the v1 → v2 quality leap in Part 1.</text>
-</svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways — with the real numbers from Part 1's notebooks: character IDs from notebook 01's vocabulary, BPE chunk IDs from notebook 02's.</figcaption></figure>
+<line x1="30" y1="308" x2="690" y2="308" stroke="#e4e7ee" stroke-width="1.5"/>
+<text x="30" y="334" font-size="13" font-weight="700" fill="#1c2230">③ How big is a chunk? <tspan fill="#3253d6">Frequency</tspan> decides — the same tokenizer, three words</text>
+<rect x="30" y="350" width="123" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="92" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣butterfly</text>
+<text x="92" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">1 chunk — the stories used it constantly</text>
+<rect x="182" y="350" width="102" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="233" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣thunder</text>
+<rect x="287" y="350" width="70" height="36" rx="7" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="322" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">storm</text>
+<text x="270" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">2 chunks — both meaningful</text>
+<rect x="386" y="350" width="50" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
+<text x="411" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣un</text>
+<rect x="439" y="350" width="50" height="36" rx="7" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
+<text x="464" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">bel</text>
+<rect x="492" y="350" width="39" height="36" rx="7" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.5"/>
+<text x="511" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">ie</text>
+<rect x="534" y="350" width="28" height="36" rx="7" fill="#f1ecfb" stroke="#5a3aa6" stroke-width="1.5"/>
+<text x="548" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">v</text>
+<rect x="565" y="350" width="60" height="36" rx="7" fill="#fbecf3" stroke="#a8386a" stroke-width="1.5"/>
+<text x="595" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">able</text>
+<text x="506" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">5 chunks — rare, spelled from pieces</text>
+<text x="30" y="438" font-size="10.5" fill="#5a6373">Words the training text used constantly earn a chunk of their own; rarer ones are spelled out of reusable pieces — and the</text>
+<text x="30" y="454" font-size="10.5" fill="#5a6373">pieces themselves often carry meaning (␣thunder, storm, ␣un…, …able). Nothing is ever out-of-vocabulary.</text>
+</svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways — real numbers from Part 1's notebooks (character IDs from notebook 01, BPE chunk IDs from notebook 02) — and, below, what happens to words the corpus saw rarely: the same tokenizer splits them into reusable, often meaningful pieces.</figcaption></figure>
 <div class="prose">
 <p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
 pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
@@ -904,7 +927,42 @@ is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas b
 <em>look at each other</em>: each token forms a query and asks &ldquo;which earlier tokens matter to me?&rdquo;,
 then pulls in a blend of their information. It's how the model carries context forward, the part that makes
 it a <em>language</em> model and not a bag of independent words.</p>
+<p>And this isn't a metaphor — it's measurable. Here is the sentence from above, run through the
+trained Part 1 model, with one attention head's actual weights drawn as arcs:</p>
 </div>
+<figure class="imgfig diagram"><svg viewBox="0 0 720 312" role="img" aria-label="Attention, measured: arcs from the word it back to earlier words in the sentence The dragon looked at the boy and it. The arc to dragon carries 76 percent of the attention; small arcs go to The, and, and boy; it keeps 8 percent for itself.">
+<text x="360" y="26" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Where does <tspan font-family="ui-monospace,Menlo,monospace" fill="#b5731a">it</tspan> look? — one real attention head, measured</text>
+<text x="360" y="44" text-anchor="middle" font-size="11" fill="#5a6373">the trained Part 1 model, layer 2 of 6, head 4 of 6 — each arc’s thickness = how much of the blend</text>
+<path d="M 581 204 Q 362 -25 144 204" fill="none" stroke="#3253d6" stroke-width="1.9" opacity="0.40"/>
+<text x="362" y="81" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">7%</text>
+<path d="M 581 204 Q 398 0 215 204" fill="none" stroke="#e8462e" stroke-width="8.8" opacity="0.84"/>
+<text x="398" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#e8462e">76%</text>
+<path d="M 581 204 Q 441 31 301 204" fill="none" stroke="#3253d6" stroke-width="1.3" opacity="0.36"/>
+<path d="M 581 204 Q 528 93 474 204" fill="none" stroke="#3253d6" stroke-width="1.4" opacity="0.36"/>
+<text x="528" y="141" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">2%</text>
+<path d="M 581 204 Q 556 114 530 204" fill="none" stroke="#3253d6" stroke-width="1.8" opacity="0.39"/>
+<text x="556" y="151" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">6%</text>
+<rect x="120" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="144" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">The</text>
+<rect x="176" y="208" width="78" height="34" rx="7" fill="#fbecf3" stroke="#a8386a" stroke-width="2.2"/>
+<text x="215" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">dragon</text>
+<rect x="262" y="208" width="78" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="301" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">looked</text>
+<rect x="348" y="208" width="38" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="367" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">at</text>
+<rect x="394" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="418" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">the</text>
+<rect x="450" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="474" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">boy</text>
+<rect x="506" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
+<text x="530" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">and</text>
+<rect x="562" y="208" width="38" height="34" rx="7" fill="#fbf1e0" stroke="#b5731a" stroke-width="2.2"/>
+<text x="581" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">it</text>
+<text x="581" y="260" text-anchor="middle" font-size="9.5" fill="#b5731a">the token asking (its “query”) — keeps 8% for itself</text>
+<text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#a8386a">the best-matching “key”</text>
+<text x="30" y="292" font-size="10.5" fill="#5a6373">“looked”, “at”, “the” get ≈0–1%. This head has learned to track who the sentence is about; other heads in the same</text>
+<text x="30" y="308" font-size="10.5" fill="#5a6373">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
@@ -945,7 +1003,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
-</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball starts high on one slope and a dotted gradient-descent path of real downhill steps curves to the lowest point of the valley.">
 <defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8462e"/></marker></defs>
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
@@ -988,7 +1046,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="52" y="210" font-size="12" fill="#5a6373" transform="rotate(-64 52 210)">loss (height) ↑</text>
 <text x="470" y="336" font-size="12" fill="#5a6373">weight 1 →</text>
 <text x="120" y="336" font-size="12" fill="#5a6373">← weight 2</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1015,7 +1073,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
-</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1084,7 +1142,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#9a5b00" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#5a6373">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#5a6373">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
