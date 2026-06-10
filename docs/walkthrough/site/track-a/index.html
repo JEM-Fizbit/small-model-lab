@@ -75,7 +75,8 @@ section:first-of-type{border-top:none;padding-top:0;}
 .prose strong{font-weight:700;}
 .prose em{font-style:italic;}
 .prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
-  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;}
+  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;
+  overflow-wrap:anywhere;}
 .prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
   border-bottom:1px solid #c5d0f5;}
 .prose a:hover{border-color:var(--accent);}
@@ -175,7 +176,8 @@ dl.primer dd{margin:0 0 18px;font-size:15.5px;background:#fff;
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
   font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
-footer p{margin:0 0 8px;} footer p:last-child{margin:0;}
+footer p{margin:0 0 8px;text-wrap:pretty;} footer p:last-child{margin:0;}
+footer .seg{display:inline-block;}
 footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
 footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
 
@@ -1657,21 +1659,29 @@ that show up again and again. Learn these seven and Python stops looking like no
 
 <footer id="bottom">
   <p>Generated from the live notebooks by <code>build.py</code> — every code block and output above is pulled straight from the Jupyter notebooks, so what you read is what actually ran.</p>
-  <p>Open source:
-  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
-  &nbsp;·&nbsp; notebooks
+  <p>Built in collaboration with Claude (via Claude Code): John directed, co-wrote, and made every
+  editorial call; Claude drafted much of the prose and most of the code and diagrams.
+  <span class="seg">Spotted an error, or have a comment?</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span></p>
+  <p><span class="seg">Open source:
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+  <span class="seg">notebooks
   <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
   <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
-  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
-  &nbsp;·&nbsp; <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
-  started</a> &nbsp;·&nbsp; Part 1 of the <strong>slm-lab</strong> walk-through.</p>
-  <p><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
-  John E. Milad. Builds on <a target="_blank" rel="noopener" href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
-  <a target="_blank" rel="noopener" href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
-  <a target="_blank" rel="noopener" href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
-  (Eldan &amp; Li, Microsoft Research).</p>
-  <p>Part of <strong>John E. Milad's</strong> <a target="_blank" rel="noopener" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a> — a
-  curated, hands-on library for the AI era.</p>
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>&nbsp;·</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
+  started</a>&nbsp;·</span>
+  <span class="seg">Part 1 of the <strong>slm-lab</strong> walk-through.</span></p>
+  <p><span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>
+  © 2026 John E. Milad.</span>
+  <span class="seg">Builds on <a target="_blank" rel="noopener" href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/ml-explore/mlx">Apple MLX</a>,</span>
+  <span class="seg">and the <a target="_blank" rel="noopener" href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a>
+  dataset</span>
+  <span class="seg">(Eldan &amp; Li, Microsoft Research).</span></p>
+  <p><span class="seg">Part of <strong>John E. Milad's</strong>
+  <a target="_blank" rel="noopener" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a></span>
+  <span class="seg">— a curated, hands-on library for the AI era.</span></p>
 </footer>
 
 </body>

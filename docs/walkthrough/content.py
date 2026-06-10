@@ -178,7 +178,8 @@ section:first-of-type{border-top:none;padding-top:0;}
 .prose strong{font-weight:700;}
 .prose em{font-style:italic;}
 .prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
-  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;}
+  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;
+  overflow-wrap:anywhere;}
 .prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
   border-bottom:1px solid #c5d0f5;}
 .prose a:hover{border-color:var(--accent);}
@@ -278,7 +279,8 @@ dl.primer dd{margin:0 0 18px;font-size:15.5px;background:#fff;
 
 footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
   font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
-footer p{margin:0 0 8px;} footer p:last-child{margin:0;}
+footer p{margin:0 0 8px;text-wrap:pretty;} footer p:last-child{margin:0;}
+footer .seg{display:inline-block;}
 footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
 footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
 
@@ -366,21 +368,29 @@ footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f
 
 <footer id="bottom">
   <p>{{ footer_gen }}</p>
-  <p>Open source:
-  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
-  &nbsp;·&nbsp; notebooks
+  <p>Built in collaboration with Claude (via Claude Code): John directed, co-wrote, and made every
+  editorial call; Claude drafted much of the prose and most of the code and diagrams.
+  <span class="seg">Spotted an error, or have a comment?</span>
+  <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span></p>
+  <p><span class="seg">Open source:
+  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+  <span class="seg">notebooks
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
   <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
-  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>
-  &nbsp;·&nbsp; <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
-  started</a> &nbsp;·&nbsp; {{ footer_note }}</p>
-  <p><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a> © 2026
-  John E. Milad. Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),
-  <a href="https://github.com/ml-explore/mlx">Apple MLX</a>, and the
-  <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a> dataset
-  (Eldan &amp; Li, Microsoft Research).</p>
-  <p>Part of <strong>John E. Milad's</strong> <a href="{{ hub_url }}">AI Knowledge Hub</a> — a
-  curated, hands-on library for the AI era.</p>
+  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>&nbsp;·</span>
+  <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
+  started</a>&nbsp;·</span>
+  <span class="seg">{{ footer_note }}</span></p>
+  <p><span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>
+  © 2026 John E. Milad.</span>
+  <span class="seg">Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),</span>
+  <span class="seg"><a href="https://github.com/ml-explore/mlx">Apple MLX</a>,</span>
+  <span class="seg">and the <a href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a>
+  dataset</span>
+  <span class="seg">(Eldan &amp; Li, Microsoft Research).</span></p>
+  <p><span class="seg">Part of <strong>John E. Milad's</strong>
+  <a href="{{ hub_url }}">AI Knowledge Hub</a></span>
+  <span class="seg">— a curated, hands-on library for the AI era.</span></p>
 </footer>
 
 </body>
@@ -1552,8 +1562,9 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
 .tag.opt{background:#2a3450;color:#aebbdd;}
 .tag.gold{background:#46350f;color:#e8c87a;}
 .foot{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
-  font-size:14px;color:#aebbdd;line-height:1.6;}
+  font-size:14px;color:#aebbdd;line-height:1.6;text-wrap:pretty;}
 .foot a{color:#a9c0ff;text-decoration:none;}
+.foot .seg{display:inline-block;}
 .kicker a{color:#9fb2e8;text-decoration:none;border-bottom:1px solid rgba(159,178,232,.4);}
 .kicker a:hover{color:#cfd9f3;}
 .block{margin:46px 0 0;padding-top:36px;border-top:1px solid rgba(255,255,255,.12);}
@@ -1646,6 +1657,9 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
       <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
       deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab
       is one hands-on piece of that.</p>
+      <p>It's also a working example of the method: this whole lab (the code, the site, the diagrams)
+      was built in close, mutually-challenging collaboration with <strong>Claude</strong>, both of us
+      drafting, with me directing, editing, and deciding throughout.</p>
       <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
       <a href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools,
       the practices, and a zero-to-shipping learning path.<br/>
@@ -1654,9 +1668,16 @@ a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28)
   </section>
 
   <p class="foot">
-    Open source (MIT): <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>
-    &nbsp;·&nbsp; by John E. Milad &nbsp;·&nbsp; builds on nanoGPT, Apple MLX, and TinyStories.<br/>
-    Part of the <a href="{{ hub_url }}">AI Knowledge Hub</a>.
+    <span class="seg">© 2026 John E. Milad&nbsp;·</span>
+    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>,
+    open source:</span>
+    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+    <span class="seg">builds on nanoGPT, Apple MLX, and TinyStories.</span><br/>
+    <span class="seg">Built in collaboration with Claude</span>
+    <span class="seg">(via Claude Code)&nbsp;·</span>
+    <span class="seg">spotted an error or have a comment?</span>
+    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span><br/>
+    <span class="seg">Part of the <a href="{{ hub_url }}">AI Knowledge Hub</a>.</span>
   </p>
 </div>
 </body>
