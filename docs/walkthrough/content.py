@@ -754,6 +754,168 @@ EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embedd
 <text x="395" y="223" text-anchor="start" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg>'''
 
+# Animated generation loop (§9). Six real steps of the v2 checkpoint continuing
+# "Once upon a time" at temperature 0.8 — every number below was measured by
+# docs/walkthrough/gen_generation_trace.py (seed 1); rerun it to regenerate them.
+# Pure CSS/SMIL-free animation on a 21 s cycle; prefers-reduced-motion shows the
+# final frame (full sentence + step 6's menu) as a static figure.
+GENLOOP_SVG = r'''<svg viewBox="0 0 720 306" role="img" aria-label="Autoregressive generation, animated: the prompt Once upon a time grows one word-chunk at a time. At each of six steps the model's real top-4 next-chunk probabilities appear as bars, the sampled chunk is outlined and then appended to the sentence. Steps 1 to 5 pick the favourite (comma 87.5%, there 98.7%, was 99.1%, a 98.6%, little 81.5%); at step 6 the weighted die lands on boy at 13.9% instead of the favourite girl at 83.4%, finishing: Once upon a time, there was a little boy.">
+<style>
+.gl-anim{}
+.gl-s1,.gl-s2,.gl-s3,.gl-s4,.gl-s5{opacity:0}
+.gl-s6,.gl-m1,.gl-m2,.gl-m3,.gl-m4,.gl-m5,.gl-m6,.gl-t1,.gl-t2,.gl-t3,.gl-t4,.gl-t5,.gl-t6{opacity:1}
+.gl-s1{animation:glw1 21s linear infinite}.gl-s2{animation:glw2 21s linear infinite}
+.gl-s3{animation:glw3 21s linear infinite}.gl-s4{animation:glw4 21s linear infinite}
+.gl-s5{animation:glw5 21s linear infinite}.gl-s6{animation:glw6 21s linear infinite}
+.gl-m1{animation:glm1 21s linear infinite}.gl-m2{animation:glm2 21s linear infinite}
+.gl-m3{animation:glm3 21s linear infinite}.gl-m4{animation:glm4 21s linear infinite}
+.gl-m5{animation:glm5 21s linear infinite}.gl-m6{animation:glm6 21s linear infinite}
+.gl-t1{animation:glt1 21s linear infinite}.gl-t2{animation:glt2 21s linear infinite}
+.gl-t3{animation:glt3 21s linear infinite}.gl-t4{animation:glt4 21s linear infinite}
+.gl-t5{animation:glt5 21s linear infinite}.gl-t6{animation:glt6 21s linear infinite}
+@keyframes glw1{0%{opacity:0}1.4%{opacity:1}14.29%{opacity:1}15.24%{opacity:0}100%{opacity:0}}
+@keyframes glw2{0%{opacity:0}15.24%{opacity:0}16.64%{opacity:1}29.52%{opacity:1}30.48%{opacity:0}100%{opacity:0}}
+@keyframes glw3{0%{opacity:0}30.48%{opacity:0}31.88%{opacity:1}44.76%{opacity:1}45.71%{opacity:0}100%{opacity:0}}
+@keyframes glw4{0%{opacity:0}45.71%{opacity:0}47.11%{opacity:1}59.99%{opacity:1}60.95%{opacity:0}100%{opacity:0}}
+@keyframes glw5{0%{opacity:0}60.95%{opacity:0}62.35%{opacity:1}75.24%{opacity:1}76.19%{opacity:0}100%{opacity:0}}
+@keyframes glw6{0%{opacity:0}76.19%{opacity:0}77.59%{opacity:1}100%{opacity:1}}
+@keyframes glm1{0%{opacity:0}10.5%{opacity:0}11.9%{opacity:1}100%{opacity:1}}
+@keyframes glm2{0%{opacity:0}25.74%{opacity:0}27.14%{opacity:1}100%{opacity:1}}
+@keyframes glm3{0%{opacity:0}40.98%{opacity:0}42.38%{opacity:1}100%{opacity:1}}
+@keyframes glm4{0%{opacity:0}56.21%{opacity:0}57.61%{opacity:1}100%{opacity:1}}
+@keyframes glm5{0%{opacity:0}71.45%{opacity:0}72.85%{opacity:1}100%{opacity:1}}
+@keyframes glm6{0%{opacity:0}86.69%{opacity:0}88.09%{opacity:1}100%{opacity:1}}
+@keyframes glt1{0%{opacity:0}12.4%{opacity:0}13.8%{opacity:1}100%{opacity:1}}
+@keyframes glt2{0%{opacity:0}27.64%{opacity:0}29.04%{opacity:1}100%{opacity:1}}
+@keyframes glt3{0%{opacity:0}42.88%{opacity:0}44.28%{opacity:1}100%{opacity:1}}
+@keyframes glt4{0%{opacity:0}58.11%{opacity:0}59.51%{opacity:1}100%{opacity:1}}
+@keyframes glt5{0%{opacity:0}73.35%{opacity:0}74.75%{opacity:1}100%{opacity:1}}
+@keyframes glt6{0%{opacity:0}88.59%{opacity:0}89.99%{opacity:1}100%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.gl-anim{animation:none !important}}
+</style>
+<text x="30" y="28" font-size="14.5" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace" xml:space="preserve">Once upon a time<tspan class="gl-anim gl-t1" fill="#963d2c">,</tspan><tspan class="gl-anim gl-t2" fill="#963d2c"> there</tspan><tspan class="gl-anim gl-t3" fill="#963d2c"> was</tspan><tspan class="gl-anim gl-t4" fill="#963d2c"> a</tspan><tspan class="gl-anim gl-t5" fill="#963d2c"> little</tspan><tspan class="gl-anim gl-t6" fill="#963d2c"> boy</tspan></text>
+<text x="30" y="48" font-size="10.5" fill="#6e6557">the story so far — after every pick, the whole line is fed back in and the menu below is re-scored from scratch</text>
+<text x="690" y="76" text-anchor="end" font-size="10" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">real scores · temperature 0.8</text>
+<g class="gl-anim gl-s1">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 1 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">,</text>
+<rect x="222" y="88" width="341" height="20" rx="4" fill="#963d2c"/>
+<text x="571" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">87.5%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">there</text>
+<rect x="222" y="117" width="49" height="20" rx="4" fill="#963d2c"/>
+<text x="279" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">12.5%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">in</text>
+<rect x="222" y="146" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">.</text>
+<rect x="222" y="175" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="2" height="20" fill="#cfc5ae"/>
+<text x="232" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<g class="gl-anim gl-m1"><rect x="16" y="84" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="102" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">,</text></g>
+</g>
+<g class="gl-anim gl-s2">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 2 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">there</text>
+<rect x="222" y="88" width="385" height="20" rx="4" fill="#963d2c"/>
+<text x="615" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">98.7%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">in</text>
+<rect x="222" y="117" width="3" height="20" fill="#963d2c"/>
+<text x="233" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.7%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">a</text>
+<rect x="222" y="146" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.6%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">the</text>
+<rect x="222" y="175" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="2" height="20" fill="#cfc5ae"/>
+<text x="232" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<g class="gl-anim gl-m2"><rect x="16" y="84" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="102" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">there</text></g>
+</g>
+<g class="gl-anim gl-s3">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 3 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">was</text>
+<rect x="222" y="88" width="387" height="20" rx="4" fill="#963d2c"/>
+<text x="617" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">99.1%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">were</text>
+<rect x="222" y="117" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.6%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">lived</text>
+<rect x="222" y="146" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.3%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">is</text>
+<rect x="222" y="175" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="2" height="20" fill="#cfc5ae"/>
+<text x="232" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<g class="gl-anim gl-m3"><rect x="16" y="84" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="102" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">was</text></g>
+</g>
+<g class="gl-anim gl-s4">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 4 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">a</text>
+<rect x="222" y="88" width="385" height="20" rx="4" fill="#963d2c"/>
+<text x="615" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">98.6%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">an</text>
+<rect x="222" y="117" width="5" height="20" fill="#963d2c"/>
+<text x="235" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.4%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">one</text>
+<rect x="222" y="146" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">no</text>
+<rect x="222" y="175" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="2" height="20" fill="#cfc5ae"/>
+<text x="232" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">&lt;0.1%</text>
+<g class="gl-anim gl-m4"><rect x="16" y="84" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="102" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">a</text></g>
+</g>
+<g class="gl-anim gl-s5">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 5 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">little</text>
+<rect x="222" y="88" width="318" height="20" rx="4" fill="#963d2c"/>
+<text x="548" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">81.5%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">big</text>
+<rect x="222" y="117" width="23" height="20" rx="4" fill="#963d2c"/>
+<text x="253" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">5.9%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">boy</text>
+<rect x="222" y="146" width="12" height="20" rx="4" fill="#963d2c"/>
+<text x="242" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">3.0%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">girl</text>
+<rect x="222" y="175" width="7" height="20" rx="4" fill="#963d2c"/>
+<text x="237" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.7%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="31" height="20" rx="4" fill="#cfc5ae"/>
+<text x="261" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">7.9%</text>
+<g class="gl-anim gl-m5"><rect x="16" y="84" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="102" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">little</text></g>
+</g>
+<g class="gl-anim gl-s6">
+<text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 6 of 6 — the menu for what comes next</text>
+<text x="212" y="102" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">girl</text>
+<rect x="222" y="88" width="325" height="20" rx="4" fill="#963d2c"/>
+<text x="555" y="102" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">83.4%</text>
+<text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">boy</text>
+<rect x="222" y="117" width="54" height="20" rx="4" fill="#963d2c"/>
+<text x="284" y="131" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">13.9%</text>
+<text x="212" y="160" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">bird</text>
+<rect x="222" y="146" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="160" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.6%</text>
+<text x="212" y="189" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18">bunny</text>
+<rect x="222" y="175" width="2" height="20" fill="#963d2c"/>
+<text x="232" y="189" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">0.6%</text>
+<text x="212" y="218" text-anchor="end" font-size="11" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="222" y="204" width="6" height="20" rx="4" fill="#cfc5ae"/>
+<text x="236" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.5%</text>
+<g class="gl-anim gl-m6"><rect x="16" y="113" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="131" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">boy</text></g>
+</g>
+<text x="30" y="244" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">outlined row = the weighted die&#8217;s pick — watch it join the line above</text>
+<text x="30" y="270" font-size="10.5" fill="#6e6557">Measured, not staged: the model&#8217;s real menus — the upgraded word-chunk checkpoint (§11–14) continuing the prompt at</text>
+<text x="30" y="286" font-size="10.5" fill="#6e6557">temperature 0.8. Five rolls land on the favourite; then step 6&#8217;s die picks &#8201;boy (13.9%) over &#8201;girl (83.4%). That&#8217;s</text>
+<text x="30" y="302" font-size="10.5" fill="#6e6557">sampling: a loaded die, not a lookup. (§9&#8217;s character model runs this identical loop, one letter at a time.)</text>
+</svg>'''
+
 SECTIONS = [
 
 # ---------------------------------------------------------------- ORIENTATION --
@@ -1166,6 +1328,10 @@ Append it, then feed the whole thing back in and repeat. This one-step-at-a-time
 called <strong>autoregressive</strong> generation, and it's exactly how the largest models
 write too.</p>
 """),
+  ("diagram", GENLOOP_SVG,
+   "The loop, replaying live: score the menu, roll the weighted die, append the pick, feed the whole "
+   "line back in. Every probability shown is real, and so is the ending &mdash; reproduce the trace with "
+   "<code>docs/walkthrough/gen_generation_trace.py</code>."),
   ("code", "01", "def generate(prompt, n_new=400", "Predict one character, append, repeat."),
   ("gloss", r"""
 <p><b>Step by step:</b> encode the prompt to numbers, then loop <code>n_new</code> times. Each
