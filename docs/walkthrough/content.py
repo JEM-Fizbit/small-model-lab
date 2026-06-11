@@ -1548,7 +1548,7 @@ LANDING_META = {
 
 LANDING = {
     "kicker": "slm-lab",
-    "h1": "Build a small language model, and actually understand it",
+    "h1": "Build a small language model, and actually understand&nbsp;it",
     "lede": "A hands-on, no-black-box lab. <em>Build</em> a tiny language model from scratch, then "
             "<em>fine-tune</em> a real open model into a useful expert — with an optional, code-free "
             "<em>concepts</em> primer if you'd like the ideas first. Explained for the curious.",
@@ -1564,155 +1564,217 @@ LANDING_TEMPLATE = r"""<!doctype html>
 <meta property="og:title" content="{{ meta.title }}"/>
 <meta property="og:description" content="{{ meta.description }}"/>
 <meta property="og:type" content="website"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
+<meta property="og:image" content="https://jem-fizbit.github.io/slm-lab/og-image.png"/>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+:root{
+  --ink:#231f18; --soft:#6e6557; --faint:#998f7d;
+  --line:#ddd4c2; --bg:#f7f3ea;
+  --accent:#963d2c; --accent-soft:#f0e2dc;
+  --code-bg:#f0eadb;
+  --serif:'Newsreader',Charter,'Iowan Old Style',Georgia,serif;
+  --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#10182f;color:#eaeefb;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;}
-.wrap{max-width:880px;margin:0 auto;padding:72px 24px 64px;}
-.kicker{text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:700;
-  color:#9fb2e8;margin:0 0 14px;}
-h1{font-size:42px;line-height:1.1;letter-spacing:-.02em;margin:0 0 18px;}
-.lede{font-size:19px;line-height:1.6;color:#cfd9f3;margin:0 0 40px;max-width:680px;}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch;}
-.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
-  border-radius:14px;padding:24px;transition:.15s;}
-.card .go{margin-top:auto;}
-a.card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px);}
-.card .part{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#9fb2e8;font-weight:700;}
-.card h2{font-size:21px;margin:8px 0 0;line-height:1.25;min-height:53px;}
-.card .tagrow{margin:8px 0 12px;}
-@media (max-width:680px){.card h2{min-height:0;}}
-.card p{font-size:15px;line-height:1.55;color:#c2cdee;margin:0 0 16px;}
-.card code{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:.85em;
-  background:rgba(255,255,255,.1);padding:1px 5px;border-radius:4px;}
-.card .go{font-weight:600;color:#a9c0ff;font-size:15px;}
-.card.soon{opacity:.72;}
-.card.soon .go{color:#7e8bb0;}
-.tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.06em;padding:2px 8px;border-radius:6px;}
-.tag.live{background:#16432f;color:#7fe0b0;}
-.tag.wip{background:#3a3550;color:#b9a9e6;}
-.tag.opt{background:#2a3450;color:#aebbdd;}
-.tag.gold{background:#46350f;color:#e8c87a;}
-.foot{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);
-  font-size:14px;color:#aebbdd;line-height:1.6;text-wrap:pretty;}
-.foot a{color:#a9c0ff;text-decoration:none;}
-.foot .seg{display:inline-block;}
-.kicker a{color:#9fb2e8;text-decoration:none;border-bottom:1px solid rgba(159,178,232,.4);}
-.kicker a:hover{color:#cfd9f3;}
-.block{margin:46px 0 0;padding-top:36px;border-top:1px solid rgba(255,255,255,.12);}
-.block h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#9fb2e8;margin:0 0 14px;}
-.block p{font-size:16px;line-height:1.6;color:#cfd9f3;margin:0 0 12px;}
-.why-block ul.why{margin:6px 0 0;padding-left:20px;}
-.why-block ul.why li{font-size:15.5px;line-height:1.55;color:#cfd9f3;margin:0 0 11px;}
-.why-block ul.why strong{color:#eaeefb;}
-.about{display:flex;gap:26px;align-items:flex-start;margin:46px 0 0;padding-top:36px;
-  border-top:1px solid rgba(255,255,255,.12);}
-.about img.avatar{width:104px;height:auto;border-radius:12px;flex:none;
-  box-shadow:0 2px 14px rgba(0,0,0,.35);}
-.about h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#9fb2e8;margin:2px 0 12px;}
-.about p{font-size:16px;line-height:1.6;color:#cfd9f3;margin:0 0 14px;}
-.about a{color:#a9c0ff;text-decoration:none;border-bottom:1px solid rgba(169,192,255,.4);}
-.about a.cta-link{display:inline-block;margin-top:2px;font-weight:600;}
-.about a.cta-link:hover{color:#fff;}
-@media (max-width:680px){.cards{grid-template-columns:1fr;} h1{font-size:32px;} .about{flex-direction:column;gap:18px;}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+  -webkit-font-smoothing:antialiased;font-optical-sizing:auto;line-height:1.7;}
+::selection{background:var(--accent-soft);}
+a{color:inherit;}
+.label{font-family:var(--mono);text-transform:uppercase;letter-spacing:.16em;
+  font-size:11px;font-weight:500;color:var(--faint);}
+
+/* top bar */
+.topbar{border-bottom:1px solid var(--line);}
+.topbar .inner{max-width:1140px;margin:0 auto;padding:22px 24px 18px;
+  display:flex;align-items:baseline;gap:28px;}
+.wordmark{font-family:var(--serif);font-size:21px;font-weight:500;letter-spacing:-.01em;
+  color:var(--ink);text-decoration:none;margin-right:auto;}
+.wordmark span{color:var(--accent);}
+.topbar nav{display:flex;gap:26px;align-items:baseline;flex-wrap:wrap;}
+.topbar nav a{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--soft);text-decoration:none;white-space:nowrap;}
+.topbar nav a:hover{color:var(--accent);}
+.topbar nav a.hub{color:var(--faint);}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+/* hero */
+.hero{padding:80px 0 60px;}
+.hero .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 20px;font-weight:500;}
+.hero .kicker a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.hero h1{font-size:56px;line-height:1.06;font-weight:500;letter-spacing:-.022em;
+  margin:0 0 26px;max-width:820px;}
+.hero h1 .dot{color:var(--accent);}
+.hero .lede{font-size:21px;line-height:1.6;color:var(--soft);margin:0;max-width:680px;}
+.hero .lede em{font-style:italic;}
+
+/* contents — book-style rows */
+.contents{border-top:1px solid var(--ink);}
+.row{display:grid;grid-template-columns:120px 1fr 300px;gap:36px;padding:34px 0;
+  border-bottom:1px solid var(--line);align-items:start;
+  text-decoration:none;color:inherit;}
+a.row:hover .row-title{color:var(--accent);}
+.row-num{font-size:52px;font-weight:300;color:var(--faint);line-height:1;margin-top:-5px;}
+.row.live .row-num{color:var(--accent);}
+.row-part{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);margin-top:10px;font-weight:500;}
+.row-title{font-size:29px;font-weight:500;letter-spacing:-.01em;line-height:1.2;
+  transition:color .12s;}
+.row-body{font-size:16.5px;line-height:1.6;color:var(--soft);margin:10px 0 0;max-width:460px;}
+.row-body code{font-family:var(--mono);font-size:.82em;background:var(--code-bg);
+  padding:1px 6px;border-radius:3px;}
+.row-side{justify-self:end;text-align:right;padding-top:9px;}
+.row-tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);font-weight:500;}
+.row.live .row-tag{color:var(--accent);}
+.row-go{font-style:italic;font-size:16px;color:var(--accent);margin-top:14px;}
+.row.soon{opacity:.66;}
+
+/* why */
+.why{padding:58px 0 0;}
+.why-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 44px;margin-top:18px;}
+.why-item{display:grid;grid-template-rows:subgrid;grid-row:span 3;border-top:1px solid var(--line);padding-top:14px;}
+.why-item .rn{font-style:italic;font-size:19px;color:var(--accent);margin-bottom:10px;align-self:end;line-height:1;}
+.why-item h3{font-size:17.5px;font-weight:600;line-height:1.4;margin:0 0 10px;text-wrap:balance;}
+.why-item p{font-size:15px;line-height:1.62;color:var(--soft);margin:0;}
+
+/* about */
+.about{margin-top:58px;border-top:1px solid var(--line);padding-top:44px;
+  display:grid;grid-template-columns:200px 1fr;gap:44px;align-items:start;}
+.about .portrait{margin:30px 0 0;padding:9px;border:1px solid var(--line);background:#fbf8f1;}
+.about .portrait img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block;
+  border-radius:1px;filter:saturate(.82) contrast(.98);}
+.about .inner{max-width:660px;}
+.about p{font-size:16.5px;line-height:1.65;margin:0 0 12px;}
+.about p.second{font-size:15.5px;color:var(--soft);}
+.about p.cta{font-size:15.5px;color:var(--soft);margin-top:14px;}
+.about a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.about a:hover{border-color:var(--accent);}
+.about .cta-link{font-style:italic;font-size:16px;display:inline-block;margin-top:4px;}
+
+/* foot */
+.foot{margin-top:52px;border-top:1px solid var(--line);padding:22px 0 48px;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.9;}
+.foot a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.foot .seg{display:inline;}
+
+@media (max-width:880px){
+  .hero h1{font-size:38px;}
+  .row{grid-template-columns:64px 1fr;gap:20px;}
+  .row-num{font-size:36px;}
+  .row-side{grid-column:2;justify-self:start;text-align:left;display:flex;gap:18px;align-items:baseline;}
+  .row-go{margin-top:0;}
+  .why-grid{grid-template-columns:1fr;gap:28px;}
+  .about{grid-template-columns:1fr;gap:22px;}
+  .about .portrait{max-width:220px;}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <p class="kicker"><a href="{{ hub_url }}">AI Knowledge Hub</a> &nbsp;·&nbsp; slm-lab</p>
-  <h1>{{ landing.h1 }}</h1>
-  <p class="lede">{{ landing.lede }}</p>
 
-  <div class="cards">
+<header class="topbar"><div class="inner">
+  <a class="wordmark" href="./">slm<span>·</span>lab</a>
+  <nav>
+    {% if concepts_live %}<a href="ideas/">Concepts</a>{% endif %}
+    <a href="track-a/">Pre-training</a>
+    {% if track_b_live %}<a href="track-b/">Post-training</a>{% endif %}
+    <a class="hub" target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub ↗</a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+  <section class="hero">
+    <p class="kicker">A walk-through in three parts &nbsp;·&nbsp; part of the <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a></p>
+    <h1>{{ landing.h1 }}<span class="dot">.</span></h1>
+    <p class="lede">{{ landing.lede }}</p>
+  </section>
+
+  <section class="contents">
     {% if concepts_live %}
-    <a class="card" href="ideas/">
-      <div class="part">Part 0 · Concepts</div>
-      <h2>How a language model works</h2>
-      <div class="tagrow"><span class="tag opt">optional primer</span></div>
-      <p>The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes
-      numbers, and what &ldquo;learning&rdquo; really means, with diagrams. Read it first if you like
-      theory; dip back in as Parts 1 and 2 link to it.</p>
-      <span class="go">Read Part 0 &rarr;</span>
+    <a class="row" href="ideas/">
+      <div><div class="row-num">0</div><div class="row-part">Concepts</div></div>
+      <div>
+        <div class="row-title">How a language model works</div>
+        <p class="row-body">The plain-English ideas behind it all, no code: what a model <em>is</em>, how text becomes numbers, and what &ldquo;learning&rdquo; really means, with diagrams. Read it first if you like theory; dip back in as Parts 1 and 2 link to it.</p>
+      </div>
+      <div class="row-side"><div class="row-tag">optional primer</div><div class="row-go">Read Part 0&nbsp;→</div></div>
     </a>
     {% endif %}
-    <a class="card" href="track-a/">
-      <div class="part">Part 1 · Pre-training</div>
-      <h2>A GPT from scratch</h2>
-      <div class="tagrow"><span class="tag live">start here</span></div>
-      <p>Build and train a tiny GPT one piece at a time: tokens, attention, the training loop,
-      <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to
-      <em>see</em> how it works.</p>
-      <span class="go">Read Part 1 &rarr;</span>
+    <a class="row live" href="track-a/">
+      <div><div class="row-num">1</div><div class="row-part">Pre-training</div></div>
+      <div>
+        <div class="row-title">A GPT from scratch</div>
+        <p class="row-body">Build and train a tiny GPT one piece at a time: tokens, attention, the training loop, <code>y = Wx + b</code>, sampling. The output is throwaway by design; the point is to <em>see</em> how it works.</p>
+      </div>
+      <div class="row-side"><div class="row-tag">start here</div><div class="row-go">Read Part 1&nbsp;→</div></div>
     </a>
     {% if track_b_live %}
-    <a class="card" href="track-b/">
-      <div class="part">Part 2 · Post-training</div>
-      <h2>TrialScout: a useful expert</h2>
-      <div class="tagrow"><span class="tag gold">the payoff</span></div>
-      <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
-      turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
-      <span class="go">Read Part 2 &rarr;</span>
+    <a class="row" href="track-b/">
+      <div><div class="row-num">2</div><div class="row-part">Post-training</div></div>
+      <div>
+        <div class="row-title">TrialScout: a useful expert</div>
+        <p class="row-body">Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
+      </div>
+      <div class="row-side"><div class="row-tag">the payoff</div><div class="row-go">Read Part 2&nbsp;→</div></div>
     </a>
     {% else %}
-    <div class="card soon">
-      <div class="part">Part 2 · Post-training</div>
-      <h2>TrialScout: a useful expert</h2>
-      <div class="tagrow"><span class="tag wip">in&nbsp;progress</span></div>
-      <p>Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that
-      turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
-      <span class="go">Coming soon</span>
+    <div class="row soon">
+      <div><div class="row-num">2</div><div class="row-part">Post-training</div></div>
+      <div>
+        <div class="row-title">TrialScout: a useful expert</div>
+        <p class="row-body">Take a <em>pretrained</em> open model and fine-tune it into a measurably useful tool that turns a clinical-trial record into a structured readout. Same concepts, now doing a real job.</p>
+      </div>
+      <div class="row-side"><div class="row-tag">in progress</div><div class="row-go">Coming soon</div></div>
     </div>
     {% endif %}
-  </div>
+  </section>
 
-  <section class="block why-block">
-    <h2>Why I built this</h2>
-    <p>I built slm-lab for three reasons:</p>
-    <ul class="why">
-      <li><strong>The learning tools I wish I'd had.</strong> When I started, explanations were either
-      hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every
-      step narrated in plain English.</li>
-      <li><strong>To make AI's concepts accessible to non-specialists.</strong> You shouldn't need to be
-      an ML engineer to build intuition for how these models actually work, and what they can and can't
-      do. No prior Python required to read along.</li>
-      <li><strong>To leave reusable patterns, not just a demo.</strong> Each chapter is a template you
-      can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2):
-      distilling a big model's judgement into a small, cheap one, and turning messy, unstructured data
-      into clean structured summaries.</li>
-    </ul>
+  <section class="why">
+    <p class="label">Why this exists</p>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="rn">i.</div>
+        <h3>The learning tools I wish I'd had.</h3>
+        <p>When I started, explanations were either hand-wavy analogies or dense papers. This is the middle I wanted: real, runnable code with every step narrated in plain English.</p>
+      </div>
+      <div class="why-item">
+        <div class="rn">ii.</div>
+        <h3>To make AI's concepts accessible to non-specialists.</h3>
+        <p>You shouldn't need to be an ML engineer to build intuition for how these models actually work, and what they can and can't do. No prior Python required to read along.</p>
+      </div>
+      <div class="why-item">
+        <div class="rn">iii.</div>
+        <h3>To leave reusable patterns, not just a demo.</h3>
+        <p>Each chapter is a template you can lift: pre-training a model from scratch (Part 1), and the post-training playbook (Part 2) — distilling a big model's judgement into a small, cheap one.</p>
+      </div>
+    </div>
   </section>
 
   <section class="about">
-    {% if headshot %}<img class="avatar" src="{{ headshot }}" alt="John E. Milad"/>{% endif %}
-    <div class="about-text">
-      <h2>About me</h2>
-      <p>I'm <strong>John E. Milad</strong>. I run a biotech company and have spent the last few years
-      deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab
-      is one hands-on piece of that.</p>
-      <p>It's also a working example of the method: this whole lab (the code, the site, the diagrams)
-      was built in close, mutually-challenging collaboration with <strong>Claude</strong>, both of us
-      drafting, with me directing, editing, and deciding throughout.</p>
-      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my
-      <a href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools,
-      the practices, and a zero-to-shipping learning path.<br/>
-      <a class="cta-link" href="{{ hub_url }}">Explore the AI Knowledge Hub &rarr;</a></p>
+    {% if headshot %}<figure class="portrait">
+      <img src="{{ headshot }}" alt="John E. Milad"/>
+    </figure>{% endif %}
+    <div class="inner">
+      <p class="label" style="margin:0 0 12px;">About me</p>
+      <p>I'm <a target="_blank" rel="noopener" href="https://www.linkedin.com/in/johnemilad/"><strong>John E. Milad</strong></a>. I run a biotech company and have spent the last few years deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab is one hands-on piece of that.</p>
+      <p class="second">It's also a working example of the method: this whole lab (the code, the site, the diagrams) was built in close, mutually-challenging collaboration with <strong>Claude</strong>, both of us drafting, with me directing, editing, and deciding throughout.</p>
+      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools, the practices, and a zero-to-shipping learning path.<br/>
+      <a class="cta-link" target="_blank" rel="noopener" href="{{ hub_url }}">Explore the AI Knowledge Hub&nbsp;→</a></p>
     </div>
   </section>
 
   <p class="foot">
     <span class="seg">© 2026 John E. Milad&nbsp;·</span>
-    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>,
-    open source:</span>
-    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>, open source:</span>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
     <span class="seg">builds on nanoGPT, Apple MLX, and TinyStories.</span><br/>
     <span class="seg">Built in collaboration with Claude</span>
     <span class="seg">(via Claude Code)&nbsp;·</span>
-    <span class="seg">spotted an error or have a comment?</span>
-    <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span><br/>
-    <span class="seg">Part of the <a href="{{ hub_url }}">AI Knowledge Hub</a>.</span>
+    <span class="seg">Spotted an error or have a comment?</span>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span><br/>
+    <span class="seg">Part of the <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a>.</span>
   </p>
 </div>
 </body>
