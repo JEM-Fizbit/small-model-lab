@@ -5,7 +5,7 @@
 **Applies to:** Apple MLX / `mlx-lm` LoRA (or any SFT stack) · Anthropic Claude as teacher/judge · eval-first ML workflows
 **Last Updated:** 2026-06-08
 **Version:** 1.0
-**Original Source:** `slm-lab/track-b-trialscout/` (TrialScout — Qwen3-4B distilled to 0.93 on a clinical-trial readout task)
+**Original Source:** `small-model-lab/track-b-trialscout/` (TrialScout — Qwen3-4B distilled to 0.93 on a clinical-trial readout task)
 
 ---
 
@@ -86,7 +86,7 @@ Distillation plateaus at the teacher. The **only** way a trained model becomes *
 
 - **code** → run the tests; **math** → check the answer; **games** → win/lose; **reality** → real-world outcomes.
 - A verifier provides *ground truth*, not a smarter model's opinion — so the student can surpass any teacher (AlphaZero-style).
-- **Without a verifier, self-training on your own outputs collapses** into amplifying the model's own noise (model collapse / reward hacking). Re-running a distillation loop against a *static teacher* is a wash — it just echoes the teacher's biases. (Confirmed empirically in slm-lab Phase 4.)
+- **Without a verifier, self-training on your own outputs collapses** into amplifying the model's own noise (model collapse / reward hacking). Re-running a distillation loop against a *static teacher* is a wash — it just echoes the teacher's biases. (Confirmed empirically in small-model-lab Phase 4.)
 - The buildable version: a **STaR-style loop** — model proposes → verifier keeps only correct outputs → those become new training data → retrain → repeat. Self-improves with zero human labels because the verifier is the ground truth.
 
 This is the bridge from "distill a narrow expert" (this protocol) to "self-improving model" (a verifier-grounded next step).
@@ -127,7 +127,7 @@ This is the bridge from "distill a narrow expert" (this protocol) to "self-impro
 
 ## Resources
 
-- Reference implementation: `slm-lab/track-b-trialscout/` — `train/make_gold.py` (cost-capped teacher), `train/{format_for_mlx,run_phase3}.py`, `eval/{harness,infer_and_score}.py`, `schema/normalize.py` (snap-to-enum), `eval/PHASE4_RESULTS.md` (the error-mining write-up).
+- Reference implementation: `small-model-lab/track-b-trialscout/` — `train/make_gold.py` (cost-capped teacher), `train/{format_for_mlx,run_phase3}.py`, `eval/{harness,infer_and_score}.py`, `schema/normalize.py` (snap-to-enum), `eval/PHASE4_RESULTS.md` (the error-mining write-up).
 - [`AI_EVALS.md`](AI_EVALS.md) — golden-set regression evals (the eval discipline this builds on).
 - [`AI_OBSERVABILITY.md`](AI_OBSERVABILITY.md) — tracing/observability for AI pipelines.
 - [`LOCAL_MODEL_MCP_EXPERT.md`](LOCAL_MODEL_MCP_EXPERT.md) — how to *serve* the model you distilled.
@@ -139,10 +139,10 @@ This is the bridge from "distill a narrow expert" (this protocol) to "self-impro
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-06-08 | Initial release. Extracted from slm-lab/TrialScout (distillation + Phase 4 error-mining + verifier insight). |
+| 1.0 | 2026-06-08 | Initial release. Extracted from small-model-lab/TrialScout (distillation + Phase 4 error-mining + verifier insight). |
 
 ---
 
 **Protocol Version**: 1.0
 **Last Updated**: 2026-06-08
-**Original Source**: slm-lab (track-b-trialscout)
+**Original Source**: small-model-lab (track-b-trialscout)
