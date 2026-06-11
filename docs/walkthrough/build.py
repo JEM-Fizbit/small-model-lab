@@ -41,7 +41,7 @@ SRC_FILES = {
 }
 
 _lexer = PythonLexer()
-_fmt = HtmlFormatter(nowrap=False, cssclass="hl", style="monokai")
+_fmt = HtmlFormatter(nowrap=False, cssclass="hl")
 
 
 # ---------------------------------------------------------------- extraction --
@@ -142,7 +142,6 @@ def render_block(block, ctx, fig_no=None):
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
         nb_label = {"01": "notebook 01", "02": "notebook 02", "03": "notebook 03"}[nb]
         return (f'<figure class="codefig"><div class="codebar">'
-                f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
                 f'<span class="srcname">{nb_label}</span></div>{render_code(src)}{cap}</figure>')
     if kind == "srccode":
         fkey = block[1]
@@ -153,7 +152,6 @@ def render_block(block, ctx, fig_no=None):
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
         name = {"chat": "chat.py", "lib": "tiny_gpt.py", "train": "train_v2_checkpoint.py"}[fkey]
         return (f'<figure class="codefig"><div class="codebar">'
-                f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
                 f'<span class="srcname">{name}</span></div>{render_code(src)}{cap}</figure>')
     if kind == "filecode":
         from pathlib import Path as _P
@@ -165,7 +163,6 @@ def render_block(block, ctx, fig_no=None):
         cap = f'<figcaption>{caption}</figcaption>' if caption else ""
         name = _P(relpath).name
         return (f'<figure class="codefig"><div class="codebar">'
-                f'<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
                 f'<span class="srcname">{name}</span></div>'
                 f'{render_code_lang(src, _P(relpath).suffix)}{cap}</figure>')
     if kind == "gloss":
@@ -250,7 +247,6 @@ def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, foo
     return tmpl.render(
         meta=meta, hero=hero, sections=rendered, toc=toc, primer=primer,
         nav=nav, footer_note=footer_note, footer_gen=footer_gen, hub_url=hub_url,
-        pygments_css=_fmt.get_style_defs(".hl"),
     )
 
 
