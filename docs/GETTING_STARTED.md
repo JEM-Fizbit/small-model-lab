@@ -2,13 +2,13 @@
 
 This guide assumes **no prior coding experience**. It takes ~15 minutes and is free.
 
-> Pairs with the plain-English **[walk-through](https://jem-fizbit.github.io/slm-lab/track-a/)**, which explains *how* the model works. This page is just *how to run it*.
+> Pairs with the plain-English **[walk-through](https://jem-fizbit.github.io/small-model-lab/track-a/)**, which explains *how* the model works. This page is just *how to run it*.
 >
 > **Want gentler, conceptual primers first?** My public [AI Knowledge Hub](https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566) has from-zero guides to the terminal, dependencies, and Jupyter notebooks.
 
 ## Do you even need to install anything?
 
-**No — not to learn.** To understand the model, read the [walk-through](https://jem-fizbit.github.io/slm-lab/track-a/), or open the notebooks right here on GitHub: [`01`](../notebooks/01_tiny_gpt_from_scratch.ipynb), [`02`](../notebooks/02_tiny_gpt_tuned.ipynb), [`03`](../notebooks/03_tiny_gpt_chat.ipynb). They're saved **with their outputs**, so you can read the real code *and* see what it produced without running anything.
+**No — not to learn.** To understand the model, read the [walk-through](https://jem-fizbit.github.io/small-model-lab/track-a/), or open the notebooks right here on GitHub: [`01`](../notebooks/01_tiny_gpt_from_scratch.ipynb), [`02`](../notebooks/02_tiny_gpt_tuned.ipynb), [`03`](../notebooks/03_tiny_gpt_chat.ipynb). They're saved **with their outputs**, so you can read the real code *and* see what it produced without running anything.
 
 To **train and chat with your own model**, follow the steps below.
 
@@ -37,14 +37,14 @@ Then **close and reopen** the Terminal so it picks up `uv`.
 **Option A — with git** (if you have it):
 
 ```bash
-git clone https://github.com/JEM-Fizbit/slm-lab.git
-cd slm-lab
+git clone https://github.com/JEM-Fizbit/small-model-lab.git
+cd small-model-lab
 ```
 
-**Option B — no git:** on the [repo page](https://github.com/JEM-Fizbit/slm-lab), click the green **`Code ▾`** button → **Download ZIP**, unzip it, then in Terminal move into the folder, e.g.:
+**Option B — no git:** on the [repo page](https://github.com/JEM-Fizbit/small-model-lab), click the green **`Code ▾`** button → **Download ZIP**, unzip it, then in Terminal move into the folder, e.g.:
 
 ```bash
-cd ~/Downloads/slm-lab-main
+cd ~/Downloads/small-model-lab-main
 ```
 
 ## Step 4 — Start Jupyter
@@ -82,10 +82,10 @@ Once upon a time, there was a boy named Sam.
 
 In-chat commands: `/temp 0.7` (creativity), `/tokens 200` (length cap), `/quit`.
 
-⚠️ **It only tells little children's stories** — that's all it was ever trained on, so it *can't answer questions or hold a conversation*. Feed it story openers, not questions. (Why? See **"the corpus is the model"** in the [walk-through](https://jem-fizbit.github.io/slm-lab/track-a/) — it's the whole point.)
+⚠️ **It only tells little children's stories** — that's all it was ever trained on, so it *can't answer questions or hold a conversation*. Feed it story openers, not questions. (Why? See **"the corpus is the model"** in the [walk-through](https://jem-fizbit.github.io/small-model-lab/track-a/) — it's the whole point.)
 
 ## Notes & common hiccups
 
 - **Not on a Mac?** You can't run MLX, but you can read the notebooks (with outputs) on GitHub and the walk-through online — that's most of the value.
 - **Track B (TrialScout)** needs an Anthropic API key for its labeling step — *not* needed for Track A. Only if you go there: `cp .env.example .env` and add your key.
-- **Something broke?** Open an [issue](https://github.com/JEM-Fizbit/slm-lab/issues) with what you ran and the error.
+- **Something broke?** Open an [issue](https://github.com/JEM-Fizbit/small-model-lab/issues) with what you ran and the error.

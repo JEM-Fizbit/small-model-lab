@@ -4,6 +4,11 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0012 — Renamed the project: slm-lab → small-model-lab
+
+**Decision:** Renamed the repo, site, and all branding from `slm-lab` to `small-model-lab` on 2026-06-12, the day before first public promotion.
+**Why:** [kengz/SLM-Lab](https://github.com/kengz/SLM-Lab) is an established, actively-maintained deep-RL framework (1.4k★, companion library to *Foundations of Deep Reinforcement Learning*, arXiv:1912.12482) that owns the name "SLM Lab" in machine learning — including search. Sharing the exact name in the same field guaranteed permanent ambiguity and an unwinnable SEO position, and the day before launch was the last cheap moment to fix it. Bonus: `small-model-lab` is self-explanatory to the non-specialist audience this walk-through targets, which `slm-lab` never was. GitHub redirects the old repo URLs; the old GitHub Pages URL does not redirect (nothing external linked it yet).
+
 ## ADR-0011 — Phase 4 error-mining loop: ran the loop, marginal gain, keep the original adapter
 
 **Decision:** Ran the B6 recursive loop (mine errors → targeted data → retrain). Shipped the free

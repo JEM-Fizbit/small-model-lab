@@ -1,8 +1,8 @@
-# CLAUDE.md — slm-lab
+# CLAUDE.md — small-model-lab
 
 Guidance for AI coding agents (and humans) working in this repo. Design decisions live in [`docs/DECISIONS.md`](docs/DECISIONS.md); running history is in git.
 
-> **New here?** Read the [README](README.md), then the live walk-through → https://jem-fizbit.github.io/slm-lab/
+> **New here?** Read the [README](README.md), then the live walk-through → https://jem-fizbit.github.io/small-model-lab/
 
 ## What this is
 
@@ -13,7 +13,7 @@ A learn-by-doing lab for **building, fine-tuning, and distilling small language 
 
 ## Repository layout — public / private split (read before committing)
 
-This repo is **public**. Internal/personal material lives in a separate **private** repo, [`JEM-Fizbit/slm-lab-private`](https://github.com/JEM-Fizbit/slm-lab-private), cloned into `_private/` here (gitignored — present locally, never pushed to this repo).
+This repo is **public**. Internal/personal material lives in a separate **private** repo, [`JEM-Fizbit/small-model-lab-private`](https://github.com/JEM-Fizbit/small-model-lab-private), cloned into `_private/` here (gitignored — present locally, never pushed to this repo).
 
 - **Public (this repo):** the learning content — `notebooks/`, the `docs/walkthrough/` builder, the Track B pipeline (`track-b-trialscout/`), `docs/DECISIONS.md` (the *why* trail), `README.md`, `docs/GETTING_STARTED.md`.
 - **Private (`_private/`):** the live `BACKLOG.md`, `HANDOFF.md` (status / "resume here"), the full agent contract (`_private/CLAUDE.md`, with personal context), and `specs/`. Edit and version these *inside* `_private/` — it is its own git repo (`cd _private && git add/commit/push`).

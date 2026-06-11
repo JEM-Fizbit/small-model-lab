@@ -7,7 +7,7 @@ Guidance for AI coding assistants (Claude Code, Cursor, Copilot, Codex, etc.) wo
 ## Most important: this is a PUBLIC repo with a public/private split
 
 Internal/personal material lives in a **separate private repo**
-([`JEM-Fizbit/slm-lab-private`](https://github.com/JEM-Fizbit/slm-lab-private)), cloned into
+([`JEM-Fizbit/small-model-lab-private`](https://github.com/JEM-Fizbit/small-model-lab-private)), cloned into
 `_private/` here (gitignored — local only, never pushed to this repo).
 
 - **Do not commit personal/internal content to this repo** — no live backlog, status/handoff

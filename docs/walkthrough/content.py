@@ -24,7 +24,7 @@ META = {
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
-<p class="kicker">slm-lab · Part 1 · Pre-training</p>
+<p class="kicker">small-model-lab · Part 1 · Pre-training</p>
 <h1>Build a tiny GPT — from scratch</h1>
 <p class="lede">This is the <strong>build</strong>: we train a language model from nothing (no
 pre-trained weights, no magic) and watch it learn to write, walking through the <em>real code</em>
@@ -45,8 +45,8 @@ Python is doing. One tip up front: the muted grey text after a <code>#</code> in
 generously, on purpose). A one-page <a href="#primer">Python primer</a> at the end explains the handful
 of symbols that recur. Every code box is real, pulled straight from the project's Jupyter notebooks (code, notes,
 and live results in one document you run in your browser), which you can read and run yourself: the full
-source is on <a href="https://github.com/JEM-Fizbit/slm-lab">GitHub</a> (with each notebook and a
-from-zero <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">setup
+source is on <a href="https://github.com/JEM-Fizbit/small-model-lab">GitHub</a> (with each notebook and a
+from-zero <a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/docs/GETTING_STARTED.md">setup
 guide</a> at the foot of the page).</p>
 """
 
@@ -114,11 +114,11 @@ TEMPLATE = r"""<!doctype html>
 <link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
 <link rel="icon" type="image/png" sizes="64x64" href="../favicon.png"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
-<meta property="og:image" content="https://jem-fizbit.github.io/slm-lab/og-image.png"/>
+<meta property="og:image" content="https://jem-fizbit.github.io/small-model-lab/og-image.png"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 
-/* ── slm-lab · "The Monograph" chapter stylesheet ─────────────────────────
+/* ── small-model-lab · "The Monograph" chapter stylesheet ─────────────────────────
    Warm paper, Newsreader serif, IBM Plex Mono labels, one madder accent.
    Drop-in replacement for the <style> block in content.py's TEMPLATE:
    every selector below matches the existing markup. */
@@ -378,7 +378,7 @@ footer strong{color:var(--soft);}
 <nav class="pagenav" aria-label="Page jump">
   <a href="#top" title="Top" aria-label="Scroll to top">&uarr;</a>
   <a href="#bottom" title="Bottom" aria-label="Scroll to bottom">&darr;</a>
-  <a href="../" title="Home" aria-label="slm-lab home">&#8962;</a>
+  <a href="../" title="Home" aria-label="small-model-lab home">&#8962;</a>
 </nav>
 
 <div class="layout">
@@ -417,17 +417,17 @@ footer strong{color:var(--soft);}
   <p>Built in collaboration with Claude (via Claude Code): John directed, co-wrote, and made every
   editorial call; Claude drafted much of the prose and most of the code and diagrams.
   <span class="seg">Spotted an error, or have a comment?</span>
-  <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span></p>
+  <span class="seg"><a href="https://github.com/JEM-Fizbit/small-model-lab/issues">Open a GitHub issue</a>.</span></p>
   <p><span class="seg">Open source:
-  <a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+  <a href="https://github.com/JEM-Fizbit/small-model-lab">github.com/JEM-Fizbit/small-model-lab</a>&nbsp;·</span>
   <span class="seg">notebooks
-  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
-  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
-  <a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>&nbsp;·</span>
-  <span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">getting
+  <a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
+  <a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
+  <a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>&nbsp;·</span>
+  <span class="seg"><a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/docs/GETTING_STARTED.md">getting
   started</a>&nbsp;·</span>
   <span class="seg">{{ footer_note }}</span></p>
-  <p><span class="seg"><a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>
+  <p><span class="seg"><a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/LICENSE">MIT-licensed</a>
   © 2026 John E. Milad.</span>
   <span class="seg">Builds on <a href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),</span>
   <span class="seg"><a href="https://github.com/ml-explore/mlx">Apple MLX</a>,</span>
@@ -1529,12 +1529,12 @@ real pretrained model is fine-tuned into a useful clinical-trial expert. You bui
   ("callout", "aside", "Run it yourself", r"""
 <p>Everything here is open source (the three notebooks, the terminal chat, and even the script
 that builds this very page) at
-<a href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>.</p>
+<a href="https://github.com/JEM-Fizbit/small-model-lab">github.com/JEM-Fizbit/small-model-lab</a>.</p>
 <p><strong>Just want to look?</strong> The notebooks render on GitHub <em>with their outputs</em>,
 so you can read the real code and its results without installing anything.</p>
 <p><strong>Want to run and chat with your own tiny GPT?</strong> You'll need an Apple-Silicon Mac
 (the code uses Apple's MLX). The
-<a href="https://github.com/JEM-Fizbit/slm-lab/blob/main/docs/GETTING_STARTED.md">Getting Started
+<a href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/docs/GETTING_STARTED.md">Getting Started
 guide</a> takes you from zero (install, open a notebook, run it, chat) in about fifteen minutes,
 with no prior coding assumed.</p>
 """),
@@ -1551,14 +1551,14 @@ machinery you just built, now doing a real job. Want the ideas without the code,
 
 # ---------------------------------------------------------------- LANDING --
 LANDING_META = {
-    "title": "slm-lab: build a small language model, explained",
+    "title": "small-model-lab: build a small language model, explained",
     "description": "A hands-on, no-black-box lab: the concepts, a tiny GPT built from "
                    "scratch, and a real open model fine-tuned into a useful expert — "
                    "explained for the curious.",
 }
 
 LANDING = {
-    "kicker": "slm-lab",
+    "kicker": "small-model-lab",
     "h1": "Build a small language model, and actually understand&nbsp;it",
     "lede": "A hands-on, no-black-box lab. <em>Build</em> a tiny language model from scratch, then "
             "<em>fine-tune</em> a real open model into a useful expert — with an optional, code-free "
@@ -1578,7 +1578,7 @@ LANDING_TEMPLATE = r"""<!doctype html>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
-<meta property="og:image" content="https://jem-fizbit.github.io/slm-lab/og-image.png"/>
+<meta property="og:image" content="https://jem-fizbit.github.io/small-model-lab/og-image.png"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 :root{
@@ -1699,7 +1699,7 @@ a.row:hover .row-title{color:var(--accent);}
 <body>
 
 <header class="topbar"><div class="inner">
-  <a class="wordmark" href="./">slm<span>·</span>lab</a>
+  <a class="wordmark" href="./">small<span>·</span>model<span>·</span>lab</a>
   <nav>
     {% if concepts_live %}<a href="ideas/">Concepts</a>{% endif %}
     <a href="track-a/">Pre-training</a>
@@ -1782,22 +1782,22 @@ a.row:hover .row-title{color:var(--accent);}
     </figure>{% endif %}
     <div class="inner">
       <p class="label" style="margin:0 0 12px;">About me</p>
-      <p>I'm <a target="_blank" rel="noopener" href="https://www.linkedin.com/in/johnemilad/"><strong>John E. Milad</strong></a>. I run a biotech company and have spent the last few years deep in modern AI, using it daily, building with it, and working out what's worth knowing. slm-lab is one hands-on piece of that.</p>
+      <p>I'm <a target="_blank" rel="noopener" href="https://www.linkedin.com/in/johnemilad/"><strong>John E. Milad</strong></a>. I run a biotech company and have spent the last few years deep in modern AI, using it daily, building with it, and working out what's worth knowing. small-model-lab is one hands-on piece of that.</p>
       <p class="second">It's also a working example of the method: this whole lab (the code, the site, the diagrams) was built in close, mutually-challenging collaboration with <strong>Claude</strong>, both of us drafting, with me directing, editing, and deciding throughout.</p>
-      <p class="cta"><strong>The bigger picture.</strong> slm-lab is one project from my <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools, the practices, and a zero-to-shipping learning path.<br/>
+      <p class="cta"><strong>The bigger picture.</strong> small-model-lab is one project from my <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a>, a curated, regularly-updated library for the AI era: the tools, the practices, and a zero-to-shipping learning path.<br/>
       <a class="cta-link" target="_blank" rel="noopener" href="{{ hub_url }}">Explore the AI Knowledge Hub&nbsp;→</a></p>
     </div>
   </section>
 
   <p class="foot">
     <span class="seg">© 2026 John E. Milad&nbsp;·</span>
-    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/blob/main/LICENSE">MIT-licensed</a>, open source:</span>
-    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab">github.com/JEM-Fizbit/slm-lab</a>&nbsp;·</span>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/LICENSE">MIT-licensed</a>, open source:</span>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab">github.com/JEM-Fizbit/small-model-lab</a>&nbsp;·</span>
     <span class="seg">builds on nanoGPT, Apple MLX, and TinyStories.</span><br/>
     <span class="seg">Built in collaboration with Claude</span>
     <span class="seg">(via Claude Code)&nbsp;·</span>
     <span class="seg">Spotted an error or have a comment?</span>
-    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/slm-lab/issues">Open a GitHub issue</a>.</span><br/>
+    <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/issues">Open a GitHub issue</a>.</span><br/>
     <span class="seg">Part of the <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a>.</span>
   </p>
 </div>

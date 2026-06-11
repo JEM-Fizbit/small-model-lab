@@ -212,7 +212,7 @@ def _externalize_links(html: str) -> str:
 
 # -------------------------------------------------------------------- assemble --
 SITE = Path(__file__).resolve().parent / "site"   # multi-page output root
-# slm-lab lives within the public AI Knowledge Hub (cross-branding).
+# small-model-lab lives within the public AI Knowledge Hub (cross-branding).
 HUB_URL = "https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566"
 
 
@@ -298,7 +298,7 @@ def main():
         html0 = _render_chapter(
             page_tmpl, meta=content_concepts.META, hero=content_concepts.HERO,
             sections=content_concepts.SECTIONS, primer="", nav=nav_for("ideas"),
-            footer_note="Part 0 of the <strong>slm-lab</strong> walk-through.",
+            footer_note="Part 0 of the <strong>small-model-lab</strong> walk-through.",
             footer_gen="Hand-authored concepts, assembled by <code>build.py</code> — no code on "
                        "this page by design; every idea here is built in real, runnable code in "
                        'Part 1, where each code block is pulled straight from the live notebooks.',
@@ -312,7 +312,7 @@ def main():
     html_a = _render_chapter(
         page_tmpl, meta=content.META, hero=content.HERO, sections=content.SECTIONS,
         primer=content.PYTHON_PRIMER, nav=nav_for("track-a"),
-        footer_note="Part 1 of the <strong>slm-lab</strong> walk-through.",
+        footer_note="Part 1 of the <strong>small-model-lab</strong> walk-through.",
         footer_gen="Generated from the live notebooks by <code>build.py</code> — every code block "
                    "and output above is pulled straight from the Jupyter notebooks, so what you "
                    "read is what actually ran.",
@@ -327,7 +327,7 @@ def main():
         html_b = _render_chapter(
             page_tmpl, meta=content_b.META, hero=content_b.HERO, sections=content_b.SECTIONS,
             primer=getattr(content_b, "PYTHON_PRIMER", content.PYTHON_PRIMER), nav=nav_for("track-b"),
-            footer_note="Part 2 of the <strong>slm-lab</strong> walk-through.",
+            footer_note="Part 2 of the <strong>small-model-lab</strong> walk-through.",
             footer_gen="Generated from the live repo by <code>build.py</code> — every code excerpt "
                        "above is pulled straight from the Track B source files, so what you read "
                        "is what actually runs.",

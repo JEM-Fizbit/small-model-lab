@@ -62,7 +62,7 @@ A project-scoped `.mcp.json` at the repo root (copy [`.mcp.json.example`](../../
 `trialscout`. Launch Claude Code from the project root and approve it when prompted:
 
 ```bash
-cd /path/to/slm-lab && claude
+cd /path/to/small-model-lab && claude
 # then, in session:  /mcp        (shows trialscout connected)
 #                    "Give me a TrialScout readout on NCT02942290"
 ```
@@ -76,6 +76,6 @@ Point the client at the same stdio command:
 
 ```
 command: uv
-args:    ["run", "--directory", "/ABSOLUTE/PATH/TO/slm-lab",
+args:    ["run", "--directory", "/ABSOLUTE/PATH/TO/small-model-lab",
           "python", "track-b-trialscout/serve/trial_readout_server.py"]
 ```
