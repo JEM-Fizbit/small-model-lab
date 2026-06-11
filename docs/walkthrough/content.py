@@ -436,46 +436,46 @@ footer strong{color:var(--soft);}
 # Hand-drawn inline SVG (no JS, no external assets — keeps the single-file build).
 
 LANDSCAPE_SVG = r'''<svg viewBox="0 0 640 300" role="img" aria-label="A loss landscape shaped like a valley. A ball sits partway up the left slope, with an arrow showing one step downhill toward the point of lowest loss.">
-<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1c2230"/></marker></defs>
-<line x1="62" y1="28" x2="62" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
-<line x1="62" y1="272" x2="612" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
-<text x="50" y="42" text-anchor="end" font-size="12" fill="#8a93a3">high</text>
-<text x="26" y="150" text-anchor="middle" font-size="13" fill="#5a6373" transform="rotate(-90 26 150)">loss (how wrong)</text>
-<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of our model&#8217;s ~3.2 million)</text>
-<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#3253d6" stroke-width="3"/>
-<line x1="335" y1="235" x2="335" y2="272" stroke="#0e7a5f" stroke-width="1.5" stroke-dasharray="4 4"/>
-<circle cx="335" cy="235" r="4.5" fill="#0e7a5f"/>
-<text x="346" y="231" font-size="12" fill="#0e7a5f">lowest loss</text>
-<circle cx="188" cy="176" r="11" fill="#e8462e" stroke="#fff" stroke-width="2.5"/>
-<text x="126" y="150" text-anchor="middle" font-size="12" fill="#1c2230">current</text>
-<text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
-<line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
-<text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
+<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#231f18"/></marker></defs>
+<line x1="62" y1="28" x2="62" y2="272" stroke="#d8cfbd" stroke-width="1.5"/>
+<line x1="62" y1="272" x2="612" y2="272" stroke="#d8cfbd" stroke-width="1.5"/>
+<text x="50" y="42" text-anchor="end" font-size="12" fill="#998f7d">high</text>
+<text x="26" y="150" text-anchor="middle" font-size="13" fill="#6e6557" transform="rotate(-90 26 150)">loss (how wrong)</text>
+<text x="337" y="294" text-anchor="middle" font-size="13" fill="#6e6557">a single weight (one of our model&#8217;s ~3.2 million)</text>
+<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#963d2c" stroke-width="3"/>
+<line x1="335" y1="235" x2="335" y2="272" stroke="#5f6c33" stroke-width="1.5" stroke-dasharray="4 4"/>
+<circle cx="335" cy="235" r="4.5" fill="#5f6c33"/>
+<text x="346" y="231" font-size="12" fill="#5f6c33">lowest loss</text>
+<circle cx="188" cy="176" r="11" fill="#b0402a" stroke="#fff" stroke-width="2.5"/>
+<text x="126" y="150" text-anchor="middle" font-size="12" fill="#231f18">current</text>
+<text x="126" y="165" text-anchor="middle" font-size="12" fill="#231f18">weights</text>
+<line x1="201" y1="186" x2="258" y2="210" stroke="#231f18" stroke-width="2" marker-end="url(#arL)"/>
+<text x="300" y="200" font-size="12" fill="#231f18">one step downhill</text>
 </svg>'''
 
 CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training cycle as a loop of four boxes: forward pass, then loss, then backward pass, then update, then back to the start.">
-<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
-<rect x="15" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">① Forward pass</text>
-<text x="95" y="88" text-anchor="middle" font-size="11" fill="#5a6373">run data → predictions</text>
-<text x="95" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">model(x)</text>
-<rect x="205" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">② Loss</text>
-<text x="285" y="88" text-anchor="middle" font-size="11" fill="#5a6373">how wrong is it?</text>
-<text x="285" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
-<rect x="395" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">③ Backward pass</text>
-<text x="475" y="88" text-anchor="middle" font-size="11" fill="#5a6373">which way is downhill</text>
-<text x="475" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
-<rect x="585" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">④ Update</text>
-<text x="665" y="88" text-anchor="middle" font-size="11" fill="#5a6373">one step downhill</text>
-<text x="665" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
-<line x1="175" y1="80" x2="203" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<line x1="365" y1="80" x2="393" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
-<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
+<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#963d2c"/></marker></defs>
+<rect x="15" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">① Forward pass</text>
+<text x="95" y="88" text-anchor="middle" font-size="11" fill="#6e6557">run data → predictions</text>
+<text x="95" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">model(x)</text>
+<rect x="205" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">② Loss</text>
+<text x="285" y="88" text-anchor="middle" font-size="11" fill="#6e6557">how wrong is it?</text>
+<text x="285" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
+<rect x="395" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">③ Backward pass</text>
+<text x="475" y="88" text-anchor="middle" font-size="11" fill="#6e6557">which way is downhill</text>
+<text x="475" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
+<rect x="585" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">④ Update</text>
+<text x="665" y="88" text-anchor="middle" font-size="11" fill="#6e6557">one step downhill</text>
+<text x="665" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
+<line x1="175" y1="80" x2="203" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="365" y1="80" x2="393" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="555" y1="80" x2="583" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#963d2c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
+<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#963d2c">repeat ~2,500 times</text>
 </svg>'''
 
 # ===========================================================================
@@ -483,264 +483,264 @@ CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training c
 # ===========================================================================
 
 LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
-<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
-<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >vocabulary</text>
-<rect x="46" y="70" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >the</text>
-<rect x="46" y="100" width="52" height="26" rx="7" fill="#d3e0ff" stroke="#3253d6" stroke-width="2.4"/>
-<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="700" >fox</text>
-<rect x="46" y="130" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >cat</text>
-<text x="72" y="162" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
-<line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
-<text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x: #1–3, then #256)</text>
-<rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="150" y="124" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="150" y="151" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="150" y="178" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="286" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
-<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(one per number)</text>
-<rect x="238" y="70" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="238" y="97" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="238" y="124" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="238" y="151" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="238" y="178" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#5a6373" stroke-width="1.2"/>
-<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
-<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
-<text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
-<line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#b5731a">W</tspan> (so <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>)</text>
-<rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="172" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="240" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<text x="103.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="149.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="195.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
-<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ① (the neuron above)</text>
-<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
-<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x: inputs</text>
-<rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="566" y="394" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="566" y="421" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b: biases</text>
-<rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
-<rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
-<rect x="644" y="394" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
-<rect x="644" y="421" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y: outputs</text>
-<rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
-<rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
-<rect x="716" y="394" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
-<rect x="716" y="421" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
-<text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>.</text>
-<line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
-<rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
-<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
-<line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="168" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
-<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="274" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
-<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="380" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
-<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="486" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
-<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="592" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
-<line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="698" y="621" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
-<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >probs</text>
-<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
-<rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
+<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >vocabulary</text>
+<rect x="46" y="70" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >the</text>
+<rect x="46" y="100" width="52" height="26" rx="7" fill="#ecd9d0" stroke="#963d2c" stroke-width="2.4"/>
+<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="700" >fox</text>
+<rect x="46" y="130" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >cat</text>
+<text x="72" y="162" text-anchor="middle" font-size="13" fill="#6e6557" font-weight="400" >⋮</text>
+<line x1="100" y1="113" x2="142" y2="113" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" >look up</text>
+<text x="178" y="50" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >fox's embedding</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #256)</text>
+<rect x="150" y="70" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="150" y="97" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="150" y="124" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="150" y="151" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="150" y="178" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="286" y="50" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >its weights</text>
+<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(one per number)</text>
+<rect x="238" y="70" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="238" y="97" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="238" y="124" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="238" y="151" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="238" y="178" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#6e6557" stroke-width="1.2"/>
+<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >add</text>
+<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >them up</text>
+<text x="58" y="226" text-anchor="start" font-size="12" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
+<line x1="40" y1="288" x2="820" y2="288" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#8c6a2a">W</tspan> (so <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>)</text>
+<rect x="80" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="126" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="172" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<rect x="80" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="126" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="172" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="240" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<rect x="80" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="126" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="172" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="240" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<text x="103.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="149.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="195.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
+<text x="160" y="331" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >W  (parameters)</text>
+<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >← top row = output ① (the neuron above)</text>
+<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="457" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
+<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >×</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >x: inputs</text>
+<rect x="566" y="340" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="566" y="367" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="566" y="394" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="566" y="421" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="566" y="448" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >+</text>
+<text x="668" y="331" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >b: biases</text>
+<rect x="644" y="340" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="644" y="367" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="644" y="394" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<rect x="644" y="421" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >=</text>
+<text x="742" y="331" text-anchor="middle" font-size="11" fill="#5f6c33" font-weight="400" >y: outputs</text>
+<rect x="716" y="340" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="716" y="367" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="716" y="394" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
+<line x1="40" y1="575" x2="820" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="621" width="94" height="44" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >tokens</text>
+<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >input</text>
+<line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="168" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 1</text>
+<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="274" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 2</text>
+<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 3</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 4</text>
+<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >head</text>
+<line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="698" y="621" width="94" height="44" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >next token</text>
+<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >probs</text>
+<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#6e6557" font-weight="400" >embed</text>
+<rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
+<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg>'''
 
 EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
-<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
-<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
-<circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
-<circle cx="395" cy="120" r="4" fill="#3253d6"/>
-<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
-<circle cx="440" cy="140" r="4" fill="#3253d6"/>
-<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
-<circle cx="405" cy="168" r="4" fill="#3253d6"/>
-<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
-<circle cx="455" cy="108" r="4" fill="#3253d6"/>
-<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
-<circle cx="262" cy="200" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="262" y="142" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
-<circle cx="242" cy="190" r="4" fill="#3253d6"/>
-<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
-<circle cx="277" cy="215" r="4" fill="#3253d6"/>
-<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
-<circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
-<circle cx="130" cy="290" r="4" fill="#3253d6"/>
-<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
-<circle cx="173" cy="278" r="4" fill="#3253d6"/>
-<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
-<circle cx="128" cy="262" r="4" fill="#3253d6"/>
-<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
+<line x1="64" y1="330" x2="525" y2="330" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
+<line x1="64" y1="330" x2="64" y2="45" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<circle cx="420" cy="135" r="78" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="420" y="51" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
+<circle cx="395" cy="120" r="4" fill="#963d2c"/>
+<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<circle cx="440" cy="140" r="4" fill="#963d2c"/>
+<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<circle cx="405" cy="168" r="4" fill="#963d2c"/>
+<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<circle cx="455" cy="108" r="4" fill="#963d2c"/>
+<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
+<circle cx="262" cy="200" r="52" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="262" y="142" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="242" cy="190" r="4" fill="#963d2c"/>
+<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="277" cy="215" r="4" fill="#963d2c"/>
+<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="150" cy="285" r="52" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="150" y="227" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
+<circle cx="130" cy="290" r="4" fill="#963d2c"/>
+<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<circle cx="173" cy="278" r="4" fill="#963d2c"/>
+<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
+<circle cx="128" cy="262" r="4" fill="#963d2c"/>
+<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
 </svg>'''
 
 EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
-<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
-<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
-<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
-<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
-<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
-<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
-<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
-<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
-<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
-<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
-<text x="238" y="223" text-anchor="end" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
-<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
-<text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
+<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
+<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
+<text x="238" y="223" text-anchor="end" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
+<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#ddd4c2" stroke-width="0.5"/>
+<text x="395" y="223" text-anchor="start" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg>'''
 
 SECTIONS = [
@@ -1129,8 +1129,8 @@ baseline (~4.5) and falls fast to ~2.3 as the model picks up the statistics of E
 is the loss from the last section, tracked across the whole training run, so don't confuse it
 with the loss <em>function</em>: the <em>function</em> is the formula that scores a single batch;
 the <em>curve</em> is that score plotted step after step. Reading it is how every practitioner
-judges the health of a run at a glance. The <strong style="color:#2f74c0">blue</strong> line is
-the training loss; the <strong style="color:#d9772b">orange</strong> line (with dots) is the
+judges the health of a run at a glance. The <strong style="color:#84493a">blue</strong> line is
+the training loss; the <strong style="color:#b06a2c">orange</strong> line (with dots) is the
 validation loss; the grey dashed line is the &ldquo;knows nothing&rdquo; baseline.</p>
 """),
   ("figure", "loss_curve.png", "Notebook 01: both losses falling together toward the floor for a model this size."),

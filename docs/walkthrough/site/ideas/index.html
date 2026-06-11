@@ -337,28 +337,28 @@ a loop. The skill isn't generating; it's the prediction underneath. Here is that
 for real, from the tiny model this lab builds in Part 1:</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 286" role="img" aria-label="The model's real next-word scores for the prompt One day, Lily went to the: park 64 percent, store 11 percent, then small scores, with about 20 percent spread over all other chunks.">
-<text x="30" y="26" font-size="14" font-weight="700" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">“One day, Lily went to the ___”</text>
-<text x="30" y="46" font-size="11" fill="#5a6373">the model’s scores for what comes next — its real output, one number per vocabulary chunk</text>
-<text x="218" y="79" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> park</text>
-<rect x="228" y="64" width="380" height="21" rx="4" fill="#3253d6"/>
-<text x="616" y="79" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">63.7%</text>
-<text x="218" y="109" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> store</text>
-<rect x="228" y="94" width="66" height="21" rx="4" fill="#3253d6"/>
-<text x="302" y="109" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">11.0%</text>
-<text x="218" y="139" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> market</text>
-<rect x="228" y="124" width="11" height="21" rx="4" fill="#3253d6"/>
-<text x="247" y="139" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1.9%</text>
-<text x="218" y="169" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> beach</text>
-<rect x="228" y="154" width="11" height="21" rx="4" fill="#3253d6"/>
-<text x="247" y="169" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1.9%</text>
-<text x="218" y="199" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> zoo</text>
-<rect x="228" y="184" width="10" height="21" rx="4" fill="#3253d6"/>
-<text x="246" y="199" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1.6%</text>
-<text x="218" y="229" text-anchor="end" font-size="12" font-style="italic" fill="#5a6373">everything else (~8,000 chunks)</text>
-<rect x="228" y="214" width="119" height="21" rx="4" fill="#b9c2d6"/>
-<text x="355" y="229" font-size="11" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">19.9%</text>
-<text x="30" y="266" font-size="10.5" fill="#5a6373">The scores sum to 100% across all 8,192 chunks. Training (§7) nudges the weights so the chunk that actually came next</text>
-<text x="30" y="282" font-size="10.5" fill="#5a6373">gets a bigger share; generating (§8) means picking from this menu, appending, and scoring again.</text>
+<text x="30" y="26" font-size="14" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace">“One day, Lily went to the ___”</text>
+<text x="30" y="46" font-size="11" fill="#6e6557">the model’s scores for what comes next — its real output, one number per vocabulary chunk</text>
+<text x="218" y="79" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> park</text>
+<rect x="228" y="64" width="380" height="21" rx="4" fill="#963d2c"/>
+<text x="616" y="79" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">63.7%</text>
+<text x="218" y="109" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> store</text>
+<rect x="228" y="94" width="66" height="21" rx="4" fill="#963d2c"/>
+<text x="302" y="109" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">11.0%</text>
+<text x="218" y="139" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> market</text>
+<rect x="228" y="124" width="11" height="21" rx="4" fill="#963d2c"/>
+<text x="247" y="139" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.9%</text>
+<text x="218" y="169" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> beach</text>
+<rect x="228" y="154" width="11" height="21" rx="4" fill="#963d2c"/>
+<text x="247" y="169" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.9%</text>
+<text x="218" y="199" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> zoo</text>
+<rect x="228" y="184" width="10" height="21" rx="4" fill="#963d2c"/>
+<text x="246" y="199" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.6%</text>
+<text x="218" y="229" text-anchor="end" font-size="12" font-style="italic" fill="#6e6557">everything else (~8,000 chunks)</text>
+<rect x="228" y="214" width="119" height="21" rx="4" fill="#cfc5ae"/>
+<text x="355" y="229" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">19.9%</text>
+<text x="30" y="266" font-size="10.5" fill="#6e6557">The scores sum to 100% across all 8,192 chunks. Training (§7) nudges the weights so the chunk that actually came next</text>
+<text x="30" y="282" font-size="10.5" fill="#6e6557">gets a bigger share; generating (§8) means picking from this menu, appending, and scoring again.</text>
 </svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>One real prediction from the tiny tuned model this lab builds in Part 1: given the text so far, it puts a score on every chunk in its vocabulary. “park” isn't a stored fact; it's the strongest statistical echo of the stories it read.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">A model is a function, not a mind</div><div class="callout-body">
 <p>It helps to picture a giant mathematical function: text in → a probability for every possible next
@@ -382,95 +382,95 @@ each with an integer <strong>ID</strong> (its index in a fixed list called the <
 way to chop, and the choice matters enormously:</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 470" role="img" aria-label="Tokenization: the sentence Once upon a time as 16 per-character numbers (notebook 01), as 4 BPE word-chunks with their real token ids (notebook 02), and three words showing how frequency sets chunk size: butterfly is one chunk, thunderstorm two, unbelievable five.">
-<text x="30" y="26" font-size="13" font-weight="700" fill="#1c2230">① One number per <tspan fill="#3253d6">character</tspan> — how the from-scratch model (notebook 01) reads</text>
-<rect x="30" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="50.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">O</text>
-<text x="50.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">36</text>
-<rect x="72" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="92.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">n</text>
-<text x="92.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">61</text>
-<rect x="114" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="134.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">c</text>
-<text x="134.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">50</text>
-<rect x="156" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="176.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">e</text>
-<text x="176.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">52</text>
-<rect x="198" y="42" width="40" height="32" rx="6" fill="#f1f3f8" stroke="#b9c2d6" stroke-width="1.2"/>
-<text x="218.0" y="63" text-anchor="middle" font-size="14" fill="#8a93a3" font-family="ui-monospace,Menlo,monospace">␣</text>
-<text x="218.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1</text>
-<rect x="240" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="260.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">u</text>
-<text x="260.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">68</text>
-<rect x="282" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="302.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">p</text>
-<text x="302.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">63</text>
-<rect x="324" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="344.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">o</text>
-<text x="344.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">62</text>
-<rect x="366" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="386.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">n</text>
-<text x="386.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">61</text>
-<rect x="408" y="42" width="40" height="32" rx="6" fill="#f1f3f8" stroke="#b9c2d6" stroke-width="1.2"/>
-<text x="428.0" y="63" text-anchor="middle" font-size="14" fill="#8a93a3" font-family="ui-monospace,Menlo,monospace">␣</text>
-<text x="428.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1</text>
-<rect x="450" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="470.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">a</text>
-<text x="470.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">48</text>
-<rect x="492" y="42" width="40" height="32" rx="6" fill="#f1f3f8" stroke="#b9c2d6" stroke-width="1.2"/>
-<text x="512.0" y="63" text-anchor="middle" font-size="14" fill="#8a93a3" font-family="ui-monospace,Menlo,monospace">␣</text>
-<text x="512.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1</text>
-<rect x="534" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="554.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">t</text>
-<text x="554.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">67</text>
-<rect x="576" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="596.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">i</text>
-<text x="596.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">56</text>
-<rect x="618" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="638.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">m</text>
-<text x="638.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">60</text>
-<rect x="660" y="42" width="40" height="32" rx="6" fill="#eef2ff" stroke="#3253d6" stroke-width="1.2"/>
-<text x="680.0" y="63" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">e</text>
-<text x="680.0" y="92" text-anchor="middle" font-size="9.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">52</text>
-<text x="30" y="124" font-size="10.5" fill="#5a6373">16 characters → 16 numbers. The model must learn spelling before it can learn anything else.</text>
-<line x1="30" y1="140" x2="690" y2="140" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="30" y="166" font-size="13" font-weight="700" fill="#1c2230">② One number per <tspan fill="#3253d6">word-chunk</tspan> (BPE) — how the tuned model (notebook 02) reads</text>
-<rect x="97" y="182" width="140" height="40" rx="8" fill="#eef2ff" stroke="#3253d6" stroke-width="1.6"/>
-<text x="167" y="208" text-anchor="middle" font-size="16" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣Once</text>
-<text x="167" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#5404</text>
-<rect x="247" y="182" width="140" height="40" rx="8" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.6"/>
-<text x="317" y="208" text-anchor="middle" font-size="16" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣upon</text>
-<text x="317" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#288</text>
-<rect x="397" y="182" width="76" height="40" rx="8" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.6"/>
-<text x="435" y="208" text-anchor="middle" font-size="16" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣a</text>
-<text x="435" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#107</text>
-<rect x="483" y="182" width="140" height="40" rx="8" fill="#f1ecfb" stroke="#5a3aa6" stroke-width="1.6"/>
-<text x="553" y="208" text-anchor="middle" font-size="16" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣time</text>
-<text x="553" y="240" text-anchor="middle" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">#244</text>
-<text x="30" y="276" font-size="10.5" fill="#5a6373">Same text: 4 numbers instead of 16 (␣ marks the space each chunk carries). The model now reasons over meaningful pieces,</text>
-<text x="30" y="292" font-size="10.5" fill="#5a6373">and the same context window holds ~4× more story — most of the v1 → v2 quality leap in Part 1.</text>
-<line x1="30" y1="308" x2="690" y2="308" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="30" y="334" font-size="13" font-weight="700" fill="#1c2230">③ How big is a chunk? <tspan fill="#3253d6">Frequency</tspan> decides — the same tokenizer, three words</text>
-<rect x="30" y="350" width="123" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="92" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣butterfly</text>
-<text x="92" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">1 chunk — the stories used it constantly</text>
-<rect x="182" y="350" width="102" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="233" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣thunder</text>
-<rect x="287" y="350" width="70" height="36" rx="7" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="322" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">storm</text>
-<text x="270" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">2 chunks — both meaningful</text>
-<rect x="386" y="350" width="50" height="36" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="411" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">␣un</text>
-<rect x="439" y="350" width="50" height="36" rx="7" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="464" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">bel</text>
-<rect x="492" y="350" width="39" height="36" rx="7" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.5"/>
-<text x="511" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">ie</text>
-<rect x="534" y="350" width="28" height="36" rx="7" fill="#f1ecfb" stroke="#5a3aa6" stroke-width="1.5"/>
-<text x="548" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">v</text>
-<rect x="565" y="350" width="60" height="36" rx="7" fill="#fbecf3" stroke="#a8386a" stroke-width="1.5"/>
-<text x="595" y="373" text-anchor="middle" font-size="13.5" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">able</text>
-<text x="506" y="406" text-anchor="middle" font-size="9.5" fill="#5a6373">5 chunks — rare, spelled from pieces</text>
-<text x="30" y="438" font-size="10.5" fill="#5a6373">Words the training text used constantly earn a chunk of their own; rarer ones are spelled out of reusable pieces — and the</text>
-<text x="30" y="454" font-size="10.5" fill="#5a6373">pieces themselves often carry meaning (␣thunder, storm, ␣un…, …able). Nothing is ever out-of-vocabulary.</text>
+<text x="30" y="26" font-size="13" font-weight="700" fill="#231f18">① One number per <tspan fill="#963d2c">character</tspan> — how the from-scratch model (notebook 01) reads</text>
+<rect x="30" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="50.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">O</text>
+<text x="50.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">36</text>
+<rect x="72" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="92.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">n</text>
+<text x="92.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">61</text>
+<rect x="114" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="134.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">c</text>
+<text x="134.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">50</text>
+<rect x="156" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="176.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">e</text>
+<text x="176.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">52</text>
+<rect x="198" y="42" width="40" height="32" rx="6" fill="#f1ece0" stroke="#cfc5ae" stroke-width="1.2"/>
+<text x="218.0" y="63" text-anchor="middle" font-size="14" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">␣</text>
+<text x="218.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1</text>
+<rect x="240" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="260.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">u</text>
+<text x="260.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">68</text>
+<rect x="282" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="302.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">p</text>
+<text x="302.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">63</text>
+<rect x="324" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="344.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">o</text>
+<text x="344.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">62</text>
+<rect x="366" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="386.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">n</text>
+<text x="386.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">61</text>
+<rect x="408" y="42" width="40" height="32" rx="6" fill="#f1ece0" stroke="#cfc5ae" stroke-width="1.2"/>
+<text x="428.0" y="63" text-anchor="middle" font-size="14" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">␣</text>
+<text x="428.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1</text>
+<rect x="450" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="470.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">a</text>
+<text x="470.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">48</text>
+<rect x="492" y="42" width="40" height="32" rx="6" fill="#f1ece0" stroke="#cfc5ae" stroke-width="1.2"/>
+<text x="512.0" y="63" text-anchor="middle" font-size="14" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">␣</text>
+<text x="512.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1</text>
+<rect x="534" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="554.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">t</text>
+<text x="554.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">67</text>
+<rect x="576" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="596.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">i</text>
+<text x="596.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">56</text>
+<rect x="618" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="638.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">m</text>
+<text x="638.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">60</text>
+<rect x="660" y="42" width="40" height="32" rx="6" fill="#f3ece1" stroke="#963d2c" stroke-width="1.2"/>
+<text x="680.0" y="63" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">e</text>
+<text x="680.0" y="92" text-anchor="middle" font-size="9.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">52</text>
+<text x="30" y="124" font-size="10.5" fill="#6e6557">16 characters → 16 numbers. The model must learn spelling before it can learn anything else.</text>
+<line x1="30" y1="140" x2="690" y2="140" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="30" y="166" font-size="13" font-weight="700" fill="#231f18">② One number per <tspan fill="#963d2c">word-chunk</tspan> (BPE) — how the tuned model (notebook 02) reads</text>
+<rect x="97" y="182" width="140" height="40" rx="8" fill="#f3ece1" stroke="#963d2c" stroke-width="1.6"/>
+<text x="167" y="208" text-anchor="middle" font-size="16" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣Once</text>
+<text x="167" y="240" text-anchor="middle" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">#5404</text>
+<rect x="247" y="182" width="140" height="40" rx="8" fill="#eceadb" stroke="#5f6c33" stroke-width="1.6"/>
+<text x="317" y="208" text-anchor="middle" font-size="16" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣upon</text>
+<text x="317" y="240" text-anchor="middle" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">#288</text>
+<rect x="397" y="182" width="76" height="40" rx="8" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.6"/>
+<text x="435" y="208" text-anchor="middle" font-size="16" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣a</text>
+<text x="435" y="240" text-anchor="middle" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">#107</text>
+<rect x="483" y="182" width="140" height="40" rx="8" fill="#e3eaea" stroke="#3d6a72" stroke-width="1.6"/>
+<text x="553" y="208" text-anchor="middle" font-size="16" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣time</text>
+<text x="553" y="240" text-anchor="middle" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">#244</text>
+<text x="30" y="276" font-size="10.5" fill="#6e6557">Same text: 4 numbers instead of 16 (␣ marks the space each chunk carries). The model now reasons over meaningful pieces,</text>
+<text x="30" y="292" font-size="10.5" fill="#6e6557">and the same context window holds ~4× more story — most of the v1 → v2 quality leap in Part 1.</text>
+<line x1="30" y1="308" x2="690" y2="308" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="30" y="334" font-size="13" font-weight="700" fill="#231f18">③ How big is a chunk? <tspan fill="#963d2c">Frequency</tspan> decides — the same tokenizer, three words</text>
+<rect x="30" y="350" width="123" height="36" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="92" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣butterfly</text>
+<text x="92" y="406" text-anchor="middle" font-size="9.5" fill="#6e6557">1 chunk — the stories used it constantly</text>
+<rect x="182" y="350" width="102" height="36" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="233" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣thunder</text>
+<rect x="287" y="350" width="70" height="36" rx="7" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="322" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">storm</text>
+<text x="270" y="406" text-anchor="middle" font-size="9.5" fill="#6e6557">2 chunks — both meaningful</text>
+<rect x="386" y="350" width="50" height="36" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="411" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">␣un</text>
+<rect x="439" y="350" width="50" height="36" rx="7" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="464" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">bel</text>
+<rect x="492" y="350" width="39" height="36" rx="7" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="511" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">ie</text>
+<rect x="534" y="350" width="28" height="36" rx="7" fill="#e3eaea" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="548" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">v</text>
+<rect x="565" y="350" width="60" height="36" rx="7" fill="#f1e4e4" stroke="#8d4257" stroke-width="1.5"/>
+<text x="595" y="373" text-anchor="middle" font-size="13.5" fill="#231f18" font-family="ui-monospace,Menlo,monospace">able</text>
+<text x="506" y="406" text-anchor="middle" font-size="9.5" fill="#6e6557">5 chunks — rare, spelled from pieces</text>
+<text x="30" y="438" font-size="10.5" fill="#6e6557">Words the training text used constantly earn a chunk of their own; rarer ones are spelled out of reusable pieces — and the</text>
+<text x="30" y="454" font-size="10.5" fill="#6e6557">pieces themselves often carry meaning (␣thunder, storm, ␣un…, …able). Nothing is ever out-of-vocabulary.</text>
 </svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways, with real numbers from Part 1's notebooks (character IDs from notebook 01, BPE chunk IDs from notebook 02). Below them: what happens to words the corpus saw rarely; the same tokenizer splits them into reusable, often meaningful pieces.</figcaption></figure>
 <div class="prose">
 <p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
@@ -499,175 +499,175 @@ our tiny model). Think of those numbers as coordinates that place the token in a
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 318" role="img" aria-label="The embedding lookup: each token id indexes a row of the embedding table; fox, cat and dog get similar columns of numbers, the gets a different one.">
-<text x="360" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c2230">A token’s ID indexes the embedding table: row #ID <tspan fill="#3253d6">is</tspan> its vector</text>
-<defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#5a6373"/></marker></defs>
-<rect x="76" y="40" width="88" height="30" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.4"/>
-<text x="120" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">fox</text>
-<text x="120" y="86" text-anchor="middle" font-size="10" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
-<line x1="120" y1="92" x2="120" y2="112" stroke="#5a6373" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="128" y="107" font-size="9" fill="#8a93a3">row #1234</text>
-<rect x="88" y="118" width="64" height="27" fill="rgb(246,206,206)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="120" y="136" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="88" y="145" width="64" height="27" fill="rgb(64,108,206)" stroke="#e4e7ee" stroke-width="0.8"/>
+<text x="360" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">A token’s ID indexes the embedding table: row #ID <tspan fill="#963d2c">is</tspan> its vector</text>
+<defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#6e6557"/></marker></defs>
+<rect x="76" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="120" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">fox</text>
+<text x="120" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
+<line x1="120" y1="92" x2="120" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="128" y="107" font-size="9" fill="#998f7d">row #1234</text>
+<rect x="88" y="118" width="64" height="27" fill="rgb(246,206,206)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="88" y="145" width="64" height="27" fill="rgb(64,108,206)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="120" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.20</text>
-<rect x="88" y="172" width="64" height="27" fill="rgb(253,247,247)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="120" y="190" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="88" y="199" width="64" height="27" fill="#fbfbfd" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="120" y="217" text-anchor="middle" font-size="11" fill="#5a6373">⋮</text>
-<text x="120" y="243" text-anchor="middle" font-size="9" fill="#8a93a3">256 numbers</text>
-<rect x="236" y="40" width="88" height="30" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.4"/>
-<text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">cat</text>
-<text x="280" y="86" text-anchor="middle" font-size="10" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">ID #882</text>
-<line x1="280" y1="92" x2="280" y2="112" stroke="#5a6373" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="288" y="107" font-size="9" fill="#8a93a3">row #882</text>
-<rect x="248" y="118" width="64" height="27" fill="rgb(246,210,210)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="280" y="136" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.28</text>
-<rect x="248" y="145" width="64" height="27" fill="rgb(88,127,212)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="88" y="172" width="64" height="27" fill="rgb(253,247,247)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="88" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<rect x="236" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">cat</text>
+<text x="280" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
+<line x1="280" y1="92" x2="280" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="288" y="107" font-size="9" fill="#998f7d">row #882</text>
+<rect x="248" y="118" width="64" height="27" fill="rgb(246,210,210)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.28</text>
+<rect x="248" y="145" width="64" height="27" fill="rgb(88,127,212)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="280" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.05</text>
-<rect x="248" y="172" width="64" height="27" fill="rgb(251,236,236)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="280" y="190" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<rect x="248" y="199" width="64" height="27" fill="#fbfbfd" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="280" y="217" text-anchor="middle" font-size="11" fill="#5a6373">⋮</text>
-<text x="280" y="243" text-anchor="middle" font-size="9" fill="#8a93a3">256 numbers</text>
-<rect x="396" y="40" width="88" height="30" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.4"/>
-<text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">dog</text>
-<text x="440" y="86" text-anchor="middle" font-size="10" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">ID #905</text>
-<line x1="440" y1="92" x2="440" y2="112" stroke="#5a6373" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="448" y="107" font-size="9" fill="#8a93a3">row #905</text>
-<rect x="408" y="118" width="64" height="27" fill="rgb(244,199,199)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="440" y="136" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.35</text>
-<rect x="408" y="145" width="64" height="27" fill="rgb(46,95,202)" stroke="#e4e7ee" stroke-width="0.8"/>
+<rect x="248" y="172" width="64" height="27" fill="rgb(251,236,236)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<rect x="248" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<rect x="396" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">dog</text>
+<text x="440" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
+<line x1="440" y1="92" x2="440" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="448" y="107" font-size="9" fill="#998f7d">row #905</text>
+<rect x="408" y="118" width="64" height="27" fill="rgb(244,199,199)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.35</text>
+<rect x="408" y="145" width="64" height="27" fill="rgb(46,95,202)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="440" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.31</text>
-<rect x="408" y="172" width="64" height="27" fill="rgb(252,253,254)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="440" y="190" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">-0.02</text>
-<rect x="408" y="199" width="64" height="27" fill="#fbfbfd" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="440" y="217" text-anchor="middle" font-size="11" fill="#5a6373">⋮</text>
-<text x="440" y="243" text-anchor="middle" font-size="9" fill="#8a93a3">256 numbers</text>
-<rect x="556" y="40" width="88" height="30" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.4"/>
-<text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">the</text>
-<text x="600" y="86" text-anchor="middle" font-size="10" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">ID #14</text>
-<line x1="600" y1="92" x2="600" y2="112" stroke="#5a6373" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="608" y="107" font-size="9" fill="#8a93a3">row #14</text>
-<rect x="568" y="118" width="64" height="27" fill="rgb(108,143,218)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="600" y="136" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">-0.92</text>
-<rect x="568" y="145" width="64" height="27" fill="rgb(242,185,185)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="600" y="163" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">0.44</text>
-<rect x="568" y="172" width="64" height="27" fill="rgb(158,180,230)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="600" y="190" text-anchor="middle" font-size="11" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">-0.61</text>
-<rect x="568" y="199" width="64" height="27" fill="#fbfbfd" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="600" y="217" text-anchor="middle" font-size="11" fill="#5a6373">⋮</text>
-<text x="600" y="243" text-anchor="middle" font-size="9" fill="#8a93a3">256 numbers</text>
-<text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#1c2230">fox · cat · dog → similar rows (similar meaning)</text>
-<text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#1c2230">“the” → different</text>
+<rect x="408" y="172" width="64" height="27" fill="rgb(252,253,254)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.02</text>
+<rect x="408" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<rect x="556" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">the</text>
+<text x="600" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
+<line x1="600" y1="92" x2="600" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="608" y="107" font-size="9" fill="#998f7d">row #14</text>
+<rect x="568" y="118" width="64" height="27" fill="rgb(108,143,218)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.92</text>
+<rect x="568" y="145" width="64" height="27" fill="rgb(242,185,185)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="163" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.44</text>
+<rect x="568" y="172" width="64" height="27" fill="rgb(158,180,230)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.61</text>
+<rect x="568" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
+<text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
 </svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 256 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
-<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<line x1="64" y1="330" x2="525" y2="330" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<line x1="64" y1="330" x2="64" y2="45" stroke="#5a6373" stroke-width="1.3" marker-end="url(#ar)"/>
-<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
-<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#5a6373" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
-<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
-<circle cx="420" cy="135" r="78" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="420" y="51" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
-<circle cx="395" cy="120" r="4" fill="#3253d6"/>
-<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
-<circle cx="440" cy="140" r="4" fill="#3253d6"/>
-<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
-<circle cx="405" cy="168" r="4" fill="#3253d6"/>
-<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
-<circle cx="455" cy="108" r="4" fill="#3253d6"/>
-<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
-<circle cx="262" cy="200" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="262" y="142" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
-<circle cx="242" cy="190" r="4" fill="#3253d6"/>
-<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
-<circle cx="277" cy="215" r="4" fill="#3253d6"/>
-<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
-<circle cx="150" cy="285" r="52" fill="none" stroke="#b9c2d6" stroke-width="1.3" stroke-dasharray="5 4"/>
-<text x="150" y="227" text-anchor="middle" font-size="11" fill="#5a6373" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
-<circle cx="130" cy="290" r="4" fill="#3253d6"/>
-<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
-<circle cx="173" cy="278" r="4" fill="#3253d6"/>
-<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
-<circle cx="128" cy="262" r="4" fill="#3253d6"/>
-<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
+<line x1="64" y1="330" x2="525" y2="330" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
+<line x1="64" y1="330" x2="64" y2="45" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
+<text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
+<text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<circle cx="420" cy="135" r="78" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="420" y="51" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
+<circle cx="395" cy="120" r="4" fill="#963d2c"/>
+<text x="403" y="124" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<circle cx="440" cy="140" r="4" fill="#963d2c"/>
+<text x="448" y="144" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<circle cx="405" cy="168" r="4" fill="#963d2c"/>
+<text x="413" y="172" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<circle cx="455" cy="108" r="4" fill="#963d2c"/>
+<text x="463" y="112" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">wolf</text>
+<circle cx="262" cy="200" r="52" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="262" y="142" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">actions</text>
+<circle cx="242" cy="190" r="4" fill="#963d2c"/>
+<text x="250" y="194" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">ran</text>
+<circle cx="277" cy="215" r="4" fill="#963d2c"/>
+<text x="285" y="219" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">jumped</text>
+<circle cx="150" cy="285" r="52" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
+<text x="150" y="227" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">function words</text>
+<circle cx="130" cy="290" r="4" fill="#963d2c"/>
+<text x="138" y="294" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<circle cx="173" cy="278" r="4" fill="#963d2c"/>
+<text x="181" y="282" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
+<circle cx="128" cy="262" r="4" fill="#963d2c"/>
+<text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
 </svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions — loosely, 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
-<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
-<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
-<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
-<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
-<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
-<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
-<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
-<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#3253d6" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
-<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
-<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.8"/>
-<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#e4e7ee" stroke-width="0.8"/>
-<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#1c2230" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
-<text x="238" y="223" text-anchor="end" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
-<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#e4e7ee" stroke-width="0.5"/>
-<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#e4e7ee" stroke-width="0.5"/>
-<text x="395" y="223" text-anchor="start" font-size="9" fill="#5a6373" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
+<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
+<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
+<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
+<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
+<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
+<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
+<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
+<text x="238" y="223" text-anchor="end" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
+<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.5"/>
+<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#ddd4c2" stroke-width="0.5"/>
+<text x="395" y="223" text-anchor="start" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
 </svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
 <p>A token's embedding is a point in <strong>256-dimensional space</strong>: 256 numbers, one per
@@ -711,153 +711,153 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <code>y = mx + c</code>, vectorised. The diagram below builds it from one output up to the whole model.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
-<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
-<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >vocabulary</text>
-<rect x="46" y="70" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >the</text>
-<rect x="46" y="100" width="52" height="26" rx="7" fill="#d3e0ff" stroke="#3253d6" stroke-width="2.4"/>
-<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="700" >fox</text>
-<rect x="46" y="130" width="52" height="26" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#1c2230" font-weight="400" >cat</text>
-<text x="72" y="162" text-anchor="middle" font-size="13" fill="#5a6373" font-weight="400" >⋮</text>
-<line x1="100" y1="113" x2="142" y2="113" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#5a6373" font-weight="400" >look up</text>
-<text x="178" y="50" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(x: #1–3, then #256)</text>
-<rect x="150" y="70" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="150" y="97" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="150" y="124" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="150" y="151" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="150" y="178" width="60" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#5a6373" font-weight="400" >×</text>
-<text x="286" y="50" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >its weights</text>
-<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >(one per number)</text>
-<rect x="238" y="70" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="238" y="97" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="238" y="124" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="238" y="151" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="238" y="178" width="60" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#5a6373" stroke-width="1.2"/>
-<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >add</text>
-<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >them up</text>
-<text x="58" y="226" text-anchor="start" font-size="12" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#c0392b" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
-<line x1="40" y1="288" x2="820" y2="288" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="314" text-anchor="start" font-size="13" fill="#1c2230" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#b5731a">W</tspan> (so <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>)</text>
-<rect x="80" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
-<rect x="126" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
-<rect x="172" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
-<rect x="240" y="340" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
-<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="369" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<rect x="80" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="126" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="172" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<rect x="240" y="398" width="46" height="29" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋯</text>
-<text x="103.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="149.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="195.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#5a6373" font-weight="400" >⋮</text>
-<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="160" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >W  (parameters)</text>
-<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >← top row = output ① (the neuron above)</text>
-<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="457" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
-<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >×</text>
-<text x="593" y="331" text-anchor="middle" font-size="11" fill="#3253d6" font-weight="400" >x: inputs</text>
-<rect x="566" y="340" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="566" y="367" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
-<rect x="566" y="394" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="566" y="421" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<rect x="566" y="448" width="54" height="27" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >+</text>
-<text x="668" y="331" text-anchor="middle" font-size="11" fill="#b5731a" font-weight="400" >b: biases</text>
-<rect x="644" y="340" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
-<rect x="644" y="367" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
-<rect x="644" y="394" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
-<rect x="644" y="421" width="48" height="27" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#5a6373" font-weight="400" >=</text>
-<text x="742" y="331" text-anchor="middle" font-size="11" fill="#0e7a5f" font-weight="400" >y: outputs</text>
-<rect x="716" y="340" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
-<rect x="716" y="367" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
-<rect x="716" y="394" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
-<rect x="716" y="421" width="48" height="27" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#5a6373" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
-<text x="58" y="557" text-anchor="start" font-size="12" fill="#1c2230" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#0e7a5f">y</tspan> = <tspan fill="#b5731a">W</tspan><tspan fill="#3253d6">x</tspan> + <tspan fill="#b5731a">b</tspan>.</text>
-<line x1="40" y1="575" x2="820" y2="575" stroke="#e4e7ee" stroke-width="1.5"/>
-<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#1c2230" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
-<rect x="62" y="621" width="94" height="44" rx="4" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >tokens</text>
-<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >input</text>
-<line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="168" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 1</text>
-<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="274" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 2</text>
-<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="380" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 3</text>
-<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="486" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >Block 4</text>
-<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >attn + MLP</text>
-<line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="592" y="621" width="94" height="44" rx="4" fill="#fbf1e0" stroke="#b5731a" stroke-width="1.3"/>
-<text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >head</text>
-<line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#5a6373" stroke-width="1.6" marker-end="url(#aA)"/>
-<rect x="698" y="621" width="94" height="44" rx="4" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.3"/>
-<text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#1c2230" font-weight="700" >next token</text>
-<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#5a6373" font-weight="400" >probs</text>
-<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#5a6373" font-weight="400" >embed</text>
-<rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#b5731a" stroke-width="2.4"/>
-<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#b5731a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="703" text-anchor="start" font-size="10" fill="#5a6373" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#5a6373" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#1c2230" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
+<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >vocabulary</text>
+<rect x="46" y="70" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >the</text>
+<rect x="46" y="100" width="52" height="26" rx="7" fill="#ecd9d0" stroke="#963d2c" stroke-width="2.4"/>
+<text x="72" y="117" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="700" >fox</text>
+<rect x="46" y="130" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >cat</text>
+<text x="72" y="162" text-anchor="middle" font-size="13" fill="#6e6557" font-weight="400" >⋮</text>
+<line x1="100" y1="113" x2="142" y2="113" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" >look up</text>
+<text x="178" y="50" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >fox's embedding</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #256)</text>
+<rect x="150" y="70" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="150" y="97" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="150" y="124" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="150" y="151" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="150" y="178" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="180.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="224" y="88.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="115.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
+<text x="286" y="50" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >its weights</text>
+<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(one per number)</text>
+<rect x="238" y="70" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="238" y="97" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="114.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="238" y="124" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="141.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="238" y="151" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="168.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="238" y="178" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="268.0" y="195.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<path d="M302 74 q12 0 12 13 v36 q0 13 12 13 q-12 0 -12 13 v36 q0 13 -12 13" fill="none" stroke="#6e6557" stroke-width="1.2"/>
+<text x="326" y="130" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >add</text>
+<text x="326" y="143" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >them up</text>
+<text x="58" y="226" text-anchor="start" font-size="12" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
+<line x1="40" y1="288" x2="820" y2="288" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="58" y="314" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#8c6a2a">W</tspan> (so <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>)</text>
+<rect x="80" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<rect x="126" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<rect x="172" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<rect x="240" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<rect x="80" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="126" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="172" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="240" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="222" y="387.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<rect x="80" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="126" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="172" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<rect x="240" y="398" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="222" y="416.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
+<text x="103.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="149.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="195.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
+<rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
+<text x="160" y="331" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >W  (parameters)</text>
+<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >← top row = output ① (the neuron above)</text>
+<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="457" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
+<text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >×</text>
+<text x="593" y="331" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >x: inputs</text>
+<rect x="566" y="340" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="566" y="367" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.20</text>
+<rect x="566" y="394" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="566" y="421" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<rect x="566" y="448" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="593.0" y="465.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<text x="628" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >+</text>
+<text x="668" y="331" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >b: biases</text>
+<rect x="644" y="340" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.10</text>
+<rect x="644" y="367" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.04</text>
+<rect x="644" y="394" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.21</text>
+<rect x="644" y="421" width="48" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="668.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="700" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >=</text>
+<text x="742" y="331" text-anchor="middle" font-size="11" fill="#5f6c33" font-weight="400" >y: outputs</text>
+<rect x="716" y="340" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="357.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.62</text>
+<rect x="716" y="367" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="384.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−1.07</text>
+<rect x="716" y="394" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
+<rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
+<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
+<line x1="40" y1="575" x2="820" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
+<rect x="62" y="621" width="94" height="44" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >tokens</text>
+<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >input</text>
+<line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="168" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 1</text>
+<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="274" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 2</text>
+<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 3</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 4</text>
+<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
+<text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >head</text>
+<line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
+<rect x="698" y="621" width="94" height="44" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
+<text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >next token</text>
+<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >probs</text>
+<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#6e6557" font-weight="400" >embed</text>
+<rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
+<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
 <p>A token doesn't <em>have</em> parameters. The parameters (every <code>W</code> and <code>b</code>)
@@ -899,41 +899,41 @@ Keeping the network's numbers in a sane, comparable range is a different compone
 so stacking layers buys new shapes instead of collapsing into one.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 252" role="img" aria-label="The three activation functions as curves: ReLU keeps positives and zeroes negatives (a sharp corner at zero), GELU is its smooth version with a tiny dip below zero (the one our model uses), and the sigmoid is a steep S-curve squashing any input into the range zero to one, flattening against those bounds. A dashed identity line behind the first two shows what no bend would look like.">
-<rect x="22" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
-<line x1="22" y1="147.0" x2="218" y2="147.0" stroke="#c7cdda" stroke-width="1"/>
-<line x1="120.0" y1="42" x2="120.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
-<line x1="87.3" y1="182.0" x2="218.0" y2="42.0" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
-<path d="M 22.0,147.0 L 24.7,147.0 L 27.4,147.0 L 30.2,147.0 L 32.9,147.0 L 35.6,147.0 L 38.3,147.0 L 41.1,147.0 L 43.8,147.0 L 46.5,147.0 L 49.2,147.0 L 51.9,147.0 L 54.7,147.0 L 57.4,147.0 L 60.1,147.0 L 62.8,147.0 L 65.6,147.0 L 68.3,147.0 L 71.0,147.0 L 73.7,147.0 L 76.4,147.0 L 79.2,147.0 L 81.9,147.0 L 84.6,147.0 L 87.3,147.0 L 90.1,147.0 L 92.8,147.0 L 95.5,147.0 L 98.2,147.0 L 100.9,147.0 L 103.7,147.0 L 106.4,147.0 L 109.1,147.0 L 111.8,147.0 L 114.6,147.0 L 117.3,147.0 L 120.0,147.0 L 122.7,144.1 L 125.4,141.2 L 128.2,138.2 L 130.9,135.3 L 133.6,132.4 L 136.3,129.5 L 139.1,126.6 L 141.8,123.7 L 144.5,120.8 L 147.2,117.8 L 149.9,114.9 L 152.7,112.0 L 155.4,109.1 L 158.1,106.2 L 160.8,103.2 L 163.6,100.3 L 166.3,97.4 L 169.0,94.5 L 171.7,91.6 L 174.4,88.7 L 177.2,85.8 L 179.9,82.8 L 182.6,79.9 L 185.3,77.0 L 188.1,74.1 L 190.8,71.2 L 193.5,68.2 L 196.2,65.3 L 198.9,62.4 L 201.7,59.5 L 204.4,56.6 L 207.1,53.7 L 209.8,50.8 L 212.6,47.8 L 215.3,44.9 L 218.0,42.0" fill="none" stroke="#3253d6" stroke-width="2.6"/>
-<text x="120" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">ReLU</text>
-<text x="120" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">keep positives, zero the rest</text>
-<text x="25" y="177" font-size="9" fill="#8a93a3">-3</text>
-<text x="215" y="177" text-anchor="end" font-size="9" fill="#8a93a3">3</text>
-<text x="192" y="141" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
-<rect x="262" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
-<line x1="262" y1="147.0" x2="458" y2="147.0" stroke="#c7cdda" stroke-width="1"/>
-<line x1="360.0" y1="42" x2="360.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
-<line x1="327.3" y1="182.0" x2="458.0" y2="42.0" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
-<path d="M 262.0,147.1 L 264.7,147.2 L 267.4,147.2 L 270.2,147.3 L 272.9,147.3 L 275.6,147.4 L 278.3,147.5 L 281.1,147.6 L 283.8,147.8 L 286.5,148.0 L 289.2,148.1 L 291.9,148.4 L 294.7,148.6 L 297.4,148.9 L 300.1,149.1 L 302.8,149.5 L 305.6,149.8 L 308.3,150.1 L 311.0,150.5 L 313.7,150.9 L 316.4,151.3 L 319.2,151.6 L 321.9,152.0 L 324.6,152.3 L 327.3,152.6 L 330.1,152.8 L 332.8,152.9 L 335.5,153.0 L 338.2,152.9 L 340.9,152.7 L 343.7,152.4 L 346.4,151.9 L 349.1,151.3 L 351.8,150.5 L 354.6,149.5 L 357.3,148.4 L 360.0,147.0 L 362.7,145.4 L 365.4,143.7 L 368.2,141.8 L 370.9,139.6 L 373.6,137.4 L 376.3,134.9 L 379.1,132.3 L 381.8,129.6 L 384.5,126.7 L 387.2,123.7 L 389.9,120.7 L 392.7,117.6 L 395.4,114.4 L 398.1,111.1 L 400.8,107.9 L 403.6,104.6 L 406.3,101.3 L 409.0,98.0 L 411.7,94.7 L 414.4,91.5 L 417.2,88.2 L 419.9,85.0 L 422.6,81.8 L 425.3,78.6 L 428.1,75.4 L 430.8,72.3 L 433.5,69.2 L 436.2,66.1 L 438.9,63.1 L 441.7,60.0 L 444.4,57.0 L 447.1,54.0 L 449.8,51.0 L 452.6,48.0 L 455.3,45.1 L 458.0,42.1" fill="none" stroke="#0e7a5f" stroke-width="2.6"/>
-<text x="360" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#0e7a5f" font-family="ui-monospace,Menlo,monospace">GELU ★</text>
-<text x="360" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">the smooth version — ours</text>
-<text x="265" y="177" font-size="9" fill="#8a93a3">-3</text>
-<text x="455" y="177" text-anchor="end" font-size="9" fill="#8a93a3">3</text>
-<text x="432" y="141" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
-<rect x="502" y="42" width="196" height="140" fill="#fff" stroke="#e4e7ee"/>
-<line x1="502" y1="172.3" x2="698" y2="172.3" stroke="#c7cdda" stroke-width="1"/>
-<line x1="600.0" y1="42" x2="600.0" y2="182" stroke="#c7cdda" stroke-width="1"/>
-<line x1="502" y1="51.7" x2="698" y2="51.7" stroke="#b9c2d6" stroke-width="1.2" stroke-dasharray="5 4"/>
-<text x="507" y="47" font-size="9" fill="#8a93a3">1</text>
-<text x="507" y="167" font-size="9" fill="#8a93a3">0</text>
-<path d="M 502.0,172.0 L 504.7,172.0 L 507.4,171.9 L 510.2,171.9 L 512.9,171.8 L 515.6,171.7 L 518.3,171.5 L 521.1,171.4 L 523.8,171.2 L 526.5,171.0 L 529.2,170.8 L 531.9,170.5 L 534.7,170.2 L 537.4,169.8 L 540.1,169.3 L 542.8,168.8 L 545.6,168.2 L 548.3,167.5 L 551.0,166.6 L 553.7,165.6 L 556.4,164.5 L 559.2,163.2 L 561.9,161.7 L 564.6,159.9 L 567.3,158.0 L 570.1,155.7 L 572.8,153.2 L 575.5,150.3 L 578.2,147.2 L 580.9,143.7 L 583.7,139.9 L 586.4,135.8 L 589.1,131.4 L 591.8,126.8 L 594.6,122.0 L 597.3,117.0 L 600.0,112.0 L 602.7,107.0 L 605.4,102.0 L 608.2,97.2 L 610.9,92.6 L 613.6,88.2 L 616.3,84.1 L 619.1,80.3 L 621.8,76.8 L 624.5,73.7 L 627.2,70.8 L 629.9,68.3 L 632.7,66.0 L 635.4,64.1 L 638.1,62.3 L 640.8,60.8 L 643.6,59.5 L 646.3,58.4 L 649.0,57.4 L 651.7,56.5 L 654.4,55.8 L 657.2,55.2 L 659.9,54.7 L 662.6,54.2 L 665.3,53.8 L 668.1,53.5 L 670.8,53.2 L 673.5,53.0 L 676.2,52.8 L 678.9,52.6 L 681.7,52.5 L 684.4,52.3 L 687.1,52.2 L 689.8,52.1 L 692.6,52.1 L 695.3,52.0 L 698.0,52.0" fill="none" stroke="#5a3aa6" stroke-width="2.6"/>
-<text x="600" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#5a3aa6" font-family="ui-monospace,Menlo,monospace">sigmoid</text>
-<text x="600" y="202" text-anchor="middle" font-size="10.5" fill="#5a6373">squash anything into 0–1</text>
-<text x="505" y="177" font-size="9" fill="#8a93a3">-6</text>
-<text x="695" y="177" text-anchor="end" font-size="9" fill="#8a93a3">6</text>
-<text x="672" y="166" text-anchor="end" font-size="9" fill="#8a93a3">in →</text>
-<text x="92" y="244" font-size="10" fill="#8a93a3">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
-<text x="380" y="232" font-size="10" fill="#0e7a5f" display="none"></text>
-<text x="630" y="244" font-size="10" fill="#0e7a5f">★ what our tiny GPT uses</text>
+<rect x="22" y="42" width="196" height="140" fill="#fff" stroke="#ddd4c2"/>
+<line x1="22" y1="147.0" x2="218" y2="147.0" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="120.0" y1="42" x2="120.0" y2="182" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="87.3" y1="182.0" x2="218.0" y2="42.0" stroke="#cfc5ae" stroke-width="1.2" stroke-dasharray="5 4"/>
+<path d="M 22.0,147.0 L 24.7,147.0 L 27.4,147.0 L 30.2,147.0 L 32.9,147.0 L 35.6,147.0 L 38.3,147.0 L 41.1,147.0 L 43.8,147.0 L 46.5,147.0 L 49.2,147.0 L 51.9,147.0 L 54.7,147.0 L 57.4,147.0 L 60.1,147.0 L 62.8,147.0 L 65.6,147.0 L 68.3,147.0 L 71.0,147.0 L 73.7,147.0 L 76.4,147.0 L 79.2,147.0 L 81.9,147.0 L 84.6,147.0 L 87.3,147.0 L 90.1,147.0 L 92.8,147.0 L 95.5,147.0 L 98.2,147.0 L 100.9,147.0 L 103.7,147.0 L 106.4,147.0 L 109.1,147.0 L 111.8,147.0 L 114.6,147.0 L 117.3,147.0 L 120.0,147.0 L 122.7,144.1 L 125.4,141.2 L 128.2,138.2 L 130.9,135.3 L 133.6,132.4 L 136.3,129.5 L 139.1,126.6 L 141.8,123.7 L 144.5,120.8 L 147.2,117.8 L 149.9,114.9 L 152.7,112.0 L 155.4,109.1 L 158.1,106.2 L 160.8,103.2 L 163.6,100.3 L 166.3,97.4 L 169.0,94.5 L 171.7,91.6 L 174.4,88.7 L 177.2,85.8 L 179.9,82.8 L 182.6,79.9 L 185.3,77.0 L 188.1,74.1 L 190.8,71.2 L 193.5,68.2 L 196.2,65.3 L 198.9,62.4 L 201.7,59.5 L 204.4,56.6 L 207.1,53.7 L 209.8,50.8 L 212.6,47.8 L 215.3,44.9 L 218.0,42.0" fill="none" stroke="#963d2c" stroke-width="2.6"/>
+<text x="120" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">ReLU</text>
+<text x="120" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">keep positives, zero the rest</text>
+<text x="25" y="177" font-size="9" fill="#998f7d">-3</text>
+<text x="215" y="177" text-anchor="end" font-size="9" fill="#998f7d">3</text>
+<text x="192" y="141" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
+<rect x="262" y="42" width="196" height="140" fill="#fff" stroke="#ddd4c2"/>
+<line x1="262" y1="147.0" x2="458" y2="147.0" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="360.0" y1="42" x2="360.0" y2="182" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="327.3" y1="182.0" x2="458.0" y2="42.0" stroke="#cfc5ae" stroke-width="1.2" stroke-dasharray="5 4"/>
+<path d="M 262.0,147.1 L 264.7,147.2 L 267.4,147.2 L 270.2,147.3 L 272.9,147.3 L 275.6,147.4 L 278.3,147.5 L 281.1,147.6 L 283.8,147.8 L 286.5,148.0 L 289.2,148.1 L 291.9,148.4 L 294.7,148.6 L 297.4,148.9 L 300.1,149.1 L 302.8,149.5 L 305.6,149.8 L 308.3,150.1 L 311.0,150.5 L 313.7,150.9 L 316.4,151.3 L 319.2,151.6 L 321.9,152.0 L 324.6,152.3 L 327.3,152.6 L 330.1,152.8 L 332.8,152.9 L 335.5,153.0 L 338.2,152.9 L 340.9,152.7 L 343.7,152.4 L 346.4,151.9 L 349.1,151.3 L 351.8,150.5 L 354.6,149.5 L 357.3,148.4 L 360.0,147.0 L 362.7,145.4 L 365.4,143.7 L 368.2,141.8 L 370.9,139.6 L 373.6,137.4 L 376.3,134.9 L 379.1,132.3 L 381.8,129.6 L 384.5,126.7 L 387.2,123.7 L 389.9,120.7 L 392.7,117.6 L 395.4,114.4 L 398.1,111.1 L 400.8,107.9 L 403.6,104.6 L 406.3,101.3 L 409.0,98.0 L 411.7,94.7 L 414.4,91.5 L 417.2,88.2 L 419.9,85.0 L 422.6,81.8 L 425.3,78.6 L 428.1,75.4 L 430.8,72.3 L 433.5,69.2 L 436.2,66.1 L 438.9,63.1 L 441.7,60.0 L 444.4,57.0 L 447.1,54.0 L 449.8,51.0 L 452.6,48.0 L 455.3,45.1 L 458.0,42.1" fill="none" stroke="#5f6c33" stroke-width="2.6"/>
+<text x="360" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#5f6c33" font-family="ui-monospace,Menlo,monospace">GELU ★</text>
+<text x="360" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">the smooth version — ours</text>
+<text x="265" y="177" font-size="9" fill="#998f7d">-3</text>
+<text x="455" y="177" text-anchor="end" font-size="9" fill="#998f7d">3</text>
+<text x="432" y="141" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
+<rect x="502" y="42" width="196" height="140" fill="#fff" stroke="#ddd4c2"/>
+<line x1="502" y1="172.3" x2="698" y2="172.3" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="600.0" y1="42" x2="600.0" y2="182" stroke="#d8cfbd" stroke-width="1"/>
+<line x1="502" y1="51.7" x2="698" y2="51.7" stroke="#cfc5ae" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="507" y="47" font-size="9" fill="#998f7d">1</text>
+<text x="507" y="167" font-size="9" fill="#998f7d">0</text>
+<path d="M 502.0,172.0 L 504.7,172.0 L 507.4,171.9 L 510.2,171.9 L 512.9,171.8 L 515.6,171.7 L 518.3,171.5 L 521.1,171.4 L 523.8,171.2 L 526.5,171.0 L 529.2,170.8 L 531.9,170.5 L 534.7,170.2 L 537.4,169.8 L 540.1,169.3 L 542.8,168.8 L 545.6,168.2 L 548.3,167.5 L 551.0,166.6 L 553.7,165.6 L 556.4,164.5 L 559.2,163.2 L 561.9,161.7 L 564.6,159.9 L 567.3,158.0 L 570.1,155.7 L 572.8,153.2 L 575.5,150.3 L 578.2,147.2 L 580.9,143.7 L 583.7,139.9 L 586.4,135.8 L 589.1,131.4 L 591.8,126.8 L 594.6,122.0 L 597.3,117.0 L 600.0,112.0 L 602.7,107.0 L 605.4,102.0 L 608.2,97.2 L 610.9,92.6 L 613.6,88.2 L 616.3,84.1 L 619.1,80.3 L 621.8,76.8 L 624.5,73.7 L 627.2,70.8 L 629.9,68.3 L 632.7,66.0 L 635.4,64.1 L 638.1,62.3 L 640.8,60.8 L 643.6,59.5 L 646.3,58.4 L 649.0,57.4 L 651.7,56.5 L 654.4,55.8 L 657.2,55.2 L 659.9,54.7 L 662.6,54.2 L 665.3,53.8 L 668.1,53.5 L 670.8,53.2 L 673.5,53.0 L 676.2,52.8 L 678.9,52.6 L 681.7,52.5 L 684.4,52.3 L 687.1,52.2 L 689.8,52.1 L 692.6,52.1 L 695.3,52.0 L 698.0,52.0" fill="none" stroke="#3d6a72" stroke-width="2.6"/>
+<text x="600" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#3d6a72" font-family="ui-monospace,Menlo,monospace">sigmoid</text>
+<text x="600" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">squash anything into 0–1</text>
+<text x="505" y="177" font-size="9" fill="#998f7d">-6</text>
+<text x="695" y="177" text-anchor="end" font-size="9" fill="#998f7d">6</text>
+<text x="672" y="166" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
+<text x="92" y="244" font-size="10" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
+<text x="380" y="232" font-size="10" fill="#5f6c33" display="none"></text>
+<text x="630" y="244" font-size="10" fill="#5f6c33">★ what our tiny GPT uses</text>
 </svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
     </section>
     
@@ -953,37 +953,37 @@ it a <em>language</em> model and not a bag of independent words.</p>
 trained Part 1 model, with one attention head's actual weights drawn as arcs:</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 312" role="img" aria-label="Attention, measured: arcs from the word it back to earlier words in the sentence The dragon looked at the boy and it. The arc to dragon carries 76 percent of the attention; small arcs go to The, and, and boy; it keeps 8 percent for itself.">
-<text x="360" y="26" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Where does <tspan font-family="ui-monospace,Menlo,monospace" fill="#b5731a">it</tspan> look? — one real attention head, measured</text>
-<text x="360" y="44" text-anchor="middle" font-size="11" fill="#5a6373">the trained Part 1 model, layer 2 of 6, head 4 of 6 — each arc’s thickness = how much of the blend</text>
-<path d="M 581 204 Q 362 -25 144 204" fill="none" stroke="#3253d6" stroke-width="1.9" opacity="0.40"/>
-<text x="362" y="81" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">7%</text>
-<path d="M 581 204 Q 398 0 215 204" fill="none" stroke="#e8462e" stroke-width="8.8" opacity="0.84"/>
-<text x="398" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#e8462e">76%</text>
-<path d="M 581 204 Q 441 31 301 204" fill="none" stroke="#3253d6" stroke-width="1.3" opacity="0.36"/>
-<path d="M 581 204 Q 528 93 474 204" fill="none" stroke="#3253d6" stroke-width="1.4" opacity="0.36"/>
-<text x="528" y="141" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">2%</text>
-<path d="M 581 204 Q 556 114 530 204" fill="none" stroke="#3253d6" stroke-width="1.8" opacity="0.39"/>
-<text x="556" y="151" text-anchor="middle" font-size="10" font-weight="400" fill="#3253d6">6%</text>
-<rect x="120" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="144" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">The</text>
-<rect x="176" y="208" width="78" height="34" rx="7" fill="#fbecf3" stroke="#a8386a" stroke-width="2.2"/>
-<text x="215" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">dragon</text>
-<rect x="262" y="208" width="78" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="301" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">looked</text>
-<rect x="348" y="208" width="38" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="367" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">at</text>
-<rect x="394" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="418" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">the</text>
-<rect x="450" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="474" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">boy</text>
-<rect x="506" y="208" width="48" height="34" rx="7" fill="#eef2ff" stroke="#3253d6" stroke-width="1.3"/>
-<text x="530" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">and</text>
-<rect x="562" y="208" width="38" height="34" rx="7" fill="#fbf1e0" stroke="#b5731a" stroke-width="2.2"/>
-<text x="581" y="230" text-anchor="middle" font-size="14" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">it</text>
-<text x="581" y="260" text-anchor="middle" font-size="9.5" fill="#b5731a">the token asking (its “query”) — keeps 8% for itself</text>
-<text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#a8386a">the best-matching “key”</text>
-<text x="30" y="292" font-size="10.5" fill="#5a6373">“looked”, “at”, “the” get ≈0–1%. This head has learned to track who the sentence is about; other heads in the same</text>
-<text x="30" y="308" font-size="10.5" fill="#5a6373">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
+<text x="360" y="26" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">Where does <tspan font-family="ui-monospace,Menlo,monospace" fill="#8c6a2a">it</tspan> look? — one real attention head, measured</text>
+<text x="360" y="44" text-anchor="middle" font-size="11" fill="#6e6557">the trained Part 1 model, layer 2 of 6, head 4 of 6 — each arc’s thickness = how much of the blend</text>
+<path d="M 581 204 Q 362 -25 144 204" fill="none" stroke="#963d2c" stroke-width="1.9" opacity="0.40"/>
+<text x="362" y="81" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">7%</text>
+<path d="M 581 204 Q 398 0 215 204" fill="none" stroke="#b0402a" stroke-width="8.8" opacity="0.84"/>
+<text x="398" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#b0402a">76%</text>
+<path d="M 581 204 Q 441 31 301 204" fill="none" stroke="#963d2c" stroke-width="1.3" opacity="0.36"/>
+<path d="M 581 204 Q 528 93 474 204" fill="none" stroke="#963d2c" stroke-width="1.4" opacity="0.36"/>
+<text x="528" y="141" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">2%</text>
+<path d="M 581 204 Q 556 114 530 204" fill="none" stroke="#963d2c" stroke-width="1.8" opacity="0.39"/>
+<text x="556" y="151" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">6%</text>
+<rect x="120" y="208" width="48" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="144" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">The</text>
+<rect x="176" y="208" width="78" height="34" rx="7" fill="#f1e4e4" stroke="#8d4257" stroke-width="2.2"/>
+<text x="215" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">dragon</text>
+<rect x="262" y="208" width="78" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="301" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">looked</text>
+<rect x="348" y="208" width="38" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="367" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">at</text>
+<rect x="394" y="208" width="48" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="418" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">the</text>
+<rect x="450" y="208" width="48" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="474" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">boy</text>
+<rect x="506" y="208" width="48" height="34" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
+<text x="530" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">and</text>
+<rect x="562" y="208" width="38" height="34" rx="7" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="2.2"/>
+<text x="581" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">it</text>
+<text x="581" y="260" text-anchor="middle" font-size="9.5" fill="#8c6a2a">the token asking (its “query”) — keeps 8% for itself</text>
+<text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
+<text x="30" y="292" font-size="10.5" fill="#6e6557">“looked”, “at”, “the” get ≈0–1%. This head has learned to track who the sentence is about; other heads in the same</text>
+<text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
 </svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
@@ -1015,91 +1015,91 @@ reduces the error. Nudge every parameter a little down its slope, and the loss d
 times and coherent language emerges. This is <strong>gradient descent</strong>.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 640 300" role="img" aria-label="A loss landscape shaped like a valley. A ball sits partway up the left slope, with an arrow showing one step downhill toward the point of lowest loss.">
-<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1c2230"/></marker></defs>
-<line x1="62" y1="28" x2="62" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
-<line x1="62" y1="272" x2="612" y2="272" stroke="#c7cdda" stroke-width="1.5"/>
-<text x="50" y="42" text-anchor="end" font-size="12" fill="#8a93a3">high</text>
-<text x="26" y="150" text-anchor="middle" font-size="13" fill="#5a6373" transform="rotate(-90 26 150)">loss (how wrong)</text>
-<text x="337" y="294" text-anchor="middle" font-size="13" fill="#5a6373">a single weight (one of our model&#8217;s ~3.2 million)</text>
-<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#3253d6" stroke-width="3"/>
-<line x1="335" y1="235" x2="335" y2="272" stroke="#0e7a5f" stroke-width="1.5" stroke-dasharray="4 4"/>
-<circle cx="335" cy="235" r="4.5" fill="#0e7a5f"/>
-<text x="346" y="231" font-size="12" fill="#0e7a5f">lowest loss</text>
-<circle cx="188" cy="176" r="11" fill="#e8462e" stroke="#fff" stroke-width="2.5"/>
-<text x="126" y="150" text-anchor="middle" font-size="12" fill="#1c2230">current</text>
-<text x="126" y="165" text-anchor="middle" font-size="12" fill="#1c2230">weights</text>
-<line x1="201" y1="186" x2="258" y2="210" stroke="#1c2230" stroke-width="2" marker-end="url(#arL)"/>
-<text x="300" y="200" font-size="12" fill="#1c2230">one step downhill</text>
+<defs><marker id="arL" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#231f18"/></marker></defs>
+<line x1="62" y1="28" x2="62" y2="272" stroke="#d8cfbd" stroke-width="1.5"/>
+<line x1="62" y1="272" x2="612" y2="272" stroke="#d8cfbd" stroke-width="1.5"/>
+<text x="50" y="42" text-anchor="end" font-size="12" fill="#998f7d">high</text>
+<text x="26" y="150" text-anchor="middle" font-size="13" fill="#6e6557" transform="rotate(-90 26 150)">loss (how wrong)</text>
+<text x="337" y="294" text-anchor="middle" font-size="13" fill="#6e6557">a single weight (one of our model&#8217;s ~3.2 million)</text>
+<path d="M 90 70 Q 335 400 580 70" fill="none" stroke="#963d2c" stroke-width="3"/>
+<line x1="335" y1="235" x2="335" y2="272" stroke="#5f6c33" stroke-width="1.5" stroke-dasharray="4 4"/>
+<circle cx="335" cy="235" r="4.5" fill="#5f6c33"/>
+<text x="346" y="231" font-size="12" fill="#5f6c33">lowest loss</text>
+<circle cx="188" cy="176" r="11" fill="#b0402a" stroke="#fff" stroke-width="2.5"/>
+<text x="126" y="150" text-anchor="middle" font-size="12" fill="#231f18">current</text>
+<text x="126" y="165" text-anchor="middle" font-size="12" fill="#231f18">weights</text>
+<line x1="201" y1="186" x2="258" y2="210" stroke="#231f18" stroke-width="2" marker-end="url(#arL)"/>
+<text x="300" y="200" font-size="12" fill="#231f18">one step downhill</text>
 </svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball starts high on one slope and a dotted gradient-descent path of real downhill steps curves to the lowest point of the valley.">
-<defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8462e"/></marker></defs>
-<polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="382.0,-73.3 356.0,-12.6 330.0,40.3 304.0,84.8 278.0,120.3 252.0,146.6 226.0,163.3 200.0,170.4 174.0,168.0 148.0,156.3 122.0,135.6 96.0,106.6 70.0,69.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="408.0,-45.2 382.0,15.3 356.0,68.0 330.0,112.3 304.0,147.7 278.0,173.9 252.0,190.6 226.0,197.8 200.0,195.4 174.0,183.8 148.0,163.3 122.0,134.5 96.0,97.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="434.0,-21.2 408.0,37.8 382.0,89.1 356.0,132.1 330.0,166.5 304.0,192.1 278.0,208.6 252.0,215.9 226.0,214.2 200.0,203.6 174.0,184.4 148.0,157.0 122.0,121.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="460.0,-1.2 434.0,55.2 408.0,103.9 382.0,144.8 356.0,177.5 330.0,202.0 304.0,218.1 278.0,225.8 252.0,225.2 226.0,216.3 200.0,199.3 174.0,174.4 148.0,141.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="486.0,14.5 460.0,67.7 434.0,113.3 408.0,151.5 382.0,182.2 356.0,205.3 330.0,221.0 304.0,229.2 278.0,229.8 252.0,223.0 226.0,208.7 200.0,186.8 174.0,157.5" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="512.0,25.6 486.0,75.6 460.0,118.2 434.0,153.6 408.0,182.2 382.0,204.1 356.0,219.3 330.0,227.9 304.0,229.9 278.0,225.1 252.0,213.5 226.0,194.7 200.0,168.6" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="538.0,31.8 512.0,79.2 486.0,119.3 460.0,152.6 434.0,179.5 408.0,200.2 382.0,215.1 356.0,224.1 330.0,227.1 304.0,224.1 278.0,214.6 252.0,198.3 226.0,174.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="564.0,33.0 538.0,78.8 512.0,117.4 486.0,149.5 460.0,175.3 434.0,195.5 408.0,210.1 382.0,219.3 356.0,223.0 330.0,221.0 304.0,212.8 278.0,198.0 252.0,176.0" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="590.0,28.9 564.0,74.6 538.0,113.0 512.0,144.9 486.0,170.7 460.0,190.8 434.0,205.4 408.0,214.6 382.0,218.4 356.0,216.4 330.0,208.4 304.0,193.7 278.0,171.9" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="616.0,19.7 590.0,66.5 564.0,106.2 538.0,139.0 512.0,165.6 486.0,186.2 460.0,200.9 434.0,210.0 408.0,213.3 382.0,210.5 356.0,201.5 330.0,185.7 304.0,162.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="642.0,5.3 616.0,54.5 590.0,96.4 564.0,131.3 538.0,159.4 512.0,181.0 486.0,196.1 460.0,204.8 434.0,207.1 408.0,202.8 382.0,191.8 356.0,173.7 330.0,148.3" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="330.0,-141.3 356.0,-105.3 382.0,-73.3 408.0,-45.2 434.0,-21.2 460.0,-1.2 486.0,14.5 512.0,25.6 538.0,31.8 564.0,33.0 590.0,28.9 616.0,19.7 642.0,5.3" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="304.0,-84.2 330.0,-45.8 356.0,-12.6 382.0,15.3 408.0,37.8 434.0,55.2 460.0,67.7 486.0,75.6 512.0,79.2 538.0,78.8 564.0,74.6 590.0,66.5 616.0,54.5" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="278.0,-34.8 304.0,5.9 330.0,40.3 356.0,68.0 382.0,89.1 408.0,103.9 434.0,113.3 460.0,118.2 486.0,119.3 512.0,117.4 538.0,113.0 564.0,106.2 590.0,96.4" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="252.0,6.7 278.0,49.4 304.0,84.8 330.0,112.3 356.0,132.1 382.0,144.8 408.0,151.5 434.0,153.6 460.0,152.6 486.0,149.5 512.0,144.9 538.0,139.0 564.0,131.3" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="226.0,39.9 252.0,84.1 278.0,120.3 304.0,147.7 330.0,166.5 356.0,177.5 382.0,182.2 408.0,182.2 434.0,179.5 460.0,175.3 486.0,170.7 512.0,165.6 538.0,159.4" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="200.0,64.7 226.0,109.9 252.0,146.6 278.0,173.9 304.0,192.1 330.0,202.0 356.0,205.3 382.0,204.1 408.0,200.2 434.0,195.5 460.0,190.8 486.0,186.2 512.0,181.0" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="174.0,80.9 200.0,126.5 226.0,163.3 252.0,190.6 278.0,208.6 304.0,218.1 330.0,221.0 356.0,219.3 382.0,215.1 408.0,210.1 434.0,205.4 460.0,200.9 486.0,196.1" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="148.0,88.5 174.0,133.7 200.0,170.4 226.0,197.8 252.0,215.9 278.0,225.8 304.0,229.2 330.0,227.9 356.0,224.1 382.0,219.3 408.0,214.6 434.0,210.0 460.0,204.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="122.0,87.6 148.0,131.8 174.0,168.0 200.0,195.4 226.0,214.2 252.0,225.2 278.0,229.8 304.0,229.9 330.0,227.1 356.0,223.0 382.0,218.4 408.0,213.3 434.0,207.1" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="96.0,78.2 122.0,120.9 148.0,156.3 174.0,183.8 200.0,203.6 226.0,216.3 252.0,223.0 278.0,225.1 304.0,224.1 330.0,221.0 356.0,216.4 382.0,210.5 408.0,202.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="70.0,60.6 96.0,101.3 122.0,135.6 148.0,163.3 174.0,184.4 200.0,199.3 226.0,208.7 252.0,213.5 278.0,214.6 304.0,212.8 330.0,208.4 356.0,201.5 382.0,191.8" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="44.0,35.0 70.0,73.4 96.0,106.6 122.0,134.5 148.0,157.0 174.0,174.4 200.0,186.8 226.0,194.7 252.0,198.3 278.0,198.0 304.0,193.7 330.0,185.7 356.0,173.7" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="18.0,1.7 44.0,37.7 70.0,69.7 96.0,97.8 122.0,121.8 148.0,141.8 174.0,157.5 200.0,168.6 226.0,174.8 252.0,176.0 278.0,171.9 304.0,162.7 330.0,148.3" fill="none" stroke="#b9c2d6" stroke-width="1" opacity="0.85"/>
-<polyline points="64.8,61.7 132.2,136.5 184.3,178.6 219.8,197.2 242.4,204.5 256.7,207.2 265.8,208.3 271.6,208.7 275.5,208.9 278.0,209.0 279.6,209.0 280.7,209.1 281.5,209.1 282.0,209.1" fill="none" stroke="#e8462e" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arS)"/>
-<circle cx="132.2" cy="136.5" r="2.6" fill="#e8462e"/>
-<circle cx="219.8" cy="197.2" r="2.6" fill="#e8462e"/>
-<circle cx="256.7" cy="207.2" r="2.6" fill="#e8462e"/>
-<circle cx="271.6" cy="208.7" r="2.6" fill="#e8462e"/>
-<circle cx="278.0" cy="209.0" r="2.6" fill="#e8462e"/>
-<circle cx="280.7" cy="209.1" r="2.6" fill="#e8462e"/>
-<circle cx="64.8" cy="61.7" r="9" fill="#e8462e" stroke="#fff" stroke-width="2.5"/>
-<text x="81" y="50" font-size="12" fill="#1c2230">start: random weights</text>
-<circle cx="282.0" cy="209.1" r="5" fill="#0e7a5f" stroke="#fff" stroke-width="1.8"/>
-<text x="294" y="227" font-size="12" fill="#0e7a5f">lowest loss</text>
-<text x="52" y="210" font-size="12" fill="#5a6373" transform="rotate(-64 52 210)">loss (height) ↑</text>
-<text x="470" y="336" font-size="12" fill="#5a6373">weight 1 →</text>
-<text x="120" y="336" font-size="12" fill="#5a6373">← weight 2</text>
+<defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#b0402a"/></marker></defs>
+<polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="382.0,-73.3 356.0,-12.6 330.0,40.3 304.0,84.8 278.0,120.3 252.0,146.6 226.0,163.3 200.0,170.4 174.0,168.0 148.0,156.3 122.0,135.6 96.0,106.6 70.0,69.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="408.0,-45.2 382.0,15.3 356.0,68.0 330.0,112.3 304.0,147.7 278.0,173.9 252.0,190.6 226.0,197.8 200.0,195.4 174.0,183.8 148.0,163.3 122.0,134.5 96.0,97.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="434.0,-21.2 408.0,37.8 382.0,89.1 356.0,132.1 330.0,166.5 304.0,192.1 278.0,208.6 252.0,215.9 226.0,214.2 200.0,203.6 174.0,184.4 148.0,157.0 122.0,121.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="460.0,-1.2 434.0,55.2 408.0,103.9 382.0,144.8 356.0,177.5 330.0,202.0 304.0,218.1 278.0,225.8 252.0,225.2 226.0,216.3 200.0,199.3 174.0,174.4 148.0,141.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="486.0,14.5 460.0,67.7 434.0,113.3 408.0,151.5 382.0,182.2 356.0,205.3 330.0,221.0 304.0,229.2 278.0,229.8 252.0,223.0 226.0,208.7 200.0,186.8 174.0,157.5" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="512.0,25.6 486.0,75.6 460.0,118.2 434.0,153.6 408.0,182.2 382.0,204.1 356.0,219.3 330.0,227.9 304.0,229.9 278.0,225.1 252.0,213.5 226.0,194.7 200.0,168.6" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="538.0,31.8 512.0,79.2 486.0,119.3 460.0,152.6 434.0,179.5 408.0,200.2 382.0,215.1 356.0,224.1 330.0,227.1 304.0,224.1 278.0,214.6 252.0,198.3 226.0,174.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="564.0,33.0 538.0,78.8 512.0,117.4 486.0,149.5 460.0,175.3 434.0,195.5 408.0,210.1 382.0,219.3 356.0,223.0 330.0,221.0 304.0,212.8 278.0,198.0 252.0,176.0" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="590.0,28.9 564.0,74.6 538.0,113.0 512.0,144.9 486.0,170.7 460.0,190.8 434.0,205.4 408.0,214.6 382.0,218.4 356.0,216.4 330.0,208.4 304.0,193.7 278.0,171.9" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="616.0,19.7 590.0,66.5 564.0,106.2 538.0,139.0 512.0,165.6 486.0,186.2 460.0,200.9 434.0,210.0 408.0,213.3 382.0,210.5 356.0,201.5 330.0,185.7 304.0,162.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="642.0,5.3 616.0,54.5 590.0,96.4 564.0,131.3 538.0,159.4 512.0,181.0 486.0,196.1 460.0,204.8 434.0,207.1 408.0,202.8 382.0,191.8 356.0,173.7 330.0,148.3" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="330.0,-141.3 356.0,-105.3 382.0,-73.3 408.0,-45.2 434.0,-21.2 460.0,-1.2 486.0,14.5 512.0,25.6 538.0,31.8 564.0,33.0 590.0,28.9 616.0,19.7 642.0,5.3" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="304.0,-84.2 330.0,-45.8 356.0,-12.6 382.0,15.3 408.0,37.8 434.0,55.2 460.0,67.7 486.0,75.6 512.0,79.2 538.0,78.8 564.0,74.6 590.0,66.5 616.0,54.5" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="278.0,-34.8 304.0,5.9 330.0,40.3 356.0,68.0 382.0,89.1 408.0,103.9 434.0,113.3 460.0,118.2 486.0,119.3 512.0,117.4 538.0,113.0 564.0,106.2 590.0,96.4" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="252.0,6.7 278.0,49.4 304.0,84.8 330.0,112.3 356.0,132.1 382.0,144.8 408.0,151.5 434.0,153.6 460.0,152.6 486.0,149.5 512.0,144.9 538.0,139.0 564.0,131.3" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="226.0,39.9 252.0,84.1 278.0,120.3 304.0,147.7 330.0,166.5 356.0,177.5 382.0,182.2 408.0,182.2 434.0,179.5 460.0,175.3 486.0,170.7 512.0,165.6 538.0,159.4" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="200.0,64.7 226.0,109.9 252.0,146.6 278.0,173.9 304.0,192.1 330.0,202.0 356.0,205.3 382.0,204.1 408.0,200.2 434.0,195.5 460.0,190.8 486.0,186.2 512.0,181.0" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="174.0,80.9 200.0,126.5 226.0,163.3 252.0,190.6 278.0,208.6 304.0,218.1 330.0,221.0 356.0,219.3 382.0,215.1 408.0,210.1 434.0,205.4 460.0,200.9 486.0,196.1" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="148.0,88.5 174.0,133.7 200.0,170.4 226.0,197.8 252.0,215.9 278.0,225.8 304.0,229.2 330.0,227.9 356.0,224.1 382.0,219.3 408.0,214.6 434.0,210.0 460.0,204.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="122.0,87.6 148.0,131.8 174.0,168.0 200.0,195.4 226.0,214.2 252.0,225.2 278.0,229.8 304.0,229.9 330.0,227.1 356.0,223.0 382.0,218.4 408.0,213.3 434.0,207.1" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="96.0,78.2 122.0,120.9 148.0,156.3 174.0,183.8 200.0,203.6 226.0,216.3 252.0,223.0 278.0,225.1 304.0,224.1 330.0,221.0 356.0,216.4 382.0,210.5 408.0,202.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="70.0,60.6 96.0,101.3 122.0,135.6 148.0,163.3 174.0,184.4 200.0,199.3 226.0,208.7 252.0,213.5 278.0,214.6 304.0,212.8 330.0,208.4 356.0,201.5 382.0,191.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="44.0,35.0 70.0,73.4 96.0,106.6 122.0,134.5 148.0,157.0 174.0,174.4 200.0,186.8 226.0,194.7 252.0,198.3 278.0,198.0 304.0,193.7 330.0,185.7 356.0,173.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="18.0,1.7 44.0,37.7 70.0,69.7 96.0,97.8 122.0,121.8 148.0,141.8 174.0,157.5 200.0,168.6 226.0,174.8 252.0,176.0 278.0,171.9 304.0,162.7 330.0,148.3" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
+<polyline points="64.8,61.7 132.2,136.5 184.3,178.6 219.8,197.2 242.4,204.5 256.7,207.2 265.8,208.3 271.6,208.7 275.5,208.9 278.0,209.0 279.6,209.0 280.7,209.1 281.5,209.1 282.0,209.1" fill="none" stroke="#b0402a" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arS)"/>
+<circle cx="132.2" cy="136.5" r="2.6" fill="#b0402a"/>
+<circle cx="219.8" cy="197.2" r="2.6" fill="#b0402a"/>
+<circle cx="256.7" cy="207.2" r="2.6" fill="#b0402a"/>
+<circle cx="271.6" cy="208.7" r="2.6" fill="#b0402a"/>
+<circle cx="278.0" cy="209.0" r="2.6" fill="#b0402a"/>
+<circle cx="280.7" cy="209.1" r="2.6" fill="#b0402a"/>
+<circle cx="64.8" cy="61.7" r="9" fill="#b0402a" stroke="#fff" stroke-width="2.5"/>
+<text x="81" y="50" font-size="12" fill="#231f18">start: random weights</text>
+<circle cx="282.0" cy="209.1" r="5" fill="#5f6c33" stroke="#fff" stroke-width="1.8"/>
+<text x="294" y="227" font-size="12" fill="#5f6c33">lowest loss</text>
+<text x="52" y="210" font-size="12" fill="#6e6557" transform="rotate(-64 52 210)">loss (height) ↑</text>
+<text x="470" y="336" font-size="12" fill="#6e6557">weight 1 →</text>
+<text x="120" y="336" font-size="12" fill="#6e6557">← weight 2</text>
 </svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent run on this very surface: at every step, feel the slope, step downhill. Our model has millions of weights — a landscape in millions of dimensions — but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 760 250" role="img" aria-label="The training cycle as a loop of four boxes: forward pass, then loss, then backward pass, then update, then back to the start.">
-<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
-<rect x="15" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">① Forward pass</text>
-<text x="95" y="88" text-anchor="middle" font-size="11" fill="#5a6373">run data → predictions</text>
-<text x="95" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">model(x)</text>
-<rect x="205" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">② Loss</text>
-<text x="285" y="88" text-anchor="middle" font-size="11" fill="#5a6373">how wrong is it?</text>
-<text x="285" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
-<rect x="395" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">③ Backward pass</text>
-<text x="475" y="88" text-anchor="middle" font-size="11" fill="#5a6373">which way is downhill</text>
-<text x="475" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
-<rect x="585" y="40" width="160" height="80" rx="12" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">④ Update</text>
-<text x="665" y="88" text-anchor="middle" font-size="11" fill="#5a6373">one step downhill</text>
-<text x="665" y="106" text-anchor="middle" font-size="11" fill="#3253d6" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
-<line x1="175" y1="80" x2="203" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<line x1="365" y1="80" x2="393" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<line x1="555" y1="80" x2="583" y2="80" stroke="#3253d6" stroke-width="2" marker-end="url(#arC)"/>
-<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#3253d6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
-<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#3253d6">repeat ~2,500 times</text>
+<defs><marker id="arC" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#963d2c"/></marker></defs>
+<rect x="15" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="95" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">① Forward pass</text>
+<text x="95" y="88" text-anchor="middle" font-size="11" fill="#6e6557">run data → predictions</text>
+<text x="95" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">model(x)</text>
+<rect x="205" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="285" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">② Loss</text>
+<text x="285" y="88" text-anchor="middle" font-size="11" fill="#6e6557">how wrong is it?</text>
+<text x="285" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">cross_entropy</text>
+<rect x="395" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="475" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">③ Backward pass</text>
+<text x="475" y="88" text-anchor="middle" font-size="11" fill="#6e6557">which way is downhill</text>
+<text x="475" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">loss_and_grad</text>
+<rect x="585" y="40" width="160" height="80" rx="12" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="665" y="68" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">④ Update</text>
+<text x="665" y="88" text-anchor="middle" font-size="11" fill="#6e6557">one step downhill</text>
+<text x="665" y="106" text-anchor="middle" font-size="11" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">optimizer.update</text>
+<line x1="175" y1="80" x2="203" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="365" y1="80" x2="393" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<line x1="555" y1="80" x2="583" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
+<path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#963d2c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
+<text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#963d2c">repeat ~2,500 times</text>
 </svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
@@ -1126,49 +1126,49 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 320" role="img" aria-label="The same real next-word scores for Tom was very, sampled at temperature 0.5 and 1.1. At 0.5 happy dominates; at 1.1 nearly half the probability spreads to the long tail of other chunks.">
-<text x="360" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#1c2230" font-family="ui-monospace,Menlo,monospace">“Tom was very ___”</text>
-<text x="360" y="42" text-anchor="middle" font-size="11" fill="#5a6373">same model, same scores — only the sampling temperature changes</text>
-<text x="187" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0e7a5f">temperature 0.5 — plays it safe</text>
-<text x="148" y="96" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> happy</text>
-<rect x="156" y="82" width="150" height="19" rx="4" fill="#0e7a5f"/>
-<text x="313" y="96" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">58.7%</text>
-<text x="148" y="124" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> sad</text>
-<rect x="156" y="110" width="60" height="19" rx="4" fill="#0e7a5f"/>
-<text x="223" y="124" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">23.3%</text>
-<text x="148" y="152" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> excited</text>
-<rect x="156" y="138" width="26" height="19" rx="4" fill="#0e7a5f"/>
-<text x="189" y="152" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">10.3%</text>
-<text x="148" y="180" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> scared</text>
-<rect x="156" y="166" width="6" height="19" rx="4" fill="#0e7a5f"/>
-<text x="169" y="180" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">2.3%</text>
-<text x="148" y="208" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> angry</text>
-<rect x="156" y="194" width="4" height="19" rx="4" fill="#0e7a5f"/>
-<text x="167" y="208" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">1.7%</text>
-<text x="148" y="236" text-anchor="end" font-size="11.5" font-style="italic" fill="#5a6373">everything else</text>
-<rect x="156" y="222" width="7" height="19" rx="4" fill="#b9c2d6"/>
-<text x="170" y="236" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">2.8%</text>
-<text x="532" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#9a5b00">temperature 1.1 — adventurous</text>
-<text x="493" y="96" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> happy</text>
-<rect x="501" y="82" width="52" height="19" rx="4" fill="#b5731a"/>
-<text x="560" y="96" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">20.3%</text>
-<text x="493" y="124" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> sad</text>
-<rect x="501" y="110" width="34" height="19" rx="4" fill="#b5731a"/>
-<text x="542" y="124" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">13.4%</text>
-<text x="493" y="152" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> excited</text>
-<rect x="501" y="138" width="24" height="19" rx="4" fill="#b5731a"/>
-<text x="532" y="152" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">9.2%</text>
-<text x="493" y="180" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> scared</text>
-<rect x="501" y="166" width="12" height="19" rx="4" fill="#b5731a"/>
-<text x="520" y="180" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">4.7%</text>
-<text x="493" y="208" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#1c2230"> angry</text>
-<rect x="501" y="194" width="10" height="19" rx="4" fill="#b5731a"/>
-<text x="518" y="208" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">4.0%</text>
-<text x="493" y="236" text-anchor="end" font-size="11.5" font-style="italic" fill="#5a6373">everything else</text>
-<rect x="501" y="222" width="116" height="19" rx="4" fill="#b9c2d6"/>
-<text x="624" y="236" font-size="10.5" fill="#5a6373" font-family="ui-monospace,Menlo,monospace">45.4%</text>
-<text x="660" y="265" text-anchor="end" font-size="10" fill="#9a5b00" font-style="italic">↑ the long tail gets a real chance</text>
-<text x="30" y="294" font-size="10.5" fill="#5a6373">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
-<text x="30" y="310" font-size="10.5" fill="#5a6373">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
+<text x="360" y="24" text-anchor="middle" font-size="13" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace">“Tom was very ___”</text>
+<text x="360" y="42" text-anchor="middle" font-size="11" fill="#6e6557">same model, same scores — only the sampling temperature changes</text>
+<text x="187" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#5f6c33">temperature 0.5 — plays it safe</text>
+<text x="148" y="96" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> happy</text>
+<rect x="156" y="82" width="150" height="19" rx="4" fill="#5f6c33"/>
+<text x="313" y="96" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">58.7%</text>
+<text x="148" y="124" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> sad</text>
+<rect x="156" y="110" width="60" height="19" rx="4" fill="#5f6c33"/>
+<text x="223" y="124" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">23.3%</text>
+<text x="148" y="152" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> excited</text>
+<rect x="156" y="138" width="26" height="19" rx="4" fill="#5f6c33"/>
+<text x="189" y="152" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">10.3%</text>
+<text x="148" y="180" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> scared</text>
+<rect x="156" y="166" width="6" height="19" rx="4" fill="#5f6c33"/>
+<text x="169" y="180" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">2.3%</text>
+<text x="148" y="208" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> angry</text>
+<rect x="156" y="194" width="4" height="19" rx="4" fill="#5f6c33"/>
+<text x="167" y="208" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.7%</text>
+<text x="148" y="236" text-anchor="end" font-size="11.5" font-style="italic" fill="#6e6557">everything else</text>
+<rect x="156" y="222" width="7" height="19" rx="4" fill="#cfc5ae"/>
+<text x="170" y="236" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">2.8%</text>
+<text x="532" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#8c6a2a">temperature 1.1 — adventurous</text>
+<text x="493" y="96" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> happy</text>
+<rect x="501" y="82" width="52" height="19" rx="4" fill="#8c6a2a"/>
+<text x="560" y="96" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">20.3%</text>
+<text x="493" y="124" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> sad</text>
+<rect x="501" y="110" width="34" height="19" rx="4" fill="#8c6a2a"/>
+<text x="542" y="124" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">13.4%</text>
+<text x="493" y="152" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> excited</text>
+<rect x="501" y="138" width="24" height="19" rx="4" fill="#8c6a2a"/>
+<text x="532" y="152" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">9.2%</text>
+<text x="493" y="180" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> scared</text>
+<rect x="501" y="166" width="12" height="19" rx="4" fill="#8c6a2a"/>
+<text x="520" y="180" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">4.7%</text>
+<text x="493" y="208" text-anchor="end" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18"> angry</text>
+<rect x="501" y="194" width="10" height="19" rx="4" fill="#8c6a2a"/>
+<text x="518" y="208" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">4.0%</text>
+<text x="493" y="236" text-anchor="end" font-size="11.5" font-style="italic" fill="#6e6557">everything else</text>
+<rect x="501" y="222" width="116" height="19" rx="4" fill="#cfc5ae"/>
+<text x="624" y="236" font-size="10.5" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">45.4%</text>
+<text x="660" y="265" text-anchor="end" font-size="10" fill="#8c6a2a" font-style="italic">↑ the long tail gets a real chance</text>
+<text x="30" y="294" font-size="10.5" fill="#6e6557">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
+<text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
 </svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     

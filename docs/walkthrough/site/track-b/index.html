@@ -493,34 +493,34 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <strong>knowledge distillation</strong>.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet teacher, which writes gold JSON labels, which fine-tune the Qwen student model.">
-<defs><marker id="arD" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
+<defs><marker id="arD" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <!-- box 1: trials -->
-<rect x="12" y="50" width="165" height="84" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="94" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Oncology trials</text>
-<text x="94" y="100" text-anchor="middle" font-size="11" fill="#5a6373">ClinicalTrials.gov</text>
-<text x="94" y="118" text-anchor="middle" font-size="11" fill="#5a6373">1,500 records</text>
+<rect x="12" y="50" width="165" height="84" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="94" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">Oncology trials</text>
+<text x="94" y="100" text-anchor="middle" font-size="11" fill="#6e6557">ClinicalTrials.gov</text>
+<text x="94" y="118" text-anchor="middle" font-size="11" fill="#6e6557">1,500 records</text>
 <!-- box 2: teacher (purple) -->
-<rect x="222" y="50" width="165" height="84" rx="11" fill="#f1ecfb" stroke="#5a3aa6" stroke-width="1.5"/>
-<text x="304" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#33285a">Claude Sonnet</text>
-<text x="304" y="100" text-anchor="middle" font-size="11" fill="#5a3aa6">the teacher</text>
-<text x="304" y="118" text-anchor="middle" font-size="10.5" fill="#5a3aa6">forced tool-use</text>
+<rect x="222" y="50" width="165" height="84" rx="11" fill="#e3eaea" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="304" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#2c4a52">Claude Sonnet</text>
+<text x="304" y="100" text-anchor="middle" font-size="11" fill="#3d6a72">the teacher</text>
+<text x="304" y="118" text-anchor="middle" font-size="10.5" fill="#3d6a72">forced tool-use</text>
 <!-- box 3: gold -->
-<rect x="432" y="50" width="165" height="84" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="514" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">Gold labels</text>
-<text x="514" y="100" text-anchor="middle" font-size="11" fill="#5a6373">structured JSON</text>
-<text x="514" y="118" text-anchor="middle" font-size="10.5" fill="#5a6373">1,200 train / 150 test</text>
+<rect x="432" y="50" width="165" height="84" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="514" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">Gold labels</text>
+<text x="514" y="100" text-anchor="middle" font-size="11" fill="#6e6557">structured JSON</text>
+<text x="514" y="118" text-anchor="middle" font-size="10.5" fill="#6e6557">1,200 train / 150 test</text>
 <!-- box 4: student -->
-<rect x="642" y="50" width="165" height="84" rx="11" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="724" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0c5c47">Qwen3-4B</text>
-<text x="724" y="100" text-anchor="middle" font-size="11" fill="#0e7a5f">the student</text>
-<text x="724" y="118" text-anchor="middle" font-size="10.5" fill="#0e7a5f">learns to reproduce</text>
+<rect x="642" y="50" width="165" height="84" rx="11" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="724" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4c5829">Qwen3-4B</text>
+<text x="724" y="100" text-anchor="middle" font-size="11" fill="#5f6c33">the student</text>
+<text x="724" y="118" text-anchor="middle" font-size="10.5" fill="#5f6c33">learns to reproduce</text>
 <!-- arrows -->
-<line x1="177" y1="92" x2="220" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
-<line x1="387" y1="92" x2="430" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
-<line x1="597" y1="92" x2="640" y2="92" stroke="#5a6373" stroke-width="2" marker-end="url(#arD)"/>
-<text x="198" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">read</text>
-<text x="408" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">writes answers</text>
-<text x="618" y="84" text-anchor="middle" font-size="10" fill="#8a93a3">fine-tune</text>
+<line x1="177" y1="92" x2="220" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
+<line x1="387" y1="92" x2="430" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
+<line x1="597" y1="92" x2="640" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
+<text x="198" y="84" text-anchor="middle" font-size="10" fill="#998f7d">read</text>
+<text x="408" y="84" text-anchor="middle" font-size="10" fill="#998f7d">writes answers</text>
+<text x="618" y="84" text-anchor="middle" font-size="10" fill="#998f7d">fine-tune</text>
 </svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>Distillation: the expensive teacher (Claude) writes structured answers for 1,500 trials; those become the gold labels the cheap student (Qwen) is fine-tuned to reproduce.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -609,25 +609,25 @@ small set of extra &ldquo;adapter&rdquo; weights that sit alongside it. You lear
 not a new model.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big base model is frozen; only a small adapter of weight deltas is trained; together they make TrialScout.">
-<defs><marker id="arL2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3253d6"/></marker></defs>
+<defs><marker id="arL2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#963d2c"/></marker></defs>
 <!-- base, frozen -->
-<rect x="20" y="35" width="300" height="150" rx="12" fill="#f1f3f8" stroke="#9aa3b5" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="170" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="#4a5468">Qwen3-4B (base)</text>
-<text x="170" y="104" text-anchor="middle" font-size="12" fill="#7e8aa0">frozen · 4-bit · ~2 GB</text>
-<text x="170" y="126" text-anchor="middle" font-size="12" fill="#7e8aa0">billions of parameters,</text>
-<text x="170" y="143" text-anchor="middle" font-size="12" fill="#7e8aa0">left untouched ❄</text>
+<rect x="20" y="35" width="300" height="150" rx="12" fill="#f1ece0" stroke="#a89d89" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="170" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="#5c5446">Qwen3-4B (base)</text>
+<text x="170" y="104" text-anchor="middle" font-size="12" fill="#8b816d">frozen · 4-bit · ~2 GB</text>
+<text x="170" y="126" text-anchor="middle" font-size="12" fill="#8b816d">billions of parameters,</text>
+<text x="170" y="143" text-anchor="middle" font-size="12" fill="#8b816d">left untouched ❄</text>
 <!-- plus -->
-<text x="345" y="118" text-anchor="middle" font-size="30" fill="#5a6373">+</text>
+<text x="345" y="118" text-anchor="middle" font-size="30" fill="#6e6557">+</text>
 <!-- adapter, trained -->
-<rect x="372" y="72" width="168" height="78" rx="11" fill="#eef2ff" stroke="#3253d6" stroke-width="2"/>
-<text x="456" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c2230">LoRA adapter</text>
-<text x="456" y="120" text-anchor="middle" font-size="11" fill="#3253d6">28 MB of weight deltas</text>
-<text x="456" y="138" text-anchor="middle" font-size="11" fill="#3253d6">the only part trained</text>
+<rect x="372" y="72" width="168" height="78" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="2"/>
+<text x="456" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">LoRA adapter</text>
+<text x="456" y="120" text-anchor="middle" font-size="11" fill="#963d2c">28 MB of weight deltas</text>
+<text x="456" y="138" text-anchor="middle" font-size="11" fill="#963d2c">the only part trained</text>
 <!-- arrow to result -->
-<line x1="540" y1="111" x2="566" y2="111" stroke="#3253d6" stroke-width="2" marker-end="url(#arL2)"/>
-<rect x="568" y="76" width="132" height="70" rx="11" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="634" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0c5c47">TrialScout</text>
-<text x="634" y="126" text-anchor="middle" font-size="11" fill="#0e7a5f">base + adapter</text>
+<line x1="540" y1="111" x2="566" y2="111" stroke="#963d2c" stroke-width="2" marker-end="url(#arL2)"/>
+<rect x="568" y="76" width="132" height="70" rx="11" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="634" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4c5829">TrialScout</text>
+<text x="634" y="126" text-anchor="middle" font-size="11" fill="#5f6c33">base + adapter</text>
 </svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>LoRA: the billions of base-model parameters stay frozen; training only adjusts a small adapter (~28 MB of weight deltas). At runtime you load the base and snap the adapter on top.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="srcname">run_phase3.py</span></div><div class="hl"><pre><span></span>    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;mlx_lm&quot;</span><span class="p">,</span> <span class="s2">&quot;lora&quot;</span><span class="p">,</span> <span class="s2">&quot;--model&quot;</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;--train&quot;</span><span class="p">,</span>
            <span class="s2">&quot;--data&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MLX_DATA</span><span class="p">),</span> <span class="s2">&quot;--fine-tune-type&quot;</span><span class="p">,</span> <span class="s2">&quot;lora&quot;</span><span class="p">,</span>
@@ -662,28 +662,28 @@ scorecard. So the eval harness is a first-class deliverable, not an afterthought
 over the 150 held-out trials and scores each field against the gold answer.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
-<defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6373"/></marker></defs>
-<rect x="12" y="80" width="150" height="64" rx="10" fill="#eef2ff" stroke="#3253d6" stroke-width="1.5"/>
-<text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1c2230">Gold test set</text>
-<text x="87" y="124" text-anchor="middle" font-size="10.5" fill="#5a6373">150 held-out trials</text>
-<rect x="205" y="80" width="150" height="64" rx="10" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">TrialScout</text>
-<text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#0e7a5f">predicts a readout</text>
-<rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
-<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">6 structured fields</text>
-<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#5a6373">→ accuracy / F1 per field</text>
-<rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#cfd5e2" stroke-width="1.5"/>
-<text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#1c2230">investor_note (free text)</text>
-<text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#5a6373">→ Claude-as-judge</text>
-<rect x="648" y="78" width="140" height="70" rx="10" fill="#e7f6f0" stroke="#0e7a5f" stroke-width="1.5"/>
-<text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0c5c47">Overall score</text>
-<text x="718" y="123" text-anchor="middle" font-size="11" fill="#0e7a5f">0.368 → 0.922</text>
-<text x="718" y="139" text-anchor="middle" font-size="9.5" fill="#0e7a5f">vs baseline</text>
-<line x1="162" y1="112" x2="203" y2="112" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
-<line x1="355" y1="104" x2="398" y2="62" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
-<line x1="355" y1="120" x2="398" y2="162" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
-<line x1="610" y1="60" x2="646" y2="100" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
-<line x1="610" y1="164" x2="646" y2="126" stroke="#5a6373" stroke-width="2" marker-end="url(#arE)"/>
+<defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
+<rect x="12" y="80" width="150" height="64" rx="10" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
+<text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">Gold test set</text>
+<text x="87" y="124" text-anchor="middle" font-size="10.5" fill="#6e6557">150 held-out trials</text>
+<rect x="205" y="80" width="150" height="64" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">TrialScout</text>
+<text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#5f6c33">predicts a readout</text>
+<rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">6 structured fields</text>
+<text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#6e6557">→ accuracy / F1 per field</text>
+<rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
+<text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">investor_note (free text)</text>
+<text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#6e6557">→ Claude-as-judge</text>
+<rect x="648" y="78" width="140" height="70" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
+<text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">Overall score</text>
+<text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.368 → 0.922</text>
+<text x="718" y="139" text-anchor="middle" font-size="9.5" fill="#5f6c33">vs baseline</text>
+<line x1="162" y1="112" x2="203" y2="112" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="355" y1="104" x2="398" y2="62" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="355" y1="120" x2="398" y2="162" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="610" y1="60" x2="646" y2="100" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
+<line x1="610" y1="164" x2="646" y2="126" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
 </svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The eval: for every held-out trial, the student predicts a readout; structured fields are scored by accuracy/F1, the free-text note by a Claude judge, and rolled into one overall score vs the baseline.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="srcname">infer_and_score.py</span></div><div class="hl"><pre><span></span>    <span class="n">model</span><span class="p">,</span> <span class="n">tok</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">adapter_path</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">adapter</span><span class="p">)</span>
 
