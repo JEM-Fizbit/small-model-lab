@@ -5,7 +5,7 @@
 **Applies to:** Python · Apple MLX / `mlx-lm` (or any local inference lib) · MCP Python SDK (FastMCP) · stdio transport
 **Last Updated:** 2026-06-08
 **Version:** 1.0
-**Original Source:** `slm-lab/track-b-trialscout/serve/` (TrialScout — a distilled Qwen3-4B served as an MCP tool)
+**Original Source:** `small-model-lab/track-b-trialscout/serve/` (TrialScout — a distilled Qwen3-4B served as an MCP tool)
 
 ---
 
@@ -198,7 +198,7 @@ prompt = f"You are…\n{json.dumps(record)}"
 
 ## Resources
 
-- Reference implementation: `slm-lab/track-b-trialscout/serve/trial_readout_server.py` (+ `serve/README.md`, `ask.py` REPL).
+- Reference implementation: `small-model-lab/track-b-trialscout/serve/trial_readout_server.py` (+ `serve/README.md`, `ask.py` REPL).
 - [`REMOTE_MCP_SERVICE_PATTERN.md`](REMOTE_MCP_SERVICE_PATTERN.md) — the cloud/OAuth counterpart.
 - [`LOCAL_LLM_OLLAMA.md`](LOCAL_LLM_OLLAMA.md) — stock local serving.
 - [`CLAUDE_SURFACE_PROBE.md`](CLAUDE_SURFACE_PROBE.md) — the A/B/C MCP-reach classes.
@@ -211,10 +211,10 @@ prompt = f"You are…\n{json.dumps(record)}"
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-06-08 | Initial release. Extracted from slm-lab/TrialScout (Phase 5 MCP packaging). |
+| 1.0 | 2026-06-08 | Initial release. Extracted from small-model-lab/TrialScout (Phase 5 MCP packaging). |
 
 ---
 
 **Protocol Version**: 1.0
 **Last Updated**: 2026-06-08
-**Original Source**: slm-lab (track-b-trialscout/serve)
+**Original Source**: small-model-lab (track-b-trialscout/serve)

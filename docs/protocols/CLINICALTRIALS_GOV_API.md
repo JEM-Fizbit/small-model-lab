@@ -5,7 +5,7 @@
 **Applies to:** ClinicalTrials.gov API **v2** (`https://clinicaltrials.gov/api/v2`) · Python `requests` (or any HTTP client) · biopharma trial data pipelines
 **Last Updated:** 2026-06-08
 **Version:** 1.0
-**Original Source:** `slm-lab/track-b-trialscout/data/fetch_trials.py` (+ `fetch_rare_modalities.py`); also used in `pharma-signal-poc`
+**Original Source:** `small-model-lab/track-b-trialscout/data/fetch_trials.py` (+ `fetch_rare_modalities.py`); also used in `pharma-signal-poc`
 
 ---
 
@@ -212,7 +212,7 @@ phases = [p for p in (dm.get("phases") or []) if p not in ("NA", "")]
 ## Resources
 
 - API docs: `https://clinicaltrials.gov/data-api/api`
-- Reference impl: `slm-lab/track-b-trialscout/data/fetch_trials.py` (bulk search) + `fetch_rare_modalities.py` (term-targeted sampling with exclude-set dedup).
+- Reference impl: `small-model-lab/track-b-trialscout/data/fetch_trials.py` (bulk search) + `fetch_rare_modalities.py` (term-targeted sampling with exclude-set dedup).
 - Sibling bio data-source protocols: [`FDA_OPENFDA_API.md`](FDA_OPENFDA_API.md), [`CHEMBL_API_INTEGRATION.md`](CHEMBL_API_INTEGRATION.md), [`NCBI_EUTILITIES_INTEGRATION.md`](NCBI_EUTILITIES_INTEGRATION.md).
 
 ---
@@ -221,10 +221,10 @@ phases = [p for p in (dm.get("phases") or []) if p not in ("NA", "")]
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-06-08 | Initial release. Extracted from slm-lab + pharma-signal-poc CT.gov v2 usage. |
+| 1.0 | 2026-06-08 | Initial release. Extracted from small-model-lab + pharma-signal-poc CT.gov v2 usage. |
 
 ---
 
 **Protocol Version**: 1.0
 **Last Updated**: 2026-06-08
-**Original Source**: slm-lab (track-b-trialscout/data), pharma-signal-poc
+**Original Source**: small-model-lab (track-b-trialscout/data), pharma-signal-poc
