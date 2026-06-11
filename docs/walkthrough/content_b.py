@@ -208,6 +208,19 @@ JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, 
 <code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
 <strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
 trials, and easy to score.</p>
+"""),
+  ("callout", "aside", "JSON, in thirty seconds", r"""
+<p>If the term is new to you: <strong>JSON</strong> is the plain-text format most software uses to
+pass structured data around. (The name stands for JavaScript Object Notation, but nothing here
+involves JavaScript; the format long ago outgrew its origin.) A JSON object is just
+<code>"name": value</code> pairs inside curly braces &mdash;
+<code>{"phase": "Phase 2", "enrollment": 41}</code> &mdash; where a value can be text, a number,
+true/false, a list, or another object nested inside. That's the whole format. It's everywhere
+because both sides can read it: a person can eyeball it, and a program can check that every field
+is present and valid &mdash; exactly what we'll need when we start scoring outputs. The two boxes
+below are both JSON: a trial record in, a readout out.</p>
+"""),
+  ("prose", r"""
 <p>The work is turning verbose, inconsistent registry data into normalised judgement: reading
 &ldquo;Merck Sharp &amp; Dohme LLC&rdquo; and writing <code>large pharma</code>, or a raw
 <code>2021-06-08</code> completion date into <code>H1 2021</code>. That's why it needs a <em>model</em>,
