@@ -1,5 +1,5 @@
 [project]
-name = "slm-lab"
+name = "small-model-lab"
 version = "0.1.0"
 description = "A learn-by-doing lab for building, fine-tuning, and distilling small language models — with a biopharma clinical-trial-readout POC."
 requires-python = ">=3.12,<3.13"
@@ -45,7 +45,7 @@ packages = ["track-b-trialscout"]
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-# slm-lab scripts are deliberately compact and single-purpose. These four rules flag
+# small-model-lab scripts are deliberately compact and single-purpose. These four rules flag
 # intentional house idioms used consistently across the tree, not defects — so we silence
 # them rather than churn every script. Everything else (incl. F401 dead-import detection
 # and E402 import-ordering) stays ON.

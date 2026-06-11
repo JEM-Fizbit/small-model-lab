@@ -2016,7 +2016,7 @@ wheels = [
 ]
 
 [[package]]
-name = "slm-lab"
+name = "small-model-lab"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

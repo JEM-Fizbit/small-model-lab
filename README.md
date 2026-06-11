@@ -1,8 +1,8 @@
-# slm-lab
+# small-model-lab
 
 A learn-by-doing lab for **building, fine-tuning, and distilling small language models** on Apple Silicon — paired with a useful biopharma proof-of-concept.
 
-> 📖 **Start here → [the slm-lab walk-through](https://jem-fizbit.github.io/slm-lab/)** — an interactive, plain-English guide in three parts: **Part 0 · Concepts** explains how a language model works (no code, with diagrams); **Part 1 · Pre-training** builds a tiny GPT from scratch; **Part 2 · Post-training** fine-tunes a real model into a useful expert (TrialScout). No prior Python required to read along.
+> 📖 **Start here → [the small-model-lab walk-through](https://jem-fizbit.github.io/small-model-lab/)** — an interactive, plain-English guide in three parts: **Part 0 · Concepts** explains how a language model works (no code, with diagrams); **Part 1 · Pre-training** builds a tiny GPT from scratch; **Part 2 · Post-training** fine-tunes a real model into a useful expert (TrialScout). No prior Python required to read along.
 
 Two tracks, one shared environment and eval harness:
 

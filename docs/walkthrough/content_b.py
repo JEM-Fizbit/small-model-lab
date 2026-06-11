@@ -1,4 +1,4 @@
-"""content_b.py — Track B (TrialScout) chapter of the slm-lab walk-through.
+"""content_b.py — Track B (TrialScout) chapter of the small-model-lab walk-through.
 
 Same hybrid design as content.py (Track A): hand-authored narrative here; code
 excerpts pulled live from the real Track B files by build.py's ("filecode", …)
@@ -53,7 +53,7 @@ functions, classes, loops.) These six cover most of what appears in this chapter
 
 # ----------------------------------------------------------------------- HERO --
 HERO = r"""
-<p class="kicker">slm-lab · Part 2 · Post-training</p>
+<p class="kicker">small-model-lab · Part 2 · Post-training</p>
 <h1>From a toy to a tool</h1>
 <p class="lede">In Part 1 we built a tiny GPT from scratch and hit its ceiling: it learned the
 <em>shape</em> of language but never anything useful. This chapter is the other half of the arc:
@@ -73,7 +73,7 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
 <p class="readnote"><strong>How to read this.</strong> Same as Part 1: the idea first, then the
 real code, then a plain-English gloss. Part 2 is more <em>pipeline</em> than algorithm, so the
 code boxes show the load-bearing excerpts (pulled straight from the
-<a href="https://github.com/JEM-Fizbit/slm-lab/tree/main/track-b-trialscout">repo</a>) rather than
+<a href="https://github.com/JEM-Fizbit/small-model-lab/tree/main/track-b-trialscout">repo</a>) rather than
 every line. Haven't read <a href="../track-a/">Part 1</a> yet? Start there; this chapter assumes
 its vocabulary.</p>
 """
@@ -529,7 +529,7 @@ big open model into something that does <em>their</em> job.</p>
 <p>Unlike Part 1, this chapter is mostly <strong>read-along</strong>: the gold dataset and the trained adapter
 are gitignored (regenerable, not committed), and step 2 spends ~$14 of Anthropic API to recreate the labels.
 Everything you need to reproduce it is above and in the
-<a href="https://github.com/JEM-Fizbit/slm-lab/tree/main/track-b-trialscout">repo</a>, but you can absolutely
+<a href="https://github.com/JEM-Fizbit/small-model-lab/tree/main/track-b-trialscout">repo</a>, but you can absolutely
 just <em>read</em> it and take the method with you.</p>
 """),
   ("callout", "key", "Where this goes next", r"""

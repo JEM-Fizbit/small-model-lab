@@ -1,4 +1,4 @@
-"""content_concepts.py — Part 0 · Concepts (How it works) of the slm-lab walk-through.
+"""content_concepts.py — Part 0 · Concepts (How it works) of the small-model-lab walk-through.
 
 A code-free conceptual tour. It REUSES the diagrams authored in content.py (imported
 below, byte-for-byte) and the most-iterated callouts, with tightened connective prose.
@@ -17,7 +17,7 @@ META = {
 }
 
 HERO = r"""
-<p class="kicker">slm-lab · Part 0 · Concepts</p>
+<p class="kicker">small-model-lab · Part 0 · Concepts</p>
 <h1>How a language model works</h1>
 <p class="lede">The ideas, in plain English, with no code: what a language model actually <em>is</em>,
 how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. This chapter is
