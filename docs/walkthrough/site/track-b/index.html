@@ -170,16 +170,16 @@ section:first-of-type{border-top:none;padding-top:0;}
   white-space:pre-wrap;word-break:break-word;}
 
 /* ── figures ── */
-.imgfig{margin:26px 0;text-align:center;}
-.imgfig img{max-width:100%;border-radius:2px;border:1px solid var(--line);
+.imgfig{margin:26px 0;text-align:center;background:var(--panel);
+  border:1px solid var(--line);border-radius:3px;padding:20px 18px 8px;
+  box-shadow:none;}
+.imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
   color:var(--soft);margin-top:10px;}
 .fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
   scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.1em;}
-.diagram{background:var(--panel);border:1px solid var(--line);border-radius:3px;
-  padding:20px 18px 8px;box-shadow:none;}
 .diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
 .diagram text{font-family:var(--serif);}
 .diagram figcaption{margin-top:6px;}
