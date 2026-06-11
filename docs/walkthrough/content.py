@@ -1678,7 +1678,7 @@ a.row:hover .row-title{color:var(--accent);}
 @media (max-width:880px){
   .hero h1{font-size:38px;}
   .row{grid-template-columns:64px 1fr;gap:20px;}
-  .row-num{font-size:36px;}
+  .row-num{font-size:36px;margin-top:7px;}
   .row-side{grid-column:2;justify-self:start;text-align:left;display:flex;gap:18px;align-items:baseline;}
   .row-go{margin-top:0;}
   .why-grid{grid-template-columns:1fr;gap:28px;}
