@@ -284,8 +284,10 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
   We just <em>specialise</em> it for one narrow, structured task, by showing it ~1,500
   worked examples and nudging a tiny set of its parameters. The result beats a sensible baseline
   by a mile and nearly matches the expensive model that taught it.</p>
-  <p>Every concept from Part 1 reappears (tokens, attention, the loss, gradient descent), now in
-  service of something that does a job.</p>
+  <p>And none of this is new machinery. The model is the same animal you built in Part 1 &mdash; a
+  transformer, attention blocks and all, just ~1,200&times; bigger &mdash; and fine-tuning is the
+  same training loop (tokens, the loss, gradient descent), now in service of something that does
+  a job.</p>
 </div>
 
 <p class="readnote"><strong>How to read this.</strong> Same as Part 1: the idea first, then the
@@ -776,7 +778,7 @@ floor any real model must clear:</p>
 for free) nearly reproduces the expensive Claude teacher, and produces valid JSON <em>every single
 time</em>. The biggest lifts land where the task is most learnable: <code>est_readout</code> (a
 deterministic date → &ldquo;H1/H2 YYYY&rdquo; rule, 0.03 → 0.99) and <code>phase</code> (perfect). This
-is the win Part 1 was building toward: same machinery (tokens, attention, loss, gradient descent) now
+is the win Part 1 was building toward: the same training loop (tokens, loss, gradient descent) now
 doing a real job, well.</p>
 <p>One field still lags: <code>modality</code>, at 0.77. Can we push it higher by running an improvement
 <em>loop</em>? We try, in <a href="#ceiling">§8</a>.</p>
