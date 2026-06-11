@@ -58,29 +58,29 @@ def main():
            'a dotted gradient-descent path of real downhill steps curves to the lowest '
            'point of the valley.">']
     out.append('<defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" '
-               'orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8462e"/></marker></defs>')
+               'orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#b0402a"/></marker></defs>')
     for line in mesh:
-        out.append(f'<polyline points="{pts(line)}" fill="none" stroke="#b9c2d6" '
+        out.append(f'<polyline points="{pts(line)}" fill="none" stroke="#cfc5ae" '
                    'stroke-width="1" opacity="0.85"/>')
     # descent path (drawn after the mesh so it reads as "on" the surface)
-    out.append(f'<polyline points="{pts(path)}" fill="none" stroke="#e8462e" '
+    out.append(f'<polyline points="{pts(path)}" fill="none" stroke="#b0402a" '
                'stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arS)"/>')
     for x, y in path[1:-1:2]:
-        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.6" fill="#e8462e"/>')
+        out.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.6" fill="#b0402a"/>')
     sx, sy = path[0]
-    out.append(f'<circle cx="{sx:.1f}" cy="{sy:.1f}" r="9" fill="#e8462e" stroke="#fff" '
+    out.append(f'<circle cx="{sx:.1f}" cy="{sy:.1f}" r="9" fill="#b0402a" stroke="#fff" '
                'stroke-width="2.5"/>')
     out.append(f'<text x="{sx + 16:.0f}" y="{sy - 12:.0f}" font-size="12" '
-               'fill="#1c2230">start: random weights</text>')
-    out.append(f'<circle cx="{end[0]:.1f}" cy="{end[1]:.1f}" r="5" fill="#0e7a5f" '
+               'fill="#231f18">start: random weights</text>')
+    out.append(f'<circle cx="{end[0]:.1f}" cy="{end[1]:.1f}" r="5" fill="#5f6c33" '
                'stroke="#fff" stroke-width="1.8"/>')
     out.append(f'<text x="{end[0] + 12:.0f}" y="{end[1] + 18:.0f}" font-size="12" '
-               'fill="#0e7a5f">lowest loss</text>')
+               'fill="#5f6c33">lowest loss</text>')
     # axis hints
-    out.append('<text x="52" y="210" font-size="12" fill="#5a6373" '
+    out.append('<text x="52" y="210" font-size="12" fill="#6e6557" '
                'transform="rotate(-64 52 210)">loss (height) ↑</text>')
-    out.append(f'<text x="{W - 190}" y="{H - 14}" font-size="12" fill="#5a6373">weight 1 →</text>')
-    out.append(f'<text x="120" y="{H - 14}" font-size="12" fill="#5a6373">← weight 2</text>')
+    out.append(f'<text x="{W - 190}" y="{H - 14}" font-size="12" fill="#6e6557">weight 1 →</text>')
+    out.append(f'<text x="120" y="{H - 14}" font-size="12" fill="#6e6557">← weight 2</text>')
     out.append('</svg>')
     print("\n".join(out))
 
