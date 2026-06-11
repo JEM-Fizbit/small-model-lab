@@ -111,6 +111,8 @@ TEMPLATE = r"""<!doctype html>
 <meta property="og:title" content="{{ meta.title }}"/>
 <meta property="og:description" content="{{ meta.subtitle }}"/>
 <meta property="og:type" content="article"/>
+<link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="64x64" href="../favicon.png"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
 <meta property="og:image" content="https://jem-fizbit.github.io/slm-lab/og-image.png"/>
 <style>
@@ -163,6 +165,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
 .topnav a.hub:hover{color:var(--accent);}
 .topnav .muted{color:var(--faint);white-space:nowrap;}
 .topnav .muted em{font-style:normal;font-size:10px;opacity:.85;}
+.topnav .hub-short{display:none;}
 
 /* ── hero — same paper, ruled, no gradient ── */
 .hero{background:var(--bg);color:var(--ink);padding:72px 24px 52px;
@@ -352,7 +355,10 @@ footer strong{color:var(--soft);}
 @media (max-width:680px){
   .diagram{overflow-x:auto;}
   .diagram svg{min-width:640px;}
-  .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
+  .topnav .inner{flex-wrap:wrap;padding:9px 16px;gap:5px 13px;font-size:10px;letter-spacing:.08em;}
+  .topnav .pnum{display:none;}
+  .topnav .hub-long{display:none;}
+  .topnav .hub-short{display:inline;}
 }
 @media print{.pagenav,.topnav{display:none;}}
 </style>
@@ -361,7 +367,7 @@ footer strong{color:var(--soft);}
 
 <nav class="topnav"><div class="inner">
 {% for n in nav %}{% if n.href %}<a href="{{ n.href }}"{% if n.active %} class="active"{% endif %}>{{ n.label }}</a>{% else %}<span class="muted">{{ n.label }}{% if n.note %} <em>({{ n.note }})</em>{% endif %}</span>{% endif %}{% endfor %}
-<a class="hub" href="{{ hub_url }}">AI Knowledge Hub ↗</a>
+<a class="hub" href="{{ hub_url }}"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
 </div></nav>
 
 <header class="hero" id="top"><div class="inner">{{ hero }}</div></header>
@@ -1566,6 +1572,8 @@ LANDING_TEMPLATE = r"""<!doctype html>
 <meta property="og:title" content="{{ meta.title }}"/>
 <meta property="og:description" content="{{ meta.description }}"/>
 <meta property="og:type" content="website"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="64x64" href="favicon.png"/>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
 <meta property="og:image" content="https://jem-fizbit.github.io/slm-lab/og-image.png"/>
 <style>
@@ -1598,6 +1606,7 @@ a{color:inherit;}
   text-transform:uppercase;color:var(--soft);text-decoration:none;white-space:nowrap;}
 .topbar nav a:hover{color:var(--accent);}
 .topbar nav a.hub{color:var(--faint);}
+.topbar .hub-short{display:none;}
 
 .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
 
@@ -1672,6 +1681,14 @@ a.row:hover .row-title{color:var(--accent);}
   .about{grid-template-columns:1fr;gap:22px;}
   .about .portrait{max-width:220px;}
 }
+@media (max-width:680px){
+  .topbar .inner{flex-wrap:wrap;padding:16px 16px 12px;gap:8px 18px;}
+  .wordmark{font-size:18px;}
+  .topbar nav{gap:16px;}
+  .topbar nav a{font-size:10px;letter-spacing:.08em;}
+  .topbar .hub-long{display:none;}
+  .topbar .hub-short{display:inline;}
+}
 </style>
 </head>
 <body>
@@ -1682,7 +1699,7 @@ a.row:hover .row-title{color:var(--accent);}
     {% if concepts_live %}<a href="ideas/">Concepts</a>{% endif %}
     <a href="track-a/">Pre-training</a>
     {% if track_b_live %}<a href="track-b/">Post-training</a>{% endif %}
-    <a class="hub" target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub ↗</a>
+    <a class="hub" target="_blank" rel="noopener" href="{{ hub_url }}"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
   </nav>
 </div></header>
 

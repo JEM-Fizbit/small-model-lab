@@ -277,17 +277,20 @@ def main():
         """Top-nav for a chapter page (all chapters live at site/<slug>/)."""
         def href(slug):
             return "./" if slug == active else f"../{slug}/"
+        def part(n, name):
+            # the "Part N · " prefix is hidden on narrow screens (.pnum)
+            return f'<span class="pnum">Part {n} · </span>{name}'
         items = [{"label": "Home", "href": "../"}]
         if concepts_live:
-            items.append({"label": "Part 0 · Concepts", "href": href("ideas"),
+            items.append({"label": part(0, "Concepts"), "href": href("ideas"),
                           "active": active == "ideas"})
-        items.append({"label": "Part 1 · Pre-training", "href": href("track-a"),
+        items.append({"label": part(1, "Pre-training"), "href": href("track-a"),
                       "active": active == "track-a"})
         if track_b_live:
-            items.append({"label": "Part 2 · Post-training", "href": href("track-b"),
+            items.append({"label": part(2, "Post-training"), "href": href("track-b"),
                           "active": active == "track-b"})
         else:
-            items.append({"label": "Part 2 · Post-training", "href": None, "note": "coming"})
+            items.append({"label": part(2, "Post-training"), "href": None, "note": "coming"})
         return items
 
     # --- Part 0 · Concepts → site/ideas/  (no code → no Python primer) ---
@@ -342,11 +345,12 @@ def main():
     (SITE / "index.html").write_text(_externalize_links(html_l))
     written.append(("index.html (landing)", len(html_l), 0))
 
-    # --- Social card (og:image) → site/og-image.png ---
-    og = Path(__file__).resolve().parent / "assets" / "og-image.png"
-    if og.exists():
-        (SITE / "og-image.png").write_bytes(og.read_bytes())
-        print("wrote site/og-image.png")
+    # --- Root assets: social card + PNG favicons (Safari/iOS don't take SVG) ---
+    for name in ("og-image.png", "favicon.png", "apple-touch-icon.png"):
+        src = Path(__file__).resolve().parent / "assets" / name
+        if src.exists():
+            (SITE / name).write_bytes(src.read_bytes())
+            print(f"wrote site/{name}")
 
     for name, n, secs in written:
         extra = f", {secs} sections" if secs else ""
