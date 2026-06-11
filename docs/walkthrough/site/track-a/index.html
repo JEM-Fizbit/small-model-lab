@@ -9,296 +9,247 @@
 <meta property="og:description" content="Pre-training a language model from nothing, on a laptop: the real code, explained."/>
 <meta property="og:type" content="article"/>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ── slm-lab · "The Monograph" chapter stylesheet ─────────────────────────
+   Warm paper, Newsreader serif, IBM Plex Mono labels, one madder accent.
+   Drop-in replacement for the <style> block in content.py's TEMPLATE:
+   every selector below matches the existing markup. */
+
 :root{
-  --ink:#1c2230; --soft:#5a6373; --faint:#8a93a3; --line:#e4e7ee;
-  --bg:#fbfbfd; --panel:#ffffff; --accent:#3253d6; --accent-soft:#eef2ff;
-  --key:#0e7a5f; --key-soft:#e7f6f0; --try:#9a5b00; --try-soft:#fbf1e0;
-  --math:#5a3aa6; --math-soft:#f1ecfb; --insight:#a8386a; --insight-soft:#fbecf3;
-  --code-bg:#272822;
-  --serif:Charter,"Iowan Old Style",Georgia,"Times New Roman",serif;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
-  --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+  --ink:#231f18; --soft:#6e6557; --faint:#998f7d;
+  --line:#ddd4c2; --line-soft:#e8e1d2;
+  --bg:#f7f3ea; --panel:#fbf8f1;
+  --accent:#963d2c; --accent-soft:#f0e2dc;
+  --code-bg:#f0eadb; --code-line:#e0d7c2;
+  --teal:#3d6a72; --olive:#5f6c33;
+  --serif:'Newsreader',Charter,'Iowan Old Style',Georgia,serif;
+  --sans:'Newsreader',Charter,Georgia,serif; /* serif-first identity; --sans kept for selector compat */
+  --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
+.tablewrap,.codefig .hl,.term pre,.diagram{scrollbar-width:thin;scrollbar-color:#cfc5ae transparent;}
+.tablewrap::-webkit-scrollbar,.codefig .hl::-webkit-scrollbar,.term pre::-webkit-scrollbar,.diagram::-webkit-scrollbar{height:8px;width:8px;}
+.tablewrap::-webkit-scrollbar-thumb,.codefig .hl::-webkit-scrollbar-thumb,.term pre::-webkit-scrollbar-thumb,.diagram::-webkit-scrollbar-thumb{background:#cfc5ae;border-radius:4px;}
+.tablewrap::-webkit-scrollbar-track,.codefig .hl::-webkit-scrollbar-track,.term pre::-webkit-scrollbar-track,.diagram::-webkit-scrollbar-track{background:transparent;}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
-  font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  font-size:18px;line-height:1.7;-webkit-font-smoothing:antialiased;
+  font-optical-sizing:auto;}
+::selection{background:var(--accent-soft);}
 
-/* hero */
-.hero{background:linear-gradient(165deg,#10182f 0%,#202b4d 60%,#2b3a66 100%);
-  color:#eaeefb;padding:72px 24px 60px;}
-.hero .inner{max-width:760px;margin:0 auto;}
-.hero .kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.18em;
-  font-size:12px;font-weight:600;color:#9fb2e8;margin:0 0 14px;}
-.hero h1{font-family:var(--sans);font-weight:700;font-size:46px;line-height:1.08;
-  margin:0 0 18px;letter-spacing:-.02em;}
-.hero .lede{font-size:20px;line-height:1.6;color:#d4ddf4;margin:0 0 26px;}
-.bigidea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  border-radius:14px;padding:20px 24px;margin:26px 0;}
-.bigidea p{margin:0 0 10px;font-size:17px;color:#e6ecfb;}
-.bigidea p:last-child{margin:0;color:#c2cdee;font-size:16px;}
-.hero .readnote{font-size:15px;color:#aebbdd;font-family:var(--sans);line-height:1.6;
-  border-top:1px solid rgba(255,255,255,.12);padding-top:20px;margin-top:26px;}
-.hero a{color:#a9c0ff;}
+/* labels — the one non-serif voice */
+.kicker,.toctitle,.toc-part,.part-banner,.gloss-tag,.term-tag,.callout-title,
+.primer-kicker,.codebar .srcname{
+  font-family:var(--mono)!important;text-transform:uppercase;letter-spacing:.16em;
+  font-size:11px;font-weight:500;}
 
-/* layout */
-.layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
-  gap:48px;padding:48px 24px 80px;}
-nav.toc{position:sticky;top:64px;align-self:start;font-family:var(--sans);font-size:14px;
-  max-height:calc(100vh - 48px);overflow:auto;}
-nav.toc .toctitle{text-transform:uppercase;letter-spacing:.14em;font-size:11px;
-  color:var(--faint);font-weight:700;margin:0 0 12px;}
-nav.toc a{display:block;color:var(--soft);text-decoration:none;padding:4px 0;
-  line-height:1.4;border-left:2px solid transparent;padding-left:12px;margin-left:-14px;}
+/* ── top nav ── */
+.topnav{background:var(--bg);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:14px 24px;display:flex;gap:24px;
+  align-items:baseline;font-family:var(--mono);font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.12em;}
+.topnav a{color:var(--soft);text-decoration:none;white-space:nowrap;}
+.topnav a:hover{color:var(--accent);}
+.topnav a.active{color:var(--accent);font-weight:600;
+  border-bottom:1px solid var(--accent);padding-bottom:2px;}
+.topnav a.hub{margin-left:auto;color:var(--faint);}
+.topnav a.hub:hover{color:var(--accent);}
+.topnav .muted{color:var(--faint);white-space:nowrap;}
+.topnav .muted em{font-style:normal;font-size:10px;opacity:.85;}
+
+/* ── hero — same paper, ruled, no gradient ── */
+.hero{background:var(--bg);color:var(--ink);padding:72px 24px 52px;
+  border-bottom:1px solid var(--line);}
+.hero .inner{max-width:1140px;margin:0 auto;}
+.hero .kicker{color:var(--accent);margin:0 0 18px;}
+.hero h1{font-family:var(--serif);font-weight:500;font-size:50px;line-height:1.06;
+  margin:0 0 22px;letter-spacing:-.022em;max-width:780px;}
+.hero .lede{font-size:20px;line-height:1.62;color:var(--soft);margin:0 0 26px;max-width:680px;}
+.bigidea{background:transparent;border:none;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--line);border-radius:0;padding:20px 0;margin:30px 0;max-width:680px;}
+.bigidea p{margin:0 0 10px;font-size:17.5px;color:var(--ink);}
+.bigidea p:last-child{margin:0;color:var(--soft);font-size:16px;}
+.hero .readnote{font-size:15.5px;color:var(--soft);font-family:var(--serif);line-height:1.65;
+  border-top:none;padding-top:0;margin-top:26px;max-width:680px;}
+.hero a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.hero a:hover{border-color:var(--accent);}
+
+/* ── layout ── */
+.layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:236px 1fr;
+  gap:56px;padding:48px 24px 80px;}
+nav.toc{position:sticky;top:64px;align-self:start;font-family:var(--serif);font-size:14.5px;
+  max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:none;}
+nav.toc::-webkit-scrollbar{display:none;}
+nav.toc .toctitle{color:var(--faint);margin:0 0 12px;}
+nav.toc a{display:grid;grid-template-columns:30px 1fr;align-items:baseline;color:var(--soft);text-decoration:none;padding:4.5px 0;
+  line-height:1.45;}
 nav.toc a:hover{color:var(--accent);}
-nav.toc .toc-part{font-weight:700;color:var(--ink);margin:18px 0 6px;font-size:12px;
-  text-transform:uppercase;letter-spacing:.08em;}
-nav.toc .toc-num{color:var(--faint);font-variant-numeric:tabular-nums;
-  display:inline-block;min-width:30px;}
+nav.toc .toc-part{color:var(--accent);margin:20px 0 8px;font-size:10.5px;
+  border-top:1px solid var(--line);padding-top:12px;}
+nav.toc .toc-num{color:var(--faint);font-family:var(--mono);font-size:11px;
+  font-variant-numeric:tabular-nums;}
 
-main{min-width:0;max-width:760px;}
-section{margin:0 0 8px;padding:34px 0 6px;border-top:1px solid var(--line);scroll-margin-top:58px;}
+main{min-width:0;max-width:720px;}
+section{margin:0 0 8px;padding:38px 0 6px;border-top:1px solid var(--line);scroll-margin-top:64px;}
 section:first-of-type{border-top:none;padding-top:0;}
-.sec-head{display:flex;align-items:baseline;gap:14px;margin:0 0 14px;}
-.sec-num{font-family:var(--sans);font-weight:700;font-size:13px;color:#fff;
-  background:var(--accent);border-radius:7px;padding:4px 9px;letter-spacing:.02em;
-  white-space:nowrap;flex:none;}
-.sec-head h2{font-family:var(--sans);font-weight:700;font-size:27px;letter-spacing:-.01em;
-  margin:0;line-height:1.15;}
-.part-banner{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
-  font-size:12px;font-weight:700;color:var(--accent);margin:8px 0 0;}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin:0 0 16px;}
+.sec-num{font-family:var(--serif);font-style:italic;font-weight:400;font-size:26px;
+  color:var(--accent);background:transparent;border-radius:0;padding:0;
+  letter-spacing:0;white-space:nowrap;flex:none;}
+.sec-num::before{content:"§ ";}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:30px;letter-spacing:-.015em;
+  margin:0;line-height:1.18;}
+.part-banner{color:var(--accent);margin:8px 0 0;}
 
-/* prose */
+/* ── prose ── */
 .prose{margin:0 0 4px;}
-.prose p{margin:0 0 18px;}
-.prose h3{font-family:var(--sans);font-size:19px;font-weight:700;margin:26px 0 10px;}
-.prose strong{font-weight:700;}
+.prose p{margin:0 0 18px;text-wrap:pretty;}
+.prose h3{font-family:var(--serif);font-size:21px;font-weight:600;margin:28px 0 10px;
+  letter-spacing:-.01em;}
+.prose strong{font-weight:600;}
 .prose em{font-style:italic;}
 .prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
-  font-size:.86em;background:#eef0f5;color:#33405e;padding:1px 6px;border-radius:5px;
+  font-size:.82em;background:var(--code-bg);color:#4a4234;padding:1px 6px;border-radius:3px;
   overflow-wrap:anywhere;}
 .prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
-  border-bottom:1px solid #c5d0f5;}
-.prose a:hover{border-color:var(--accent);}
+  border-bottom:1px solid var(--accent-soft);}
+.prose a:hover,.gloss a:hover,.callout a:hover{border-color:var(--accent);}
 
-/* code figures */
-.codefig{margin:22px 0;border-radius:12px;overflow:hidden;
-  box-shadow:0 2px 10px rgba(20,28,60,.10);border:1px solid #2c2d27;}
-.codebar{background:#1f201b;display:flex;align-items:center;gap:7px;padding:9px 14px;}
-.codebar .dot{width:11px;height:11px;border-radius:50%;background:#3a3b34;}
-.codebar .dot:nth-child(1){background:#ff5f56;}
-.codebar .dot:nth-child(2){background:#ffbd2e;}
-.codebar .dot:nth-child(3){background:#27c93f;}
-.codebar .srcname{margin-left:auto;font-family:var(--mono);font-size:12px;color:#9b9c92;}
+/* ── code figures — quiet parchment inset, no window chrome ── */
+.codefig{margin:26px 0;border-radius:3px;overflow:hidden;
+  box-shadow:none;border:1px solid var(--code-line);background:var(--code-bg);}
+.codebar{background:#e9e2cf;display:flex;align-items:baseline;gap:7px;padding:8px 16px;
+  border-bottom:1px solid var(--code-line);}
+.codebar .dot{display:none;}
+.codebar .srcname{margin-left:0;color:var(--accent);font-size:10.5px;}
 .codefig .hl{margin:0;padding:18px 20px;overflow:auto;background:var(--code-bg);
-  font-family:var(--mono);font-size:13.5px;line-height:1.55;}
+  font-family:var(--mono);font-size:13px;line-height:1.6;}
 .codefig .hl pre{margin:0;}
-.codefig figcaption{font-family:var(--sans);font-size:13px;color:var(--soft);
-  background:#fbfbfc;padding:10px 16px;border-top:1px solid var(--line);}
+.codefig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--soft);
+  background:var(--bg);padding:10px 16px;border-top:1px solid var(--code-line);}
 
-/* gloss box */
-.gloss{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);
-  border-radius:0 10px 10px 0;padding:16px 20px 6px;margin:18px 0 22px;
-  font-size:16.5px;}
-.gloss-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.12em;
-  font-size:10.5px;font-weight:700;color:var(--accent);margin:0 0 8px;}
+/* pygments (light, muted — replaces monokai) */
+.hl pre{color:#3a342a;}
+.hl .c,.hl .c1,.hl .ch,.hl .cm,.hl .cs,.hl .cpf{color:#9a8f7a;font-style:italic;}
+.hl .k,.hl .kc,.hl .kd,.hl .kn,.hl .kp,.hl .kr,.hl .kt,.hl .ow{color:var(--accent);}
+.hl .s,.hl .s1,.hl .s2,.hl .sa,.hl .sb,.hl .sc,.hl .se,.hl .si,.hl .sx,.hl .sr,.hl .ss,.hl .sd{color:var(--olive);}
+.hl .m,.hl .mi,.hl .mf,.hl .mh,.hl .mo,.hl .il{color:var(--teal);}
+.hl .nf,.hl .fm,.hl .nc,.hl .nd,.hl .ne,.hl .nx{color:#234a5c;}
+.hl .nb,.hl .bp,.hl .vm{color:#234a5c;}
+.hl .o,.hl .p,.hl .pm{color:#6e6557;}
+.hl .n,.hl .nn,.hl .nv,.hl .na,.hl .nt,.hl .kt{color:#3a342a;}
+.hl .err{border:none;color:#3a342a;}
+.hl .gp{color:var(--faint);}
+
+/* ── gloss ("what this says") — ruled, not boxed ── */
+.gloss{background:transparent;border:none;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--line);border-radius:0;padding:16px 0 8px;margin:22px 0 26px;
+  font-size:16px;}
+.gloss-tag{color:var(--accent);margin:0 0 10px;}
 .gloss p{margin:0 0 12px;}
 .gloss ul{margin:0 0 12px;padding-left:22px;}
 .gloss li{margin:0 0 7px;}
-.gloss b{color:var(--ink);}
+.gloss b{color:var(--ink);font-weight:600;}
 
-/* terminal output */
-.term{margin:18px 0 22px;border-radius:10px;overflow:hidden;border:1px solid #d7dbe4;}
-.term-tag{font-family:var(--sans);text-transform:uppercase;letter-spacing:.1em;
-  font-size:10.5px;font-weight:700;color:var(--soft);background:#eef0f4;
-  padding:7px 14px;border-bottom:1px solid #dde1ea;}
-.term pre{margin:0;padding:14px 16px;background:#f7f8fb;color:#2a3142;
-  font-family:var(--mono);font-size:12.5px;line-height:1.5;overflow:auto;
+/* ── terminal output — quiet rule, no panel ── */
+.term{margin:20px 0 24px;border-radius:0;overflow:hidden;border:none;
+  border-left:2px solid var(--line);padding-left:18px;}
+.term-tag{color:var(--faint);background:transparent;padding:0 0 6px;border-bottom:none;}
+.term pre{margin:0;padding:0;background:transparent;color:var(--ink);
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;overflow:auto;
   white-space:pre-wrap;word-break:break-word;}
 
-/* figures (images) */
-.imgfig{margin:24px 0;text-align:center;}
-.imgfig img{max-width:100%;border-radius:10px;border:1px solid var(--line);
-  box-shadow:0 2px 10px rgba(20,28,60,.08);}
-.imgfig figcaption{font-family:var(--sans);font-size:13.5px;color:var(--soft);
-  margin-top:10px;}
-.fignum{font-weight:700;color:var(--accent);margin-right:8px;scroll-margin-top:64px;}
-.diagram{background:#fff;border:1px solid var(--line);border-radius:12px;
-  padding:20px 18px 8px;box-shadow:0 2px 10px rgba(20,28,60,.06);}
+/* ── figures ── */
+.imgfig{margin:26px 0;text-align:center;}
+.imgfig img{max-width:100%;border-radius:2px;border:1px solid var(--line);
+  box-shadow:none;background:#fff;}
+.imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
+  color:var(--soft);margin-top:10px;}
+.fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
+  scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.1em;}
+.diagram{background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  padding:20px 18px 8px;box-shadow:none;}
 .diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
-.diagram text{font-family:var(--sans);}
+.diagram text{font-family:var(--serif);}
 .diagram figcaption{margin-top:6px;}
 
-/* callouts */
-.callout{border-radius:10px;padding:16px 20px;margin:22px 0;font-size:16px;
-  font-family:var(--sans);line-height:1.6;}
-.callout-title{font-weight:700;font-size:13px;text-transform:uppercase;
-  letter-spacing:.08em;margin:0 0 8px;}
+/* ── callouts — one family, ruled; label color carries the variant ── */
+.callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
+  font-family:var(--serif);line-height:1.65;background:transparent;border:none;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--line);}
+.callout-title{margin:0 0 9px;font-weight:500;}
 .callout-body p{margin:0 0 10px;}
 .callout-body p:last-child{margin:0;}
 .callout-body ul{margin:6px 0 0;padding-left:20px;}
 .callout-body li{margin:0 0 6px;}
-.callout.key{background:var(--key-soft);border:1px solid #bfe6d6;}
-.callout.key .callout-title{color:var(--key);}
-.callout.tryit{background:var(--try-soft);border:1px solid #f0dcb4;}
-.callout.tryit .callout-title{color:var(--try);}
-.callout.aside{background:#f1f3f8;border:1px solid #dfe3ec;}
-.callout.aside .callout-title{color:var(--soft);}
-.callout.math{background:var(--math-soft);border:1px solid #d9ccf3;}
-.callout.math .callout-title{color:var(--math);}
-.callout.insight{background:var(--insight-soft);border:1px solid #eecada;}
-.callout.insight .callout-title{color:var(--insight);}
-.callout.math .formula{font-family:var(--mono);font-size:15px;background:#fff;
-  border:1px solid #e1d8f5;border-radius:8px;padding:12px 14px;margin:6px 0 12px;
-  text-align:center;color:#33285a;overflow:auto;}
+.callout.key{background:transparent;border-color:var(--ink) transparent var(--line);}
+.callout.key .callout-title{color:var(--accent);}
+.callout.tryit .callout-title{color:var(--olive);}
+.callout.aside{border-top-color:var(--line);}
+.callout.aside .callout-title{color:var(--faint);}
+.callout.math .callout-title{color:var(--teal);}
+.callout.insight .callout-title{color:var(--accent);}
+.callout.math .formula{font-family:var(--mono);font-size:14.5px;background:var(--code-bg);
+  border:1px solid var(--code-line);border-radius:3px;padding:12px 14px;margin:6px 0 12px;
+  text-align:center;color:#4a4234;overflow:auto;}
 
-/* tables */
-.tablewrap{margin:22px 0;overflow:auto;}
-table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;}
+/* ── tables ── */
+.tablewrap{margin:24px 0;overflow:auto;}
+table{border-collapse:collapse;width:100%;font-family:var(--serif);font-size:15.5px;}
 th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
   vertical-align:top;}
-th{font-weight:700;color:var(--ink);border-bottom:2px solid #cfd5e2;
-  background:#f6f7fb;font-size:13px;text-transform:uppercase;letter-spacing:.04em;}
+th{font-family:var(--mono);font-weight:500;color:var(--soft);border-bottom:1px solid var(--ink);
+  background:transparent;font-size:11px;text-transform:uppercase;letter-spacing:.12em;}
 td:first-child{font-weight:600;}
 
-/* python primer appendix */
-.primer-panel{background:var(--math-soft);border:1px solid #d9ccf3;border-radius:14px;
+/* ── python primer appendix ── */
+.primer-panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;
   padding:6px 26px 16px;margin-top:10px;}
-section.primer-sec .sec-num{background:var(--math);}
-.primer-kicker{font-family:var(--sans);text-transform:uppercase;letter-spacing:.16em;
-  font-size:12px;font-weight:700;color:var(--math);margin:8px 0 0;}
+section.primer-sec .sec-num{background:transparent;color:var(--teal);}
+.primer-kicker{color:var(--teal);margin:8px 0 0;}
 dl.primer{margin:18px 0;}
-dl.primer dt{display:block;font-family:var(--mono);font-size:13.5px;color:#33285a;
-  background:#f8f5fd;border:1px solid #e1d8f5;border-bottom:1px dashed #e9e1f7;
-  border-radius:10px 10px 0 0;padding:10px 16px 9px;margin:18px 0 0;}
-dl.primer dd{margin:0 0 18px;font-size:15.5px;background:#fff;
-  border:1px solid #e1d8f5;border-top:none;border-radius:0 0 10px 10px;padding:11px 16px 13px;}
+dl.primer dt{display:block;font-family:var(--mono);font-size:13px;color:#4a4234;
+  background:var(--code-bg);border:1px solid var(--code-line);border-bottom:1px dashed var(--code-line);
+  border-radius:3px 3px 0 0;padding:10px 16px 9px;margin:18px 0 0;}
+dl.primer dd{margin:0 0 18px;font-size:15.5px;background:var(--bg);
+  border:1px solid var(--code-line);border-top:none;border-radius:0 0 3px 3px;padding:11px 16px 13px;}
 
-footer{border-top:1px solid var(--line);padding:30px 24px 60px;text-align:center;
-  font-family:var(--sans);font-size:13.5px;color:var(--faint);line-height:1.6;}
-footer p{margin:0 0 8px;text-wrap:pretty;} footer p:last-child{margin:0;}
+/* ── footer ── */
+footer{border-top:1px solid var(--line);padding:28px 24px 60px;text-align:left;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.9;}
+footer p{margin:0 auto 10px;text-wrap:pretty;max-width:1140px;}
+footer p:last-child{margin-bottom:0;}
 footer .seg{display:inline-block;}
-footer code{font-family:var(--mono);background:#eef0f5;padding:1px 6px;border-radius:5px;}
-footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid #c5d0f5;}
+footer code{font-family:var(--mono);background:var(--code-bg);padding:1px 6px;border-radius:3px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+footer a:hover{border-color:var(--accent);}
+footer strong{color:var(--soft);}
 
+/* ── page jump buttons ── */
+.pagenav{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:8px;}
+.pagenav a{width:38px;height:38px;border-radius:2px;display:flex;align-items:center;
+  justify-content:center;background:var(--bg);color:var(--accent);border:1px solid var(--line);
+  text-decoration:none;font-size:16px;line-height:1;box-shadow:none;font-family:var(--serif);
+  transition:background .12s,color .12s,border-color .12s;}
+.pagenav a:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+@media (max-width:920px){.pagenav{right:12px;bottom:12px;}}
+
+/* ── responsive ── */
 @media (max-width:920px){
   .layout{grid-template-columns:1fr;gap:0;}
   nav.toc{display:none;}
-  .hero h1{font-size:36px;}
+  .hero h1{font-size:38px;}
   body{font-size:17px;}
 }
-/* phones: dense diagrams scroll sideways instead of shrinking to illegibility */
 @media (max-width:680px){
   .diagram{overflow-x:auto;}
   .diagram svg{min-width:640px;}
   .topnav .inner{flex-wrap:wrap;gap:6px 14px;}
 }
-/* top nav (between chapters) */
-.topnav{background:#0c1322;border-bottom:1px solid rgba(255,255,255,.08);
-  position:sticky;top:0;z-index:50;}
-.topnav .inner{max-width:1140px;margin:0 auto;padding:11px 24px;display:flex;gap:22px;
-  align-items:center;font-family:var(--sans);font-size:14px;}
-.topnav a{color:#aebbdd;text-decoration:none;}
-.topnav a:hover{color:#fff;}
-.topnav a.active{color:#fff;font-weight:700;}
-.topnav a.hub{margin-left:auto;color:#9fb2e8;}
-.topnav a.hub:hover{color:#fff;}
-/* always-present top/bottom/home control (bottom-right, no JS) */
-.pagenav{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:9px;}
-.pagenav a{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;background:#fff;color:var(--accent);border:1px solid var(--line);
-  text-decoration:none;font-size:18px;line-height:1;box-shadow:0 3px 12px rgba(20,28,60,.16);
-  transition:background .12s,color .12s;}
-.pagenav a:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
-@media (max-width:920px){.pagenav{right:12px;bottom:12px;}}
 @media print{.pagenav,.topnav{display:none;}}
-.topnav .muted{color:#5e6b88;}
-.topnav .muted em{font-style:normal;font-size:12px;opacity:.85;}
-pre { line-height: 125%; }
-td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
-td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
-.hl .hll { background-color: #49483e }
-.hl { background: #272822; color: #F8F8F2 }
-.hl .c { color: #959077 } /* Comment */
-.hl .err { color: #ED007E; background-color: #1E0010 } /* Error */
-.hl .esc { color: #F8F8F2 } /* Escape */
-.hl .g { color: #F8F8F2 } /* Generic */
-.hl .k { color: #66D9EF } /* Keyword */
-.hl .l { color: #AE81FF } /* Literal */
-.hl .n { color: #F8F8F2 } /* Name */
-.hl .o { color: #FF4689 } /* Operator */
-.hl .x { color: #F8F8F2 } /* Other */
-.hl .p { color: #F8F8F2 } /* Punctuation */
-.hl .ch { color: #959077 } /* Comment.Hashbang */
-.hl .cm { color: #959077 } /* Comment.Multiline */
-.hl .cp { color: #959077 } /* Comment.Preproc */
-.hl .cpf { color: #959077 } /* Comment.PreprocFile */
-.hl .c1 { color: #959077 } /* Comment.Single */
-.hl .cs { color: #959077 } /* Comment.Special */
-.hl .gd { color: #FF4689 } /* Generic.Deleted */
-.hl .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
-.hl .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
-.hl .gr { color: #F8F8F2 } /* Generic.Error */
-.hl .gh { color: #F8F8F2 } /* Generic.Heading */
-.hl .gi { color: #A6E22E } /* Generic.Inserted */
-.hl .go { color: #66D9EF } /* Generic.Output */
-.hl .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
-.hl .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
-.hl .gu { color: #959077 } /* Generic.Subheading */
-.hl .gt { color: #F8F8F2 } /* Generic.Traceback */
-.hl .kc { color: #66D9EF } /* Keyword.Constant */
-.hl .kd { color: #66D9EF } /* Keyword.Declaration */
-.hl .kn { color: #FF4689 } /* Keyword.Namespace */
-.hl .kp { color: #66D9EF } /* Keyword.Pseudo */
-.hl .kr { color: #66D9EF } /* Keyword.Reserved */
-.hl .kt { color: #66D9EF } /* Keyword.Type */
-.hl .ld { color: #E6DB74 } /* Literal.Date */
-.hl .m { color: #AE81FF } /* Literal.Number */
-.hl .s { color: #E6DB74 } /* Literal.String */
-.hl .na { color: #A6E22E } /* Name.Attribute */
-.hl .nb { color: #F8F8F2 } /* Name.Builtin */
-.hl .nc { color: #A6E22E } /* Name.Class */
-.hl .no { color: #66D9EF } /* Name.Constant */
-.hl .nd { color: #A6E22E } /* Name.Decorator */
-.hl .ni { color: #F8F8F2 } /* Name.Entity */
-.hl .ne { color: #A6E22E } /* Name.Exception */
-.hl .nf { color: #A6E22E } /* Name.Function */
-.hl .nl { color: #F8F8F2 } /* Name.Label */
-.hl .nn { color: #F8F8F2 } /* Name.Namespace */
-.hl .nx { color: #A6E22E } /* Name.Other */
-.hl .py { color: #F8F8F2 } /* Name.Property */
-.hl .nt { color: #FF4689 } /* Name.Tag */
-.hl .nv { color: #F8F8F2 } /* Name.Variable */
-.hl .ow { color: #FF4689 } /* Operator.Word */
-.hl .pm { color: #F8F8F2 } /* Punctuation.Marker */
-.hl .w { color: #F8F8F2 } /* Text.Whitespace */
-.hl .mb { color: #AE81FF } /* Literal.Number.Bin */
-.hl .mf { color: #AE81FF } /* Literal.Number.Float */
-.hl .mh { color: #AE81FF } /* Literal.Number.Hex */
-.hl .mi { color: #AE81FF } /* Literal.Number.Integer */
-.hl .mo { color: #AE81FF } /* Literal.Number.Oct */
-.hl .sa { color: #E6DB74 } /* Literal.String.Affix */
-.hl .sb { color: #E6DB74 } /* Literal.String.Backtick */
-.hl .sc { color: #E6DB74 } /* Literal.String.Char */
-.hl .dl { color: #E6DB74 } /* Literal.String.Delimiter */
-.hl .sd { color: #E6DB74 } /* Literal.String.Doc */
-.hl .s2 { color: #E6DB74 } /* Literal.String.Double */
-.hl .se { color: #AE81FF } /* Literal.String.Escape */
-.hl .sh { color: #E6DB74 } /* Literal.String.Heredoc */
-.hl .si { color: #E6DB74 } /* Literal.String.Interpol */
-.hl .sx { color: #E6DB74 } /* Literal.String.Other */
-.hl .sr { color: #E6DB74 } /* Literal.String.Regex */
-.hl .s1 { color: #E6DB74 } /* Literal.String.Single */
-.hl .ss { color: #E6DB74 } /* Literal.String.Symbol */
-.hl .bp { color: #F8F8F2 } /* Name.Builtin.Pseudo */
-.hl .fm { color: #A6E22E } /* Name.Function.Magic */
-.hl .vc { color: #F8F8F2 } /* Name.Variable.Class */
-.hl .vg { color: #F8F8F2 } /* Name.Variable.Global */
-.hl .vi { color: #F8F8F2 } /* Name.Variable.Instance */
-.hl .vm { color: #F8F8F2 } /* Name.Variable.Magic */
-.hl .il { color: #AE81FF } /* Literal.Number.Integer.Long */
 </style>
 </head>
 <body>
@@ -454,7 +405,7 @@ download.</p>
 neural-network building blocks, and the optimizer (the part that will adjust the model as it
 learns). One line prints the compute device, confirming the Mac's GPU is in play.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">mlx.core</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">mlx.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
@@ -494,7 +445,7 @@ inefficient, but maximally transparent: you can see <em>exactly</em> what the mo
 stories, written with a small vocabulary on purpose, so that a small model can actually learn
 coherent English from them.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="c1"># Pull a few thousand TinyStories. Streaming = we don&#39;t download the whole dataset.</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="c1"># Pull a few thousand TinyStories. Streaming = we don&#39;t download the whole dataset.</span>
 <span class="n">N_STORIES</span> <span class="o">=</span> <span class="mi">4000</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dataset</span>
@@ -549,7 +500,7 @@ Lily went to her mom and said, "Mom, I found this needle. Can you share it with 
 The last 10% is held back as a <strong>validation set</strong> (text the model never trains
 on) which later lets us tell genuine learning apart from mere memorising.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="n">chars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="n">chars</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span>
 <span class="n">stoi</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chars</span><span class="p">)}</span>
 <span class="n">itos</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">stoi</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -605,7 +556,7 @@ the right</em>. So at every single position, the model's job is: &ldquo;given ev
 here, what's the next character?&rdquo; One window quietly contains hundreds of these little
 quizzes at once.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_batch</span><span class="p">(</span><span class="n">split</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_batch</span><span class="p">(</span><span class="n">split</span><span class="p">):</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">train_data</span> <span class="k">if</span> <span class="n">split</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span> <span class="k">else</span> <span class="n">val_data</span>
     <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="n">block_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">block_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ix</span><span class="p">])</span>
@@ -639,7 +590,7 @@ text from the internet: the supervision is free.</p>
 numbers the model will learn on its own. A founding principle of this lab is &ldquo;no magic
 numbers,&rdquo; so each one carries a note on what it does and which way to push it.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="c1"># --- model shape ---</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="c1"># --- model shape ---</span>
 <span class="n">block_size</span> <span class="o">=</span> <span class="mi">128</span>     <span class="c1"># context length: chars of history the model conditions on. Bigger = more context, more compute.</span>
 <span class="n">n_embd</span>     <span class="o">=</span> <span class="mi">256</span>     <span class="c1"># width: size of each token&#39;s vector. Bigger = more capacity, slower.</span>
 <span class="n">n_head</span>     <span class="o">=</span> <span class="mi">8</span>       <span class="c1"># attention heads (must divide n_embd). More heads = more independent &quot;relationships&quot; learned.</span>
@@ -699,7 +650,7 @@ the future, the &ldquo;guess the next character&rdquo; game would be trivial: it
 read the answer. We enforce this with a <strong>mask</strong> that blocks every forward-looking
 connection. This is what the &ldquo;causal&rdquo; in <em>causal self-attention</em> means.</p>
 </div></aside>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">causal_mask</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">causal_mask</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
     <span class="c1"># Lower-triangular 1s (allowed: current + past) -&gt; 0; upper triangle (future) -&gt; -1e9.</span>
     <span class="c1"># Added to attention scores before softmax, so future positions get ~0 weight.</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mx</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">mx</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">))))</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1e9</span>
@@ -790,7 +741,7 @@ network. The <em>why</em>, with the diagrams (what a linear layer computes, what
 256 numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
 Here we build the block in code.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ln1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">n_embd</span><span class="p">)</span>
@@ -898,7 +849,7 @@ the loop that fixes that: <em>measure</em> how wrong each guess is (the <strong>
 descent</strong>). The <em>why</em> (loss, gradients, backpropagation, the downhill-in-a-landscape
 picture) is in <a href="../ideas/#learn">Part 0 · Concepts</a>. Here is that loop, in code.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Vv</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">T</span><span class="p">,</span> <span class="n">Vv</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1011,7 +962,7 @@ Append it, then feed the whole thing back in and repeat. This one-step-at-a-time
 called <strong>autoregressive</strong> generation, and it's exactly how the largest models
 write too.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">n_new</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">n_new</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">):</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">mx</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">encode</span><span class="p">(</span><span class="n">prompt</span><span class="p">)])</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_new</span><span class="p">):</span>
         <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">idx</span><span class="p">[:,</span> <span class="o">-</span><span class="n">block_size</span><span class="p">:])[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">temperature</span>
@@ -1094,7 +1045,7 @@ far faster at the same size.</p>
 <p>Crucially, we <em>train</em> the tokenizer on our own corpus, so all 8,192 tokens are
 relevant to these stories: no wasted vocabulary.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="n">tok</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">BPE</span><span class="p">(</span><span class="n">unk_token</span><span class="o">=</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">))</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="n">tok</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">BPE</span><span class="p">(</span><span class="n">unk_token</span><span class="o">=</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">))</span>
 <span class="n">tok</span><span class="o">.</span><span class="n">pre_tokenizer</span> <span class="o">=</span> <span class="n">pre_tokenizers</span><span class="o">.</span><span class="n">ByteLevel</span><span class="p">(</span><span class="n">add_prefix_space</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">tok</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">decoders</span><span class="o">.</span><span class="n">ByteLevel</span><span class="p">()</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">trainers</span><span class="o">.</span><span class="n">BpeTrainer</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> <span class="n">special_tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1150,7 +1101,7 @@ signal, so without damping, the signal compounds layer over layer and explodes.<
 specifically shrink the output of each block's residual path by a factor that depends on depth.
 Tiny change, decisive effect.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="n">STD</span> <span class="o">=</span> <span class="mf">0.02</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="n">STD</span> <span class="o">=</span> <span class="mf">0.02</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_normal</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">STD</span><span class="p">):</span> <span class="k">return</span> <span class="n">mx</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">std</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">CausalSelfAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -1235,7 +1186,7 @@ model settle into a better solution.</li>
 large, scale it back to a ceiling. Cheap insurance against one bad batch blowing up the run.</li>
 </ul>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="n">B</span><span class="p">,</span><span class="n">T</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="n">T</span><span class="p">,</span><span class="n">V</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="o">*</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
@@ -1395,7 +1346,7 @@ of notebook 02 saves the trained model (its parameters, its tokenizer, and its c
 to a folder on disk. After that, a separate, tiny program can reload it in under a second and
 generate text without any retraining at all.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="c1"># --- Save this trained model so you never retrain just to *use* it ---</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 02</span></div><div class="hl"><pre><span></span><span class="c1"># --- Save this trained model so you never retrain just to *use* it ---</span>
 <span class="c1"># Writes weights + tokenizer + config to notebooks/checkpoints/tiny_gpt_v2/ (gitignored).</span>
 <span class="c1"># Reload it in ~1s anywhere with:  model, tok, cfg = tiny_gpt.load(&quot;checkpoints/tiny_gpt_v2&quot;)</span>
 <span class="c1"># (that&#39;s what notebook 03 and chat.py do). tiny_gpt.GPT is a structural twin of the</span>
@@ -1416,7 +1367,7 @@ in miniature, exactly what &ldquo;downloading a model&rdquo; gives you anywhere.
 <p>Reloading is the mirror image. A small library, <code>tiny_gpt.py</code>, rebuilds the model
 from the config, pours the saved weights back in, and loads the tokenizer:</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">tiny_gpt.py</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">tiny_gpt.py</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a saved checkpoint. Returns (model, tokenizer, cfg). Takes ~1s, no training.&quot;&quot;&quot;</span>
     <span class="n">ckpt</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ckpt_dir</span><span class="p">)</span>
     <span class="n">cfg</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">ckpt</span> <span class="o">/</span> <span class="s2">&quot;config.json&quot;</span><span class="p">)))</span>
@@ -1434,7 +1385,7 @@ from the config, pours the saved weights back in, and loads the tokenizer:</p>
 its file. <code>model.eval()</code> flips it into inference mode. From here, generating text is
 instant.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 03</span></div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 03</span></div><div class="hl"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tiny_gpt</span>   <span class="c1"># local module (notebooks/tiny_gpt.py) — the model class + load/generate</span>
 
 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -1466,7 +1417,7 @@ safe (pick the likeliest token almost every time, coherent but repetitive);
 <strong>high</strong> temperature makes it adventurous (give unlikely tokens a real chance,
 creative but loopier).</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">notebook 03</span></div><div class="hl"><pre><span></span><span class="k">for</span> <span class="n">temp</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">notebook 03</span></div><div class="hl"><pre><span></span><span class="k">for</span> <span class="n">temp</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- temperature </span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">tiny_gpt</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;Once upon a time&quot;</span><span class="p">,</span> <span class="n">n_new</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="n">temp</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">()</span>
@@ -1505,7 +1456,7 @@ inside almost every story, so the model can't tell &ldquo;end of paragraph&rdquo
 of story.&rdquo; A reserved token that appears <em>only</em> between stories has no such
 ambiguity.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">train_v2_checkpoint.py</span></div><div class="hl"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">trainers</span><span class="o">.</span><span class="n">BpeTrainer</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> <span class="n">special_tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">,</span> <span class="n">EOS</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">train_v2_checkpoint.py</span></div><div class="hl"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">trainers</span><span class="o">.</span><span class="n">BpeTrainer</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> <span class="n">special_tokens</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;[UNK]&quot;</span><span class="p">,</span> <span class="n">EOS</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 <span class="n">tok</span><span class="o">.</span><span class="n">train_from_iterator</span><span class="p">([</span><span class="n">text</span><span class="p">],</span> <span class="n">trainer</span><span class="p">)</span>
 <span class="n">tok</span><span class="o">.</span><span class="n">add_special_tokens</span><span class="p">([</span><span class="n">EOS</span><span class="p">])</span>           <span class="c1"># match &quot;&lt;|endstory|&gt;&quot; atomically when encoding</span>
@@ -1528,7 +1479,7 @@ training stream story-by-story, appending that token's id after each one. The mo
 thousands of times over, that a finished story is followed by this exact marker. So it learns to
 produce it precisely when a story is complete.</p>
 </div>
-<figure class="codefig"><div class="codebar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="srcname">tiny_gpt.py</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">n_new</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">stop_at_eos</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">tiny_gpt.py</span></div><div class="hl"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tok</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">n_new</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">stop_at_eos</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Yield text deltas as tokens are produced — for a live &#39;typing&#39; feel.</span>
 
 <span class="sd">    Stops when the model emits its end-of-story token (if it has one and stop_at_eos=True),</span>
