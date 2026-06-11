@@ -292,7 +292,7 @@ record into a structured, investor-relevant readout, running on a laptop, for fr
 
 <p class="readnote"><strong>How to read this.</strong> Same as Part 1: the idea first, then the
 real code, then a plain-English gloss. Part 2 is more <em>pipeline</em> than algorithm, so the
-code boxes show the load-bearing excerpts (pulled straight from the
+code boxes show the excerpts that do the real work (pulled straight from the
 <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/tree/main/track-b-trialscout">repo</a>) rather than
 every line. Haven't read <a href="../track-a/">Part 1</a> yet? Start there; this chapter assumes
 its vocabulary.</p>
@@ -568,7 +568,7 @@ labeling run to about <strong>$14</strong>.</li>
 </ul>
 </div>
 <aside class="callout key"><div class="callout-title">Teacher quality caps student quality</div><div class="callout-body">
-<p>This is the load-bearing rule of distillation: the student can only get as good as the answers it's
+<p>This is distillation's iron rule: the student can only get as good as the answers it's
 shown. A weak teacher silently ceilings the whole project, so we pay for a strong one (Sonnet), not a
 cheap one. The student will end up <em>near</em> the teacher, never above it. (We'll see that ceiling
 bite, hard, in §8.)</p>
@@ -633,6 +633,17 @@ memory than a laptop has, and risks the model forgetting everything else it know
 <strong>LoRA</strong> (Low-Rank Adaptation): <em>freeze</em> the entire base model and train only a
 small set of extra &ldquo;adapter&rdquo; weights that sit alongside it. You learn a tiny <em>patch</em>,
 not a new model.</p>
+<p>Two questions worth answering before the command. <em>Where does the adapter come from?</em> It's
+created, not chosen: when the run starts, the trainer bolts small blank matrices alongside the frozen
+weights, initialised so they have zero effect, and gradient descent writes into them &mdash; they are
+the only parameters allowed to move. The 28&nbsp;MB file this run produces <em>is</em> the adapter; it
+didn't exist before training, and on its own it's useless &mdash; it only means something snapped onto
+its base model. <em>And is there a menu of adapters to pick from?</em> Not for a new task. What you pick
+are its dials: how many of the model's layers get a patch (we adapt the top 16) and how wide each patch
+is (the <em>rank</em>, which we leave at the trainer's default). Ready-made adapters do get shared
+around for <em>existing</em> tasks &mdash; a downloadable &ldquo;LoRA&rdquo; for an image model is
+exactly this kind of file &mdash; but nobody has trained one for trial readouts, which is rather the
+point of this chapter.</p>
 </div>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big base model is frozen; only a small adapter of weight deltas is trained; together they make TrialScout.">
 <defs><marker id="arL2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#963d2c"/></marker></defs>
