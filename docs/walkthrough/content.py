@@ -1682,6 +1682,7 @@ a.row:hover .row-title{color:var(--accent);}
   .row-side{grid-column:2;justify-self:start;text-align:left;display:flex;gap:18px;align-items:baseline;}
   .row-go{margin-top:0;}
   .why-grid{grid-template-columns:1fr;gap:28px;}
+  .why-item{display:block;}
   .about{grid-template-columns:1fr;gap:22px;}
   .about .portrait{max-width:220px;}
 }
