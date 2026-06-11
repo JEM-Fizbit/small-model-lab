@@ -154,13 +154,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
 /* ── top nav ── */
 .topnav{background:var(--bg);border-bottom:1px solid var(--line);
   position:sticky;top:0;z-index:50;}
-.topnav .inner{max-width:1140px;margin:0 auto;padding:14px 24px;display:flex;gap:24px;
+.topnav .inner{max-width:1140px;margin:0 auto;padding:14px 24px;display:flex;gap:34px;
   align-items:baseline;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.12em;}
 .topnav a{color:var(--soft);text-decoration:none;white-space:nowrap;}
 .topnav a:hover{color:var(--accent);}
 .topnav a.active{color:var(--accent);font-weight:600;
   border-bottom:1px solid var(--accent);padding-bottom:2px;}
+.topnav .pnum{color:var(--faint);}
+.topnav a:hover .pnum,.topnav a.active .pnum{color:var(--accent);}
 .topnav a.hub{margin-left:auto;color:var(--faint);}
 .topnav a.hub:hover{color:var(--accent);}
 .topnav .muted{color:var(--faint);white-space:nowrap;}
@@ -262,9 +264,10 @@ section:first-of-type{border-top:none;padding-top:0;}
 .gloss b{color:var(--ink);font-weight:600;}
 
 /* ── terminal output — quiet rule, no panel ── */
-.term{margin:20px 0 24px;border-radius:0;overflow:hidden;border:none;
-  border-left:2px solid var(--line);padding-left:18px;}
-.term-tag{color:var(--faint);background:transparent;padding:0 0 6px;border-bottom:none;}
+.term{margin:20px 0 24px;border-radius:0 3px 3px 0;overflow:hidden;
+  border:1px solid var(--code-line);border-left:2px solid var(--accent);
+  background:#f1ece0;padding:12px 16px 14px;}
+.term-tag{color:var(--soft);background:transparent;padding:0 0 8px;border-bottom:none;}
 .term pre{margin:0;padding:0;background:transparent;color:var(--ink);
   font-family:var(--mono);font-size:12.5px;line-height:1.55;overflow:auto;
   white-space:pre-wrap;word-break:break-word;}
@@ -1615,6 +1618,7 @@ a{color:inherit;}
 .hero .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--accent);margin:0 0 20px;font-weight:500;}
 .hero .kicker a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.hero .kicker .seg{display:inline-block;}
 .hero h1{font-size:56px;line-height:1.06;font-weight:500;letter-spacing:-.022em;
   margin:0 0 26px;max-width:820px;}
 .hero h1 .dot{color:var(--accent);}
@@ -1705,7 +1709,7 @@ a.row:hover .row-title{color:var(--accent);}
 
 <div class="wrap">
   <section class="hero">
-    <p class="kicker">A walk-through in three parts &nbsp;·&nbsp; part of the <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a></p>
+    <p class="kicker"><span class="seg">A walk-through in three parts&nbsp;&nbsp;·</span> <span class="seg">part of the <a target="_blank" rel="noopener" href="{{ hub_url }}">AI Knowledge Hub</a></span></p>
     <h1>{{ landing.h1 }}<span class="dot">.</span></h1>
     <p class="lede">{{ landing.lede }}</p>
   </section>
