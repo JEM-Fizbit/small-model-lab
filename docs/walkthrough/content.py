@@ -223,6 +223,9 @@ section:first-of-type{border-top:none;padding-top:0;}
 .prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
   font-size:.82em;background:var(--code-bg);color:#4a4234;padding:1px 6px;border-radius:3px;
   overflow-wrap:anywhere;}
+figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
+  background:var(--code-bg);color:#4a4234;padding:0 4px;border-radius:3px;
+  overflow-wrap:anywhere;}
 .prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
   border-bottom:1px solid var(--accent-soft);}
 .prose a:hover,.gloss a:hover,.callout a:hover{border-color:var(--accent);}
