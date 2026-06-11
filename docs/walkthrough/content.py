@@ -759,63 +759,78 @@ EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embedd
 # docs/walkthrough/gen_generation_trace.py (seed 1); rerun it to regenerate them.
 # Pure CSS/SMIL-free animation on a 21 s cycle; prefers-reduced-motion shows the
 # final frame (full sentence + step 6's menu) as a static figure.
-GENLOOP_SVG = r'''<svg viewBox="0 0 720 306" role="img" aria-label="Autoregressive generation, animated: the prompt Once upon a time grows one word-chunk at a time. At each of six steps the model's real top-4 next-chunk probabilities appear as growing bars, the sampled chunk is outlined and then appended to the sentence. Steps 1 to 5 pick the favourite (comma 87.5%, there 98.7%, was 99.1%, a 98.6%, little 81.5%); at step 6 the weighted die lands on boy at 13.9% instead of the favourite girl at 83.4%, finishing: Once upon a time, there was a little boy.">
+GENLOOP_SVG = r'''<svg id="genloop" viewBox="0 0 720 306" role="img" aria-label="Autoregressive generation, animated: the prompt Once upon a time grows one word-chunk at a time. At each of six steps the model's real top-4 next-chunk probabilities appear as growing bars, the sampled chunk is outlined and then appended to the sentence with a brief highlight. Steps 1 to 5 pick the favourite (comma 87.5%, there 98.7%, was 99.1%, a 98.6%, little 81.5%); at step 6 the weighted die lands on boy at 13.9% instead of the favourite girl at 83.4%, finishing: Once upon a time, there was a little boy.">
 <style>
 .gl-s1,.gl-s2,.gl-s3,.gl-s4,.gl-s5{opacity:0}
 .gl-s6,.gl-m1,.gl-m2,.gl-m3,.gl-m4,.gl-m5,.gl-m6,.gl-t1,.gl-t2,.gl-t3,.gl-t4,.gl-t5,.gl-t6{opacity:1}
 .gl-bars{transform-box:view-box;transform-origin:222px 0;transform:none}
+.gl-p1,.gl-p2,.gl-p3{fill:#998f7d}
+#genloop:hover .gl-anim,#genloop:hover .gl-bars{animation-play-state:paused}
 .gl-s1{animation:glw1 31s linear infinite}
 .gl-b1{animation:glg1 31s linear infinite}
 .gl-m1{animation:glm1 31s linear infinite}
 .gl-t1{animation:glt1 31s linear infinite}
+
 .gl-s2{animation:glw2 31s linear infinite}
 .gl-b2{animation:glg2 31s linear infinite}
 .gl-m2{animation:glm2 31s linear infinite}
 .gl-t2{animation:glt2 31s linear infinite}
+
 .gl-s3{animation:glw3 31s linear infinite}
 .gl-b3{animation:glg3 31s linear infinite}
 .gl-m3{animation:glm3 31s linear infinite}
 .gl-t3{animation:glt3 31s linear infinite}
+
 .gl-s4{animation:glw4 31s linear infinite}
 .gl-b4{animation:glg4 31s linear infinite}
 .gl-m4{animation:glm4 31s linear infinite}
 .gl-t4{animation:glt4 31s linear infinite}
+
 .gl-s5{animation:glw5 31s linear infinite}
 .gl-b5{animation:glg5 31s linear infinite}
 .gl-m5{animation:glm5 31s linear infinite}
 .gl-t5{animation:glt5 31s linear infinite}
+
 .gl-s6{animation:glw6 31s linear infinite}
 .gl-b6{animation:glg6 31s linear infinite}
 .gl-m6{animation:glm6 31s linear infinite}
 .gl-t6{animation:glt6 31s linear infinite}
-@keyframes glw1{0%{opacity:0}0.9%{opacity:1}13.12%{opacity:1}14.52%{opacity:0}100%{opacity:0}}
+
+.gl-p1{animation:glp1 31s linear infinite}.gl-p2{animation:glp2 31s linear infinite}.gl-p3{animation:glp3 31s linear infinite}
+@keyframes glw1{0%{opacity:0}0.9%{opacity:1}13.06%{opacity:1}14.52%{opacity:0}100%{opacity:0}}
 @keyframes glg1{0%{transform:scaleX(0)}2.1%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm1{0%{opacity:0}9.03%{opacity:0}9.95%{opacity:1}100%{opacity:1}}
-@keyframes glt1{0%{opacity:0}10.97%{opacity:0}11.9%{opacity:1}100%{opacity:1}}
+@keyframes glt1{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}10.97%{opacity:0;fill:#b0402a;text-decoration-color:transparent}11.9%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}18.4%{fill:#963d2c}26.42%{text-decoration-color:#b0402a}27.32%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw2{0%{opacity:0}14.52%{opacity:0}15.42%{opacity:1}27.63%{opacity:1}29.03%{opacity:0}100%{opacity:0}}
 @keyframes glg2{0%{transform:scaleX(0)}14.52%{transform:scaleX(0)}16.62%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm2{0%{opacity:0}23.55%{opacity:0}24.47%{opacity:1}100%{opacity:1}}
-@keyframes glt2{0%{opacity:0}25.49%{opacity:0}26.42%{opacity:1}100%{opacity:1}}
+@keyframes glt2{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}25.49%{opacity:0;fill:#b0402a;text-decoration-color:transparent}26.42%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}32.92%{fill:#963d2c}40.93%{text-decoration-color:#b0402a}41.83%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw3{0%{opacity:0}29.03%{opacity:0}29.93%{opacity:1}42.15%{opacity:1}43.55%{opacity:0}100%{opacity:0}}
 @keyframes glg3{0%{transform:scaleX(0)}29.03%{transform:scaleX(0)}31.13%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm3{0%{opacity:0}38.06%{opacity:0}38.98%{opacity:1}100%{opacity:1}}
-@keyframes glt3{0%{opacity:0}40.0%{opacity:0}40.93%{opacity:1}100%{opacity:1}}
+@keyframes glt3{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}40.0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}40.93%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}47.43%{fill:#963d2c}55.45%{text-decoration-color:#b0402a}56.35%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw4{0%{opacity:0}43.55%{opacity:0}44.45%{opacity:1}56.66%{opacity:1}58.06%{opacity:0}100%{opacity:0}}
 @keyframes glg4{0%{transform:scaleX(0)}43.55%{transform:scaleX(0)}45.65%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm4{0%{opacity:0}52.58%{opacity:0}53.5%{opacity:1}100%{opacity:1}}
-@keyframes glt4{0%{opacity:0}54.52%{opacity:0}55.45%{opacity:1}100%{opacity:1}}
+@keyframes glt4{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}54.52%{opacity:0;fill:#b0402a;text-decoration-color:transparent}55.45%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}61.95%{fill:#963d2c}69.96%{text-decoration-color:#b0402a}70.86%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw5{0%{opacity:0}58.06%{opacity:0}58.96%{opacity:1}71.18%{opacity:1}72.58%{opacity:0}100%{opacity:0}}
 @keyframes glg5{0%{transform:scaleX(0)}58.06%{transform:scaleX(0)}60.16%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm5{0%{opacity:0}67.09%{opacity:0}68.01%{opacity:1}100%{opacity:1}}
-@keyframes glt5{0%{opacity:0}69.03%{opacity:0}69.96%{opacity:1}100%{opacity:1}}
+@keyframes glt5{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.03%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.96%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}76.46%{fill:#963d2c}84.48%{text-decoration-color:#b0402a}85.38%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw6{0%{opacity:0}72.58%{opacity:0}73.48%{opacity:1}100%{opacity:1}}
 @keyframes glg6{0%{transform:scaleX(0)}72.58%{transform:scaleX(0)}74.68%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm6{0%{opacity:0}81.61%{opacity:0}82.53%{opacity:1}100%{opacity:1}}
-@keyframes glt6{0%{opacity:0}83.55%{opacity:0}84.48%{opacity:1}100%{opacity:1}}
-@media (prefers-reduced-motion: reduce){.gl-anim{animation:none !important}.gl-bars{transform:none !important}}
+@keyframes glt6{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}83.55%{opacity:0;fill:#b0402a;text-decoration-color:transparent}84.48%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}90.98%{fill:#963d2c}100%{opacity:1;fill:#963d2c;text-decoration-color:#b0402a}}
+@keyframes glp1{0.0%{fill:#963d2c}9.03%{fill:#963d2c}10.93%{fill:#998f7d}12.62%{fill:#998f7d}14.52%{fill:#963d2c}23.55%{fill:#963d2c}25.45%{fill:#998f7d}27.13%{fill:#998f7d}29.03%{fill:#963d2c}38.06%{fill:#963d2c}39.96%{fill:#998f7d}41.65%{fill:#998f7d}43.55%{fill:#963d2c}52.58%{fill:#963d2c}54.48%{fill:#998f7d}56.16%{fill:#998f7d}58.06%{fill:#963d2c}67.1%{fill:#963d2c}69.0%{fill:#998f7d}70.68%{fill:#998f7d}72.58%{fill:#963d2c}81.61%{fill:#963d2c}83.51%{fill:#998f7d}100.0%{fill:#998f7d}}
+@keyframes glp2{0.0%{fill:#998f7d}7.13%{fill:#998f7d}9.03%{fill:#963d2c}10.97%{fill:#963d2c}12.87%{fill:#998f7d}21.65%{fill:#998f7d}23.55%{fill:#963d2c}25.48%{fill:#963d2c}27.38%{fill:#998f7d}36.16%{fill:#998f7d}38.06%{fill:#963d2c}40.0%{fill:#963d2c}41.9%{fill:#998f7d}50.68%{fill:#998f7d}52.58%{fill:#963d2c}54.52%{fill:#963d2c}56.42%{fill:#998f7d}65.2%{fill:#998f7d}67.1%{fill:#963d2c}69.03%{fill:#963d2c}70.93%{fill:#998f7d}79.71%{fill:#998f7d}81.61%{fill:#963d2c}83.55%{fill:#963d2c}85.45%{fill:#998f7d}100.0%{fill:#998f7d}}
+@keyframes glp3{0.0%{fill:#998f7d}9.07%{fill:#998f7d}10.97%{fill:#963d2c}14.52%{fill:#963d2c}16.42%{fill:#998f7d}23.58%{fill:#998f7d}25.48%{fill:#963d2c}29.03%{fill:#963d2c}30.93%{fill:#998f7d}38.1%{fill:#998f7d}40.0%{fill:#963d2c}43.55%{fill:#963d2c}45.45%{fill:#998f7d}52.62%{fill:#998f7d}54.52%{fill:#963d2c}58.06%{fill:#963d2c}59.96%{fill:#998f7d}67.13%{fill:#998f7d}69.03%{fill:#963d2c}72.58%{fill:#963d2c}74.48%{fill:#998f7d}81.65%{fill:#998f7d}83.55%{fill:#963d2c}87.1%{fill:#963d2c}89.0%{fill:#998f7d}100.0%{fill:#998f7d}}
+@media (prefers-reduced-motion: reduce){.gl-anim,.gl-p1,.gl-p2,.gl-p3{animation:none !important}.gl-bars{transform:none !important}}
 </style>
-<text x="30" y="28" font-size="14.5" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace" xml:space="preserve">Once upon a time<tspan class="gl-anim gl-t1" fill="#963d2c">,</tspan><tspan class="gl-anim gl-t2" fill="#963d2c"> there</tspan><tspan class="gl-anim gl-t3" fill="#963d2c"> was</tspan><tspan class="gl-anim gl-t4" fill="#963d2c"> a</tspan><tspan class="gl-anim gl-t5" fill="#963d2c"> little</tspan><tspan class="gl-anim gl-t6" fill="#963d2c"> boy</tspan></text>
-<text x="30" y="48" font-size="10.5" fill="#6e6557">how to watch: &#9312; the menu below is scored (bars grow)&#8195;&#9313; a weighted die rolls &mdash; the outlined row wins&#8195;&#9314; the pick joins the sentence; repeat</text>
+<text x="30" y="28" font-size="15.5" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace" xml:space="preserve">Once upon a time<tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t1" fill="#963d2c">,</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t2" fill="#963d2c"> there</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t3" fill="#963d2c"> was</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t4" fill="#963d2c"> a</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t5" fill="#963d2c"> little</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t6" fill="#963d2c"> boy</tspan></text>
+
+<text x="30" y="52" font-size="11" font-family="ui-monospace,Menlo,monospace" class="gl-p1">&#9312; the menu is scored</text>
+<text x="186" y="52" font-size="11" font-family="ui-monospace,Menlo,monospace" class="gl-p2">&#9313; the weighted die rolls</text>
+<text x="368" y="52" font-size="11" font-family="ui-monospace,Menlo,monospace" class="gl-p3">&#9314; the pick joins the sentence</text>
 <circle cx="600" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/><circle cx="618" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/><circle cx="636" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/><circle cx="654" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/><circle cx="672" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/><circle cx="690" cy="72" r="3.8" fill="#fbf8f1" stroke="#cfc5ae" stroke-width="1"/>
 <g class="gl-anim gl-s1">
 <text x="30" y="76" font-size="11" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">step 1 of 6 &mdash; the menu for what comes next</text>
@@ -949,7 +964,7 @@ GENLOOP_SVG = r'''<svg viewBox="0 0 720 306" role="img" aria-label="Autoregressi
 <text x="236" y="218" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">1.5%</text>
 <g class="gl-anim gl-m6"><rect x="16" y="113" width="658" height="28" rx="5" fill="none" stroke="#963d2c" stroke-width="1.3"/><text x="24" y="131" font-size="12" fill="#963d2c" font-weight="700">&#9656;</text><text x="212" y="131" text-anchor="end" font-size="12" font-family="ui-monospace,Menlo,monospace" fill="#963d2c">boy</text></g>
 </g>
-<text x="30" y="244" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">outlined row = the weighted die&#8217;s pick &mdash; watch it join the line above</text>
+<text x="30" y="244" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">outlined row = the die&#8217;s pick &middot; hover the figure to pause</text>
 <text x="30" y="270" font-size="10.5" fill="#6e6557">Measured, not staged: the model&#8217;s real menus &mdash; the upgraded word-chunk checkpoint (&sect;11&ndash;14) continuing the prompt at temperature 0.8.</text>
 <text x="30" y="286" font-size="10.5" fill="#6e6557">Step 6 is the lesson: sampling rolls a weighted die; it does not simply take the favourite. A 13.9% chunk wins about one roll in seven,</text>
 <text x="30" y="302" font-size="10.5" fill="#6e6557">and this was that roll. Temperature (&sect;17) sets how daring the die is. Reproduce it: gen_generation_trace.py (seed 1).</text>
