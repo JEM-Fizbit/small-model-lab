@@ -770,64 +770,64 @@ GENLOOP_SVG = r'''<svg id="genloop" viewBox="0 0 720 306" role="img" aria-label=
 .gl-p1,.gl-p2,.gl-p3{fill:#998f7d}
 #genloop{cursor:pointer}
 #genloop.gl-paused .gl-anim,#genloop.gl-paused .gl-p1,#genloop.gl-paused .gl-p2,#genloop.gl-paused .gl-p3{animation-play-state:paused}
-.gl-s1{animation:glw1 31s linear infinite}
-.gl-b1{animation:glg1 31s linear infinite}
-.gl-m1{animation:glm1 31s linear infinite}
-.gl-t1{animation:glt1 31s linear infinite}
+.gl-s1{animation:glw1 37s linear infinite}
+.gl-b1{animation:glg1 37s linear infinite}
+.gl-m1{animation:glm1 37s linear infinite}
+.gl-t1{animation:glt1 37s linear infinite}
 
-.gl-s2{animation:glw2 31s linear infinite}
-.gl-b2{animation:glg2 31s linear infinite}
-.gl-m2{animation:glm2 31s linear infinite}
-.gl-t2{animation:glt2 31s linear infinite}
+.gl-s2{animation:glw2 37s linear infinite}
+.gl-b2{animation:glg2 37s linear infinite}
+.gl-m2{animation:glm2 37s linear infinite}
+.gl-t2{animation:glt2 37s linear infinite}
 
-.gl-s3{animation:glw3 31s linear infinite}
-.gl-b3{animation:glg3 31s linear infinite}
-.gl-m3{animation:glm3 31s linear infinite}
-.gl-t3{animation:glt3 31s linear infinite}
+.gl-s3{animation:glw3 37s linear infinite}
+.gl-b3{animation:glg3 37s linear infinite}
+.gl-m3{animation:glm3 37s linear infinite}
+.gl-t3{animation:glt3 37s linear infinite}
 
-.gl-s4{animation:glw4 31s linear infinite}
-.gl-b4{animation:glg4 31s linear infinite}
-.gl-m4{animation:glm4 31s linear infinite}
-.gl-t4{animation:glt4 31s linear infinite}
+.gl-s4{animation:glw4 37s linear infinite}
+.gl-b4{animation:glg4 37s linear infinite}
+.gl-m4{animation:glm4 37s linear infinite}
+.gl-t4{animation:glt4 37s linear infinite}
 
-.gl-s5{animation:glw5 31s linear infinite}
-.gl-b5{animation:glg5 31s linear infinite}
-.gl-m5{animation:glm5 31s linear infinite}
-.gl-t5{animation:glt5 31s linear infinite}
+.gl-s5{animation:glw5 37s linear infinite}
+.gl-b5{animation:glg5 37s linear infinite}
+.gl-m5{animation:glm5 37s linear infinite}
+.gl-t5{animation:glt5 37s linear infinite}
 
-.gl-s6{animation:glw6 31s linear infinite}
-.gl-b6{animation:glg6 31s linear infinite}
-.gl-m6{animation:glm6 31s linear infinite}
-.gl-t6{animation:glt6 31s linear infinite}
+.gl-s6{animation:glw6 37s linear infinite}
+.gl-b6{animation:glg6 37s linear infinite}
+.gl-m6{animation:glm6 37s linear infinite}
+.gl-t6{animation:glt6 37s linear infinite}
 
-.gl-p1{animation:glp1 31s linear infinite}.gl-p2{animation:glp2 31s linear infinite}.gl-p3{animation:glp3 31s linear infinite}
-@keyframes glw1{0%{opacity:0}0.9%{opacity:1}13.06%{opacity:1}14.52%{opacity:0}100%{opacity:0}}
-@keyframes glg1{0%{transform:scaleX(0)}2.1%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm1{0%{opacity:0}9.03%{opacity:0}9.95%{opacity:1}100%{opacity:1}}
-@keyframes glt1{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}10.97%{opacity:0;fill:#b0402a;text-decoration-color:transparent}11.9%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}18.4%{fill:#963d2c}26.42%{text-decoration-color:#b0402a}27.32%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
-@keyframes glw2{0%{opacity:0}14.52%{opacity:0}15.42%{opacity:1}27.63%{opacity:1}29.03%{opacity:0}100%{opacity:0}}
-@keyframes glg2{0%{transform:scaleX(0)}14.52%{transform:scaleX(0)}16.62%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm2{0%{opacity:0}23.55%{opacity:0}24.47%{opacity:1}100%{opacity:1}}
-@keyframes glt2{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}25.49%{opacity:0;fill:#b0402a;text-decoration-color:transparent}26.42%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}32.92%{fill:#963d2c}40.93%{text-decoration-color:#b0402a}41.83%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
-@keyframes glw3{0%{opacity:0}29.03%{opacity:0}29.93%{opacity:1}42.15%{opacity:1}43.55%{opacity:0}100%{opacity:0}}
-@keyframes glg3{0%{transform:scaleX(0)}29.03%{transform:scaleX(0)}31.13%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm3{0%{opacity:0}38.06%{opacity:0}38.98%{opacity:1}100%{opacity:1}}
-@keyframes glt3{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}40.0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}40.93%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}47.43%{fill:#963d2c}55.45%{text-decoration-color:#b0402a}56.35%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
-@keyframes glw4{0%{opacity:0}43.55%{opacity:0}44.45%{opacity:1}56.66%{opacity:1}58.06%{opacity:0}100%{opacity:0}}
-@keyframes glg4{0%{transform:scaleX(0)}43.55%{transform:scaleX(0)}45.65%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm4{0%{opacity:0}52.58%{opacity:0}53.5%{opacity:1}100%{opacity:1}}
-@keyframes glt4{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}54.52%{opacity:0;fill:#b0402a;text-decoration-color:transparent}55.45%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}61.95%{fill:#963d2c}69.96%{text-decoration-color:#b0402a}70.86%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
-@keyframes glw5{0%{opacity:0}58.06%{opacity:0}58.96%{opacity:1}71.18%{opacity:1}72.58%{opacity:0}100%{opacity:0}}
-@keyframes glg5{0%{transform:scaleX(0)}58.06%{transform:scaleX(0)}60.16%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm5{0%{opacity:0}67.09%{opacity:0}68.01%{opacity:1}100%{opacity:1}}
-@keyframes glt5{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.03%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.96%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}76.46%{fill:#963d2c}84.48%{text-decoration-color:#b0402a}85.38%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
-@keyframes glw6{0%{opacity:0}72.58%{opacity:0}73.48%{opacity:1}100%{opacity:1}}
-@keyframes glg6{0%{transform:scaleX(0)}72.58%{transform:scaleX(0)}74.68%{transform:scaleX(1)}100%{transform:scaleX(1)}}
-@keyframes glm6{0%{opacity:0}81.61%{opacity:0}82.53%{opacity:1}100%{opacity:1}}
-@keyframes glt6{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}83.55%{opacity:0;fill:#b0402a;text-decoration-color:transparent}84.48%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}90.98%{fill:#963d2c}100%{opacity:1;fill:#963d2c;text-decoration-color:#b0402a}}
-@keyframes glp1{0.0%{fill:#963d2c}8.71%{fill:#963d2c}9.01%{fill:#998f7d}14.22%{fill:#998f7d}14.52%{fill:#963d2c}23.23%{fill:#963d2c}23.53%{fill:#998f7d}28.73%{fill:#998f7d}29.03%{fill:#963d2c}37.74%{fill:#963d2c}38.04%{fill:#998f7d}43.25%{fill:#998f7d}43.55%{fill:#963d2c}52.26%{fill:#963d2c}52.56%{fill:#998f7d}57.76%{fill:#998f7d}58.06%{fill:#963d2c}66.77%{fill:#963d2c}67.07%{fill:#998f7d}72.28%{fill:#998f7d}72.58%{fill:#963d2c}81.29%{fill:#963d2c}81.59%{fill:#998f7d}100.0%{fill:#998f7d}}
-@keyframes glp2{0.0%{fill:#998f7d}8.41%{fill:#998f7d}8.71%{fill:#963d2c}10.97%{fill:#963d2c}11.27%{fill:#998f7d}22.93%{fill:#998f7d}23.23%{fill:#963d2c}25.48%{fill:#963d2c}25.78%{fill:#998f7d}37.44%{fill:#998f7d}37.74%{fill:#963d2c}40.0%{fill:#963d2c}40.3%{fill:#998f7d}51.96%{fill:#998f7d}52.26%{fill:#963d2c}54.52%{fill:#963d2c}54.82%{fill:#998f7d}66.47%{fill:#998f7d}66.77%{fill:#963d2c}69.03%{fill:#963d2c}69.33%{fill:#998f7d}80.99%{fill:#998f7d}81.29%{fill:#963d2c}83.55%{fill:#963d2c}83.85%{fill:#998f7d}100.0%{fill:#998f7d}}
-@keyframes glp3{0.0%{fill:#998f7d}10.67%{fill:#998f7d}10.97%{fill:#963d2c}14.52%{fill:#963d2c}14.82%{fill:#998f7d}25.18%{fill:#998f7d}25.48%{fill:#963d2c}29.03%{fill:#963d2c}29.33%{fill:#998f7d}39.7%{fill:#998f7d}40.0%{fill:#963d2c}43.55%{fill:#963d2c}43.85%{fill:#998f7d}54.22%{fill:#998f7d}54.52%{fill:#963d2c}58.06%{fill:#963d2c}58.36%{fill:#998f7d}68.73%{fill:#998f7d}69.03%{fill:#963d2c}72.58%{fill:#963d2c}72.88%{fill:#998f7d}83.25%{fill:#998f7d}83.55%{fill:#963d2c}87.1%{fill:#963d2c}87.4%{fill:#998f7d}100.0%{fill:#998f7d}}
+.gl-p1{animation:glp1 37s linear infinite}.gl-p2{animation:glp2 37s linear infinite}.gl-p3{animation:glp3 37s linear infinite}
+@keyframes glw1{0%{opacity:0}0.81%{opacity:1}13.65%{opacity:1}14.86%{opacity:0}100%{opacity:0}}
+@keyframes glg1{0%{transform:scaleX(0)}1.76%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm1{0%{opacity:0}7.57%{opacity:0}8.35%{opacity:1}100%{opacity:1}}
+@keyframes glt1{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}9.19%{opacity:0;fill:#b0402a;text-decoration-color:transparent}9.97%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}15.41%{fill:#963d2c}24.84%{text-decoration-color:#b0402a}25.59%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glw2{0%{opacity:0}14.86%{opacity:0}15.68%{opacity:1}28.51%{opacity:1}29.73%{opacity:0}100%{opacity:0}}
+@keyframes glg2{0%{transform:scaleX(0)}14.86%{transform:scaleX(0)}16.62%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm2{0%{opacity:0}22.43%{opacity:0}23.22%{opacity:1}100%{opacity:1}}
+@keyframes glt2{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}24.05%{opacity:0;fill:#b0402a;text-decoration-color:transparent}24.84%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}30.27%{fill:#963d2c}39.7%{text-decoration-color:#b0402a}40.46%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glw3{0%{opacity:0}29.73%{opacity:0}30.54%{opacity:1}43.38%{opacity:1}44.59%{opacity:0}100%{opacity:0}}
+@keyframes glg3{0%{transform:scaleX(0)}29.73%{transform:scaleX(0)}31.49%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm3{0%{opacity:0}37.3%{opacity:0}38.08%{opacity:1}100%{opacity:1}}
+@keyframes glt3{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}38.92%{opacity:0;fill:#b0402a;text-decoration-color:transparent}39.7%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}45.14%{fill:#963d2c}54.57%{text-decoration-color:#b0402a}55.32%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glw4{0%{opacity:0}44.59%{opacity:0}45.41%{opacity:1}58.24%{opacity:1}59.46%{opacity:0}100%{opacity:0}}
+@keyframes glg4{0%{transform:scaleX(0)}44.59%{transform:scaleX(0)}46.35%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm4{0%{opacity:0}52.16%{opacity:0}52.95%{opacity:1}100%{opacity:1}}
+@keyframes glt4{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}53.78%{opacity:0;fill:#b0402a;text-decoration-color:transparent}54.57%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}60.0%{fill:#963d2c}69.43%{text-decoration-color:#b0402a}70.19%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glw5{0%{opacity:0}59.46%{opacity:0}60.27%{opacity:1}73.11%{opacity:1}74.32%{opacity:0}100%{opacity:0}}
+@keyframes glg5{0%{transform:scaleX(0)}59.46%{transform:scaleX(0)}61.22%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm5{0%{opacity:0}67.03%{opacity:0}67.81%{opacity:1}100%{opacity:1}}
+@keyframes glt5{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}68.65%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.43%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}74.86%{fill:#963d2c}84.3%{text-decoration-color:#b0402a}85.05%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glw6{0%{opacity:0}74.32%{opacity:0}75.14%{opacity:1}100%{opacity:1}}
+@keyframes glg6{0%{transform:scaleX(0)}74.32%{transform:scaleX(0)}76.08%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@keyframes glm6{0%{opacity:0}81.89%{opacity:0}82.68%{opacity:1}100%{opacity:1}}
+@keyframes glt6{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}83.51%{opacity:0;fill:#b0402a;text-decoration-color:transparent}84.3%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}89.73%{fill:#963d2c}100%{opacity:1;fill:#963d2c;text-decoration-color:#b0402a}}
+@keyframes glp1{0.0%{fill:#963d2c}7.3%{fill:#963d2c}7.6%{fill:#998f7d}14.56%{fill:#998f7d}14.86%{fill:#963d2c}22.16%{fill:#963d2c}22.46%{fill:#998f7d}29.43%{fill:#998f7d}29.73%{fill:#963d2c}37.03%{fill:#963d2c}37.33%{fill:#998f7d}44.29%{fill:#998f7d}44.59%{fill:#963d2c}51.89%{fill:#963d2c}52.19%{fill:#998f7d}59.16%{fill:#998f7d}59.46%{fill:#963d2c}66.76%{fill:#963d2c}67.06%{fill:#998f7d}74.02%{fill:#998f7d}74.32%{fill:#963d2c}81.62%{fill:#963d2c}81.92%{fill:#998f7d}100.0%{fill:#998f7d}}
+@keyframes glp2{0.0%{fill:#998f7d}7.0%{fill:#998f7d}7.3%{fill:#963d2c}9.19%{fill:#963d2c}9.49%{fill:#998f7d}21.86%{fill:#998f7d}22.16%{fill:#963d2c}24.05%{fill:#963d2c}24.35%{fill:#998f7d}36.73%{fill:#998f7d}37.03%{fill:#963d2c}38.92%{fill:#963d2c}39.22%{fill:#998f7d}51.59%{fill:#998f7d}51.89%{fill:#963d2c}53.78%{fill:#963d2c}54.08%{fill:#998f7d}66.46%{fill:#998f7d}66.76%{fill:#963d2c}68.65%{fill:#963d2c}68.95%{fill:#998f7d}81.32%{fill:#998f7d}81.62%{fill:#963d2c}83.51%{fill:#963d2c}83.81%{fill:#998f7d}100.0%{fill:#998f7d}}
+@keyframes glp3{0.0%{fill:#998f7d}8.89%{fill:#998f7d}9.19%{fill:#963d2c}14.86%{fill:#963d2c}15.16%{fill:#998f7d}23.75%{fill:#998f7d}24.05%{fill:#963d2c}29.73%{fill:#963d2c}30.03%{fill:#998f7d}38.62%{fill:#998f7d}38.92%{fill:#963d2c}44.59%{fill:#963d2c}44.89%{fill:#998f7d}53.48%{fill:#998f7d}53.78%{fill:#963d2c}59.46%{fill:#963d2c}59.76%{fill:#998f7d}68.35%{fill:#998f7d}68.65%{fill:#963d2c}74.32%{fill:#963d2c}74.62%{fill:#998f7d}83.21%{fill:#998f7d}83.51%{fill:#963d2c}89.19%{fill:#963d2c}89.49%{fill:#998f7d}100.0%{fill:#998f7d}}
 @media (prefers-reduced-motion: reduce){.gl-anim,.gl-p1,.gl-p2,.gl-p3{animation:none !important}.gl-bars{transform:none !important}}
 </style>
 <text x="30" y="28" font-size="15.5" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace" xml:space="preserve">Once upon a time<tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t1" fill="#963d2c">,</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t2" fill="#963d2c"> there</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t3" fill="#963d2c"> was</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t4" fill="#963d2c"> a</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t5" fill="#963d2c"> little</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t6" fill="#963d2c"> boy</tspan></text>
@@ -1388,7 +1388,7 @@ called <strong>autoregressive</strong> generation, and it's exactly how the larg
 write too.</p>
 """),
   ("diagram", GENLOOP_SVG,
-   "The loop, replaying live (~30&nbsp;s cycle): score the menu, roll the weighted die, append the pick, "
+   "The loop, replaying live (~37&nbsp;s cycle): score the menu, roll the weighted die, append the pick, "
    "feed the whole line back in. Every probability is real &mdash; and so is step&nbsp;6's surprise, where "
    "the die lands on a 13.9% underdog. That's what sampling means; &sect;17 (temperature) is the dial that "
    "tunes it. Reproduce the trace: <code>docs/walkthrough/gen_generation_trace.py</code>."),
