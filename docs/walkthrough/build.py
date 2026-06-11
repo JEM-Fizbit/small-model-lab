@@ -342,6 +342,12 @@ def main():
     (SITE / "index.html").write_text(_externalize_links(html_l))
     written.append(("index.html (landing)", len(html_l), 0))
 
+    # --- Social card (og:image) → site/og-image.png ---
+    og = Path(__file__).resolve().parent / "assets" / "og-image.png"
+    if og.exists():
+        (SITE / "og-image.png").write_bytes(og.read_bytes())
+        print("wrote site/og-image.png")
+
     for name, n, secs in written:
         extra = f", {secs} sections" if secs else ""
         print(f"wrote site/{name}  ({n/1024:.0f} KB{extra})")
