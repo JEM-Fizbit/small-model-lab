@@ -804,30 +804,42 @@ GENLOOP_SVG = r'''<svg id="genloop" viewBox="0 0 720 306" role="img" aria-label=
 @keyframes glw1{0%{opacity:0}0.64%{opacity:1}13.94%{opacity:1}14.89%{opacity:0}100%{opacity:0}}
 @keyframes glg1{0%{transform:scaleX(0)}1.38%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm1{0%{opacity:0}6.38%{opacity:0}7.0%{opacity:1}100%{opacity:1}}
-@keyframes glt1{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}8.09%{opacity:0;fill:#b0402a;text-decoration-color:transparent}8.7%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}12.98%{fill:#963d2c}23.6%{text-decoration-color:#b0402a}24.19%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glt1{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}9.68%{opacity:0;fill:#b0402a;text-decoration-color:transparent}10.32%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}14.68%{fill:#963d2c}25.21%{text-decoration-color:#b0402a}25.81%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw2{0%{opacity:0}14.89%{opacity:0}15.53%{opacity:1}28.83%{opacity:1}29.79%{opacity:0}100%{opacity:0}}
 @keyframes glg2{0%{transform:scaleX(0)}14.89%{transform:scaleX(0)}16.28%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm2{0%{opacity:0}21.28%{opacity:0}21.89%{opacity:1}100%{opacity:1}}
-@keyframes glt2{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}22.98%{opacity:0;fill:#b0402a;text-decoration-color:transparent}23.6%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}27.87%{fill:#963d2c}38.49%{text-decoration-color:#b0402a}39.09%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glt2{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}24.57%{opacity:0;fill:#b0402a;text-decoration-color:transparent}25.21%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}29.57%{fill:#963d2c}40.11%{text-decoration-color:#b0402a}40.7%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw3{0%{opacity:0}29.79%{opacity:0}30.43%{opacity:1}43.72%{opacity:1}44.68%{opacity:0}100%{opacity:0}}
 @keyframes glg3{0%{transform:scaleX(0)}29.79%{transform:scaleX(0)}31.17%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm3{0%{opacity:0}36.17%{opacity:0}36.79%{opacity:1}100%{opacity:1}}
-@keyframes glt3{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}37.87%{opacity:0;fill:#b0402a;text-decoration-color:transparent}38.49%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}42.77%{fill:#963d2c}53.38%{text-decoration-color:#b0402a}53.98%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glt3{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}39.47%{opacity:0;fill:#b0402a;text-decoration-color:transparent}40.11%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}44.47%{fill:#963d2c}55.0%{text-decoration-color:#b0402a}55.6%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw4{0%{opacity:0}44.68%{opacity:0}45.32%{opacity:1}58.62%{opacity:1}59.57%{opacity:0}100%{opacity:0}}
 @keyframes glg4{0%{transform:scaleX(0)}44.68%{transform:scaleX(0)}46.06%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm4{0%{opacity:0}51.06%{opacity:0}51.68%{opacity:1}100%{opacity:1}}
-@keyframes glt4{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}52.77%{opacity:0;fill:#b0402a;text-decoration-color:transparent}53.38%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}57.66%{fill:#963d2c}68.28%{text-decoration-color:#b0402a}68.87%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glt4{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}54.36%{opacity:0;fill:#b0402a;text-decoration-color:transparent}55.0%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}59.36%{fill:#963d2c}69.89%{text-decoration-color:#b0402a}70.49%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw5{0%{opacity:0}59.57%{opacity:0}60.21%{opacity:1}73.51%{opacity:1}74.47%{opacity:0}100%{opacity:0}}
 @keyframes glg5{0%{transform:scaleX(0)}59.57%{transform:scaleX(0)}60.96%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm5{0%{opacity:0}65.96%{opacity:0}66.57%{opacity:1}100%{opacity:1}}
-@keyframes glt5{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}67.66%{opacity:0;fill:#b0402a;text-decoration-color:transparent}68.28%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}72.55%{fill:#963d2c}83.17%{text-decoration-color:#b0402a}83.77%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
+@keyframes glt5{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.26%{opacity:0;fill:#b0402a;text-decoration-color:transparent}69.89%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}74.26%{fill:#963d2c}84.79%{text-decoration-color:#b0402a}85.38%{text-decoration-color:transparent}100%{opacity:1;fill:#963d2c;text-decoration-color:transparent}}
 @keyframes glw6{0%{opacity:0}74.47%{opacity:0}75.11%{opacity:1}100%{opacity:1}}
 @keyframes glg6{0%{transform:scaleX(0)}74.47%{transform:scaleX(0)}75.85%{transform:scaleX(1)}100%{transform:scaleX(1)}}
 @keyframes glm6{0%{opacity:0}80.85%{opacity:0}81.47%{opacity:1}100%{opacity:1}}
-@keyframes glt6{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}82.55%{opacity:0;fill:#b0402a;text-decoration-color:transparent}83.17%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}87.45%{fill:#963d2c}100%{opacity:1;fill:#963d2c;text-decoration-color:#b0402a}}
+@keyframes glt6{0%{opacity:0;fill:#b0402a;text-decoration-color:transparent}84.15%{opacity:0;fill:#b0402a;text-decoration-color:transparent}84.79%{opacity:1;fill:#b0402a;text-decoration-color:#b0402a}89.15%{fill:#963d2c}100%{opacity:1;fill:#963d2c;text-decoration-color:#b0402a}}
 @keyframes glp1{0.0%{fill:#963d2c}6.38%{fill:#963d2c}6.63%{fill:#998f7d}14.64%{fill:#998f7d}14.89%{fill:#963d2c}21.28%{fill:#963d2c}21.53%{fill:#998f7d}29.54%{fill:#998f7d}29.79%{fill:#963d2c}36.17%{fill:#963d2c}36.42%{fill:#998f7d}44.43%{fill:#998f7d}44.68%{fill:#963d2c}51.06%{fill:#963d2c}51.31%{fill:#998f7d}59.32%{fill:#998f7d}59.57%{fill:#963d2c}65.96%{fill:#963d2c}66.21%{fill:#998f7d}74.22%{fill:#998f7d}74.47%{fill:#963d2c}80.85%{fill:#963d2c}81.1%{fill:#998f7d}100.0%{fill:#998f7d}}
 @keyframes glp2{0.0%{fill:#998f7d}6.13%{fill:#998f7d}6.38%{fill:#963d2c}8.09%{fill:#963d2c}8.34%{fill:#998f7d}21.03%{fill:#998f7d}21.28%{fill:#963d2c}22.98%{fill:#963d2c}23.23%{fill:#998f7d}35.92%{fill:#998f7d}36.17%{fill:#963d2c}37.87%{fill:#963d2c}38.12%{fill:#998f7d}50.81%{fill:#998f7d}51.06%{fill:#963d2c}52.77%{fill:#963d2c}53.02%{fill:#998f7d}65.71%{fill:#998f7d}65.96%{fill:#963d2c}67.66%{fill:#963d2c}67.91%{fill:#998f7d}80.6%{fill:#998f7d}80.85%{fill:#963d2c}82.55%{fill:#963d2c}82.8%{fill:#998f7d}100.0%{fill:#998f7d}}
-@keyframes glp3{0.0%{fill:#998f7d}7.84%{fill:#998f7d}8.09%{fill:#963d2c}14.89%{fill:#963d2c}15.14%{fill:#998f7d}22.73%{fill:#998f7d}22.98%{fill:#963d2c}29.79%{fill:#963d2c}30.04%{fill:#998f7d}37.62%{fill:#998f7d}37.87%{fill:#963d2c}44.68%{fill:#963d2c}44.93%{fill:#998f7d}52.52%{fill:#998f7d}52.77%{fill:#963d2c}59.57%{fill:#963d2c}59.82%{fill:#998f7d}67.41%{fill:#998f7d}67.66%{fill:#963d2c}74.47%{fill:#963d2c}74.72%{fill:#998f7d}82.3%{fill:#998f7d}82.55%{fill:#963d2c}89.36%{fill:#963d2c}89.61%{fill:#998f7d}100.0%{fill:#998f7d}}
+@keyframes glp3{0.0%{fill:#998f7d}7.2%{fill:#998f7d}7.45%{fill:#963d2c}14.89%{fill:#963d2c}15.14%{fill:#998f7d}22.09%{fill:#998f7d}22.34%{fill:#963d2c}29.79%{fill:#963d2c}30.04%{fill:#998f7d}36.98%{fill:#998f7d}37.23%{fill:#963d2c}44.68%{fill:#963d2c}44.93%{fill:#998f7d}51.88%{fill:#998f7d}52.13%{fill:#963d2c}59.57%{fill:#963d2c}59.82%{fill:#998f7d}66.77%{fill:#998f7d}67.02%{fill:#963d2c}74.47%{fill:#963d2c}74.72%{fill:#998f7d}81.66%{fill:#998f7d}81.91%{fill:#963d2c}89.36%{fill:#963d2c}89.61%{fill:#998f7d}100.0%{fill:#998f7d}}
+.gl-f1{opacity:0;animation:glf1 47s linear infinite}
+.gl-f2{opacity:0;animation:glf2 47s linear infinite}
+.gl-f3{opacity:0;animation:glf3 47s linear infinite}
+.gl-f4{opacity:0;animation:glf4 47s linear infinite}
+.gl-f5{opacity:0;animation:glf5 47s linear infinite}
+.gl-f6{opacity:0;animation:glf6 47s linear infinite}
+@keyframes glf1{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}7.45%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}7.98%{opacity:1}9.36%{opacity:1;transform:translate(0px,0px)}9.83%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
+@keyframes glf2{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}22.34%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}22.87%{opacity:1}24.26%{opacity:1;transform:translate(0px,0px)}24.72%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
+@keyframes glf3{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}37.23%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}37.77%{opacity:1}39.15%{opacity:1;transform:translate(0px,0px)}39.62%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
+@keyframes glf4{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}52.13%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}52.66%{opacity:1}54.04%{opacity:1;transform:translate(0px,0px)}54.51%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
+@keyframes glf5{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}67.02%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}67.55%{opacity:1}68.94%{opacity:1;transform:translate(0px,0px)}69.4%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
+@keyframes glf6{0%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy))}81.91%{opacity:0;transform:translate(var(--gl-dx),var(--gl-dy));animation-timing-function:ease-in-out}82.45%{opacity:1}83.83%{opacity:1;transform:translate(0px,0px)}84.3%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}
 @media (prefers-reduced-motion: reduce){.gl-anim,.gl-p1,.gl-p2,.gl-p3{animation:none !important}.gl-bars{transform:none !important}}
 </style>
 <text x="30" y="28" font-size="15.5" font-weight="700" fill="#231f18" font-family="ui-monospace,Menlo,monospace" xml:space="preserve">Once upon a time<tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t1" fill="#963d2c">,</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t2" fill="#963d2c"> there</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t3" fill="#963d2c"> was</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t4" fill="#963d2c"> a</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t5" fill="#963d2c"> little</tspan><tspan style="text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px" class="gl-anim gl-t6" fill="#963d2c"> boy</tspan></text>
@@ -972,7 +984,14 @@ GENLOOP_SVG = r'''<svg id="genloop" viewBox="0 0 720 306" role="img" aria-label=
 <text x="30" y="270" font-size="10.5" fill="#6e6557">Measured, not staged: the model&#8217;s real menus &mdash; the upgraded word-chunk checkpoint (&sect;11&ndash;14) continuing the prompt at temperature 0.8.</text>
 <text x="30" y="286" font-size="10.5" fill="#6e6557">Step 6 is the lesson: sampling rolls a weighted die; it does not simply take the favourite. A 13.9% chunk wins about one roll in seven,</text>
 <text x="30" y="302" font-size="10.5" fill="#6e6557">and this was that roll. Temperature (&sect;17) sets how daring the die is. Reproduce it: gen_generation_trace.py (seed 1).</text>
-<script>document.getElementById("genloop").addEventListener("click",function(){this.classList.toggle("gl-paused")});</script>
+
+<text class="gl-anim gl-f1" x="178.8" y="28" style="--gl-dx:26.0px;--gl-dy:74px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">,</text>
+<text class="gl-anim gl-f2" x="197.4" y="28" style="--gl-dx:-21.4px;--gl-dy:74px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">there</text>
+<text class="gl-anim gl-f3" x="253.2" y="28" style="--gl-dx:-62.8px;--gl-dy:74px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">was</text>
+<text class="gl-anim gl-f4" x="290.4" y="28" style="--gl-dx:-85.6px;--gl-dy:74px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">a</text>
+<text class="gl-anim gl-f5" x="309.0" y="28" style="--gl-dx:-140.2px;--gl-dy:74px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">little</text>
+<text class="gl-anim gl-f6" x="374.1" y="28" style="--gl-dx:-183.7px;--gl-dy:103px" font-size="15.5" font-weight="700" fill="#b0402a" font-family="ui-monospace,Menlo,monospace">boy</text>
+<script>(function(){var g=document.getElementById("genloop");g.addEventListener("click",function(){g.classList.toggle("gl-paused")});function fit(){for(var k=1;k<7;k++){try{var t=g.querySelector(".gl-t"+k),f=g.querySelector(".gl-f"+k),l=g.querySelector(".gl-m"+k+" text:last-of-type"),i=t.textContent.charAt(0)===" "?1:0,x=t.getStartPositionOfChar(i).x;f.setAttribute("x",x);f.style.setProperty("--gl-dx",(l.getStartPositionOfChar(0).x-x)+"px");}catch(e){}}}if(document.fonts&&document.fonts.ready){document.fonts.ready.then(fit)}else{fit()}})();</script>
 </svg>'''
 
 SECTIONS = [
@@ -1388,7 +1407,7 @@ called <strong>autoregressive</strong> generation, and it's exactly how the larg
 write too.</p>
 """),
   ("diagram", GENLOOP_SVG,
-   "The loop, replaying live (a slow ~47&nbsp;s cycle): score the menu, roll the weighted die, append the pick, "
+   "The loop, replaying live (a slow ~47&nbsp;s cycle): score the menu, roll the weighted die, watch the pick lift into the sentence, "
    "feed the whole line back in. Every probability is real &mdash; and so is step&nbsp;6's surprise, where "
    "the die lands on a 13.9% underdog. That's what sampling means; &sect;17 (temperature) is the dial that "
    "tunes it. Reproduce the trace: <code>docs/walkthrough/gen_generation_trace.py</code>."),
