@@ -344,8 +344,7 @@ TEMP_SVG = r'''<svg viewBox="0 0 720 320" role="img" aria-label="The same real n
 <text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
 </svg>'''
 
-SURFACE3D_SVG = r'''<svg viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball starts high on one slope and a dotted gradient-descent path of real downhill steps curves to the lowest point of the valley.">
-<defs><marker id="arS" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#b0402a"/></marker></defs>
+SURFACE3D_SVG = r'''<svg id="gdvalley" style="cursor:pointer" viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball takes real gradient-descent steps from a high slope down to the lowest point, pausing between hops; the hops shrink as the valley flattens, because the gradient does. The dotted path draws itself behind the ball and a ring pulses at the minimum.">
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="382.0,-73.3 356.0,-12.6 330.0,40.3 304.0,84.8 278.0,120.3 252.0,146.6 226.0,163.3 200.0,170.4 174.0,168.0 148.0,156.3 122.0,135.6 96.0,106.6 70.0,69.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
@@ -372,20 +371,42 @@ SURFACE3D_SVG = r'''<svg viewBox="0 0 660 350" role="img" aria-label="A loss sur
 <polyline points="70.0,60.6 96.0,101.3 122.0,135.6 148.0,163.3 174.0,184.4 200.0,199.3 226.0,208.7 252.0,213.5 278.0,214.6 304.0,212.8 330.0,208.4 356.0,201.5 382.0,191.8" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="44.0,35.0 70.0,73.4 96.0,106.6 122.0,134.5 148.0,157.0 174.0,174.4 200.0,186.8 226.0,194.7 252.0,198.3 278.0,198.0 304.0,193.7 330.0,185.7 356.0,173.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="18.0,1.7 44.0,37.7 70.0,69.7 96.0,97.8 122.0,121.8 148.0,141.8 174.0,157.5 200.0,168.6 226.0,174.8 252.0,176.0 278.0,171.9 304.0,162.7 330.0,148.3" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
-<polyline points="64.8,61.7 132.2,136.5 184.3,178.6 219.8,197.2 242.4,204.5 256.7,207.2 265.8,208.3 271.6,208.7 275.5,208.9 278.0,209.0 279.6,209.0 280.7,209.1 281.5,209.1 282.0,209.1" fill="none" stroke="#b0402a" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arS)"/>
-<circle cx="132.2" cy="136.5" r="2.6" fill="#b0402a"/>
-<circle cx="219.8" cy="197.2" r="2.6" fill="#b0402a"/>
-<circle cx="256.7" cy="207.2" r="2.6" fill="#b0402a"/>
-<circle cx="271.6" cy="208.7" r="2.6" fill="#b0402a"/>
-<circle cx="278.0" cy="209.0" r="2.6" fill="#b0402a"/>
-<circle cx="280.7" cy="209.1" r="2.6" fill="#b0402a"/>
-<circle cx="64.8" cy="61.7" r="9" fill="#b0402a" stroke="#fff" stroke-width="2.5"/>
-<text x="81" y="50" font-size="12" fill="#231f18">start: random weights</text>
+<style>
+.gd-ball{animation:gdball 20s linear infinite}
+@keyframes gdball{0%{transform:translate(0px,0px)}3.25%{transform:translate(0.0px,0.0px);animation-timing-function:ease-in-out}6.0%{transform:translate(67.4px,74.9px)}9.25%{transform:translate(67.4px,74.9px);animation-timing-function:ease-in-out}12.0%{transform:translate(119.5px,116.9px)}15.25%{transform:translate(119.5px,116.9px);animation-timing-function:ease-in-out}18.0%{transform:translate(155.0px,135.5px)}21.25%{transform:translate(155.0px,135.5px);animation-timing-function:ease-in-out}24.0%{transform:translate(177.6px,142.8px)}27.25%{transform:translate(177.6px,142.8px);animation-timing-function:ease-in-out}30.0%{transform:translate(191.9px,145.5px)}33.25%{transform:translate(191.9px,145.5px);animation-timing-function:ease-in-out}36.0%{transform:translate(201.0px,146.6px)}39.25%{transform:translate(201.0px,146.6px);animation-timing-function:ease-in-out}42.0%{transform:translate(206.8px,147.0px)}45.25%{transform:translate(206.8px,147.0px);animation-timing-function:ease-in-out}48.0%{transform:translate(210.7px,147.2px)}51.25%{transform:translate(210.7px,147.2px);animation-timing-function:ease-in-out}54.0%{transform:translate(213.2px,147.3px)}57.25%{transform:translate(213.2px,147.3px);animation-timing-function:ease-in-out}60.0%{transform:translate(214.8px,147.4px)}63.25%{transform:translate(214.8px,147.4px);animation-timing-function:ease-in-out}66.0%{transform:translate(215.9px,147.4px)}69.25%{transform:translate(215.9px,147.4px);animation-timing-function:ease-in-out}72.0%{transform:translate(216.7px,147.4px)}75.25%{transform:translate(216.7px,147.4px);animation-timing-function:ease-in-out}78.0%{transform:translate(217.2px,147.5px)}100%{transform:translate(217.2px,147.5px)}}
+.gd-trail{stroke-dasharray:100;stroke-dashoffset:100;animation:gdtrail 20s linear infinite}
+@keyframes gdtrail{0%{stroke-dashoffset:100}3.25%{stroke-dashoffset:100.0;animation-timing-function:ease-in-out}6.0%{stroke-dashoffset:62.88}9.25%{stroke-dashoffset:62.88;animation-timing-function:ease-in-out}12.0%{stroke-dashoffset:38.21}15.25%{stroke-dashoffset:38.21;animation-timing-function:ease-in-out}18.0%{stroke-dashoffset:23.45}21.25%{stroke-dashoffset:23.45;animation-timing-function:ease-in-out}24.0%{stroke-dashoffset:14.7}27.25%{stroke-dashoffset:14.7;animation-timing-function:ease-in-out}30.0%{stroke-dashoffset:9.35}33.25%{stroke-dashoffset:9.35;animation-timing-function:ease-in-out}36.0%{stroke-dashoffset:5.98}39.25%{stroke-dashoffset:5.98;animation-timing-function:ease-in-out}42.0%{stroke-dashoffset:3.82}45.25%{stroke-dashoffset:3.82;animation-timing-function:ease-in-out}48.0%{stroke-dashoffset:2.41}51.25%{stroke-dashoffset:2.41;animation-timing-function:ease-in-out}54.0%{stroke-dashoffset:1.48}57.25%{stroke-dashoffset:1.48;animation-timing-function:ease-in-out}60.0%{stroke-dashoffset:0.86}63.25%{stroke-dashoffset:0.86;animation-timing-function:ease-in-out}66.0%{stroke-dashoffset:0.45}69.25%{stroke-dashoffset:0.45;animation-timing-function:ease-in-out}72.0%{stroke-dashoffset:0.18}75.25%{stroke-dashoffset:0.18;animation-timing-function:ease-in-out}78.0%{stroke-dashoffset:0.0}100%{stroke-dashoffset:0}}
+.gd-d1{opacity:0;animation:gdd1 20s linear infinite}@keyframes gdd1{0%{opacity:0}6.0%{opacity:0}7.0%{opacity:1}100%{opacity:1}}.gd-d2{opacity:0;animation:gdd2 20s linear infinite}@keyframes gdd2{0%{opacity:0}12.0%{opacity:0}13.0%{opacity:1}100%{opacity:1}}.gd-d3{opacity:0;animation:gdd3 20s linear infinite}@keyframes gdd3{0%{opacity:0}18.0%{opacity:0}19.0%{opacity:1}100%{opacity:1}}.gd-d4{opacity:0;animation:gdd4 20s linear infinite}@keyframes gdd4{0%{opacity:0}24.0%{opacity:0}25.0%{opacity:1}100%{opacity:1}}.gd-d5{opacity:0;animation:gdd5 20s linear infinite}@keyframes gdd5{0%{opacity:0}30.0%{opacity:0}31.0%{opacity:1}100%{opacity:1}}.gd-d6{opacity:0;animation:gdd6 20s linear infinite}@keyframes gdd6{0%{opacity:0}36.0%{opacity:0}37.0%{opacity:1}100%{opacity:1}}.gd-d7{opacity:0;animation:gdd7 20s linear infinite}@keyframes gdd7{0%{opacity:0}42.0%{opacity:0}43.0%{opacity:1}100%{opacity:1}}.gd-d8{opacity:0;animation:gdd8 20s linear infinite}@keyframes gdd8{0%{opacity:0}48.0%{opacity:0}49.0%{opacity:1}100%{opacity:1}}.gd-d9{opacity:0;animation:gdd9 20s linear infinite}@keyframes gdd9{0%{opacity:0}54.0%{opacity:0}55.0%{opacity:1}100%{opacity:1}}.gd-d10{opacity:0;animation:gdd10 20s linear infinite}@keyframes gdd10{0%{opacity:0}60.0%{opacity:0}61.0%{opacity:1}100%{opacity:1}}.gd-d11{opacity:0;animation:gdd11 20s linear infinite}@keyframes gdd11{0%{opacity:0}66.0%{opacity:0}67.0%{opacity:1}100%{opacity:1}}.gd-d12{opacity:0;animation:gdd12 20s linear infinite}@keyframes gdd12{0%{opacity:0}72.0%{opacity:0}73.0%{opacity:1}100%{opacity:1}}.gd-d13{opacity:0;animation:gdd13 20s linear infinite}@keyframes gdd13{0%{opacity:0}78.0%{opacity:0}79.0%{opacity:1}100%{opacity:1}}
+.gd-startlbl{animation:gdstart 20s linear infinite}
+@keyframes gdstart{0%{opacity:1}7.0%{opacity:1}12.0%{opacity:0.35}100%{opacity:0.35}}
+.gd-ring{opacity:0;transform-box:fill-box;transform-origin:center;animation:gdring 20s linear infinite}
+@keyframes gdring{0%{opacity:0;transform:scale(.4)}78.0%{opacity:0;transform:scale(.4)}80.5%{opacity:.8;transform:scale(1)}86.0%{opacity:0;transform:scale(1.9)}100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){.gd-ball,.gd-trail,.gd-startlbl,.gd-ring,[class^=gd-d]{animation:none !important}.gd-trail{stroke-dashoffset:0}[class^=gd-d]{opacity:1}}
+</style>
+<polyline class="gd-trail" pathLength="100" points="64.8,61.7 132.2,136.5 184.3,178.6 219.8,197.2 242.4,204.5 256.7,207.2 265.8,208.3 271.6,208.7 275.5,208.9 278.0,209.0 279.6,209.0 280.7,209.1 281.5,209.1 282.0,209.1" fill="none" stroke="#b0402a" stroke-width="2.4"/>
+<circle class="gd-d1" cx="132.2" cy="136.5" r="2.4" fill="#b0402a"/>
+<circle class="gd-d2" cx="184.3" cy="178.6" r="2.4" fill="#b0402a"/>
+<circle class="gd-d3" cx="219.8" cy="197.2" r="2.4" fill="#b0402a"/>
+<circle class="gd-d4" cx="242.4" cy="204.5" r="2.4" fill="#b0402a"/>
+<circle class="gd-d5" cx="256.7" cy="207.2" r="2.4" fill="#b0402a"/>
+<circle class="gd-d6" cx="265.8" cy="208.3" r="2.4" fill="#b0402a"/>
+<circle class="gd-d7" cx="271.6" cy="208.7" r="2.4" fill="#b0402a"/>
+<circle class="gd-d8" cx="275.5" cy="208.9" r="2.4" fill="#b0402a"/>
+<circle class="gd-d9" cx="278.0" cy="209.0" r="2.4" fill="#b0402a"/>
+<circle class="gd-d10" cx="279.6" cy="209.0" r="2.4" fill="#b0402a"/>
+<circle class="gd-d11" cx="280.7" cy="209.1" r="2.4" fill="#b0402a"/>
+<circle class="gd-d12" cx="281.5" cy="209.1" r="2.4" fill="#b0402a"/>
+<circle class="gd-d13" cx="282.0" cy="209.1" r="2.4" fill="#b0402a"/>
 <circle cx="282.0" cy="209.1" r="5" fill="#5f6c33" stroke="#fff" stroke-width="1.8"/>
 <text x="294" y="227" font-size="12" fill="#5f6c33">lowest loss</text>
+<circle class="gd-ring" cx="282.0" cy="209.1" r="14" fill="none" stroke="#5f6c33" stroke-width="2"/>
+<g class="gd-ball"><circle cx="64.8" cy="61.7" r="9" fill="#b0402a" stroke="#fff" stroke-width="2.5"/></g>
+<text class="gd-startlbl" x="81" y="50" font-size="12" fill="#231f18">start: random weights</text>
 <text x="52" y="210" font-size="12" fill="#6e6557" transform="rotate(-64 52 210)">loss (height) ↑</text>
 <text x="470" y="336" font-size="12" fill="#6e6557">weight 1 →</text>
 <text x="120" y="336" font-size="12" fill="#6e6557">← weight 2</text>
+<text x="18" y="22" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">each hop = one update · click to pause / resume</text>
+<script>document.getElementById("gdvalley").addEventListener("click",function(){this.classList.toggle("gd-paused");var p=this.classList.contains("gd-paused")?"paused":"running";this.querySelectorAll("*").forEach(function(e){e.style.animationPlayState=p})});</script>
 </svg>'''
 
 SECTIONS = [
@@ -605,9 +626,13 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
    "Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The "
    "gradient is the downhill direction; each training step rolls the ball one step lower."),
   ("diagram", SURFACE3D_SVG,
-   "Now with TWO weights the loss becomes a landscape, and the dotted line is a real gradient-descent "
-   "run on this very surface: at every step, feel the slope, step downhill. Our model has millions of "
-   "weights — a landscape in millions of dimensions — but the move never changes."),
+   "Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent "
+   "run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every "
+   "step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the "
+   "ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real "
+   "training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why "
+   "<a href='../track-a/#schedule'>Part 1 \u00a713</a> also shrinks the step size on a schedule.) Our model has millions of weights "
+   "&mdash; a landscape in millions of dimensions &mdash; but the move never changes."),
   ("prose", r"""
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 """),
