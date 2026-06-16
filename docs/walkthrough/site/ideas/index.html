@@ -284,9 +284,10 @@ optional theory — read it first if you like the <em>why</em> before the <em>ho
 
 <div class="bigidea">
   <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
-  function</strong> with millions of adjustable numbers (its <strong>parameters</strong>) that, given
-  some text so far, predicts what comes next. <em>Training</em> tunes those numbers (millions of tiny
-  nudges) until coherent language falls out. <em>Generation</em> runs the function in a loop to write.</p>
+  function</strong> with millions of adjustable numbers — its <strong>parameters</strong>, also called its
+  <strong>weights</strong>: the dials of the function — that, given some text so far, predicts what comes
+  next. <em>Training</em> tunes those dials (millions of tiny nudges) until coherent language falls out.
+  <em>Generation</em> runs the function in a loop to write.</p>
   <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
   what it has read, how it measures its own mistakes, and how it slowly improves.</p>
 </div>
@@ -379,6 +380,13 @@ for real, from the tiny model this lab builds in Part 1:</p>
 token out. The function's behaviour is fixed by its <strong>parameters</strong>: millions of numbers
 set during training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote, just numbers, multiplied
 and added, shaped by training to make good predictions.</p>
+<p>Those numbers are the function's <strong>dials</strong>, and you'll meet them under two interchangeable
+names: a model's <strong>parameters</strong> and its <strong>weights</strong> are the same thing — each is
+one adjustable dial. Set all of them together the right way and the output goes from gibberish to fluent
+English; that one good setting <em>is</em> the trained model. So &ldquo;a 3-million-parameter model&rdquo;
+(ours) just means 3 million dials, and a frontier model has hundreds of billions. The dials are turned only
+once, during training (§7) — frozen afterwards; the single knob you actually touch at generation is
+temperature (§8).</p>
 </div></aside>
     </section>
     
@@ -874,9 +882,10 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
-<p>A token doesn't <em>have</em> parameters. The parameters (every <code>W</code> and <code>b</code>)
-<strong>are the model</strong>: fixed after training and <strong>shared</strong>, so the exact same
-weights process every token, at every position. A token is just data flowing through them.</p>
+<p>A token doesn't <em>have</em> parameters. The parameters — the <strong>weights</strong>, every
+<code>W</code> and <code>b</code> — <strong>are the model</strong>: fixed after training and
+<strong>shared</strong>, so the exact same weights process every token, at every position. A token is
+just data flowing through them.</p>
 <p>And the weights in the picture are a tiny slice: <em>one output of one layer</em>. Our tiny GPT stacks
 4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
 the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
