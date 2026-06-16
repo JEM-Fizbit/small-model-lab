@@ -284,11 +284,11 @@ optional theory — read it first if you like the <em>why</em> before the <em>ho
 
 <div class="bigidea">
   <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
-  function</strong> with millions of adjustable numbers — its <strong>parameters</strong> (you'll also hear
+  function</strong> with a great many adjustable numbers — its <strong>parameters</strong> (you'll also hear
   them called its <strong>weights</strong>): the dials of the function — that, given some text so far,
-  predicts what comes next. <em>Training</em> tunes those dials (millions of tiny nudges) until coherent
-  language falls out.
-  <em>Generation</em> runs the function in a loop to write.</p>
+  predicts what comes next. There are millions of these dials in a small model like ours, and billions or
+  even trillions in a frontier one. <em>Training</em> tunes them (countless tiny nudges) until coherent
+  language falls out. <em>Generation</em> runs the function in a loop to write.</p>
   <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
   what it has read, how it measures its own mistakes, and how it slowly improves.</p>
 </div>
@@ -387,7 +387,7 @@ and added, shaped by training to make good predictions.</p>
 §4 — but &ldquo;weights&rdquo; is the common shorthand for the whole lot). Set every dial the right way and the
 output goes from gibberish to fluent English; that one good setting <em>is</em> the trained model. So
 &ldquo;a 3-million-parameter model&rdquo; (ours) just means 3 million dials, and a frontier model has hundreds
-of billions. The dials are turned only once, during training (§7) — frozen afterwards; the single knob you
+of billions, the largest into the trillions. The dials are turned only once, during training (§7) — frozen afterwards; the single knob you
 actually touch at generation is temperature (§8).</p>
 </div></aside>
     </section>
