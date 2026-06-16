@@ -29,8 +29,7 @@ optional theory — read it first if you like the <em>why</em> before the <em>ho
   <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
   function</strong> with a great many adjustable numbers — its <strong>parameters</strong> (you'll also hear
   them called its <strong>weights</strong>): the dials of the function — that, given some text so far,
-  predicts what comes next. There are millions of these dials in a small model like ours, and billions or
-  even trillions in a frontier one. <em>Training</em> tunes them (countless tiny nudges) until coherent
+  predicts what comes next. <em>Training</em> tunes those dials (countless tiny nudges) until coherent
   language falls out. <em>Generation</em> runs the function in a loop to write.</p>
   <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
   what it has read, how it measures its own mistakes, and how it slowly improves.</p>
@@ -432,8 +431,8 @@ for real, from the tiny model this lab builds in Part 1:</p>
    "strongest statistical echo of the stories it read."),
   ("callout", "key", "A model is a function, not a mind", r"""
 <p>It helps to picture a giant mathematical function: text in → a probability for every possible next
-token out. The function's behaviour is fixed by its <strong>parameters</strong>: millions of numbers
-set during training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote, just numbers, multiplied
+token out. The function's behaviour is fixed by its <strong>parameters</strong>: numbers set during
+training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote, just numbers, multiplied
 and added, shaped by training to make good predictions.</p>
 <p>Those numbers are the function's <strong>dials</strong>, each one adjustable. The umbrella name is
 <strong>parameters</strong>; in everyday use they're just as often called the model's <strong>weights</strong>
