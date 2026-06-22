@@ -265,14 +265,15 @@ PROBS_SVG = r'''<svg viewBox="0 0 720 286" role="img" aria-label="The model's re
 <text x="30" y="282" font-size="10.5" fill="#6e6557">gets a bigger share; generating (§8) means picking from this menu, appending, and scoring again.</text>
 </svg>'''
 
-ATTENTION_SVG = r'''<svg viewBox="0 0 720 312" role="img" aria-label="Attention, measured: arcs from the word it back to earlier words in the sentence The dragon looked at the boy and it. The arc to dragon carries 76 percent of the attention; small arcs go to The, and, and boy; it keeps 8 percent for itself.">
+ATTENTION_SVG = r'''<svg viewBox="0 0 720 312" role="img" aria-label="Attention, measured: arcs from the word it back to earlier words in the sentence The dragon looked at the boy and it. The arc to dragon carries 76 percent of the attention; smaller arcs go to The (7 percent), and (6 percent), boy (2 percent), and looked (1 percent); it keeps 8 percent for itself.">
 <text x="360" y="26" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">Where does <tspan font-family="ui-monospace,Menlo,monospace" fill="#8c6a2a">it</tspan> look? — one real attention head, measured</text>
 <text x="360" y="44" text-anchor="middle" font-size="11" fill="#6e6557">the trained Part 1 model, layer 2 of 6, head 4 of 6 — each arc’s thickness = how much of the blend</text>
 <path d="M 581 204 Q 362 -25 144 204" fill="none" stroke="#963d2c" stroke-width="1.9" opacity="0.40"/>
 <text x="362" y="81" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">7%</text>
 <path d="M 581 204 Q 398 0 215 204" fill="none" stroke="#b0402a" stroke-width="8.8" opacity="0.84"/>
 <text x="398" y="94" text-anchor="middle" font-size="11" font-weight="700" fill="#b0402a">76%</text>
-<path d="M 581 204 Q 441 31 301 204" fill="none" stroke="#963d2c" stroke-width="1.3" opacity="0.36"/>
+<path d="M 581 204 Q 441 31 301 204" fill="none" stroke="#963d2c" stroke-width="1.3" opacity="0.45"/>
+<text x="360" y="139" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">1%</text>
 <path d="M 581 204 Q 528 93 474 204" fill="none" stroke="#963d2c" stroke-width="1.4" opacity="0.36"/>
 <text x="528" y="141" text-anchor="middle" font-size="10" font-weight="400" fill="#963d2c">2%</text>
 <path d="M 581 204 Q 556 114 530 204" fill="none" stroke="#963d2c" stroke-width="1.8" opacity="0.39"/>
@@ -295,7 +296,7 @@ ATTENTION_SVG = r'''<svg viewBox="0 0 720 312" role="img" aria-label="Attention,
 <text x="581" y="230" text-anchor="middle" font-size="14" fill="#231f18" font-family="ui-monospace,Menlo,monospace">it</text>
 <text x="581" y="260" text-anchor="middle" font-size="9.5" fill="#8c6a2a">the token asking (its “query”) — keeps 8% for itself</text>
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
-<text x="30" y="292" font-size="10.5" fill="#6e6557">“looked”, “at”, “the” get ≈0–1%. This head has learned to track who the sentence is about; other heads in the same</text>
+<text x="30" y="292" font-size="10.5" fill="#6e6557">“at” and “the” get ≈0%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
 </svg>'''
 
