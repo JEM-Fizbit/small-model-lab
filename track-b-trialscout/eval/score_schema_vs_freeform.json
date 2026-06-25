@@ -1,0 +1,60 @@
+{
+  "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+  "judge": "claude-sonnet-4-6",
+  "n": 150,
+  "note": "base model (NOT fine-tuned); same model both arms; judge reads only model output text.",
+  "B_schema": {
+    "phase": {
+      "accuracy": 0.96,
+      "macro_f1": 0.834
+    },
+    "modality": {
+      "accuracy": 0.593,
+      "macro_f1": 0.466
+    },
+    "primary_endpoint_type": {
+      "accuracy": 0.88,
+      "macro_f1": 0.889
+    },
+    "sponsor_type": {
+      "accuracy": 0.287,
+      "macro_f1": 0.373
+    },
+    "est_readout": {
+      "accuracy": 0.833
+    },
+    "risk_flags": {
+      "set_f1": 0.71
+    },
+    "_overall_structured": 0.711,
+    "_n": 150,
+    "_judge_ok": 1.0
+  },
+  "A_freeform": {
+    "phase": {
+      "accuracy": 0.987,
+      "macro_f1": 0.961
+    },
+    "modality": {
+      "accuracy": 0.793,
+      "macro_f1": 0.837
+    },
+    "primary_endpoint_type": {
+      "accuracy": 0.893,
+      "macro_f1": 0.891
+    },
+    "sponsor_type": {
+      "accuracy": 0.833,
+      "macro_f1": 0.712
+    },
+    "est_readout": {
+      "accuracy": 0.22
+    },
+    "risk_flags": {
+      "set_f1": 0.801
+    },
+    "_overall_structured": 0.755,
+    "_n": 150,
+    "_judge_ok": 1.0
+  }
+}
