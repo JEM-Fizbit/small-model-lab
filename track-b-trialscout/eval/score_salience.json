@@ -1,0 +1,120 @@
+{
+  "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit (base, no adapter)",
+  "judge": "claude-sonnet-4-6",
+  "n": 150,
+  "regime": "salience-capture; same base-model outputs as Round 1. Schema arm scored by direct JSON parse (its natural output); free-form arm by gold-blind, no-rescue extraction with omissions penalized.",
+  "B_schema": {
+    "phase": {
+      "accuracy": 0.953,
+      "macro_f1": 0.828
+    },
+    "modality": {
+      "accuracy": 0.36,
+      "macro_f1": 0.311
+    },
+    "primary_endpoint_type": {
+      "accuracy": 0.853,
+      "macro_f1": 0.88
+    },
+    "sponsor_type": {
+      "accuracy": 0.073,
+      "macro_f1": 0.204
+    },
+    "est_readout": {
+      "accuracy": 0.673
+    },
+    "risk_flags": {
+      "set_f1": 0.505
+    },
+    "_overall_structured": 0.57,
+    "_n": 150,
+    "_decomposition": {
+      "phase": {
+        "correct": 0.953,
+        "wrong": 0.047,
+        "omitted": 0.0
+      },
+      "modality": {
+        "correct": 0.36,
+        "wrong": 0.633,
+        "omitted": 0.007
+      },
+      "primary_endpoint_type": {
+        "correct": 0.853,
+        "wrong": 0.147,
+        "omitted": 0.0
+      },
+      "sponsor_type": {
+        "correct": 0.073,
+        "wrong": 0.927,
+        "omitted": 0.0
+      },
+      "est_readout": {
+        "correct": 0.673,
+        "wrong": 0.073,
+        "omitted": 0.253
+      },
+      "risk_flags": {
+        "discussed": 1.0,
+        "not_discussed": 0.0
+      }
+    }
+  },
+  "A_freeform": {
+    "phase": {
+      "accuracy": 0.98,
+      "macro_f1": 0.956
+    },
+    "modality": {
+      "accuracy": 0.68,
+      "macro_f1": 0.641
+    },
+    "primary_endpoint_type": {
+      "accuracy": 0.887,
+      "macro_f1": 0.874
+    },
+    "sponsor_type": {
+      "accuracy": 0.753,
+      "macro_f1": 0.734
+    },
+    "est_readout": {
+      "accuracy": 0.04
+    },
+    "risk_flags": {
+      "set_f1": 0.619
+    },
+    "_overall_structured": 0.66,
+    "_n": 150,
+    "_decomposition": {
+      "phase": {
+        "correct": 0.98,
+        "wrong": 0.02,
+        "omitted": 0.0
+      },
+      "modality": {
+        "correct": 0.68,
+        "wrong": 0.32,
+        "omitted": 0.0
+      },
+      "primary_endpoint_type": {
+        "correct": 0.88,
+        "wrong": 0.113,
+        "omitted": 0.007
+      },
+      "sponsor_type": {
+        "correct": 0.753,
+        "wrong": 0.027,
+        "omitted": 0.22
+      },
+      "est_readout": {
+        "correct": 0.04,
+        "wrong": 0.007,
+        "omitted": 0.953
+      },
+      "risk_flags": {
+        "discussed": 0.987,
+        "not_discussed": 0.013
+      }
+    }
+  }
+}
