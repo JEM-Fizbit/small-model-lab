@@ -105,10 +105,14 @@ def judge_extract(client: anthropic.Anthropic, writeup: str) -> dict | None:
 
 # ---- local generation (base model, no adapter) -----------------------------------------
 
-def generate_all(limit: int):
+def generate_all(limit: int, adapter: str | None = None):
     from mlx_lm import load, generate
-    print(f"loading base model {BASE_MODEL} (no adapter) ...", flush=True)
-    model, tok = load(BASE_MODEL)
+    if adapter:
+        print(f"loading {BASE_MODEL} + adapter {adapter} ...", flush=True)
+        model, tok = load(BASE_MODEL, adapter_path=adapter)
+    else:
+        print(f"loading base model {BASE_MODEL} (no adapter) ...", flush=True)
+        model, tok = load(BASE_MODEL)
     test_set = GOLD_TEST[:limit] if limit else GOLD_TEST
     rows = []
     t0 = time.time()
@@ -129,9 +133,21 @@ def generate_all(limit: int):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0, help="score only the first N test trials (0 = all 150)")
+    ap.add_argument("--adapter", type=str, default=None, help="LoRA adapter path (fine-tuned student); omit for base")
+    ap.add_argument("--suffix", type=str, default="", help="output filename suffix, e.g. '_ft'")
+    ap.add_argument("--skip-judge", action="store_true",
+                    help="only generate + save raw outputs (score later via the salience pipeline)")
     args = ap.parse_args()
+    eval_dir = ROOT / "eval"
 
-    test_set, rows = generate_all(args.limit)
+    test_set, rows = generate_all(args.limit, args.adapter)
+
+    if args.skip_judge:
+        (eval_dir / f"preds_schema_vs_freeform{args.suffix}.jsonl").write_text(
+            "".join(json.dumps({"nct_id": r["nct_id"], "schema_out": r["schema_out"],
+                                "freeform_out": r["freeform_out"]}) + "\n" for r in rows))
+        print(f"\nwrote eval/preds_schema_vs_freeform{args.suffix}.jsonl (raw outputs only; --skip-judge)")
+        return
 
     # Judge both conditions identically, in parallel. The judge sees ONLY the model output text.
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"], base_url="https://api.anthropic.com")
@@ -174,7 +190,6 @@ def main():
         "note": "base model (NOT fine-tuned); same model both arms; judge reads only model output text.",
         "B_schema": schema_res, "A_freeform": ff_res,
     }
-    eval_dir = ROOT / "eval"
     (eval_dir / "score_schema_vs_freeform.json").write_text(json.dumps(out, indent=2))
     (eval_dir / "preds_schema_vs_freeform.jsonl").write_text(
         "".join(json.dumps({"nct_id": r["nct_id"], "schema_out": r["schema_out"],

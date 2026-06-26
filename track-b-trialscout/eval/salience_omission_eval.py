@@ -35,7 +35,7 @@ sys.path.insert(0, str(ROOT / "schema"))
 from harness import score                    # noqa: E402  same metrics as Round 1 / the baseline
 from normalize import snap_to_enum           # noqa: E402  same enum-snap as deployed
 
-GENS = ROOT / "eval" / "preds_schema_vs_freeform.jsonl"   # reused base-model outputs
+GENS_DEFAULT = ROOT / "eval" / "preds_schema_vs_freeform.jsonl"   # reused base-model outputs
 GOLD_TEST = [json.loads(l) for l in (ROOT / "data" / "gold" / "test.jsonl").read_text().splitlines() if l.strip()]
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
 JUDGE_MODEL = "claude-sonnet-4-6"
@@ -158,9 +158,12 @@ def decompose(test_set, stated_by_id):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--gens", type=str, default=str(GENS_DEFAULT),
+                    help="raw generations file (schema_out + freeform_out per trial)")
+    ap.add_argument("--suffix", type=str, default="", help="output filename suffix, e.g. '_ft'")
     args = ap.parse_args()
 
-    rows = [json.loads(l) for l in GENS.read_text().splitlines() if l.strip()]
+    rows = [json.loads(l) for l in Path(args.gens).read_text().splitlines() if l.strip()]
     if args.limit:
         rows = rows[:args.limit]
     test_set = [r for r in GOLD_TEST if r["nct_id"] in {x["nct_id"] for x in rows}]
@@ -202,16 +205,16 @@ def main():
     ff_dec = decompose(test_set, ff_stated)
 
     out = {
-        "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit (base, no adapter)",
+        "model": f"mlx-community/Qwen3-4B-Instruct-2507-4bit (gens={Path(args.gens).name})",
         "judge": JUDGE_MODEL, "n": len(test_set),
-        "regime": ("salience-capture; same base-model outputs as Round 1. Schema arm scored by direct "
-                   "JSON parse (its natural output); free-form arm by gold-blind, no-rescue extraction "
-                   "with omissions penalized."),
+        "regime": ("salience-capture: same normalizer both arms (each fed its native output), "
+                   "no-rescue, omissions penalized; the only difference measured is whether the "
+                   "strategy surfaced the field."),
         "B_schema": {**schema_res, "_decomposition": schema_dec},
         "A_freeform": {**ff_res, "_decomposition": ff_dec},
     }
-    (ROOT / "eval" / "score_salience.json").write_text(json.dumps(out, indent=2))
-    (ROOT / "eval" / "preds_salience.jsonl").write_text(
+    (ROOT / "eval" / f"score_salience{args.suffix}.json").write_text(json.dumps(out, indent=2))
+    (ROOT / "eval" / f"preds_salience{args.suffix}.jsonl").write_text(
         "".join(json.dumps({"nct_id": r["nct_id"],
                             "schema_norm": raw[r["nct_id"]]["schema"],
                             "freeform_norm": raw[r["nct_id"]]["freeform"]}) + "\n" for r in rows))
@@ -219,7 +222,7 @@ def main():
     def acc(res, f):
         return res[f]["accuracy"] if f != "risk_flags" else res["risk_flags"]["set_f1"]
 
-    print(f"\n=== SALIENCE CAPTURE (base Qwen3-4B, n={len(test_set)}) ===")
+    print(f"\n=== SALIENCE CAPTURE (gens={Path(args.gens).name}, n={len(test_set)}) ===")
     print(f"  B (schema, JSON parse)   overall = {schema_res['_overall_structured']}")
     print(f"  A (free-form, no-rescue) overall = {ff_res['_overall_structured']}")
     print("\nfield                    schemaAcc  freeAcc   | free-form correct/wrong/OMIT | schema correct/wrong/miss")
@@ -230,7 +233,7 @@ def main():
               f"{s['correct']:.2f} / {s['wrong']:.2f} / {s['omitted']:.2f}")
     print(f"  {'risk_flags(setF1)':22s} {acc(schema_res,'risk_flags'):<9.3f} {acc(ff_res,'risk_flags'):<9.3f} |   "
           f"free-form discussed risks: {ff_dec['risk_flags']['discussed']:.2f}")
-    print("\nwrote eval/score_salience.json + preds_salience.jsonl")
+    print(f"\nwrote eval/score_salience{args.suffix}.json + preds_salience{args.suffix}.jsonl")
 
 
 if __name__ == "__main__":
