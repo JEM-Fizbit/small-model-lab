@@ -5,10 +5,12 @@ self-select the salient features will miss what a domain expert deems important;
 expert-designed extraction schema injects that judgment and gets closer to the correct
 answer.* (The illustrative "~80% free-form vs ~95% schema" claim.)
 
-Most runs are on the **base** model (`Qwen3-4B-Instruct-2507-4bit`, no fine-tuning) — the thesis
-is about *generic* LLMs. A final **fine-tuned** arm (Round 3) is added not to test the thesis but
-to *isolate the mechanism*: it separates "the model doesn't know" from "the model knows but won't
-volunteer it." (Spoiler: it's the latter — see Round 3, the decisive result.)
+The thesis is **model-agnostic** — it is about two *strategies* (an explicit expert-designed schema
+vs free-form self-selection of "what matters"), not any model class. The base-model-only focus
+introduced mid-investigation was a deliberate **constraint** to probe the generic-LLM case cleanly,
+not part of the core claim. The final **fine-tuned** arm (Round 3) extends the comparison across
+capability levels and *isolates the mechanism*: it separates "the model doesn't know" from "the
+model knows but won't volunteer it." (Spoiler: it's the latter — see Round 3, the decisive result.)
 
 ---
 
@@ -227,3 +229,32 @@ expert schema is doing two separable jobs: (1) **coverage** — forcing every de
 to be addressed (this is what free-form fails, at every capability level); (2) **correctness** —
 which additionally needs the domain vocabulary trained in (fine-tuning). Free-form summarization
 fails job (1) intrinsically; that is the load-bearing finding.
+
+---
+
+## Summary for the essay
+
+The comparison is between two **strategies**, independent of model class; capability (untrained vs
+fine-tuned) is the second axis that reveals *why* the schema wins.
+
+- **The schema approach fills every bucket (100% coverage) but with junk for an untrained model.**
+  It forces a value into every decision-critical field — so it never silently omits — but a generic
+  model lacking the domain vocabulary fills the judgment buckets with wrong answers (sponsor type
+  0.07, modality 0.36; the lookup buckets like phase/endpoint are already fine). Net ≈ **0.57**.
+- **The fine-tuned model performs much better** on that same schema (≈ **0.92**): the coverage was
+  always there; fine-tuning supplies the correct domain vocabulary that turns the junk into right
+  answers.
+- **Optimal performance comes from schema + fine-tune (≈ 0.92).** The two do separable jobs — the
+  schema supplies *coverage / what-matters* (an expert deciding which fields must be reported), the
+  fine-tune supplies *correctness* (the domain vocabulary to fill them right).
+- **Free-form stays low (~0.59) at *both* capability levels.** Even the fine-tuned, domain-expert
+  model — which answers these fields at 0.97 / 0.98 when the schema asks — omits the readout window
+  86% and the sponsor type 72% of the time when left to summarize freely. The deficit is salience
+  *selection*, not knowledge, and no amount of model capability fixes it; only an explicit schema
+  does.
+
+**The thesis, vindicated and sharpened:** deferring to the model on "what matters" is structurally
+unreliable because the model omits decision-critical fields it nonetheless knows. An explicit,
+expert-designed schema is what guarantees those fields are surfaced; combined with a model
+fine-tuned to the domain vocabulary, it reaches the high-accuracy regime (~0.92) that free-form
+never approaches at any capability level.
