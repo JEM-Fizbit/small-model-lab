@@ -135,3 +135,34 @@ closes that coverage gap by construction — but on a *generic* model it trades 
 wrong-vocabulary answers, so the schema's full accuracy payoff only lands once the expert's domain
 judgment is trained into the model.
 
+### Independent verification (3 agents, re-derived from raw JSONL)
+
+Run to resolve the apparent paradox "free-form 0.66 > schema 0.57, yet free-form omits 92%/62%."
+All three checks reproduced the headline numbers from scratch before correcting them.
+
+- **The two numbers measure different things — no contradiction.** Overall accuracy = the end of a
+  *model → strong-judge* pipeline; the judge backfills omitted fields from its own knowledge.
+  Omission % = what the model's *own summary* contained. The omission % is the honest test of
+  self-selected salience; the 0.66 is the pipeline's reconstructive power, not the model's.
+- **The rescue is real but concentrated in sponsor_type.** ~15% of n (≈19% of free-form's *correct*
+  sponsor answers) came from the judge classifying a bare entity name the prose never characterized
+  ("Enterome's trial" → biotech; "Sanofi's trial" → large pharma). Modality rescue is small (~4%);
+  free-form's modality edge (0.68 vs 0.36) is a *genuine* win caused by the schema arm's vocabulary
+  failure on a generic model ("Drug"/"BIOLOGICAL" instead of the enum), not by rescue.
+- **Corrected overall ≈ a tie.** Stripping judge-rescued cells (independent gate): free-form
+  0.66 → **0.584**, vs schema **0.570** — margin collapses +0.090 → **+0.014** (within noise).
+  Free-form does **not** robustly beat schema once the judge stops doing the expert's job.
+  (My first manual pass said 0.525/schema-wins; that over-stripped legitimate modality descriptions —
+  the verified figure is the ~0.58 tie.)
+- **Ruler caveat for honesty:** the "62% sponsor omitted" is a clean deterministic surface check
+  (93/150 prose have no sponsor-type word). The "92% readout omitted" is the judge's NOT_STATED rate;
+  a bare year appears in ~41% of summaries but as enrollment/duration, not a usable readout *window*,
+  so a strict deterministic "no readout-window phrase" check still gives ~67%. Either ruler: the
+  readout window is overwhelmingly omitted.
+- **Thesis verdict (verified):** CONFIRMED in mechanism, **field-conditional** — holds for the
+  judgment-heavy fields (est_readout, sponsor_type, risk_flags), not for lookup fields (phase,
+  endpoint, which free-form states fine). The *corollary* "therefore schema scores higher on a
+  generic model" is **not supported** — coverage ≠ correctness; the generic model answers forced
+  fields in the wrong vocabulary. The accuracy payoff needs the domain judgment trained in
+  (fine-tuned student = 0.922 schema'd).
+
