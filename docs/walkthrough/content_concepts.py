@@ -757,13 +757,25 @@ them.</p>
 <p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
 vocabulary &mdash; thousands of them, stacked into one enormous table. That table has a name,
 <strong>W<sub>E</sub></strong>, and it holds essentially everything the model knows about individual
-words. (By convention it's drawn on its side: one column per token.)</p>
+words.</p>
 """),
   ("diagram", WE_MATRIX_SVG,
    "The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension "
    "rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other "
    "~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section "
    "is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range)."),
+  ("callout", "aside", "Row or column? The table vs.&nbsp;W<sub>E</sub>", r"""
+<p>Two orientations of the same numbers &mdash; both standard, worth untangling once. The model
+<em>stores</em> embeddings as a <strong>table indexed by row</strong>: in code it is <code>tok.weight</code>,
+shape <strong>[8,192 tokens &times; 384 dimensions]</strong>, and <code>tok.weight[#ID]</code> hands back
+<strong>row #ID</strong> &mdash; that token's 384 numbers. That <em>is</em> the &ldquo;row #ID&rdquo; this
+section keeps naming, and it is literally how the lookup runs.</p>
+<p>The figure above is labelled <strong>W<sub>E</sub></strong>, the same table <strong>transposed</strong>:
+<strong>one column per token</strong>. The textbook writes the embedding step as W<sub>E</sub> times a
+one-hot column, which <em>selects a column</em> &mdash; so &ldquo;W<sub>E</sub>&rdquo; specifically means
+the column-per-token form (it is also what lets all ~8,000 tokens fan out left&ndash;right, A&rarr;Z). Same
+table, on its side: a <em>row</em> in the code, a <em>column</em> in the matrix.</p>
+"""),
   ("prose", r"""
 <p>Rows of numbers are hard to read meaning from directly, so picture them as positions instead. Give each
 token the coordinates in its row and the &ldquo;meaning space&rdquo; stops being a metaphor &mdash; related
