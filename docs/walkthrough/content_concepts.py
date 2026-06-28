@@ -8,7 +8,7 @@ build.py renders this to site/ideas/index.html.
 """
 
 from content import (  # diagrams + the Python primer live in content.py
-    LANDSCAPE_SVG, CYCLE_SVG, LINEAR_SVG, EMBED_SCATTER_SVG, EMBED_HEATMAP_SVG,
+    LANDSCAPE_SVG, CYCLE_SVG, LINEAR_SVG, EMBED_SCATTER_SVG,
 )
 
 META = {
@@ -743,24 +743,37 @@ token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 """),
+  ("prose", r"""
+<p>Start with the fetch itself. The ID is nothing but an index; what matters is the row it lands on —
+that row of numbers <em>is</em> the embedding. The first hint of meaning is already visible in it: words
+that behave alike carry similar rows, while a pure grammar word like &ldquo;the&rdquo; looks nothing like
+them.</p>
+"""),
+  ("diagram", EMBED_LOOKUP_SVG,
+   "The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's "
+   "numbers (4 of 384 shown; values illustrative). The cell colours make it visible at a glance — "
+   "fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different one."),
+  ("prose", r"""
+<p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
+vocabulary &mdash; thousands of them, stacked into one enormous table. That table has a name,
+<strong>W<sub>E</sub></strong>, and it holds essentially everything the model knows about individual
+words. (By convention it's drawn on its side: one column per token.)</p>
+"""),
   ("diagram", WE_MATRIX_SVG,
    "The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension "
    "rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other "
    "~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section "
    "is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range)."),
-  ("diagram", EMBED_LOOKUP_SVG,
-   "The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's "
-   "numbers (4 of 384 shown; values illustrative). The cell colours preview the heatmap below — "
-   "similar words get similar rows."),
+  ("prose", r"""
+<p>Rows of numbers are hard to read meaning from directly, so picture them as positions instead. Give each
+token the coordinates in its row and the &ldquo;meaning space&rdquo; stops being a metaphor &mdash; related
+tokens gather into neighbourhoods, unrelated ones drift apart.</p>
+"""),
   ("diagram", EMBED_SCATTER_SVG,
    "Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings "
    "cluster. The axes are two of the 384 learned attributes/dimensions — loosely, 'animal-ness' across "
    "and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low "
    "(held lightly)."),
-  ("diagram", EMBED_HEATMAP_SVG,
-   "The same embeddings as colours: each row is a token, each column one of the 384 dimensions, each "
-   "cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar "
-   "patterns; \"the\" differs."),
   ("callout", "aside", "Attributes = dimensions", r"""
 <p>A token's embedding is a point in <strong>384-dimensional space</strong>: 384 numbers, one per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction

@@ -521,6 +521,80 @@ token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 </div>
+<div class="prose">
+<p>Start with the fetch itself. The ID is nothing but an index; what matters is the row it lands on —
+that row of numbers <em>is</em> the embedding. The first hint of meaning is already visible in it: words
+that behave alike carry similar rows, while a pure grammar word like &ldquo;the&rdquo; looks nothing like
+them.</p>
+</div>
+<figure class="imgfig diagram"><svg viewBox="0 0 720 318" role="img" aria-label="The embedding lookup: each token id indexes a row of the embedding table; fox, cat and dog get similar columns of numbers, the gets a different one.">
+<text x="360" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">A token’s ID indexes the embedding table: row #ID <tspan fill="#963d2c">is</tspan> its vector</text>
+<defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#6e6557"/></marker></defs>
+<rect x="76" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="120" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">fox</text>
+<text x="120" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
+<line x1="120" y1="92" x2="120" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="128" y="107" font-size="9" fill="#998f7d">row #1234</text>
+<rect x="88" y="118" width="64" height="27" fill="rgb(246,206,206)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.31</text>
+<rect x="88" y="145" width="64" height="27" fill="rgb(64,108,206)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.20</text>
+<rect x="88" y="172" width="64" height="27" fill="rgb(253,247,247)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.05</text>
+<rect x="88" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="120" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<rect x="236" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">cat</text>
+<text x="280" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
+<line x1="280" y1="92" x2="280" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="288" y="107" font-size="9" fill="#998f7d">row #882</text>
+<rect x="248" y="118" width="64" height="27" fill="rgb(246,210,210)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.28</text>
+<rect x="248" y="145" width="64" height="27" fill="rgb(88,127,212)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.05</text>
+<rect x="248" y="172" width="64" height="27" fill="rgb(251,236,236)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.12</text>
+<rect x="248" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="280" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<rect x="396" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">dog</text>
+<text x="440" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
+<line x1="440" y1="92" x2="440" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="448" y="107" font-size="9" fill="#998f7d">row #905</text>
+<rect x="408" y="118" width="64" height="27" fill="rgb(244,199,199)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.35</text>
+<rect x="408" y="145" width="64" height="27" fill="rgb(46,95,202)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.31</text>
+<rect x="408" y="172" width="64" height="27" fill="rgb(252,253,254)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.02</text>
+<rect x="408" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="440" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<rect x="556" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
+<text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">the</text>
+<text x="600" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
+<line x1="600" y1="92" x2="600" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
+<text x="608" y="107" font-size="9" fill="#998f7d">row #14</text>
+<rect x="568" y="118" width="64" height="27" fill="rgb(108,143,218)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.92</text>
+<rect x="568" y="145" width="64" height="27" fill="rgb(242,185,185)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="163" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.44</text>
+<rect x="568" y="172" width="64" height="27" fill="rgb(158,180,230)" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.61</text>
+<rect x="568" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
+<text x="600" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
+<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
+<text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
+</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's numbers (4 of 384 shown; values illustrative). The cell colours make it visible at a glance — fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different one.</figcaption></figure>
+<div class="prose">
+<p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
+vocabulary &mdash; thousands of them, stacked into one enormous table. That table has a name,
+<strong>W<sub>E</sub></strong>, and it holds essentially everything the model knows about individual
+words. (By convention it's drawn on its side: one column per token.)</p>
+</div>
 <figure class="imgfig diagram"><svg viewBox="0 0 1008 538" role="img" aria-label="The embedding matrix W_E of the trained Track A model: 8192 token columns (real tokens, alphabetical) by 384 dimension rows; each cell a real signed learned value, red positive, blue negative.">
 <path d="M 162 86 q 0 -12 12 -12 L 533.0 74 q 14 0 14 -12 q 0 12 14 12 L 920 74 q 12 0 12 12" fill="none" stroke="#6e6557" stroke-width="1.4"/>
 <text x="547.0" y="60" text-anchor="middle" font-size="15" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#231f18">All tokens, <tspan font-style="italic">~8k</tspan></text>
@@ -774,69 +848,12 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="424" y="528" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger positive,</text>
 <text x="528" y="528" font-size="11" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">− blue</text>
 <text x="584" y="528" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger negative</text>
-</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other ~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range).</figcaption></figure>
-<figure class="imgfig diagram"><svg viewBox="0 0 720 318" role="img" aria-label="The embedding lookup: each token id indexes a row of the embedding table; fox, cat and dog get similar columns of numbers, the gets a different one.">
-<text x="360" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">A token’s ID indexes the embedding table: row #ID <tspan fill="#963d2c">is</tspan> its vector</text>
-<defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#6e6557"/></marker></defs>
-<rect x="76" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
-<text x="120" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">fox</text>
-<text x="120" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
-<line x1="120" y1="92" x2="120" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="128" y="107" font-size="9" fill="#998f7d">row #1234</text>
-<rect x="88" y="118" width="64" height="27" fill="rgb(246,206,206)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="120" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.31</text>
-<rect x="88" y="145" width="64" height="27" fill="rgb(64,108,206)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="120" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.20</text>
-<rect x="88" y="172" width="64" height="27" fill="rgb(253,247,247)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="120" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.05</text>
-<rect x="88" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="120" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
-<rect x="236" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
-<text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">cat</text>
-<text x="280" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
-<line x1="280" y1="92" x2="280" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="288" y="107" font-size="9" fill="#998f7d">row #882</text>
-<rect x="248" y="118" width="64" height="27" fill="rgb(246,210,210)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="280" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.28</text>
-<rect x="248" y="145" width="64" height="27" fill="rgb(88,127,212)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="280" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.05</text>
-<rect x="248" y="172" width="64" height="27" fill="rgb(251,236,236)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="280" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.12</text>
-<rect x="248" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="280" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
-<rect x="396" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
-<text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">dog</text>
-<text x="440" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
-<line x1="440" y1="92" x2="440" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="448" y="107" font-size="9" fill="#998f7d">row #905</text>
-<rect x="408" y="118" width="64" height="27" fill="rgb(244,199,199)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="440" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.35</text>
-<rect x="408" y="145" width="64" height="27" fill="rgb(46,95,202)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="440" y="163" text-anchor="middle" font-size="11" fill="#ffffff" font-family="ui-monospace,Menlo,monospace">-1.31</text>
-<rect x="408" y="172" width="64" height="27" fill="rgb(252,253,254)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="440" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.02</text>
-<rect x="408" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="440" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
-<rect x="556" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
-<text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">the</text>
-<text x="600" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
-<line x1="600" y1="92" x2="600" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="608" y="107" font-size="9" fill="#998f7d">row #14</text>
-<rect x="568" y="118" width="64" height="27" fill="rgb(108,143,218)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="600" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.92</text>
-<rect x="568" y="145" width="64" height="27" fill="rgb(242,185,185)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="600" y="163" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.44</text>
-<rect x="568" y="172" width="64" height="27" fill="rgb(158,180,230)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="600" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.61</text>
-<rect x="568" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="600" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
-<text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
-<text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
-</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 384 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other ~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range).</figcaption></figure>
+<div class="prose">
+<p>Rows of numbers are hard to read meaning from directly, so picture them as positions instead. Give each
+token the coordinates in its row and the &ldquo;meaning space&rdquo; stops being a metaphor &mdash; related
+tokens gather into neighbourhoods, unrelated ones drift apart.</p>
+</div>
 <figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 384-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
@@ -869,83 +886,6 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <circle cx="128" cy="262" r="4" fill="#963d2c"/>
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
 </svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 384 learned attributes/dimensions — loosely, 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
-<figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 384 dimensions; fox cat dog similar, the differs.">
-<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 384) →</text>
-<text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
-<text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
-<text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
-<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">384</text>
-<text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
-<rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="150" y="46" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="177" y="46" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="204" y="46" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="231" y="46" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="258" y="46" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="285" y="46" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="312" y="46" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="339" y="46" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="366" y="46" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="393" y="46" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="428" y="63.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="97.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">cat</text>
-<rect x="96" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="123" y="80" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="150" y="80" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="177" y="80" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="204" y="80" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="231" y="80" width="25" height="26" fill="rgb(243,191,191)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="258" y="80" width="25" height="26" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="285" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="312" y="80" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="339" y="80" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="366" y="80" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="393" y="80" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="428" y="97.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="131.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">dog</text>
-<rect x="96" y="114" width="25" height="26" fill="rgb(219,62,62)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="123" y="114" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="150" y="114" width="25" height="26" fill="rgb(169,189,233)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="177" y="114" width="25" height="26" fill="rgb(221,73,73)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="204" y="114" width="25" height="26" fill="rgb(116,148,220)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="231" y="114" width="25" height="26" fill="rgb(251,234,234)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="258" y="114" width="25" height="26" fill="rgb(233,137,137)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="285" y="114" width="25" height="26" fill="rgb(180,198,236)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="312" y="114" width="25" height="26" fill="rgb(225,94,94)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="339" y="114" width="25" height="26" fill="rgb(253,245,245)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="366" y="114" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="393" y="114" width="25" height="26" fill="rgb(241,180,180)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="428" y="131.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="84" y="165.0" text-anchor="end" font-size="12.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">the</text>
-<rect x="96" y="148" width="25" height="26" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="123" y="148" width="25" height="26" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="150" y="148" width="25" height="26" fill="rgb(227,105,105)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="177" y="148" width="25" height="26" fill="rgb(212,222,244)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="204" y="148" width="25" height="26" fill="rgb(235,148,148)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="231" y="148" width="25" height="26" fill="rgb(62,107,206)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="258" y="148" width="25" height="26" fill="rgb(191,206,239)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="285" y="148" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="312" y="148" width="25" height="26" fill="rgb(148,173,228)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="339" y="148" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="366" y="148" width="25" height="26" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.8"/>
-<rect x="393" y="148" width="25" height="26" fill="rgb(105,140,217)" stroke="#ddd4c2" stroke-width="0.8"/>
-<text x="428" y="165.0" text-anchor="start" font-size="13" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">⋯</text>
-<text x="96" y="190" text-anchor="start" font-size="10.5" fill="#231f18" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox, cat, dog → similar patterns (similar meaning).   "the" → different.</text>
-<text x="238" y="223" text-anchor="end" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">low</text>
-<rect x="246" y="214" width="13" height="13" fill="rgb(40,90,200)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="259" y="214" width="13" height="13" fill="rgb(83,123,211)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="272" y="214" width="13" height="13" fill="rgb(126,156,222)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="285" y="214" width="13" height="13" fill="rgb(170,190,234)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="298" y="214" width="13" height="13" fill="rgb(213,223,245)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="311" y="214" width="13" height="13" fill="rgb(255,255,255)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="324" y="214" width="13" height="13" fill="rgb(247,212,212)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="337" y="214" width="13" height="13" fill="rgb(239,169,169)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="350" y="214" width="13" height="13" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.5"/>
-<rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#ddd4c2" stroke-width="0.5"/>
-<text x="395" y="223" text-anchor="start" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
-</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>The same embeddings as colours: each row is a token, each column one of the 384 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
 <p>A token's embedding is a point in <strong>384-dimensional space</strong>: 384 numbers, one per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
@@ -1135,7 +1075,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
-</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every token.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
 <p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> (the
 <strong>weights</strong>) and <code>b</code> (the <strong>biases</strong>) — <strong>are the model</strong>:
@@ -1212,7 +1152,7 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
 <text x="92" y="244" font-size="10" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
 <text x="380" y="232" font-size="10" fill="#5f6c33" display="none"></text>
 <text x="630" y="244" font-size="10" fill="#5f6c33">★ what our tiny GPT uses</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
     </section>
     
     <section id="attention">
@@ -1263,7 +1203,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
 <text x="30" y="292" font-size="10.5" fill="#6e6557">“at” and “the” get ≈0%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
-</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
@@ -1309,7 +1249,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#231f18">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#231f18" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#231f18">one step downhill</text>
-</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg id="gdvalley" style="cursor:pointer" viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball takes real gradient-descent steps from a high slope down to the lowest point, pausing between hops; the hops shrink as the valley flattens, because the gradient does. The dotted path draws itself behind the ball and a ring pulses at the minimum.">
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
@@ -1373,7 +1313,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="120" y="336" font-size="12" fill="#6e6557">← weight 2</text>
 <text x="18" y="22" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">each hop = one update · click to pause / resume</text>
 <script>document.getElementById("gdvalley").addEventListener("click",function(){this.classList.toggle("gd-paused");var p=this.classList.contains("gd-paused")?"paused":"running";this.querySelectorAll("*").forEach(function(e){e.style.animationPlayState=p})});</script>
-</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights &mdash; a landscape in millions of dimensions &mdash; but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights &mdash; a landscape in millions of dimensions &mdash; but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1400,7 +1340,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#963d2c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#963d2c">repeat ~2,500 times</text>
-</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1469,7 +1409,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#8c6a2a" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#6e6557">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption><span class="fignum" id="fig-13">Fig.&nbsp;13</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
