@@ -11,6 +11,14 @@ A learn-by-doing lab for **building, fine-tuning, and distilling small language 
 - **Track A** (`notebooks/01_…`, `02_…`, `03_…`): a tiny GPT pretrained *from scratch* on Apple MLX — learning-focused, throwaway output quality by design. The plain-English walk-through is generated from these notebooks by `docs/walkthrough/build.py`.
 - **Track B** (`track-b-trialscout/`): fine-tune/distill a small open model into **TrialScout** (clinical-trial record → structured JSON readout); ships as an MCP-callable expert.
 
+## Protocol Triggers
+
+Read the matching protocol before working in its domain (synced from ai-knowledge via knowhub; `docs/protocols/` is overwritten on sync):
+
+- ClinicalTrials.gov API work -> docs/protocols/CLINICALTRIALS_GOV_API.md
+- Packaging a local model as an MCP-callable expert -> docs/protocols/LOCAL_MODEL_MCP_EXPERT.md
+- Small-LM fine-tuning / distillation / improvement -> docs/protocols/SLM_DISTILLATION_AND_IMPROVEMENT.md
+
 ## Repository layout — public / private split (read before committing)
 
 This repo is **public**. Internal/personal material lives in a separate **private** repo, [`JEM-Fizbit/small-model-lab-private`](https://github.com/JEM-Fizbit/small-model-lab-private), cloned into `_private/` here (gitignored — present locally, never pushed to this repo).
