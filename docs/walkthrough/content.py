@@ -496,9 +496,9 @@ CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training c
 #  SECTIONS — the walk-through itself
 # ===========================================================================
 
-LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
+LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (384 numbers). Each output is its own neuron: all 384 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
 <defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 384 numbers → one number</text>
 <text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >vocabulary</text>
 <rect x="46" y="70" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >the</text>
@@ -510,7 +510,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <line x1="100" y1="113" x2="142" y2="113" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #256)</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #384)</text>
 <rect x="150" y="70" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="150" y="97" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
@@ -541,8 +541,8 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="326" y="130" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >add</text>
 <text x="326" y="143" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >them up</text>
 <text x="58" y="226" text-anchor="start" font-size="12" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 384 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 384 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
 <line x1="40" y1="288" x2="820" y2="288" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="314" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#8c6a2a">W</tspan> (so <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -605,10 +605,10 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 384 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 384). So y and b each have m entries; m is the output size (e.g. 384 → 1,536), independent of the 384 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
@@ -625,11 +625,11 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 3</text>
-<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<text x="427.0" y="644" text-anchor="middle" font-size="17" fill="#6e6557" font-weight="700" >⋯</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="9" fill="#998f7d" font-weight="400" >blocks 3–5</text>
 <line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 4</text>
+<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 6</text>
 <text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -642,17 +642,17 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg>'''
 
-EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
+EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 384-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
 <text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
 <text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
-<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 384 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
 <circle cx="395" cy="120" r="4" fill="#963d2c"/>
@@ -679,12 +679,12 @@ EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedd
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
 </svg>'''
 
-EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
-<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+EMBED_HEATMAP_SVG = r'''<svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 384 dimensions; fox cat dog similar, the differs.">
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 384) →</text>
 <text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
 <text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
 <text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
-<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">384</text>
 <text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
 <rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
 <rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -1265,7 +1265,7 @@ the maths stays stable.</li>
 a weighted sum) and a nonlinear <strong>activation</strong> (a &ldquo;bend,&rdquo; GELU here). Stacked
 with attention, an <em>embedding</em> at the bottom and a <em>head</em> at the top, that's the whole
 network. The <em>why</em>, with the diagrams (what a linear layer computes, what an embedding is, how the
-256 numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
+numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
 Here we build the block in code.</p>
 """),
   ("code", "01", "class Block(nn.Module):", "One block, then the full GPT assembled from blocks."),

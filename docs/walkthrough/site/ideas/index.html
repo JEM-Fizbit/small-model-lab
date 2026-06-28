@@ -385,7 +385,7 @@ and added, shaped by training to make good predictions.</p>
 (strictly, the weights are the multipliers and a smaller set of <strong>biases</strong> are the offsets — see
 §4 — but &ldquo;weights&rdquo; is the common shorthand for the whole lot). Set every dial the right way and the
 output goes from gibberish to fluent English; that one good setting <em>is</em> the trained model. So
-&ldquo;a 3-million-parameter model&rdquo; (ours) just means 3 million dials, and a frontier model has hundreds
+&ldquo;a 17-million-parameter model&rdquo; (ours) just means 17 million dials, and a frontier model has hundreds
 of billions, the largest into the trillions. The dials are turned only once, during training (§7) — frozen afterwards; the single knob you
 actually touch at generation is temperature (§8).</p>
 </div></aside>
@@ -517,10 +517,264 @@ reference: &ldquo;fetch row #1234.&rdquo;) Where <em>meaning</em> enters is what
       </div>
       <div class="prose">
 <p>If the ID is just a ticket, where does <em>meaning</em> live? In what the ticket fetches: each
-token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</strong> (256 numbers in
+token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</strong> (384 numbers in
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 </div>
+<figure class="imgfig diagram"><svg viewBox="0 0 1008 538" role="img" aria-label="The embedding matrix W_E of the trained Track A model: 8192 token columns (real tokens, alphabetical) by 384 dimension rows; each cell a real signed learned value, red positive, blue negative.">
+<path d="M 162 86 q 0 -12 12 -12 L 533.0 74 q 14 0 14 -12 q 0 12 14 12 L 920 74 q 12 0 12 12" fill="none" stroke="#6e6557" stroke-width="1.4"/>
+<text x="547.0" y="60" text-anchor="middle" font-size="15" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#231f18">All tokens, <tspan font-style="italic">~8k</tspan></text>
+<text x="179.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 179.0 119)">abbie</text>
+<text x="225.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 225.0 119)">abby</text>
+<text x="271.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 271.0 119)">abi</text>
+<text x="317.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 317.0 119)">abigail</text>
+<text x="363.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 363.0 119)">able</text>
+<text x="409.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 409.0 119)">about</text>
+<text x="455.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 455.0 119)">above</text>
+<text x="501.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 501.0 119)">acc</text>
+<text x="547.0" y="118" text-anchor="middle" font-size="13" fill="#998f7d">⋯</text>
+<text x="593.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 593.0 119)">zipping</text>
+<text x="639.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 639.0 119)">zoe</text>
+<text x="685.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 685.0 119)">zoo</text>
+<text x="731.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 731.0 119)">zookeeper</text>
+<text x="777.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 777.0 119)">zoom</text>
+<text x="823.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 823.0 119)">zoomed</text>
+<text x="869.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 869.0 119)">zooming</text>
+<text x="915.0" y="119" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 915.0 119)">zoomy</text>
+<path d="M 156 126 L 148 126 L 148 468 L 156 468" fill="none" stroke="#231f18" stroke-width="2.2"/>
+<path d="M 938 126 L 946 126 L 946 468 L 938 468" fill="none" stroke="#231f18" stroke-width="2.2"/>
+<text x="70" y="299.0" text-anchor="middle" font-size="34" font-family="Charter,'Iowan Old Style',Georgia,serif" font-style="italic" fill="#231f18">W<tspan font-size="22" dy="8">E</tspan><tspan font-size="34" dy="-8" font-style="normal"> =</tspan></text>
+<text x="179.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="179.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.08</text>
+<text x="179.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="179.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="179.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="179.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="179.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="179.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="179.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="179.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="179.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.09</text>
+<text x="179.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="179.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="225.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="225.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.08</text>
+<text x="225.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="225.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="225.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="225.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.08</text>
+<text x="225.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="225.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.08</text>
+<text x="225.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="225.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="225.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="225.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="225.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="271.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="271.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="271.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="271.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="271.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="271.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="271.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="271.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="271.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="271.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="271.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="271.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="271.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="317.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="317.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="317.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="317.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="317.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="317.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="317.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="317.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="317.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="317.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="317.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="317.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="317.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="363.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.07</text>
+<text x="363.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="363.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="363.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="363.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="363.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="363.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="363.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="363.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="363.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="363.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.07</text>
+<text x="363.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="363.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="409.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.09</text>
+<text x="409.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="409.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="409.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="409.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="409.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="409.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="409.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="409.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="409.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="409.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="409.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="409.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="455.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="455.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="455.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="455.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="455.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="455.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="455.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="455.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="455.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="455.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="455.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="455.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="455.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="501.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="501.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="501.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="501.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="501.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="501.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="501.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="501.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="501.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="501.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="501.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="501.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="501.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="547.0" y="145.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="171.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="197.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="223.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="249.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="275.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="301.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="327.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="353.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="379.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="405.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="547.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="547.0" y="457.0" text-anchor="middle" font-size="12" fill="#998f7d">⋯</text>
+<text x="593.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="593.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="593.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="593.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="593.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="593.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="593.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="593.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="593.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="593.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="593.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="593.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="593.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="639.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="639.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="639.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="639.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="639.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="639.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="639.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="639.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="639.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.10</text>
+<text x="639.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="639.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="639.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="639.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="685.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="685.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.07</text>
+<text x="685.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="685.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="685.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="685.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="685.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="685.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="685.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="685.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="685.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="685.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="685.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="731.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.08</text>
+<text x="731.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="731.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="731.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="731.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="731.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="731.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="731.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="731.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="731.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(75,102,155)">−0.05</text>
+<text x="731.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="731.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="731.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="777.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="777.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="777.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="777.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="777.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="777.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="777.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="777.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.08</text>
+<text x="777.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="777.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="777.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(170,69,57)">+0.05</text>
+<text x="777.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="777.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(173,54,44)">+0.06</text>
+<text x="823.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.08</text>
+<text x="823.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+0.08</text>
+<text x="823.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="823.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(59,94,161)">−0.06</text>
+<text x="823.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="823.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="823.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(138,135,128)">−0.01</text>
+<text x="823.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="823.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="823.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="823.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="823.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="823.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="869.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="869.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="869.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="869.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="869.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="869.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(106,119,141)">−0.03</text>
+<text x="869.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="869.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="869.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">−0.08</text>
+<text x="869.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="869.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="869.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="869.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="915.0" y="145.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(167,84,70)">+0.04</text>
+<text x="915.0" y="171.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(91,110,148)">−0.04</text>
+<text x="915.0" y="197.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<text x="915.0" y="223.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="915.0" y="249.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="915.0" y="275.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(154,143,121)">+0.00</text>
+<text x="915.0" y="301.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="915.0" y="327.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="915.0" y="353.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(163,98,82)">+0.03</text>
+<text x="915.0" y="379.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(157,128,108)">+0.01</text>
+<text x="915.0" y="405.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(122,127,134)">−0.02</text>
+<text x="915.0" y="431.0" text-anchor="middle" font-size="13" fill="#998f7d">⋮</text>
+<text x="915.0" y="457.0" text-anchor="middle" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="rgb(160,113,95)">+0.02</text>
+<path d="M 954 128 q 8 0 8 10 L 962 287.0 q 0 10 8 10 q -8 0 -8 10 L 962 456 q 0 10 -8 10" fill="none" stroke="#998f7d" stroke-width="1.2"/>
+<text x="976" y="293.0" font-size="12" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">384</text>
+<text x="976" y="308.0" font-size="12" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">dims</text>
+<text x="547.0" y="510" text-anchor="middle" font-size="23" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#231f18">Embedding matrix</text>
+<text x="156" y="528" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">each cell is one real learned number:</text>
+<text x="368" y="528" font-size="11" font-family="ui-monospace,Menlo,monospace" fill="rgb(176,39,31)">+ red</text>
+<text x="424" y="528" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger positive,</text>
+<text x="528" y="528" font-size="11" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">− blue</text>
+<text x="584" y="528" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger negative</text>
+</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other ~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range).</figcaption></figure>
 <figure class="imgfig diagram"><svg viewBox="0 0 720 318" role="img" aria-label="The embedding lookup: each token id indexes a row of the embedding table; fox, cat and dog get similar columns of numbers, the gets a different one.">
 <text x="360" y="24" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">A token’s ID indexes the embedding table: row #ID <tspan fill="#963d2c">is</tspan> its vector</text>
 <defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#6e6557"/></marker></defs>
@@ -537,7 +791,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="120" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.05</text>
 <rect x="88" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="120" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
 <rect x="236" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">cat</text>
 <text x="280" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
@@ -551,7 +805,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="280" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.12</text>
 <rect x="248" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="280" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
 <rect x="396" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">dog</text>
 <text x="440" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
@@ -565,7 +819,7 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="440" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.02</text>
 <rect x="408" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="440" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
 <rect x="556" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">the</text>
 <text x="600" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
@@ -579,17 +833,17 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="600" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.61</text>
 <rect x="568" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="600" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">256 numbers</text>
+<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
 <text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
 <text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
-</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 256 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
-<figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 256-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
+</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply is the token's numbers (4 of 384 shown; values illustrative). The cell colours preview the heatmap below — similar words get similar rows.</figcaption></figure>
+<figure class="imgfig diagram"><svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 384-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
 <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <line x1="64" y1="330" x2="525" y2="330" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
 <line x1="64" y1="330" x2="64" y2="45" stroke="#6e6557" stroke-width="1.3" marker-end="url(#ar)"/>
 <text x="290" y="352" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">Attribute A  (dimension 1) — loosely, &#8220;animal-ness&#8221; →</text>
 <text x="32" y="190" transform="rotate(-90 32 190)" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="600" font-family="-apple-system,sans-serif">Attribute B  (dimension 2) — loosely, &#8220;concreteness&#8221; ↑</text>
-<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 256 dimensions shown)</text>
+<text x="300" y="376" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">(2 of fox's 384 dimensions shown)</text>
 <circle cx="420" cy="135" r="78" fill="none" stroke="#cfc5ae" stroke-width="1.3" stroke-dasharray="5 4"/>
 <text x="420" y="51" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">animals</text>
 <circle cx="395" cy="120" r="4" fill="#963d2c"/>
@@ -614,13 +868,13 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <text x="181" y="282" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
 <circle cx="128" cy="262" r="4" fill="#963d2c"/>
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
-</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>Each token is its own point in 256-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 256 learned attributes/dimensions — loosely, 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
-<figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 256 dimensions; fox cat dog similar, the differs.">
-<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 256) →</text>
+</svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 384 learned attributes/dimensions — loosely, 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
+<figure class="imgfig diagram"><svg viewBox="0 0 560 268" role="img" aria-label="Embeddings as colored strips: each row a token, each column one of the 384 dimensions; fox cat dog similar, the differs.">
+<text x="96" y="20" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">each row = a token   ·   each column = one dimension / attribute (1, 2, 3, …, 384) →</text>
 <text x="108.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">1</text>
 <text x="135.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">2</text>
 <text x="162.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">3</text>
-<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">256</text>
+<text x="405.5" y="38" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">384</text>
 <text x="84" y="63.0" text-anchor="end" font-size="12.5" fill="#963d2c" font-weight="700" font-family="-apple-system,Segoe UI,sans-serif">fox</text>
 <rect x="96" y="46" width="25" height="26" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.8"/>
 <rect x="123" y="46" width="25" height="26" fill="rgb(231,126,126)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -691,9 +945,9 @@ space,&rdquo; where tokens used in similar ways land near each other.</p>
 <rect x="363" y="214" width="13" height="13" fill="rgb(223,83,83)" stroke="#ddd4c2" stroke-width="0.5"/>
 <rect x="376" y="214" width="13" height="13" fill="rgb(214,40,40)" stroke="#ddd4c2" stroke-width="0.5"/>
 <text x="395" y="223" text-anchor="start" font-size="9" fill="#6e6557" font-weight="400" font-family="-apple-system,Segoe UI,sans-serif">high</text>
-</svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>The same embeddings as colours: each row is a token, each column one of the 256 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>The same embeddings as colours: each row is a token, each column one of the 384 dimensions, each cell the token's value on it (red high, blue low). Similar tokens — fox, cat, dog — show similar patterns; "the" differs.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
-<p>A token's embedding is a point in <strong>256-dimensional space</strong>: 256 numbers, one per
+<p>A token's embedding is a point in <strong>384-dimensional space</strong>: 384 numbers, one per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
 capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
 concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
@@ -709,7 +963,7 @@ which every particular &ldquo;fox&rdquo; on the page is an imperfect shadow.</p>
 <aside class="callout key"><div class="callout-title">Where do the embeddings come from?</div><div class="callout-body">
 <p>Not from the letters, and not computed on the fly: they're <strong>learned, then looked up</strong>.
 The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
-becomes an integer ID, and that ID simply <em>indexes the table</em>; row #ID <em>is</em> its 256 numbers.
+becomes an integer ID, and that ID simply <em>indexes the table</em>; row #ID <em>is</em> its 384 numbers.
 There's no arithmetic on <code>f-o-x</code>.</p>
 <p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
 other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
@@ -733,9 +987,9 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <code>W</code> and the offsets into a vector <code>b</code>, and that's the whole layer: the school-line
 <code>y = mx + c</code>, vectorised. The diagram below builds it from one output up to the whole model.</p>
 </div>
-<figure class="imgfig diagram"><svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (256 numbers). Each output is its own neuron: all 256 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
+<figure class="imgfig diagram"><svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (384 numbers). Each output is its own neuron: all 384 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
 <defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
-<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 256 numbers → one number</text>
+<text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 384 numbers → one number</text>
 <text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >vocabulary</text>
 <rect x="46" y="70" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >the</text>
@@ -747,7 +1001,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <line x1="100" y1="113" x2="142" y2="113" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #256)</text>
+<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #384)</text>
 <rect x="150" y="70" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="150" y="97" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
@@ -778,8 +1032,8 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="326" y="130" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >add</text>
 <text x="326" y="143" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >them up</text>
 <text x="58" y="226" text-anchor="start" font-size="12" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">y₁  =  0.31×0.80  +  (−1.20)×(−0.40)  +  0.05×1.10  +  ⋯  +  0.12×(−0.70)  +  b₁   =  0.62</text>
-<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 256 at once.</text>
-<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 256 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
+<text x="58" y="252" text-anchor="start" font-size="10.5" fill="#a83a28" font-weight="700" >✗ NOT f→0.31, o→−1.20, x→0.05. The letters do not map to the numbers. The whole word "fox" is looked up to all 384 at once.</text>
+<text x="58" y="268" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Each of fox's 384 numbers (its "embedding") is its value on one learned attribute/dimension. See the embedding figure below.</text>
 <line x1="40" y1="288" x2="820" y2="288" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="314" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#8c6a2a">W</tspan> (so <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -842,10 +1096,10 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 256 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 256 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 256). So y and b each have m entries; m is the output size (e.g. 256 → 1,024), independent of the 256 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (256 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 384 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 384). So y and b each have m entries; m is the output size (e.g. 384 → 1,536), independent of the 384 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
@@ -862,11 +1116,11 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="427.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 3</text>
-<text x="427.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<text x="427.0" y="644" text-anchor="middle" font-size="17" fill="#6e6557" font-weight="700" >⋯</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="9" fill="#998f7d" font-weight="400" >blocks 3–5</text>
 <line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 4</text>
+<text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 6</text>
 <text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -879,17 +1133,17 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~3.24M parameters: ~56k embedding tables (each token's 256-number profile); ~3.16M the 4 blocks' shared W's; ~24k the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 256 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
-</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~3.24M-parameter model, whose weights are shared across every token.</figcaption></figure>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of one token's numbers; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
 <p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> (the
 <strong>weights</strong>) and <code>b</code> (the <strong>biases</strong>) — <strong>are the model</strong>:
 fixed after training and <strong>shared</strong>, so the exact same numbers process every token, at every
 position. A token is just data flowing through them.</p>
 <p>And the weights in the picture are a tiny slice: <em>one output of one layer</em>. Our tiny GPT stacks
-4 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
-the ~3.2M parameters. One layer's <code>W</code> might be 256×1024 (~262k numbers); the whole model is ~3.2M.</p>
+6 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
+the ~17M parameters. One layer's <code>W</code> might be 384×1536 (~590k numbers); the whole model is ~17M.</p>
 <p>And a linear layer transforms <em>one token at a time</em>. The model's real job (read a <em>string</em>
 of tokens and predict the next) needs tokens to share information, which is <em>attention</em>'s job
 (next section), not the linear layers. After the stack, the last position's vector is read out to predict
@@ -958,7 +1212,7 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
 <text x="92" y="244" font-size="10" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
 <text x="380" y="232" font-size="10" fill="#5f6c33" display="none"></text>
 <text x="630" y="244" font-size="10" fill="#5f6c33">★ what our tiny GPT uses</text>
-</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
     </section>
     
     <section id="attention">
@@ -1009,7 +1263,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
 <text x="30" y="292" font-size="10.5" fill="#6e6557">“at” and “the” get ≈0%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — the q·k matching from Part 1's formula, drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
@@ -1055,7 +1309,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#231f18">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#231f18" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#231f18">one step downhill</text>
-</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg id="gdvalley" style="cursor:pointer" viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball takes real gradient-descent steps from a high slope down to the lowest point, pausing between hops; the hops shrink as the valley flattens, because the gradient does. The dotted path draws itself behind the ball and a ring pulses at the minimum.">
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
@@ -1119,7 +1373,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="120" y="336" font-size="12" fill="#6e6557">← weight 2</text>
 <text x="18" y="22" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">each hop = one update · click to pause / resume</text>
 <script>document.getElementById("gdvalley").addEventListener("click",function(){this.classList.toggle("gd-paused");var p=this.classList.contains("gd-paused")?"paused":"running";this.querySelectorAll("*").forEach(function(e){e.style.animationPlayState=p})});</script>
-</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights &mdash; a landscape in millions of dimensions &mdash; but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights &mdash; a landscape in millions of dimensions &mdash; but the move never changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1146,7 +1400,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#963d2c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#963d2c">repeat ~2,500 times</text>
-</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1215,7 +1469,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#8c6a2a" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#6e6557">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-13">Fig.&nbsp;13</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
