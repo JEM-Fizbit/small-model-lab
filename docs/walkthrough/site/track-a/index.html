@@ -752,7 +752,7 @@ the maths stays stable.</li>
 a weighted sum) and a nonlinear <strong>activation</strong> (a &ldquo;bend,&rdquo; GELU here). Stacked
 with attention, an <em>embedding</em> at the bottom and a <em>head</em> at the top, that's the whole
 network. The <em>why</em>, with the diagrams (what a linear layer computes, what an embedding is, how the
-256 numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
+numbers form a &ldquo;meaning space&rdquo;) is in <a href="../ideas/#linear">Part 0 · Concepts</a>.
 Here we build the block in code.</p>
 </div>
 <figure class="codefig"><div class="codebar"><span class="srcname">notebook 01</span></div><div class="hl"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
