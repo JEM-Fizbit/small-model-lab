@@ -751,7 +751,8 @@ them.</p>
 """),
   ("diagram", EMBED_LOOKUP_SVG,
    "The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's "
-   "numbers (4 of 384 shown; values illustrative). The cell colours make it visible at a glance — "
+   "embedding vector — all 384 of its numbers (4 shown; values illustrative). The cell colours "
+   "make it visible at a glance — "
    "fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different one."),
   ("prose", r"""
 <p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
