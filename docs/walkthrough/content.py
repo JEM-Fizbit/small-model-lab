@@ -286,7 +286,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
-  color:var(--soft);margin-top:10px;line-height:1.4;text-wrap:balance;}
+  color:var(--soft);margin-top:10px;line-height:1.4;}
 .fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
   scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.1em;}

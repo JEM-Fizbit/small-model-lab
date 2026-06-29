@@ -183,7 +183,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
-  color:var(--soft);margin-top:10px;line-height:1.4;text-wrap:balance;}
+  color:var(--soft);margin-top:10px;line-height:1.4;}
 .fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
   scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.1em;}
@@ -379,7 +379,7 @@ for real, from the tiny model this lab builds in Part 1:</p>
 <text x="355" y="229" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">19.9%</text>
 <text x="30" y="266" font-size="10.5" fill="#6e6557">The scores sum to 100% across all 8,192 chunks. Training (§7) nudges the weights so the chunk that actually came next</text>
 <text x="30" y="282" font-size="10.5" fill="#6e6557">gets a bigger share; generating (§8) means picking from this menu, appending, and scoring again.</text>
-</svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>One real prediction from the tiny tuned model this lab builds in Part 1: given the text so far, it puts a score on every chunk in its vocabulary. “park” isn't a stored fact; it's the strongest statistical echo of the stories it read.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>One real prediction from the tiny tuned model this lab builds in Part 1: given the text so far, it puts a score on every chunk in its vocabulary. “park” isn't a stored fact; it's the strongest statistical echo of the stories it&nbsp;read.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">A model is a function, not a mind</div><div class="callout-body">
 <p>It helps to picture a giant mathematical function: text in → a probability for every possible next
 token out. The function's behaviour is fixed by its <strong>parameters</strong>: numbers set during
@@ -499,7 +499,7 @@ way to chop, and the choice matters enormously:</p>
 <text x="506" y="406" text-anchor="middle" font-size="9.5" fill="#6e6557">5 chunks — rare, spelled from pieces</text>
 <text x="30" y="438" font-size="10.5" fill="#6e6557">Words the training text used constantly earn a chunk of their own; rarer ones are spelled out of reusable pieces — and the</text>
 <text x="30" y="454" font-size="10.5" fill="#6e6557">pieces themselves often carry meaning (␣thunder, storm, ␣un…, …able). Nothing is ever out-of-vocabulary.</text>
-</svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways, with real numbers from Part 1's notebooks (character IDs from notebook 01, BPE chunk IDs from notebook 02). Below them: what happens to words the corpus saw rarely; the same tokenizer splits them into reusable, often meaningful pieces.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-2">Fig.&nbsp;2</span>The same sentence, tokenized two ways, with real numbers from Part 1's notebooks (character IDs from notebook 01, BPE chunk IDs from notebook 02). Below them: what happens to words the corpus saw rarely; the same tokenizer splits them into reusable, often meaningful&nbsp;pieces.</figcaption></figure>
 <div class="prose">
 <p>The reverse runs at the end: the model's predicted ID is mapped back to its chunk of text, and the
 pieces are glued together into words. <a href="../track-a/#data">Part 1 builds the tokenizer →</a></p>
@@ -593,7 +593,7 @@ them.</p>
 <text x="600" y="243" text-anchor="middle" font-size="10.5" fill="#998f7d">384 numbers</text>
 <text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
 <text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
-</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's embedding vector: all 384 of its numbers (4 shown; values illustrative). The cell colours make it visible at a glance: fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different one.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-3">Fig.&nbsp;3</span>The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's embedding vector: all 384 of its numbers (4 shown; values illustrative). The cell colours make it visible at a glance: fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different&nbsp;one.</figcaption></figure>
 <div class="prose">
 <p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
 vocabulary: thousands of them, stacked into one enormous table. That table has a name,
@@ -812,7 +812,7 @@ words.</p>
 <text x="364" y="558" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger positive,</text>
 <text x="468" y="558" font-size="11" font-family="ui-monospace,Menlo,monospace" fill="rgb(43,86,168)">− blue</text>
 <text x="524" y="558" font-size="10.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">stronger negative</text>
-</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension rows</strong>, every cell a learned value (12 tokens shown, swept A&rarr;Z; &#8943; stands in for the other ~8,180). Each column also carries its real <strong>token id</strong> (scrambled: the columns are alphabetical, the ids are not, per &sect;2). Each column is one token&rsquo;s vector, the &ldquo;meaning coordinates&rdquo; this section is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range).</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-4">Fig.&nbsp;4</span>The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension rows</strong>, every cell a learned value (12 tokens shown, swept A&rarr;Z; &#8943; stands in for the other ~8,180). Each column also carries its real <strong>token id</strong> (scrambled: the columns are alphabetical, the ids are not, per &sect;2). Each column is one token&rsquo;s vector, the &ldquo;meaning coordinates&rdquo; this section is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2&nbsp;range).</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Row or column? The table vs.&nbsp;W<sub>E</sub></div><div class="callout-body">
 <p>Two orientations of the same numbers, both standard, worth untangling once. The model
 <em>stores</em> embeddings as a <strong>table indexed by row</strong>: in code it is <code>tok.weight</code>,
@@ -861,7 +861,7 @@ tokens gather into neighbourhoods, unrelated ones drift apart.</p>
 <text x="181" y="282" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">a</text>
 <circle cx="128" cy="262" r="4" fill="#963d2c"/>
 <text x="136" y="266" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="600" font-family="-apple-system,Segoe UI,sans-serif">of</text>
-</svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 384 learned attributes/dimensions, loosely 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held lightly).</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-5">Fig.&nbsp;5</span>Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings cluster. The axes are two of the 384 learned attributes/dimensions, loosely 'animal-ness' across and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low (held&nbsp;lightly).</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Attributes = dimensions</div><div class="callout-body">
 <p>A token's embedding is a <strong>384-dimensional vector</strong>: a point in 384-dimensional space, one number per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
@@ -1051,7 +1051,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
-</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of the numbers in one token's vector; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every token.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of the numbers in one token's vector; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every&nbsp;token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
 <p>A token doesn't <em>have</em> parameters. The parameters — every <code>W</code> (the
 <strong>weights</strong>) and <code>b</code> (the <strong>biases</strong>) — <strong>are the model</strong>:
@@ -1128,7 +1128,7 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
 <text x="92" y="244" font-size="11" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
 <text x="380" y="232" font-size="11" fill="#5f6c33" display="none"></text>
 <text x="630" y="244" font-size="11" fill="#5f6c33">★ what our tiny GPT uses</text>
-</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded; only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight lines.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded; only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight&nbsp;lines.</figcaption></figure>
     </section>
     
     <section id="attention">
@@ -1179,7 +1179,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
 <text x="30" y="292" font-size="10.5" fill="#6e6557">“at” and “the” get ≈0%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model, the q·k matching from Part 1's formula, drawn.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model, the q·k matching from Part 1's formula,&nbsp;drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
@@ -1225,7 +1225,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="126" y="165" text-anchor="middle" font-size="12" fill="#231f18">weights</text>
 <line x1="201" y1="186" x2="258" y2="210" stroke="#231f18" stroke-width="2" marker-end="url(#arL)"/>
 <text x="300" y="200" font-size="12" fill="#231f18">one step downhill</text>
-</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step lower.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-9">Fig.&nbsp;9</span>Gradient descent with ONE weight: picture the loss as a curve and the model as a ball. The gradient is the downhill direction; each training step rolls the ball one step&nbsp;lower.</figcaption></figure>
 <figure class="imgfig diagram"><svg id="gdvalley" style="cursor:pointer" viewBox="0 0 660 350" role="img" aria-label="A loss surface over two weights, drawn as a 3-D wireframe valley. A ball takes real gradient-descent steps from a high slope down to the lowest point, pausing between hops; the hops shrink as the valley flattens, because the gradient does. The dotted path draws itself behind the ball and a ring pulses at the minimum.">
 <polyline points="330.0,-141.3 304.0,-84.2 278.0,-34.8 252.0,6.7 226.0,39.9 200.0,64.7 174.0,80.9 148.0,88.5 122.0,87.6 96.0,78.2 70.0,60.6 44.0,35.0 18.0,1.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
 <polyline points="356.0,-105.3 330.0,-45.8 304.0,5.9 278.0,49.4 252.0,84.1 226.0,109.9 200.0,126.5 174.0,133.7 148.0,131.8 122.0,120.9 96.0,101.3 70.0,73.4 44.0,37.7" fill="none" stroke="#cfc5ae" stroke-width="1" opacity="0.85"/>
@@ -1289,7 +1289,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <text x="120" y="336" font-size="12" fill="#6e6557">← weight 2</text>
 <text x="18" y="22" font-size="10.5" fill="#998f7d" font-family="ui-monospace,Menlo,monospace">each hop = one update · click to pause / resume</text>
 <script>document.getElementById("gdvalley").addEventListener("click",function(){this.classList.toggle("gd-paused");var p=this.classList.contains("gd-paused")?"paused":"running";this.querySelectorAll("*").forEach(function(e){e.style.animationPlayState=p})});</script>
-</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own: nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier, each batch gives a slightly different slope, which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights, a landscape in millions of dimensions, but the move never changes.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-10">Fig.&nbsp;10</span>Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every step, feel the slope, step downhill. Watch the hops shrink on their own: nobody slows the ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real training is noisier, each batch gives a slightly different slope, which is why <a href='../track-a/#schedule'>Part 1 §13</a> also shrinks the step size on a schedule.) Our model has millions of weights, a landscape in millions of dimensions, but the move never&nbsp;changes.</figcaption></figure>
 <div class="prose">
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 </div>
@@ -1316,7 +1316,7 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
 <line x1="555" y1="80" x2="583" y2="80" stroke="#963d2c" stroke-width="2" marker-end="url(#arC)"/>
 <path d="M 665 120 L 665 180 L 95 180 L 95 120" fill="none" stroke="#963d2c" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arC)"/>
 <text x="380" y="173" text-anchor="middle" font-size="12.5" fill="#963d2c">repeat ~2,500 times</text>
-</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then repeat.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-11">Fig.&nbsp;11</span>The training loop: a forward pass (guess the next tokens) → compute the loss (how wrong) → a backward pass (backpropagation: work the slopes back through every layer to get each parameter's gradient) → update (nudge every parameter a little downhill). Then&nbsp;repeat.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Backpropagation, in one line</div><div class="callout-body">
 <p>The <strong>backward pass</strong> (&ldquo;backprop&rdquo;) is just the chain rule from calculus run at
 scale: starting from the loss, it works the slopes backward through every layer to find each parameter's
@@ -1385,7 +1385,7 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="660" y="265" text-anchor="end" font-size="10" fill="#8c6a2a" font-style="italic">↑ the long tail gets a real chance</text>
 <text x="30" y="294" font-size="10.5" fill="#6e6557">Temperature reshapes how the menu is sampled, not the menu itself: at 0.5, “happy” wins ~59% of draws; at 1.1, nearly half</text>
 <text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
-</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything else.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything&nbsp;else.</figcaption></figure>
     </section>
     
     <section id="ceiling">
