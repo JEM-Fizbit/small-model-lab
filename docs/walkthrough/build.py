@@ -126,6 +126,12 @@ def render_code_lang(src: str, suffix: str) -> str:
     return highlight(src, _LEXERS.get(suffix, TextLexer()), _fmt)
 
 
+def _no_widow(caption: str) -> str:
+    """Bind a caption's last two words with a non-breaking space so it never wraps to a
+    lone word on the final line. Captions keep their full width; only the last break moves."""
+    return re.sub(r" (?=\S+$)", "&nbsp;", caption.rstrip()) if caption else caption
+
+
 def render_block(block, ctx, fig_no=None):
     """block is a tuple (kind, *args). Returns an HTML fragment.
     fig_no: page-wide figure number for "figure"/"diagram" blocks (auto-assigned
@@ -180,13 +186,13 @@ def render_block(block, ctx, fig_no=None):
                 f'<pre>{_esc(text)}</pre></div>')
     if kind == "figure":
         fn, caption = block[1], (block[2] if len(block) > 2 else "")
-        cap = (f'<figcaption>{fig_tag}{caption}</figcaption>'
+        cap = (f'<figcaption>{fig_tag}{_no_widow(caption)}</figcaption>'
                if caption or fig_tag else "")
         return (f'<figure class="imgfig"><img src="{img_data_uri(fn)}" alt="{caption}"/>'
                 f'{cap}</figure>')
     if kind == "diagram":
         svg, caption = block[1], (block[2] if len(block) > 2 else "")
-        cap = (f'<figcaption>{fig_tag}{caption}</figcaption>'
+        cap = (f'<figcaption>{fig_tag}{_no_widow(caption)}</figcaption>'
                if caption or fig_tag else "")
         # SVGs wider than the prose column render to a wider "wide" figure (see CSS);
         # detected from the viewBox so no per-figure flag is needed.
