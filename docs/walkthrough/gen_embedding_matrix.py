@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "notebooks"))
 import tiny_gpt                 # noqa: E402
 
 CKPT = ROOT / "notebooks/checkpoints/tiny_gpt_v2"
-N_END = 8           # tokens shown from each end of the alphabet
+N_END = 6           # tokens shown from each end of the alphabet (6+6 keeps the figure ~1:1 in the column)
 DIMS = list(range(11))          # embedding dims shown as rows …
 SAT = 0.07          # |value| >= SAT -> full red/blue (≈85th pct of |W_E|)
 
@@ -52,11 +52,11 @@ def main():
     def fmt(v):
         return f"{'+' if v >= 0 else '−'}{abs(v):.2f}"
 
-    n = len(sel); cw = 46; ch = 26
-    gx = 156; gy = 158; gw = n * cw   # gy raised to fit the word + token-id header rows above the matrix
+    n = len(sel); cw = 42; ch = 26
+    gx = 96; gy = 158; gw = n * cw    # tighter left gutter; gy raised to fit the word + token-id header rows
     vrows = len(dims) - 1
     gh = (vrows + 2) * ch
-    Wd = gx + gw + 70; Ht = gy + gh + 72
+    Wd = gx + gw + 60; Ht = gy + gh + 72
     s = [f'<svg viewBox="0 0 {Wd} {Ht}" role="img" aria-label="The embedding matrix W_E of the '
          f'trained Track A model: {cfg.vocab_size} token columns (real tokens, alphabetical) by '
          f'{cfg.n_embd} dimension rows; each cell a real signed learned value, red positive, blue negative.">']
@@ -74,9 +74,9 @@ def main():
         else:
             s.append(f'<text x="{cx}" y="{yw}" font-size="11.5" {MONO} fill="{INK}" '
                      f'transform="rotate(-50 {cx} {yw})">{w}</text>')
-            s.append(f'<text x="{cx}" y="{yid}" text-anchor="middle" font-size="9" {MONO} fill="{FAINT}">#{i}</text>')
+            s.append(f'<text x="{cx}" y="{yid}" text-anchor="middle" font-size="11" {MONO} fill="{FAINT}">#{i}</text>')
     # the token id is a column LABEL, not part of W_E: name the row and rule it off from the values
-    s.append(f'<text x="{gx-12}" y="{yid}" text-anchor="end" font-size="8.5" {SERIF} fill="{SOFT}">token id →</text>')
+    s.append(f'<text x="{gx-10}" y="{yid}" text-anchor="end" font-size="9.5" {SERIF} fill="{SOFT}">token id →</text>')
     s.append(f'<line x1="{gx-8}" y1="{gy-5}" x2="{gx+gw+8}" y2="{gy-5}" stroke="{LINE}" stroke-width="0.9"/>')
 
     def bracket(x, top, bot, left=True):
@@ -85,8 +85,8 @@ def main():
     s.append(bracket(gx - 8, gy - 2, gy + gh + 2, True))
     s.append(bracket(gx + gw + 8, gy - 2, gy + gh + 2, False))
     midy = gy + gh / 2
-    s.append(f'<text x="70" y="{midy+2}" text-anchor="middle" font-size="34" {SERIF} font-style="italic" '
-             f'fill="{INK}">W<tspan font-size="22" dy="8">E</tspan><tspan font-size="34" dy="-8" font-style="normal"> =</tspan></text>')
+    s.append(f'<text x="46" y="{midy+2}" text-anchor="middle" font-size="24" {SERIF} font-style="italic" '
+             f'fill="{INK}">W<tspan font-size="16" dy="6">E</tspan><tspan font-size="24" dy="-6" font-style="normal"> =</tspan></text>')
     for ci, (_sk, w, i) in enumerate(sel):
         cx = gx + ci * cw
         for r in range(vrows):
