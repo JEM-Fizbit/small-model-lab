@@ -282,7 +282,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 /* a too-wide diagram (viewBox > 760) breaks out past the 720 prose column into the
    content cell, so it renders near 1:1 instead of being squished. Reset on narrow. */
 .imgfig.wide{width:800px;max-width:none;padding-left:8px;padding-right:8px;
-  margin-left:calc(50% - 400px);margin-right:calc(50% - 400px);}
+  margin-left:0;margin-right:auto;}
 /* restore caption side-breathing for wide figures (the panel shrinks side padding to 8px for SVG
    breathing room, but captions need the same 18px gap as every other figure) */
 .imgfig.wide figcaption{padding-left:10px;padding-right:10px;}
