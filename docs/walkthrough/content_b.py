@@ -107,9 +107,9 @@ DISTILL_SVG = r'''<svg viewBox="0 0 820 210" role="img" aria-label="Distillation
 <line x1="177" y1="92" x2="220" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="387" y1="92" x2="430" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="597" y1="92" x2="640" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
-<text x="198" y="84" text-anchor="middle" font-size="10" fill="#998f7d">read</text>
-<text x="408" y="84" text-anchor="middle" font-size="10" fill="#998f7d">writes answers</text>
-<text x="618" y="84" text-anchor="middle" font-size="10" fill="#998f7d">fine-tune</text>
+<text x="198" y="84" text-anchor="middle" font-size="11" fill="#998f7d">read</text>
+<text x="408" y="84" text-anchor="middle" font-size="11" fill="#998f7d">writes answers</text>
+<text x="618" y="84" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
 </svg>'''
 
 LORA_SVG = r'''<svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big base model is frozen; only a small adapter of weight deltas is trained; together they make TrialScout.">
@@ -151,7 +151,7 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <rect x="648" y="78" width="140" height="70" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
 <text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">Overall score</text>
 <text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.368 → 0.922</text>
-<text x="718" y="139" text-anchor="middle" font-size="9.5" fill="#5f6c33">vs baseline</text>
+<text x="718" y="139" text-anchor="middle" font-size="11" fill="#5f6c33">vs baseline</text>
 <line x1="162" y1="112" x2="203" y2="112" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
 <line x1="355" y1="104" x2="398" y2="62" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
 <line x1="355" y1="120" x2="398" y2="162" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>

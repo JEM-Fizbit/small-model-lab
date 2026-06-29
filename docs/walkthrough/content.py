@@ -241,7 +241,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
   font-family:var(--mono);font-size:13px;line-height:1.6;}
 .codefig .hl pre{margin:0;}
 .codefig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--soft);
-  background:var(--bg);padding:10px 16px;border-top:1px solid var(--code-line);}
+  line-height:1.4;background:var(--bg);padding:10px 16px;border-top:1px solid var(--code-line);}
 
 /* pygments (light, muted — replaces monokai) */
 .hl pre{color:#3a342a;}
@@ -282,7 +282,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
-  color:var(--soft);margin-top:10px;}
+  color:var(--soft);margin-top:10px;line-height:1.4;}
 .fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
   scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.1em;}
@@ -499,7 +499,7 @@ CYCLE_SVG = r'''<svg viewBox="0 0 760 250" role="img" aria-label="The training c
 LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear layer. fox is looked up to its embedding (384 numbers). Each output is its own neuron: all 384 inputs times that output's weights plus its bias = one number. A layer stacks m such outputs, so y and b have m entries (a few shown). One token in becomes a new vector of m numbers out, not a single number.">
 <defs><marker id="aA" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <text x="58" y="26" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >① One output (a "neuron"): a token's 384 numbers → one number</text>
-<text x="72" y="62" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >vocabulary</text>
+<text x="72" y="62" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >vocabulary</text>
 <rect x="46" y="70" width="52" height="26" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="72" y="87" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >the</text>
 <rect x="46" y="100" width="52" height="26" rx="7" fill="#ecd9d0" stroke="#963d2c" stroke-width="2.4"/>
@@ -508,9 +508,9 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="72" y="147" text-anchor="middle" font-size="12.5" fill="#231f18" font-weight="400" >cat</text>
 <text x="72" y="162" text-anchor="middle" font-size="13" fill="#6e6557" font-weight="400" >⋮</text>
 <line x1="100" y1="113" x2="142" y2="113" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
-<text x="121" y="106" text-anchor="middle" font-size="8.5" fill="#6e6557" font-weight="400" >look up</text>
+<text x="121" y="106" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="400" >look up</text>
 <text x="178" y="50" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >fox's embedding</text>
-<text x="178" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(x: #1–3, then #384)</text>
+<text x="178" y="63" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >(x: #1–3, then #384)</text>
 <rect x="150" y="70" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="180.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="150" y="97" width="60" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
@@ -526,7 +526,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="224" y="142.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
 <text x="224" y="196.5" text-anchor="middle" font-size="14" fill="#6e6557" font-weight="400" >×</text>
 <text x="286" y="50" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >its weights</text>
-<text x="286" y="63" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >(one per number)</text>
+<text x="286" y="63" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >(one per number)</text>
 <rect x="238" y="70" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="268.0" y="87.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
 <rect x="238" y="97" width="60" height="27" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -546,13 +546,13 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <line x1="40" y1="288" x2="820" y2="288" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="314" text-anchor="start" font-size="13" fill="#231f18" font-weight="700" >② A layer = MANY such neurons stacked: one row of weights each → the matrix <tspan fill="#8c6a2a">W</tspan> (so <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>)</text>
 <rect x="80" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="103.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
+<text x="103.0" y="358.5" text-anchor="middle" font-size="11" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.80</text>
 <rect x="126" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="149.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
+<text x="149.0" y="358.5" text-anchor="middle" font-size="11" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.40</text>
 <rect x="172" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="195.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
+<text x="195.0" y="358.5" text-anchor="middle" font-size="11" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">1.10</text>
 <rect x="240" y="340" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
-<text x="263.0" y="358.5" text-anchor="middle" font-size="9.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
+<text x="263.0" y="358.5" text-anchor="middle" font-size="11" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">−0.70</text>
 <text x="222" y="358.5" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋯</text>
 <rect x="80" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <rect x="126" y="369" width="46" height="29" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
@@ -570,9 +570,9 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="263.0" y="437" text-anchor="middle" font-size="12" fill="#6e6557" font-weight="400" >⋮</text>
 <rect x="78" y="338" width="210" height="33" rx="5" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="160" y="331" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >W  (parameters)</text>
-<text x="300" y="359.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >← top row = output ① (the neuron above)</text>
-<text x="300" y="374.5" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >columns = inputs · rows = outputs</text>
-<text x="58" y="457" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
+<text x="300" y="359.5" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >← top row = output ① (the neuron above)</text>
+<text x="300" y="374.5" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >columns = inputs · rows = outputs</text>
+<text x="58" y="457" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >3 of m rows shown; each row is a different output (its own neuron)</text>
 <text x="551" y="385.5" text-anchor="middle" font-size="16" fill="#6e6557" font-weight="400" >×</text>
 <text x="593" y="331" text-anchor="middle" font-size="11" fill="#963d2c" font-weight="400" >x: inputs</text>
 <rect x="566" y="340" width="54" height="27" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
@@ -605,43 +605,43 @@ LINEAR_SVG = r'''<svg viewBox="0 0 880 754" role="img" aria-label="A linear laye
 <text x="740.0" y="411.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">0.38</text>
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
-<text x="58" y="491" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 384 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 384). So y and b each have m entries; m is the output size (e.g. 384 → 1,536), independent of the 384 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="9.5" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
+<text x="58" y="491" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 384 inputs × that output's own weights + its own bias → one number.</text>
+<text x="58" y="506" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown, as x shows a few of 384). So y and b each have m entries; m is the output size (e.g. 384 → 1,536), independent of the 384 inputs.</text>
+<text x="58" y="536" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT, not a single number, passed to the next layer. Only the final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
 <line x1="40" y1="575" x2="820" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
 <rect x="62" y="621" width="94" height="44" rx="4" fill="#f3ece1" stroke="#963d2c" stroke-width="1.3"/>
 <text x="109.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >tokens</text>
-<text x="109.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >input</text>
+<text x="109.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >input</text>
 <line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="168" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 1</text>
-<text x="215.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<text x="215.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="274" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 2</text>
-<text x="321.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<text x="321.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="427.0" y="644" text-anchor="middle" font-size="17" fill="#6e6557" font-weight="700" >⋯</text>
-<text x="427.0" y="655" text-anchor="middle" font-size="9" fill="#998f7d" font-weight="400" >blocks 3–5</text>
+<text x="427.0" y="655" text-anchor="middle" font-size="10.5" fill="#998f7d" font-weight="400" >blocks 3–5</text>
 <line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 6</text>
-<text x="533.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >attn + MLP</text>
+<text x="533.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >head</text>
 <line x1="687" y1="643.0" x2="697" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="698" y="621" width="94" height="44" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
 <text x="745.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >next token</text>
-<text x="745.0" y="655" text-anchor="middle" font-size="9.5" fill="#6e6557" font-weight="400" >probs</text>
-<text x="162.0" y="615" text-anchor="middle" font-size="9" fill="#6e6557" font-weight="400" >embed</text>
+<text x="745.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >probs</text>
+<text x="162.0" y="615" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="400" >embed</text>
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
-<text x="321.0" y="681" text-anchor="middle" font-size="10" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="703" text-anchor="start" font-size="10" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
+<text x="321.0" y="681" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
+<text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
 </svg>'''
