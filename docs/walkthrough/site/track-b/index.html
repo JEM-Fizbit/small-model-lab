@@ -176,10 +176,14 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .imgfig{margin:26px 0;text-align:center;background:var(--panel);
   border:1px solid var(--line);border-radius:3px;padding:20px 18px 8px;
   box-shadow:none;}
+/* a too-wide diagram (viewBox > 760) breaks out past the 720 prose column into the
+   content cell, so it renders near 1:1 instead of being squished. Reset on narrow. */
+.imgfig.wide{width:800px;max-width:none;padding-left:8px;padding-right:8px;
+  margin-left:calc(50% - 400px);margin-right:calc(50% - 400px);}
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
-  color:var(--soft);margin-top:10px;line-height:1.4;}
+  color:var(--soft);margin-top:10px;line-height:1.4;text-wrap:balance;}
 .fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
   scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
   text-transform:uppercase;letter-spacing:.1em;}
@@ -254,6 +258,7 @@ footer strong{color:var(--soft);}
   nav.toc{display:none;}
   .hero h1{font-size:38px;}
   body{font-size:17px;}
+  .imgfig.wide{width:auto;max-width:100%;padding:20px 18px 8px;margin-left:0;margin-right:0;}
 }
 @media (max-width:680px){
   .diagram{overflow-x:auto;}
@@ -521,7 +526,7 @@ called <strong>supervised fine-tuning</strong>.) The only unusual part is <em>wh
 from</em>: not human annotators, but a stronger model. Training a small model on a big model's outputs is
 <strong>knowledge distillation</strong>.</p>
 </div>
-<figure class="imgfig diagram"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet teacher, which writes gold JSON labels, which fine-tune the Qwen student model.">
+<figure class="imgfig diagram wide"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet teacher, which writes gold JSON labels, which fine-tune the Qwen student model.">
 <defs><marker id="arD" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <!-- box 1: trials -->
 <rect x="12" y="50" width="165" height="84" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
@@ -701,7 +706,7 @@ English?&rdquo;, useless for &ldquo;is this <em>correct</em>?&rdquo;. A useful m
 scorecard. So the eval harness is a first-class deliverable, not an afterthought: it runs the student
 over the 150 held-out trials and scores each field against the gold answer.</p>
 </div>
-<figure class="imgfig diagram"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+<figure class="imgfig diagram wide"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">Gold test set</text>

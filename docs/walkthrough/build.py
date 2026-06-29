@@ -188,7 +188,11 @@ def render_block(block, ctx, fig_no=None):
         svg, caption = block[1], (block[2] if len(block) > 2 else "")
         cap = (f'<figcaption>{fig_tag}{caption}</figcaption>'
                if caption or fig_tag else "")
-        return f'<figure class="imgfig diagram">{svg}{cap}</figure>'
+        # SVGs wider than the prose column render to a wider "wide" figure (see CSS);
+        # detected from the viewBox so no per-figure flag is needed.
+        vb = re.search(r'viewBox="0 0 ([\d.]+)', svg)
+        wide = " wide" if vb and float(vb.group(1)) > 760 else ""
+        return f'<figure class="imgfig diagram{wide}">{svg}{cap}</figure>'
     if kind == "callout":
         variant, title, html = block[1], block[2], block[3]
         return (f'<aside class="callout {variant}"><div class="callout-title">{title}</div>'
