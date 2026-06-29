@@ -626,11 +626,11 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <line x1="157" y1="643.0" x2="167" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="168" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="215.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 1</text>
-<text x="215.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + linear</text>
+<text x="215.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="263" y1="643.0" x2="273" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="274" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="321.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 2</text>
-<text x="321.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + linear</text>
+<text x="321.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="369" y1="643.0" x2="379" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="380" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="427.0" y="644" text-anchor="middle" font-size="17" fill="#6e6557" font-weight="700" >⋯</text>
@@ -638,7 +638,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <line x1="475" y1="643.0" x2="485" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="486" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="533.0" y="641" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >Block 6</text>
-<text x="533.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + linear</text>
+<text x="533.0" y="655" text-anchor="middle" font-size="11" fill="#6e6557" font-weight="400" >attn + MLP</text>
 <line x1="581" y1="643.0" x2="591" y2="643.0" stroke="#6e6557" stroke-width="1.6" marker-end="url(#aA)"/>
 <rect x="592" y="621" width="94" height="44" rx="4" fill="#f3ecd9" stroke="#8c6a2a" stroke-width="1.3"/>
 <text x="639.0" y="648" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="700" >head</text>
@@ -649,7 +649,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <text x="162.0" y="615" text-anchor="middle" font-size="10.5" fill="#6e6557" font-weight="400" >embed</text>
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="321.0" y="681" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
-<text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block pairs attention (reads context across positions) with linear layers (①②). The head converts the final vector to next-token probabilities.</text>
+<text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block pairs attention (reads context) with an MLP (multi-layer perceptron: stacked linear layers, like ①②). Head → next-token probs.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, applied to every token (fixed after training).</text>
 </svg>'''
