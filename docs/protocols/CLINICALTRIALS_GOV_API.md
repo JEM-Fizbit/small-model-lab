@@ -3,9 +3,9 @@
 > Query the public ClinicalTrials.gov v2 REST API: search studies, extract a compact record from the nested `protocolSection`, and paginate with `nextPageToken`.
 
 **Applies to:** ClinicalTrials.gov API **v2** (`https://clinicaltrials.gov/api/v2`) · Python `requests` (or any HTTP client) · biopharma trial data pipelines
-**Last Updated:** 2026-06-08
-**Version:** 1.0
-**Original Source:** `small-model-lab/track-b-trialscout/data/fetch_trials.py` (+ `fetch_rare_modalities.py`); also used in `pharma-signal-poc`
+**Last Updated:** 2026-06-14
+**Version:** 1.1
+**Original Source:** `small-model-lab/track-b-trialscout/data/fetch_trials.py` (+ `fetch_rare_modalities.py`); also used in `pharma-signal-poc`; point-in-time history from `aigent-alpha/src/aigent_alpha/catalyst/`
 
 ---
 
@@ -30,6 +30,7 @@ The data model is deeply nested under `protocolSection`; in practice you extract
 |----------|-----------|
 | Pull trials by condition / intervention / phase | **Yes** |
 | Fetch one trial by NCT id (e.g. to enrich a candidate) | **Yes** — single-study endpoint |
+| **What was knowable on a past date** (backtests, point-in-time, "what did the record say in 2018?") | **Yes — but NOT the v2 API.** The current record is a lookahead trap; use the internal **history** API (see Point-in-time history below) |
 | FDA approval / NDA cross-reference | No → [`FDA_OPENFDA_API.md`](FDA_OPENFDA_API.md) |
 | Drug compound / MoA / indication phase | No → [`CHEMBL_API_INTEGRATION.md`](CHEMBL_API_INTEGRATION.md) |
 | Literature / PubMed | No → [`NCBI_EUTILITIES_INTEGRATION.md`](NCBI_EUTILITIES_INTEGRATION.md) |
@@ -197,6 +198,64 @@ phases = [p for p in (dm.get("phases") or []) if p not in ("NA", "")]
 
 ---
 
+## Point-in-time history (the lookahead trap)
+
+The v2 `/studies/{nctId}` endpoint returns the **current** record. For anything
+time-sensitive — backtests, "what did we know on date D", event-study windows — that
+is a **lookahead trap**: the estimated primary-completion date (`primaryCompletionDateStruct`)
+is silently revised over a trial's life, and an `ACTUAL` date is stamped only *after*
+the event resolves. Reading "the date" off today's record schedules decisions against
+information that did not exist at decision time.
+
+**The public v2 REST API has NO history endpoint.** `GET /api/v2/studies/{nctId}/history`
+returns **404** (verified 2026-06-14) — don't build on it, and don't trust a fallback
+that silently collapses to the current record (it cannot reconstruct *prior* estimates).
+
+**Use the CT.gov internal API the website itself uses** (two calls):
+
+```python
+# 1. The change list: every public version, its post date, and which modules changed.
+GET https://clinicaltrials.gov/api/int/studies/{nct}/history
+#    -> {"changes": [{"version": 0, "date": "2013-03-22", "moduleLabels": [...]}, ...]}
+
+# 2. One version's full record (read protocolSection like any v2 study record).
+GET https://clinicaltrials.gov/api/int/studies/{nct}/history/{version}
+#    -> {"studyVersion": N, "study": {"protocolSection": {...}}}
+```
+
+**Reconstruction recipe** (per field of interest, e.g. `primaryCompletionDateStruct`):
+1. Fetch the change list. The `date` on each change is the **`recorded_on`** — the only
+   thing that makes that version's value *knowable*.
+2. **Prune**: only fetch versions whose `moduleLabels` include the module that holds your
+   field (PCD lives in `"Study Status"`), plus version 0. Versions that didn't touch the
+   module inherit the prior value, so skipping them is exact and bounds the per-trial
+   fetch count (a busy trial has tens of versions).
+3. For each fetched version read the field; emit a revision only when the value (date **or**
+   `ESTIMATED`/`ACTUAL` type) actually changes. The result is a faithful revision trail.
+4. Query it **as-of** a date: the latest revision whose `recorded_on <= as_of`. A revision
+   recorded after `as_of` (e.g. the post-event `ACTUAL`) is thereby never leaked back.
+
+Worked example (NCT01818596): est `2014-07` recorded 2013-03-22 → `ACTUAL 2014-07` recorded
+2014-09-16 (after the event) → refined `2014-07-31` recorded 2017-02-27. So as-of 2014-01-01
+correctly yields the estimate, never the actual.
+
+**Caveats.**
+- `/api/int/` is **undocumented** — it backs the live website so it is stable in practice,
+  but it is not a published contract. Isolate it behind one function, keep it out of any
+  hermetic test suite, and keep a fallback.
+- **AACT** (CTTI's free Postgres mirror) is the documented alternative but is **strictly
+  worse for point-in-time**: snapshots are *monthly* (coarse `recorded_on`, intra-month
+  revisions lost), it needs a hosted/downloaded DB, and one snapshot still holds only the
+  then-current record (true PIT needs diffing many). Keep it as the fallback if `/api/int/`
+  breaks, not the default.
+- Make the **pure reconstruction** (change-list + per-version values → revision trail) a
+  separate function from the network I/O, so it is unit-testable on fixtures with a
+  known-answer as-of assertion. Reference impl: `aigent-alpha/src/aigent_alpha/catalyst/`
+  (`sourcing.py` `reconstruct_pcd_revisions` / `versions_to_fetch`; `pointintime.py`
+  `pcd_as_of`).
+
+---
+
 ## Troubleshooting
 
 **`400 Bad Request` on the single-study endpoint.** The NCT id is malformed (must be `NCT` + 8 digits, uppercase). Normalize/validate before the call.
@@ -222,9 +281,10 @@ phases = [p for p in (dm.get("phases") or []) if p not in ("NA", "")]
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0 | 2026-06-08 | Initial release. Extracted from small-model-lab + pharma-signal-poc CT.gov v2 usage. |
+| 1.1 | 2026-06-14 | Added **Point-in-time history** section: the v2 API has no history endpoint (404); reconstruct prior estimated/actual dates from the internal `/api/int/studies/{nct}/history` + `/history/{version}` API; prune-by-moduleLabels recipe, as-of query, AACT-is-worse, pure-vs-network split. From aigent-alpha. |
 
 ---
 
-**Protocol Version**: 1.0
-**Last Updated**: 2026-06-08
+**Protocol Version**: 1.1
+**Last Updated**: 2026-06-14
 **Original Source**: small-model-lab (track-b-trialscout/data), pharma-signal-poc
