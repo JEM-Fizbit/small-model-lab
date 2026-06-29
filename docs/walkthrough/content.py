@@ -292,7 +292,7 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
   text-transform:uppercase;letter-spacing:.1em;}
 .diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
 .diagram text{font-family:var(--serif);}
-.diagram figcaption{margin-top:6px;}
+.diagram figcaption{margin-top:20px;}
 
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
