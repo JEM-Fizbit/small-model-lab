@@ -51,25 +51,31 @@ def main():
         return f"{'+' if v >= 0 else '−'}{abs(v):.2f}"
 
     n = len(sel); cw = 46; ch = 26
-    gx = 156; gy = 128; gw = n * cw
+    gx = 156; gy = 158; gw = n * cw   # gy raised to fit the word + token-id header rows above the matrix
     vrows = len(dims) - 1
     gh = (vrows + 2) * ch
     Wd = gx + gw + 70; Ht = gy + gh + 72
     s = [f'<svg viewBox="0 0 {Wd} {Ht}" role="img" aria-label="The embedding matrix W_E of the '
          f'trained Track A model: {cfg.vocab_size} token columns (real tokens, alphabetical) by '
          f'{cfg.n_embd} dimension rows; each cell a real signed learned value, red positive, blue negative.">']
-    bx0, bx1 = gx + 6, gx + gw - 6; bxm = (bx0 + bx1) / 2; byb = 86
+    bx0, bx1 = gx + 6, gx + gw - 6; bxm = (bx0 + bx1) / 2; byb = 72
     s.append(f'<path d="M {bx0} {byb} q 0 -12 12 -12 L {bxm-14} {byb-12} q 14 0 14 -12 q 0 12 14 12 '
              f'L {bx1-12} {byb-12} q 12 0 12 12" fill="none" stroke="{SOFT}" stroke-width="1.4"/>')
     s.append(f'<text x="{bxm}" y="{byb-26}" text-anchor="middle" font-size="15" {SERIF} fill="{INK}">'
              f'All tokens, <tspan font-style="italic">~{round(cfg.vocab_size/1000)}k</tspan></text>')
+    yw, yid = gy - 27, gy - 11        # word-label baseline & token-id baseline — both OUTSIDE the W_E matrix
     for ci, (w, i) in enumerate(sel):
         cx = gx + ci * cw + cw / 2
         if i is None:
-            s.append(f'<text x="{cx}" y="{gy-10}" text-anchor="middle" font-size="13" fill="{FAINT}">⋯</text>')
+            s.append(f'<text x="{cx}" y="{yw}" text-anchor="middle" font-size="13" fill="{FAINT}">⋯</text>')
+            s.append(f'<text x="{cx}" y="{yid}" text-anchor="middle" font-size="11" fill="{FAINT}">⋯</text>')
         else:
-            s.append(f'<text x="{cx}" y="{gy-9}" font-size="11.5" {MONO} fill="{INK}" '
-                     f'transform="rotate(-50 {cx} {gy-9})">{w}</text>')
+            s.append(f'<text x="{cx}" y="{yw}" font-size="11.5" {MONO} fill="{INK}" '
+                     f'transform="rotate(-50 {cx} {yw})">{w}</text>')
+            s.append(f'<text x="{cx}" y="{yid}" text-anchor="middle" font-size="9" {MONO} fill="{FAINT}">#{i}</text>')
+    # the token id is a column LABEL, not part of W_E: name the row and rule it off from the values
+    s.append(f'<text x="{gx-12}" y="{yid}" text-anchor="end" font-size="8.5" {SERIF} fill="{SOFT}">token id →</text>')
+    s.append(f'<line x1="{gx-8}" y1="{gy-5}" x2="{gx+gw+8}" y2="{gy-5}" stroke="{LINE}" stroke-width="0.9"/>')
 
     def bracket(x, top, bot, left=True):
         t = 8 if left else -8
