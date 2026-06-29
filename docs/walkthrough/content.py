@@ -1427,7 +1427,7 @@ sub-word idea.</p>
  "id": "init", "num": "12", "title": "Init & stability: why deep stacks blow up",
  "blocks": [
   ("prose", r"""
-<p>The model code in notebook 02 is the same architecture — but with one substantive change:
+<p>The model code in notebook 02 is the same architecture, but with one substantive change:
 <strong>how the parameters start out</strong>. With a deeper stack, the framework's default
 starting values can make the loss <em>rise</em> in the first steps. The reason is the residual
 connections we praised earlier: every block <em>adds</em> its output back into the running
@@ -1521,7 +1521,7 @@ its samples to these.</li>
  "blocks": [
   ("prose", r"""
 <p>Even fully tuned, this is a 17-million-parameter model that trained for about twenty minutes on
-simple children's stories. It will produce believable words and short phrases — never reasoning
+simple children's stories. It will produce believable words and short phrases, never reasoning
 or reliable facts. That gap, between &ldquo;looks like language&rdquo; and &ldquo;is actually
 useful,&rdquo; is exactly the gap a <strong>pretrained</strong> model closes: it has already
 done the equivalent of this training across <em>trillions</em> of tokens and thousands of

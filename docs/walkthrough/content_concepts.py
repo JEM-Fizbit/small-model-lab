@@ -21,14 +21,14 @@ HERO = r"""
 <h1>How a language model works</h1>
 <p class="lede">The ideas, in plain English, with no code: what a language model actually <em>is</em>,
 how text becomes numbers, what &ldquo;learning&rdquo; means, and how the pieces fit. This chapter is
-optional theory — read it first if you like the <em>why</em> before the <em>how</em>, or skip ahead:
+optional theory. Read it first if you like the <em>why</em> before the <em>how</em>, or skip ahead:
 <a href="../track-a/">Part 1</a> builds every one of these ideas in real, runnable code, and
 <a href="../track-b/">Part 2</a> fine-tunes a real model into a useful expert.</p>
 
 <div class="bigidea">
   <p><strong>The whole thing in one breath:</strong> a language model is a <strong>mathematical
-  function</strong> with a great many adjustable numbers — its <strong>parameters</strong> (you'll also hear
-  them called its <strong>weights</strong>): the dials of the function — that, given some text so far,
+  function</strong> with a great many adjustable numbers: its <strong>parameters</strong> (you'll also hear
+  them called its <strong>weights</strong>), the dials of the function. Given some text so far, it
   predicts what comes next. <em>Training</em> tunes those dials (countless tiny nudges) until coherent
   language falls out. <em>Generation</em> runs the function in a loop to write.</p>
   <p>Everything below unpacks that: how text becomes numbers, how the model &ldquo;looks back&rdquo; at
@@ -695,11 +695,11 @@ training. No look-ups of &ldquo;facts,&rdquo; no rules someone wrote, just numbe
 and added, shaped by training to make good predictions.</p>
 <p>Those numbers are the function's <strong>dials</strong>, each one adjustable. The umbrella name is
 <strong>parameters</strong>; in everyday use they're just as often called the model's <strong>weights</strong>
-(strictly, the weights are the multipliers and a smaller set of <strong>biases</strong> are the offsets — see
-§4 — but &ldquo;weights&rdquo; is the common shorthand for the whole lot). Set every dial the right way and the
+(strictly, the weights are the multipliers and a smaller set of <strong>biases</strong> are the offsets (see
+§4), but &ldquo;weights&rdquo; is the common shorthand for the whole lot). Set every dial the right way and the
 output goes from gibberish to fluent English; that one good setting <em>is</em> the trained model. So
 &ldquo;a 17-million-parameter model&rdquo; (ours) just means 17 million dials, and a frontier model has hundreds
-of billions, the largest into the trillions. The dials are turned only once, during training (§7) — frozen afterwards; the single knob you
+of billions, the largest into the trillions. The dials are turned only once, during training (§7), frozen afterwards; the single knob you
 actually touch at generation is temperature (§8).</p>
 """),
  ],
@@ -727,7 +727,7 @@ pieces are glued together into words. <a href="../track-a/#data">Part 1 builds t
 <p>Don't read anything into the numbers: an ID is a <strong>coat-check ticket</strong>, not a
 description. #1234 says nothing about foxes, and #1235 is not &ldquo;one more&rdquo; than fox; renumber
 the whole vocabulary, retrain, and you'd get an equally good model. (In practice IDs reflect the order
-the tokenizer learned its chunks, but the model never uses the number <em>as a number</em> — only as a
+the tokenizer learned its chunks, but the model never uses the number <em>as a number</em>, only as a
 reference: &ldquo;fetch row #1234.&rdquo;) Where <em>meaning</em> enters is what that row holds: the
 <strong>embedding</strong>, next.</p>
 """),
@@ -739,56 +739,56 @@ reference: &ldquo;fetch row #1234.&rdquo;) Where <em>meaning</em> enters is what
  "blocks": [
   ("prose", r"""
 <p>If the ID is just a ticket, where does <em>meaning</em> live? In what the ticket fetches: each
-token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</strong> (384 numbers in
+token's ID points to a <strong>list of numbers</strong>, its <strong>embedding</strong> (a <strong>vector</strong> of 384 numbers, in
 our tiny model). Think of those numbers as coordinates that place the token in a vast &ldquo;meaning
 space,&rdquo; where tokens used in similar ways land near each other.</p>
 """),
   ("prose", r"""
-<p>Start with the fetch itself. The ID is nothing but an index; what matters is the row it lands on —
-that row of numbers <em>is</em> the embedding. The first hint of meaning is already visible in it: words
+<p>Start with the fetch itself. The ID is nothing but an index; what matters is the row it lands on:
+that row of numbers <em>is</em> the embedding, the token's vector. The first hint of meaning is already visible in it: words
 that behave alike carry similar rows, while a pure grammar word like &ldquo;the&rdquo; looks nothing like
 them.</p>
 """),
   ("diagram", EMBED_LOOKUP_SVG,
    "The lookup, drawn: an ID indexes the embedding table, and row #ID simply <em>is</em> the token's "
-   "embedding vector — all 384 of its numbers (4 shown; values illustrative). The cell colours "
-   "make it visible at a glance — "
+   "embedding vector: all 384 of its numbers (4 shown; values illustrative). The cell colours "
+   "make it visible at a glance: "
    "fox, cat and dog get similar rows; &ldquo;the&rdquo; gets a different one."),
   ("prose", r"""
 <p>That's one token's row. Now zoom out: there's a row like it for <em>every</em> token in the
-vocabulary &mdash; thousands of them, stacked into one enormous table. That table has a name,
+vocabulary: thousands of them, stacked into one enormous table. That table has a name,
 <strong>W<sub>E</sub></strong>, and it holds essentially everything the model knows about individual
 words.</p>
 """),
   ("diagram", WE_MATRIX_SVG,
    "The real <code>W_E</code> from the trained model: <strong>8,192 token columns &times; 384 dimension "
    "rows</strong>, every cell a learned value (16 tokens shown, swept A&rarr;Z; &#8943; stands in for the other "
-   "~8,160). Each column is one token&rsquo;s vector &mdash; the &ldquo;meaning coordinates&rdquo; this section "
+   "~8,160). Each column is one token&rsquo;s vector, the &ldquo;meaning coordinates&rdquo; this section"
    "is about. Measured, not illustrative (and small: this model trains in the &plusmn;0.2 range)."),
   ("callout", "aside", "Row or column? The table vs.&nbsp;W<sub>E</sub>", r"""
-<p>Two orientations of the same numbers &mdash; both standard, worth untangling once. The model
+<p>Two orientations of the same numbers, both standard, worth untangling once. The model
 <em>stores</em> embeddings as a <strong>table indexed by row</strong>: in code it is <code>tok.weight</code>,
 shape <strong>[8,192 tokens &times; 384 dimensions]</strong>, and <code>tok.weight[#ID]</code> hands back
-<strong>row #ID</strong> &mdash; that token's 384 numbers. That <em>is</em> the &ldquo;row #ID&rdquo; this
+<strong>row #ID</strong>: that token's 384-number vector. That <em>is</em> the &ldquo;row #ID&rdquo; this
 section keeps naming, and it is literally how the lookup runs.</p>
 <p>The figure above is labelled <strong>W<sub>E</sub></strong>, the same table <strong>transposed</strong>:
 <strong>one column per token</strong>. The textbook writes the embedding step as W<sub>E</sub> times a
-one-hot column, which <em>selects a column</em> &mdash; so &ldquo;W<sub>E</sub>&rdquo; specifically means
+one-hot column, which <em>selects a column</em>, so &ldquo;W<sub>E</sub>&rdquo; specifically means
 the column-per-token form (it is also what lets all ~8,000 tokens fan out left&ndash;right, A&rarr;Z). Same
 table, on its side: a <em>row</em> in the code, a <em>column</em> in the matrix.</p>
 """),
   ("prose", r"""
 <p>Rows of numbers are hard to read meaning from directly, so picture them as positions instead. Give each
-token the coordinates in its row and the &ldquo;meaning space&rdquo; stops being a metaphor &mdash; related
+token the coordinates in its row and the &ldquo;meaning space&rdquo; stops being a metaphor: related
 tokens gather into neighbourhoods, unrelated ones drift apart.</p>
 """),
   ("diagram", EMBED_SCATTER_SVG,
    "Each token is its own point in 384-dimensional space (2 dimensions shown here); similar meanings "
-   "cluster. The axes are two of the 384 learned attributes/dimensions — loosely, 'animal-ness' across "
+   "cluster. The axes are two of the 384 learned attributes/dimensions, loosely 'animal-ness' across "
    "and 'concreteness' up: touchable things high, actions in the middle, pure grammar words low "
    "(held lightly)."),
   ("callout", "aside", "Attributes = dimensions", r"""
-<p>A token's embedding is a point in <strong>384-dimensional space</strong>: 384 numbers, one per
+<p>A token's embedding is a <strong>384-dimensional vector</strong>: a point in 384-dimensional space, one number per
 dimension. Each dimension is a <strong>learned attribute (feature)</strong>: a mathematical abstraction
 capturing some statistically-shared pattern across tokens. They <strong>don't map cleanly to human
 concepts</strong>, but it's often genuinely helpful to imagine them, loosely, as fuzzy attributes —
@@ -804,7 +804,7 @@ which every particular &ldquo;fox&rdquo; on the page is an imperfect shadow.</p>
   ("callout", "key", "Where do the embeddings come from?", r"""
 <p>Not from the letters, and not computed on the fly: they're <strong>learned, then looked up</strong>.
 The model keeps an <strong>embedding table</strong> (one row per vocabulary token). &ldquo;fox&rdquo;
-becomes an integer ID, and that ID simply <em>indexes the table</em>; row #ID <em>is</em> its 384 numbers.
+becomes an integer ID, and that ID simply <em>indexes the table</em>; row #ID <em>is</em> its 384-number vector.
 There's no arithmetic on <code>f-o-x</code>.</p>
 <p>Those numbers start as <strong>small random values</strong> and are <strong>parameters</strong> like any
 other: gradient descent nudges them, step by step, to lower the loss. After training the table is frozen, so
@@ -827,7 +827,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <code>y = mx + c</code>, vectorised. The diagram below builds it from one output up to the whole model.</p>
 """),
   ("diagram", LINEAR_SVG,
-   "A linear layer, drawn. ① one output (a \"neuron\") is a weighted sum of one token's numbers; ② stack "
+   "A linear layer, drawn. ① one output (a \"neuron\") is a weighted sum of the numbers in one token's vector; ② stack "
    "a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector "
    "out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared "
    "across every token."),
@@ -859,7 +859,7 @@ one simple <strong>nonlinear</strong> function, a <em>bend</em>. That bend is wh
 curves and combinations, not just proportions.</p>
 <p>Ours is <strong>GELU</strong> (a smooth version of ReLU). The famous textbook ones are <strong>ReLU</strong>
 (keep positives, zero the rest) and the <strong>sigmoid</strong> (squash any number into 0–1). The whole kit
-is just this: <code>Wx + b</code>, then a bend, stacked — plus the two ideas below.</p>
+is just this: <code>Wx + b</code>, then a bend, stacked, plus the two ideas below.</p>
 <p>One natural misreading is worth heading off: these curves aren't there to squash numbers into a
 tidy range. The sigmoid happens to (everything lands between 0 and 1), but ReLU and GELU, the ones
 modern models actually use, are unbounded: a big input sails through nearly unchanged. (Bounded
@@ -872,7 +872,7 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
   ("diagram", ACTIVATIONS_SVG,
    "The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes "
    "it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note "
-   "ReLU and GELU are unbounded — only the sigmoid squashes into a range, and that bounding isn't "
+   "ReLU and GELU are unbounded; only the sigmoid squashes into a range, and that bounding isn't "
    "the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets "
    "the network model curves instead of only straight lines."),
  ],
@@ -892,7 +892,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 """),
   ("diagram", ATTENTION_SVG,
    "Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% "
-   "of the blend to “dragon”. The thickness of each arc is the real weight from the trained model — "
+   "of the blend to “dragon”. The thickness of each arc is the real weight from the trained model, "
    "the q·k matching from Part 1's formula, drawn."),
   ("callout", "aside", "Why it's the heart of it", r"""
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
@@ -928,11 +928,11 @@ times and coherent language emerges. This is <strong>gradient descent</strong>.<
   ("diagram", SURFACE3D_SVG,
    "Now with TWO weights the loss becomes a landscape, and the ball replays a real gradient-descent "
    "run on this very surface (<code>gen_loss_surface.py</code>, constant step-size dial): at every "
-   "step, feel the slope, step downhill. Watch the hops shrink on their own &mdash; nobody slows the "
+   "step, feel the slope, step downhill. Watch the hops shrink on their own: nobody slows the "
    "ball down; the flatter the valley, the smaller the gradient, the smaller the update. (Real "
-   "training is noisier &mdash; each batch gives a slightly different slope &mdash; which is why "
-   "<a href='../track-a/#schedule'>Part 1 \u00a713</a> also shrinks the step size on a schedule.) Our model has millions of weights "
-   "&mdash; a landscape in millions of dimensions &mdash; but the move never changes."),
+   "training is noisier, each batch gives a slightly different slope, which is why "
+   "<a href='../track-a/#schedule'>Part 1 \u00a713</a> also shrinks the step size on a schedule.) Our model has millions of weights, "
+   "a landscape in millions of dimensions, but the move never changes."),
   ("prose", r"""
 <p>One pass of training is a loop of four steps, repeated on batch after batch of text:</p>
 """),
@@ -959,7 +959,7 @@ get a probability for every next token, pick one, append it, repeat. &ldquo;Infe
 <p>How you <em>pick</em> from the probabilities is the one knob worth feeling: <strong>temperature</strong>.
 Low temperature (~0.5) almost always grabs the most likely token: safe, repetitive. High (~1.1) samples more
 adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldquo;careful&rdquo; and
-&ldquo;creative,&rdquo; and it changes nothing in the model — only how its output is sampled.
+&ldquo;creative,&rdquo; and it changes nothing in the model, only how its output is sampled.
 <a href="../track-a/#temperature">Part 1 lets you feel it →</a></p>
 """),
   ("diagram", TEMP_SVG,
