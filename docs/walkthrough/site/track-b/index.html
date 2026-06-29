@@ -180,6 +180,9 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
    content cell, so it renders near 1:1 instead of being squished. Reset on narrow. */
 .imgfig.wide{width:800px;max-width:none;padding-left:8px;padding-right:8px;
   margin-left:calc(50% - 400px);margin-right:calc(50% - 400px);}
+/* restore caption side-breathing for wide figures (the panel shrinks side padding to 8px for SVG
+   breathing room, but captions need the same 18px gap as every other figure) */
+.imgfig.wide figcaption{padding-left:10px;padding-right:10px;}
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;

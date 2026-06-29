@@ -283,6 +283,9 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
    content cell, so it renders near 1:1 instead of being squished. Reset on narrow. */
 .imgfig.wide{width:800px;max-width:none;padding-left:8px;padding-right:8px;
   margin-left:calc(50% - 400px);margin-right:calc(50% - 400px);}
+/* restore caption side-breathing for wide figures (the panel shrinks side padding to 8px for SVG
+   breathing room, but captions need the same 18px gap as every other figure) */
+.imgfig.wide figcaption{padding-left:10px;padding-right:10px;}
 .imgfig img{max-width:100%;border:none;border-radius:0;
   box-shadow:none;background:transparent;mix-blend-mode:multiply;}
 .imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
@@ -611,9 +614,9 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <rect x="716" y="421" width="48" height="27" rx="4" fill="#eceadb" stroke="#5f6c33" stroke-width="1.3"/>
 <text x="740.0" y="438.5" text-anchor="middle" font-size="11.5" fill="#231f18" font-weight="400" font-family="ui-monospace,Menlo,monospace">⋮</text>
 <text x="58" y="491" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each output is its own ①-style neuron: all 384 inputs × that output's own weights + its own bias → one number.</text>
-<text x="58" y="506" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, it does NOT line up with x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
-<text x="58" y="521" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown). So y and b each have m entries; m is the output size (e.g. 384 → 1,536), independent of the 384 inputs.</text>
-<text x="58" y="536" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT, passed on. The final head → softmax gives next-token probabilities.</text>
+<text x="58" y="506" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >So y₁ = 0.62 is exactly panel ① (from ALL of x, not just x₁); rows 2, 3, … are more outputs, each from the same 384 inputs.</text>
+<text x="58" y="521" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >A layer stacks MANY outputs: m of them (3 shown). So y and b each have m entries; m is the output size (e.g. 384 → 1,536).</text>
+<text x="58" y="536" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >One token (384 numbers) goes IN → a NEW vector of m numbers comes OUT. The final head → softmax gives next-token probabilities.</text>
 <text x="58" y="557" text-anchor="start" font-size="12" fill="#231f18" font-weight="700" >Written compactly, the whole layer is  <tspan fill="#5f6c33">y</tspan> = <tspan fill="#8c6a2a">W</tspan><tspan fill="#963d2c">x</tspan> + <tspan fill="#8c6a2a">b</tspan>.</text>
 <line x1="40" y1="575" x2="784" y2="575" stroke="#ddd4c2" stroke-width="1.5"/>
 <text x="58" y="601" text-anchor="start" font-size="13.5" fill="#231f18" font-weight="700" >③ Zoom out: one such layer is a tiny slice of the whole model</text>
@@ -648,7 +651,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <text x="321.0" y="681" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block's output vector feeds the next; only the head (then softmax) turns the last token's vector into next-token probabilities.</text>
 <text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
-<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, the same set applied to every token (fixed after training).</text>
+<text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, applied to every token (fixed after training).</text>
 </svg>'''
 
 EMBED_SCATTER_SVG = r'''<svg viewBox="0 0 560 392" role="img" aria-label="Embedding space: tokens as points in 384-dimensional space (2 dimensions shown); animals cluster, function words and actions elsewhere.">
