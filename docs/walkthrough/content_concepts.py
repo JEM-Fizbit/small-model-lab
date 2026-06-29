@@ -416,13 +416,13 @@ SURFACE3D_SVG = r'''<svg id="gdvalley" style="cursor:pointer" viewBox="0 0 660 3
 WE_MATRIX_SVG = r'''<svg viewBox="0 0 1008 568" role="img" aria-label="The embedding matrix W_E of the trained Track A model: 8192 token columns (real tokens, alphabetical) by 384 dimension rows; each cell a real signed learned value, red positive, blue negative.">
 <path d="M 162 72 q 0 -12 12 -12 L 533.0 60 q 14 0 14 -12 q 0 12 14 12 L 920 60 q 12 0 12 12" fill="none" stroke="#6e6557" stroke-width="1.4"/>
 <text x="547.0" y="46" text-anchor="middle" font-size="15" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#231f18">All tokens, <tspan font-style="italic">~8k</tspan></text>
-<text x="179.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 179.0 131)">abbie</text>
+<text x="179.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 179.0 131)">Abbie</text>
 <text x="179.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#6209</text>
-<text x="225.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 225.0 131)">abby</text>
+<text x="225.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 225.0 131)">Abby</text>
 <text x="225.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#7127</text>
-<text x="271.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 271.0 131)">abi</text>
+<text x="271.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 271.0 131)">Abi</text>
 <text x="271.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#6606</text>
-<text x="317.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 317.0 131)">abigail</text>
+<text x="317.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 317.0 131)">Abigail</text>
 <text x="317.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#4983</text>
 <text x="363.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 363.0 131)">able</text>
 <text x="363.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#1351</text>
@@ -436,7 +436,7 @@ WE_MATRIX_SVG = r'''<svg viewBox="0 0 1008 568" role="img" aria-label="The embed
 <text x="547.0" y="147" text-anchor="middle" font-size="11" fill="#998f7d">⋯</text>
 <text x="593.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 593.0 131)">zipping</text>
 <text x="593.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#6670</text>
-<text x="639.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 639.0 131)">zoe</text>
+<text x="639.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 639.0 131)">Zoe</text>
 <text x="639.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#5525</text>
 <text x="685.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 685.0 131)">zoo</text>
 <text x="685.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#2082</text>
@@ -448,7 +448,7 @@ WE_MATRIX_SVG = r'''<svg viewBox="0 0 1008 568" role="img" aria-label="The embed
 <text x="823.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#4133</text>
 <text x="869.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 869.0 131)">zooming</text>
 <text x="869.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#5091</text>
-<text x="915.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 915.0 131)">zoomy</text>
+<text x="915.0" y="131" font-size="11.5" font-family="ui-monospace,Menlo,monospace" fill="#231f18" transform="rotate(-50 915.0 131)">Zoomy</text>
 <text x="915.0" y="147" text-anchor="middle" font-size="9" font-family="ui-monospace,Menlo,monospace" fill="#998f7d">#6932</text>
 <text x="144" y="147" text-anchor="end" font-size="8.5" font-family="Charter,'Iowan Old Style',Georgia,serif" fill="#6e6557">token id →</text>
 <line x1="148" y1="153" x2="946" y2="153" stroke="#ddd4c2" stroke-width="0.9"/>

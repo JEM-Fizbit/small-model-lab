@@ -35,11 +35,13 @@ def main():
 
     # whole-word, alphabetic tokens (byte-level BPE leading-space marker 'Ġ')
     words, seen = [], set()
-    for t, i in tok.get_vocab().items():
+    # sort by id: get_vocab()'s dict order isn't stable across runs, so iterate deterministically
+    # (lowest id wins each lowercase slot — usually the more common, lowercase form)
+    for t, i in sorted(tok.get_vocab().items(), key=lambda kv: kv[1]):
         if t.startswith("Ġ") and t[1:].isalpha() and len(t) >= 4 and t[1:].lower() not in seen:
-            seen.add(t[1:].lower()); words.append((t[1:].lower(), i))
+            seen.add(t[1:].lower()); words.append((t[1:].lower(), t[1:], i))  # (sort key, real-cased token, id)
     words.sort()
-    sel = words[:N_END] + [("…", None)] + words[-N_END:]
+    sel = words[:N_END] + [("…", "…", None)] + words[-N_END:]
 
     def numcol(v):
         t = max(-1.0, min(1.0, v / SAT)); grey = (154, 143, 121)
@@ -64,7 +66,7 @@ def main():
     s.append(f'<text x="{bxm}" y="{byb-26}" text-anchor="middle" font-size="15" {SERIF} fill="{INK}">'
              f'All tokens, <tspan font-style="italic">~{round(cfg.vocab_size/1000)}k</tspan></text>')
     yw, yid = gy - 27, gy - 11        # word-label baseline & token-id baseline — both OUTSIDE the W_E matrix
-    for ci, (w, i) in enumerate(sel):
+    for ci, (_sk, w, i) in enumerate(sel):
         cx = gx + ci * cw + cw / 2
         if i is None:
             s.append(f'<text x="{cx}" y="{yw}" text-anchor="middle" font-size="13" fill="{FAINT}">⋯</text>')
@@ -85,7 +87,7 @@ def main():
     midy = gy + gh / 2
     s.append(f'<text x="70" y="{midy+2}" text-anchor="middle" font-size="34" {SERIF} font-style="italic" '
              f'fill="{INK}">W<tspan font-size="22" dy="8">E</tspan><tspan font-size="34" dy="-8" font-style="normal"> =</tspan></text>')
-    for ci, (w, i) in enumerate(sel):
+    for ci, (_sk, w, i) in enumerate(sel):
         cx = gx + ci * cw
         for r in range(vrows):
             y = gy + r * ch
