@@ -144,9 +144,9 @@ EMBED_LOOKUP_SVG = r'''<svg viewBox="0 0 720 318" role="img" aria-label="The emb
 <defs><marker id="arK" markerWidth="8" markerHeight="8" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#6e6557"/></marker></defs>
 <rect x="76" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="120" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">fox</text>
-<text x="120" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
+<text x="120" y="86" text-anchor="middle" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #1234</text>
 <line x1="120" y1="92" x2="120" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="128" y="107" font-size="9" fill="#998f7d">row #1234</text>
+<text x="128" y="107" font-size="10.5" fill="#998f7d">row #1234</text>
 <rect x="88" y="118" width="64" height="27" fill="rgb(246,206,206)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="120" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.31</text>
 <rect x="88" y="145" width="64" height="27" fill="rgb(64,108,206)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -155,12 +155,12 @@ EMBED_LOOKUP_SVG = r'''<svg viewBox="0 0 720 318" role="img" aria-label="The emb
 <text x="120" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.05</text>
 <rect x="88" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="120" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="120" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<text x="120" y="243" text-anchor="middle" font-size="10.5" fill="#998f7d">384 numbers</text>
 <rect x="236" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="280" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">cat</text>
-<text x="280" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
+<text x="280" y="86" text-anchor="middle" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #882</text>
 <line x1="280" y1="92" x2="280" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="288" y="107" font-size="9" fill="#998f7d">row #882</text>
+<text x="288" y="107" font-size="10.5" fill="#998f7d">row #882</text>
 <rect x="248" y="118" width="64" height="27" fill="rgb(246,210,210)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="280" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.28</text>
 <rect x="248" y="145" width="64" height="27" fill="rgb(88,127,212)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -169,12 +169,12 @@ EMBED_LOOKUP_SVG = r'''<svg viewBox="0 0 720 318" role="img" aria-label="The emb
 <text x="280" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.12</text>
 <rect x="248" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="280" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="280" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<text x="280" y="243" text-anchor="middle" font-size="10.5" fill="#998f7d">384 numbers</text>
 <rect x="396" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="440" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">dog</text>
-<text x="440" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
+<text x="440" y="86" text-anchor="middle" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #905</text>
 <line x1="440" y1="92" x2="440" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="448" y="107" font-size="9" fill="#998f7d">row #905</text>
+<text x="448" y="107" font-size="10.5" fill="#998f7d">row #905</text>
 <rect x="408" y="118" width="64" height="27" fill="rgb(244,199,199)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="440" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">0.35</text>
 <rect x="408" y="145" width="64" height="27" fill="rgb(46,95,202)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -183,12 +183,12 @@ EMBED_LOOKUP_SVG = r'''<svg viewBox="0 0 720 318" role="img" aria-label="The emb
 <text x="440" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.02</text>
 <rect x="408" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="440" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="440" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<text x="440" y="243" text-anchor="middle" font-size="10.5" fill="#998f7d">384 numbers</text>
 <rect x="556" y="40" width="88" height="30" rx="7" fill="#f3ece1" stroke="#963d2c" stroke-width="1.4"/>
 <text x="600" y="60" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">the</text>
-<text x="600" y="86" text-anchor="middle" font-size="10" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
+<text x="600" y="86" text-anchor="middle" font-size="11" fill="#6e6557" font-family="ui-monospace,Menlo,monospace">ID #14</text>
 <line x1="600" y1="92" x2="600" y2="112" stroke="#6e6557" stroke-width="1.4" marker-end="url(#arK)"/>
-<text x="608" y="107" font-size="9" fill="#998f7d">row #14</text>
+<text x="608" y="107" font-size="10.5" fill="#998f7d">row #14</text>
 <rect x="568" y="118" width="64" height="27" fill="rgb(108,143,218)" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="600" y="136" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.92</text>
 <rect x="568" y="145" width="64" height="27" fill="rgb(242,185,185)" stroke="#ddd4c2" stroke-width="0.8"/>
@@ -197,7 +197,7 @@ EMBED_LOOKUP_SVG = r'''<svg viewBox="0 0 720 318" role="img" aria-label="The emb
 <text x="600" y="190" text-anchor="middle" font-size="11" fill="#231f18" font-family="ui-monospace,Menlo,monospace">-0.61</text>
 <rect x="568" y="199" width="64" height="27" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="0.8"/>
 <text x="600" y="217" text-anchor="middle" font-size="11" fill="#6e6557">⋮</text>
-<text x="600" y="243" text-anchor="middle" font-size="9" fill="#998f7d">384 numbers</text>
+<text x="600" y="243" text-anchor="middle" font-size="10.5" fill="#998f7d">384 numbers</text>
 <text x="240" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">fox · cat · dog → similar rows (similar meaning)</text>
 <text x="600" y="296" text-anchor="middle" font-size="11" font-weight="700" fill="#231f18">“the” → different</text>
 </svg>'''
@@ -210,9 +210,9 @@ ACTIVATIONS_SVG = r'''<svg viewBox="0 0 720 252" role="img" aria-label="The thre
 <path d="M 22.0,147.0 L 24.7,147.0 L 27.4,147.0 L 30.2,147.0 L 32.9,147.0 L 35.6,147.0 L 38.3,147.0 L 41.1,147.0 L 43.8,147.0 L 46.5,147.0 L 49.2,147.0 L 51.9,147.0 L 54.7,147.0 L 57.4,147.0 L 60.1,147.0 L 62.8,147.0 L 65.6,147.0 L 68.3,147.0 L 71.0,147.0 L 73.7,147.0 L 76.4,147.0 L 79.2,147.0 L 81.9,147.0 L 84.6,147.0 L 87.3,147.0 L 90.1,147.0 L 92.8,147.0 L 95.5,147.0 L 98.2,147.0 L 100.9,147.0 L 103.7,147.0 L 106.4,147.0 L 109.1,147.0 L 111.8,147.0 L 114.6,147.0 L 117.3,147.0 L 120.0,147.0 L 122.7,144.1 L 125.4,141.2 L 128.2,138.2 L 130.9,135.3 L 133.6,132.4 L 136.3,129.5 L 139.1,126.6 L 141.8,123.7 L 144.5,120.8 L 147.2,117.8 L 149.9,114.9 L 152.7,112.0 L 155.4,109.1 L 158.1,106.2 L 160.8,103.2 L 163.6,100.3 L 166.3,97.4 L 169.0,94.5 L 171.7,91.6 L 174.4,88.7 L 177.2,85.8 L 179.9,82.8 L 182.6,79.9 L 185.3,77.0 L 188.1,74.1 L 190.8,71.2 L 193.5,68.2 L 196.2,65.3 L 198.9,62.4 L 201.7,59.5 L 204.4,56.6 L 207.1,53.7 L 209.8,50.8 L 212.6,47.8 L 215.3,44.9 L 218.0,42.0" fill="none" stroke="#963d2c" stroke-width="2.6"/>
 <text x="120" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#963d2c" font-family="ui-monospace,Menlo,monospace">ReLU</text>
 <text x="120" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">keep positives, zero the rest</text>
-<text x="25" y="177" font-size="9" fill="#998f7d">-3</text>
-<text x="215" y="177" text-anchor="end" font-size="9" fill="#998f7d">3</text>
-<text x="192" y="141" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
+<text x="25" y="177" font-size="10.5" fill="#998f7d">-3</text>
+<text x="215" y="177" text-anchor="end" font-size="10.5" fill="#998f7d">3</text>
+<text x="192" y="141" text-anchor="end" font-size="10.5" fill="#998f7d">in →</text>
 <rect x="262" y="42" width="196" height="140" fill="#fff" stroke="#ddd4c2"/>
 <line x1="262" y1="147.0" x2="458" y2="147.0" stroke="#d8cfbd" stroke-width="1"/>
 <line x1="360.0" y1="42" x2="360.0" y2="182" stroke="#d8cfbd" stroke-width="1"/>
@@ -220,24 +220,24 @@ ACTIVATIONS_SVG = r'''<svg viewBox="0 0 720 252" role="img" aria-label="The thre
 <path d="M 262.0,147.1 L 264.7,147.2 L 267.4,147.2 L 270.2,147.3 L 272.9,147.3 L 275.6,147.4 L 278.3,147.5 L 281.1,147.6 L 283.8,147.8 L 286.5,148.0 L 289.2,148.1 L 291.9,148.4 L 294.7,148.6 L 297.4,148.9 L 300.1,149.1 L 302.8,149.5 L 305.6,149.8 L 308.3,150.1 L 311.0,150.5 L 313.7,150.9 L 316.4,151.3 L 319.2,151.6 L 321.9,152.0 L 324.6,152.3 L 327.3,152.6 L 330.1,152.8 L 332.8,152.9 L 335.5,153.0 L 338.2,152.9 L 340.9,152.7 L 343.7,152.4 L 346.4,151.9 L 349.1,151.3 L 351.8,150.5 L 354.6,149.5 L 357.3,148.4 L 360.0,147.0 L 362.7,145.4 L 365.4,143.7 L 368.2,141.8 L 370.9,139.6 L 373.6,137.4 L 376.3,134.9 L 379.1,132.3 L 381.8,129.6 L 384.5,126.7 L 387.2,123.7 L 389.9,120.7 L 392.7,117.6 L 395.4,114.4 L 398.1,111.1 L 400.8,107.9 L 403.6,104.6 L 406.3,101.3 L 409.0,98.0 L 411.7,94.7 L 414.4,91.5 L 417.2,88.2 L 419.9,85.0 L 422.6,81.8 L 425.3,78.6 L 428.1,75.4 L 430.8,72.3 L 433.5,69.2 L 436.2,66.1 L 438.9,63.1 L 441.7,60.0 L 444.4,57.0 L 447.1,54.0 L 449.8,51.0 L 452.6,48.0 L 455.3,45.1 L 458.0,42.1" fill="none" stroke="#5f6c33" stroke-width="2.6"/>
 <text x="360" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#5f6c33" font-family="ui-monospace,Menlo,monospace">GELU ★</text>
 <text x="360" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">the smooth version — ours</text>
-<text x="265" y="177" font-size="9" fill="#998f7d">-3</text>
-<text x="455" y="177" text-anchor="end" font-size="9" fill="#998f7d">3</text>
-<text x="432" y="141" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
+<text x="265" y="177" font-size="10.5" fill="#998f7d">-3</text>
+<text x="455" y="177" text-anchor="end" font-size="10.5" fill="#998f7d">3</text>
+<text x="432" y="141" text-anchor="end" font-size="10.5" fill="#998f7d">in →</text>
 <rect x="502" y="42" width="196" height="140" fill="#fff" stroke="#ddd4c2"/>
 <line x1="502" y1="172.3" x2="698" y2="172.3" stroke="#d8cfbd" stroke-width="1"/>
 <line x1="600.0" y1="42" x2="600.0" y2="182" stroke="#d8cfbd" stroke-width="1"/>
 <line x1="502" y1="51.7" x2="698" y2="51.7" stroke="#cfc5ae" stroke-width="1.2" stroke-dasharray="5 4"/>
-<text x="507" y="47" font-size="9" fill="#998f7d">1</text>
-<text x="507" y="167" font-size="9" fill="#998f7d">0</text>
+<text x="507" y="47" font-size="10.5" fill="#998f7d">1</text>
+<text x="507" y="167" font-size="10.5" fill="#998f7d">0</text>
 <path d="M 502.0,172.0 L 504.7,172.0 L 507.4,171.9 L 510.2,171.9 L 512.9,171.8 L 515.6,171.7 L 518.3,171.5 L 521.1,171.4 L 523.8,171.2 L 526.5,171.0 L 529.2,170.8 L 531.9,170.5 L 534.7,170.2 L 537.4,169.8 L 540.1,169.3 L 542.8,168.8 L 545.6,168.2 L 548.3,167.5 L 551.0,166.6 L 553.7,165.6 L 556.4,164.5 L 559.2,163.2 L 561.9,161.7 L 564.6,159.9 L 567.3,158.0 L 570.1,155.7 L 572.8,153.2 L 575.5,150.3 L 578.2,147.2 L 580.9,143.7 L 583.7,139.9 L 586.4,135.8 L 589.1,131.4 L 591.8,126.8 L 594.6,122.0 L 597.3,117.0 L 600.0,112.0 L 602.7,107.0 L 605.4,102.0 L 608.2,97.2 L 610.9,92.6 L 613.6,88.2 L 616.3,84.1 L 619.1,80.3 L 621.8,76.8 L 624.5,73.7 L 627.2,70.8 L 629.9,68.3 L 632.7,66.0 L 635.4,64.1 L 638.1,62.3 L 640.8,60.8 L 643.6,59.5 L 646.3,58.4 L 649.0,57.4 L 651.7,56.5 L 654.4,55.8 L 657.2,55.2 L 659.9,54.7 L 662.6,54.2 L 665.3,53.8 L 668.1,53.5 L 670.8,53.2 L 673.5,53.0 L 676.2,52.8 L 678.9,52.6 L 681.7,52.5 L 684.4,52.3 L 687.1,52.2 L 689.8,52.1 L 692.6,52.1 L 695.3,52.0 L 698.0,52.0" fill="none" stroke="#3d6a72" stroke-width="2.6"/>
 <text x="600" y="28" text-anchor="middle" font-size="13" font-weight="700" fill="#3d6a72" font-family="ui-monospace,Menlo,monospace">sigmoid</text>
 <text x="600" y="202" text-anchor="middle" font-size="10.5" fill="#6e6557">squash anything into 0–1</text>
-<text x="505" y="177" font-size="9" fill="#998f7d">-6</text>
-<text x="695" y="177" text-anchor="end" font-size="9" fill="#998f7d">6</text>
-<text x="672" y="166" text-anchor="end" font-size="9" fill="#998f7d">in →</text>
-<text x="92" y="244" font-size="10" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
-<text x="380" y="232" font-size="10" fill="#5f6c33" display="none"></text>
-<text x="630" y="244" font-size="10" fill="#5f6c33">★ what our tiny GPT uses</text>
+<text x="505" y="177" font-size="10.5" fill="#998f7d">-6</text>
+<text x="695" y="177" text-anchor="end" font-size="10.5" fill="#998f7d">6</text>
+<text x="672" y="166" text-anchor="end" font-size="10.5" fill="#998f7d">in →</text>
+<text x="92" y="244" font-size="11" fill="#998f7d">dashed line = no bend (y = x); sigmoid shown over a wider input range to show it flattening against 0 and 1</text>
+<text x="380" y="232" font-size="11" fill="#5f6c33" display="none"></text>
+<text x="630" y="244" font-size="11" fill="#5f6c33">★ what our tiny GPT uses</text>
 </svg>'''
 
 PROBS_SVG = r'''<svg viewBox="0 0 720 286" role="img" aria-label="The model's real next-word scores for the prompt One day, Lily went to the: park 64 percent, store 11 percent, then small scores, with about 20 percent spread over all other chunks.">
