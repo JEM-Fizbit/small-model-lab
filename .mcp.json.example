@@ -5,7 +5,7 @@
       "args": [
         "run",
         "--directory",
-        "/ABSOLUTE/PATH/TO/slm-lab",
+        "/ABSOLUTE/PATH/TO/small-model-lab",
         "python",
         "track-b-trialscout/serve/trial_readout_server.py"
       ],

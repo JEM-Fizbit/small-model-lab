@@ -2,7 +2,7 @@
 
 Guidance for AI coding assistants (Claude Code, Cursor, Copilot, Codex, etc.) working in this repo.
 
-**Read [`CLAUDE.md`](CLAUDE.md) first** — it covers the project, conventions, and gotchas.
+**Read [`CLAUDE.md`](CLAUDE.md) first** — it covers the project, conventions, and gotchas. Read [`docs/TOOLING.md`](docs/TOOLING.md) before running install, notebook, model, eval, MCP, or generated-site commands.
 
 ## Most important: this is a PUBLIC repo with a public/private split
 
