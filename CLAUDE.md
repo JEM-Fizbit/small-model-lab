@@ -3,6 +3,7 @@
 Guidance for AI coding agents (and humans) working in this repo. Design decisions live in [`docs/DECISIONS.md`](docs/DECISIONS.md); running history is in git.
 
 > **New here?** Read the [README](README.md), then the live walk-through → https://jem-fizbit.github.io/small-model-lab/
+> **Before running commands:** read [`docs/TOOLING.md`](docs/TOOLING.md) for runtime assumptions, artifact policy, and script safety categories.
 
 ## What this is
 
@@ -43,6 +44,8 @@ uv sync                  # install deps into .venv (Python 3.12)
 uv run jupyter lab       # open the annotated notebooks
 uv run ruff check .      # lint
 ```
+
+`uv run` can synchronize the environment if it is missing or stale. For docs/metadata-only work, prefer `git diff --check` and `uv lock --check`; see [`docs/TOOLING.md`](docs/TOOLING.md).
 
 ## Gotchas
 

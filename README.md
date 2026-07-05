@@ -25,6 +25,8 @@ cp .env.example .env    # fill ANTHROPIC_API_KEY before Track B Phase 2 (not nee
 uv run jupyter lab      # open the annotated notebooks in notebooks/
 ```
 
+Before running Track B, model, eval, MCP, or generated-site commands, read [Tooling And Script Safety](docs/TOOLING.md). Some commands download models/data, write generated artifacts, or spend Anthropic credits.
+
 Chat with the from-scratch GPT (Track A) — train once, then talk to it anytime:
 
 ```bash
@@ -54,6 +56,8 @@ uv run python notebooks/chat.py                  # loads in ~1s; type story open
 | Base models | Qwen3-4B-Instruct-2507 / Gemma 4 E2B (Apache-2.0) |
 | Teacher / judge | Anthropic Claude (Sonnet) |
 | Data | ClinicalTrials.gov, openFDA, SEC EDGAR (public-domain) |
+
+Tooling details: Python 3.12 via `uv`, Apple-Silicon MLX runtime, and script safety categories are documented in [docs/TOOLING.md](docs/TOOLING.md).
 
 ## Roadmap
 
