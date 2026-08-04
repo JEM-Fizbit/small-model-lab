@@ -136,60 +136,57 @@ def run():
 # Tied to SEED — if you change the seed or the settings above, re-read and rewrite this.
 VERDICT = """
 **No. The model never opens with "Once upon a time" on either France prompt — 0 of 10
-samples.** It also never says "Paris" (0/10), and never picks the words "France" or
-"capital" back up after the prompt (0/10): it drops the subject on the very next token and
-does not return to it.
+samples — and no other fairy-tale framing appears in the opening window either (0/10).** It
+also never says "Paris" (0/10), and never picks the words "France" or "capital" back up
+after the prompt (0/10): it drops the subject on the very next token and does not return
+to it.
 
-What it actually does is continue the prompt as TinyStories prose — and the two phrasings
-fail in visibly different ways:
+What it actually does is continue the prompt as TinyStories prose, and the two phrasings
+fail in different ways:
 
 - **`The capital of France is`** — it finishes the sentence with a story-register predicate
-  and moves on: *"is going on a faraway journey"*, *"is special."*, *"is fixed!"*,
-  *"is fun."*, *"is better than before and its original size."* All five then run on into a
-  small story populated by TinyStories regulars (Tim, Sam, Timmy, Mr. Smith), and all five
-  terminate cleanly at `<|endstory|>`. Fairy-tale framing does show up here, but as
-  *register*, not as an opener: sample 1 closes with "And they all lived happily ever
-  after," and sample 4 pivots straight into "One day, …".
-- **`What is the capital of France?`** — the more degraded of the two. The model reads the
-  question as **a line of dialogue inside a scene already in progress** and carries the
-  scene on: four of the five samples emit a closing quotation mark that no opening quote
-  ever matched, and sample 2 attributes the question to a character outright —
-  *`France?â€ Tom said, pointing to a book on the wall`* (that `â€` is a mangled closing
-  curly quote — see "Also observed"). None answers. 2 of 5 never reach an
-  end-of-story token at all and run to the 200-token cap, against 0 of 5 for the statement
-  form: the question mark actively destabilises it.
+  and moves straight on: *"is loud and has a lot of gum."*, *"is six."*, *"is good for the
+  little boy."*, *"is the best part of the world."*, *"is very strong."* All five then run
+  on into narrative populated by TinyStories regulars (Timmy, Mia, Tom, Anna and Ben). Not
+  one contains a line of dialogue.
+- **`What is the capital of France?`** — the more degraded of the two, and the more
+  revealing. All five samples continue into a scene *containing dialogue*, as though the
+  question were a line someone had just spoken. Sample 3 makes it plainest, continuing
+  `I use it to attach fire in the oven." Fred was so surprised.` — closing a quotation
+  that was never opened. None answers. 2 of 5 run to the 200-token cap without ever
+  emitting an end-of-story token, against 1 of 5 for the statement form.
 
 The control (`Once upon a time there was a little girl who`) returns coherent, on-genre
-toddler fiction in 5/5 samples, every one of them containing "One day". So the contrast is
-not story-mode versus some other mode — it is **fluent** versus **unanchored**.
+toddler fiction in 5/5. So the contrast is not story-mode versus some other mode — it is
+**fluent** versus **unanchored**.
 
 Which means the claim's substance holds and its wording does not. The model doesn't *reach
 for* a fairy-tale opener when it's out of its depth, because there is no other mode for it
 to switch out of. It is always already mid-story; a question about France is just more story
 to continue.
+
+*(On counting: a straight `"` is both an opening and a closing quote, so "how many samples
+emit an unopened closing quote" cannot be answered reliably by substring matching — a
+sample that simply opens with dialogue looks identical to one closing a quote that was
+never opened. Hence the concrete example above rather than a count.)*
 """.strip()
 
 SIDE_OBSERVATION = """
-The model also reproduces its corpus's **encoding bugs**. `â€œ` appears mid-sentence in two
-samples (question sample 2, control sample 5). This is not a fault in this script or in the
-tokenizer's decoder — valid curly quotes round-trip through it cleanly. It is upstream:
-**~2% of TinyStories stories ship with double-encoded UTF-8** (sampling 3,000 stories from
-the published train split gives 60 hits, e.g. `daddyâ€™s tie` where `daddy's tie` was meant),
-and `train_v2_checkpoint.py` reads `ex["text"]` straight from `load_dataset` without
-re-encoding, so it inherits them as-is.
+**The mojibake is gone.** An earlier run of this probe, against the checkpoint that
+predated the corpus fix, emitted double-encoded UTF-8 in 2 of these 15 samples — `â€œ`
+appearing mid-sentence where a curly quote was meant. In this run it appears **0 times**.
 
-At that rate the byte-pairs recur often enough for the BPE to spend **73 of its 8,192
-tokens** on mojibake fragments — including dedicated merges for `œMommy`, `œHello`,
-` couldnâ` and `€™` (that is, `"Mommy`, `"Hello` and ` couldn'` as the corpus mis-encodes
-them). Roughly 0.9% of the vocabulary is modelling a text-encoding bug rather than English.
+That artifact was never ours: **~7.5% of TinyStories stories ship mojibaked**
+(`daddyâ€™s tie` where `daddy's tie` was meant), and the loader read them through
+unchanged, so the BPE spent 28 of its 8,192 tokens learning the garbled byte-pairs as if
+they were words. The data path now repairs the encoding on load — see `docs/DECISIONS.md`
+ADR-0013 for the measurement and ADR-0014 for the retrain — and the retrained vocabulary
+contains merges for *real* curly punctuation (`.”`, `,”`, ` “`) where the old one had
+merges for the mangled forms of `"Mommy` and ` couldn'`.
 
-It is a sharper version of the point the section is already making: the corpus is the model,
-down to its defects.
-
-*Since this run:* the data path now repairs the mojibake on load and seeds its RNGs
-(`docs/DECISIONS.md` ADR-0013). This checkpoint predates both, so the samples above still
-show the artifact — retraining would re-roll every figure derived from it, which is why it
-has not been done yet.
+It made a sharper version of the point this section is already making, which is why it is
+recorded rather than quietly erased: the corpus is the model, down to its defects — and
+fixing the corpus fixes the model.
 """.strip()
 
 

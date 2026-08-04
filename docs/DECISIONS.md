@@ -4,7 +4,63 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0014 — Retrained the Track A checkpoint and regenerated every derived artifact
+
+**Decision:** Reversed ADR-0013's "do not retrain". Retrained Track A on the repaired,
+seeded data path (2026-08-04) and regenerated all twelve derived surfaces. Added
+`scripts/regenerate_track_a.py` to do it in the right order, `TRACK_A_MANIFEST.json` to
+record provenance, and generators for the three figures that had none.
+
+**Why the reversal:** ADR-0013 declined the retrain on a cost estimate of "six artifacts".
+Measuring instead of estimating found **twelve**, and — the actual finding — **three of them
+rendered real measurements with no script behind them** (`PROBS_SVG`, `TEMP_SVG`,
+`ATTENTION_SVG`), plus a fourth (`TOKENIZE_SVG`) showing real token ids and a verbatim
+generated story pasted into the prose. Those cannot go stale *loudly*; they just quietly
+become false. That is a worse property for a learn-by-doing repo than any amount of
+regeneration work, and it argued for fixing the tooling now rather than accumulating more
+hand-typed measurements.
+
+**What the retrain bought.** Mojibake emitted in generated samples: **1/40 → 0/40**; the 28
+mojibake merges are gone and the vocabulary now contains merges for *real* curly punctuation
+instead. Quality is unchanged — bits-per-byte on 300 held-out stories (offset 30,000, unseen
+by both, normalised so the different tokenizers are comparable) goes **0.6509 → 0.6526**,
+0.3%, well inside run-to-run noise. Notebook 02's own run improved slightly (val 2.214 →
+2.168). So: the artifact is gone and nothing was paid for it.
+
+**What survived, and what had to be re-picked.** Two figures encode *editorial* claims that a
+retrain can silently break, so both are now checked on every run rather than assumed:
+
+- `GENLOOP_SVG` exists to show sampling refusing the favourite. Seed 3 still does it
+  (` boy` at 19.5% over ` girl` at 72.5%) and lands on the same closing sentence, so the
+  narrative is unchanged. `gen_generation_trace.py --hunt` re-derives a seed when it breaks;
+  the script now **exits rather than emit a figure that contradicts its own caption**.
+- `ATTENTION_SVG` claims layer 2 / head 4 tracks the sentence's referent. It still does
+  (dragon 43%, clear of `it` at 27%), so the subtitle is unchanged — but only 2 of 36 heads
+  qualify now, and against an interim checkpoint the qualifying head was a different one
+  entirely. `--hunt` re-picks it; the script refuses to run if the claim is false.
+
+**The ordering hazard, now enforced.** Notebook 02 and `train_v2_checkpoint.py` write to the
+same checkpoint path but train different models (the notebook has no `<|endstory|>` token).
+Running them in the wrong order silently ships a checkpoint that never stops generating —
+which happened once during this work. Cell 19's markdown documented it; nothing enforced it.
+`regenerate_track_a.py --derived` now **refuses to run against a checkpoint with no
+end-of-story token**, and `--all` runs notebook 02 first by construction.
+
+**Two bugs found by building the generators**, both pre-existing and now fixed: `TEMP_SVG`
+drew the top 5 chunks but pooled "everything else" as `100 − top 6`, so its panels summed to
+99.1% and 97.0% instead of 100%; and notebook 02's save cell printed an **absolute local
+path** into a committed output, which this public repo forbids.
+
+**Reproducibility caveat, restated because it is easy to over-claim:** the manifest's hashes
+detect staleness, they are not byte-equality tests. Same seed ⇒ same experiment, not the same
+bytes (ADR-0013).
+
 ## ADR-0013 — Repair TinyStories' mojibake and seed the trainer; do NOT retrain the committed checkpoint
+
+> **Partly superseded by [ADR-0014](#adr-0014--retrained-the-track-a-checkpoint-and-regenerated-every-derived-artifact).**
+> The data-path decisions below stand. The "do not retrain" call was reversed on 2026-08-04 once the
+> full artifact inventory (ten surfaces, three with no generator) was actually measured rather than
+> estimated. Factual corrections to the mojibake count and the reproducibility claim are inline below.
 
 **Decision:** Track A's data path now (a) repairs double-encoded UTF-8 in the TinyStories text on
 load and (b) seeds both RNGs the run depends on (`SEED = 1337`, `--seed` on the script). Applied in
@@ -16,11 +72,20 @@ carries the mojibake. Retrain opportunistically, the next time something else al
 was meant — because the text was UTF-8 bytes decoded as CP1252 somewhere upstream. This is *not* our
 loader: `train_v2_checkpoint.py` reads `ex["text"]` straight from `load_dataset` with no re-encoding,
 and the tokenizer's decoder round-trips valid text cleanly. It arrives broken. At that prevalence the
-byte-pairs recur often enough for the BPE to spend **73 of its 8,192 tokens** (~0.9% of vocabulary) on
-mojibake fragments — including dedicated merges for the mangled forms of `"Mommy`, `"Hello` and
-` couldn'` — and the model duly emits them at generation time (see
-`docs/walkthrough/DOMAIN_LIMIT_PROBE_RESULTS.md`, "Also observed"). Fixing the data is strictly
-better than post-processing the output: the vocabulary is the thing being corrupted.
+byte-pairs recur often enough for the BPE to spend **28 of its 8,192 tokens** on mojibake fragments —
+dedicated merges for the mangled forms of `"Mommy`, `"Hello` and ` couldn'` — and the model duly
+emits them at generation time. Fixing the data is strictly better than post-processing the output:
+the vocabulary is the thing being corrupted.
+
+> **On counting mojibake tokens.** An earlier revision of this ADR said *73*. That number came from
+> matching mojibake bytes against the raw **ByteLevel token strings**, where the byte `â` also begins
+> every legitimate curly quote — so it swept up tokens that were fine. Counting tokens whose
+> **decoded text** is mojibake gives **28**. Even that is approximate: mojibake spans several tokens
+> and its characters (`–`, `—`, `'`) overlap real punctuation, so no purely lexical count is exact.
+> The unambiguous measure is behavioural — mojibake emitted in generated samples, **1/40 → 0/40**
+> after the fix. A useful confirmation that the repair worked rather than merely hid the problem:
+> the retrained vocabulary now contains merges for *real* curly punctuation (`.”`, `,”`, ` “`) that
+> the old one lacked.
 
 **Why the repair is shaped the way it is:** most of the damage is *lossy*, not merely scrambled. A
 right double quote (U+201D) is UTF-8 `E2 80 9D`, and CP1252 has no mapping for `0x9D`, so that byte
@@ -36,18 +101,42 @@ curly quotes, emoji, and empty input.
 `mx.random.seed` (weight init) nor `np.random.seed` (batch order). A rerun therefore produced a
 *different* model, which means the committed notebook outputs, loss curves and walk-through figures
 could never be reproduced from the code that claims to generate them. For a repo whose stated
-principle is "learnable — no black boxes," an unreproducible trainer is the more serious defect. It
-is also what made "just retrain to fix the mojibake" feel expensive: a retrain was a re-roll, not a
-re-run. Verified: same seed ⇒ identical weight-init fingerprint and identical batch indices across
-fresh processes; a different seed diverges.
+principle is "learnable — no black boxes," an unreproducible trainer is the more serious defect.
 
-**Why not retrain now:** six committed artifacts derive from the current checkpoint — notebook 02
-outputs, notebook 03 outputs, `loss_curve_tuned.png`, the generation trace pasted into `GEN_LOOP_SVG`
-(`content.py`), `WE_MATRIX_SVG` (`content_concepts.py`), and `DOMAIN_LIMIT_PROBE_RESULTS.md`. A
-retrain re-rolls all of them for a largely cosmetic gain. **Known drift, accepted:** until someone
-retrains, the code in notebook 02 no longer matches the outputs committed beside it — the cell-4
-output line predates the repair counter, and the model that produced the later outputs saw the
-unrepaired corpus. Anyone rerunning gets a clean model and different (not worse) numbers.
+**What the seed actually buys — and what it does not.** Verified across fresh processes: the same
+seed gives an identical weight-init fingerprint and identical batch indices, and a different seed
+diverges. But seeding does **not** make the checkpoint bit-identical on Apple's GPU. Measured: two
+seeded runs of 20 real optimizer steps agree to 10 decimal places on the first steps and then drift
+in the last decimals, ending with different weights; the same test pinned to `mx.cpu` is bitwise
+identical across runs. The cause is Metal kernels accumulating in nondeterministic order, not the
+RNG. So the honest claim is **same seed ⇒ same experiment, not the same bytes**: curves, behaviour
+and conclusions reproduce; a hash does not. Anything that needs byte-equality (a checksum test, a
+"regenerate and expect an empty diff" CI gate) must not be built on this.
+
+**What a retrain costs — the real inventory.** An earlier revision of this ADR said "six committed
+artifacts". That undercounted. **Ten** surfaces derive from the checkpoint, in three tiers:
+
+| tier | surface | regeneration |
+|---|---|---|
+| script-driven | notebook 03 outputs | execute cells 0–6 (cell 7 is an interactive REPL — must stay unexecuted) |
+| script-driven | `WE_MATRIX_SVG` (`content_concepts.py`) | `gen_embedding_matrix.py` emits the whole SVG |
+| script-driven | `DOMAIN_LIMIT_PROBE_RESULTS.md` | `gen_domain_limit_probe.py` — data auto, **verdict prose hand-written** |
+| execution | notebook 02 outputs | execute the notebook (~45 min) |
+| execution | `loss_curve_tuned.png` | notebook 02's plotting cell |
+| semi-manual | `GENLOOP_SVG` (`content.py`) | generator prints JSON only; the 27k-char SVG is hand-assembled, and its seed is chosen to make a specific teaching point |
+| **no generator** | `PROBS_SVG` | 6 hand-transcribed measured values |
+| **no generator** | `TEMP_SVG` | 10 values, at two temperatures |
+| **no generator** | `ATTENTION_SVG` | 6 values from **layer 2 of 6, head 4 of 6** (stated in the figure's own subtitle; 0-indexed layer 1 / head 3 in code) |
+| root | the checkpoint itself | `train_v2_checkpoint.py` |
+
+The last three are the trap: they render real measurements with no script behind them, so a retrain
+silently falsifies them and nothing fails loudly. Any future retrain must regenerate all ten.
+
+**Ordering hazard (documented, not enforced).** Notebook 02's save cell writes to the *same* path as
+`train_v2_checkpoint.py` but trains without the `<|endstory|>` token, so running the notebook after
+the producer downgrades the shipped checkpoint and silently disables stop-at-story-end everywhere.
+Cell 19's markdown already warns about this and prescribes the fix (re-run the producer afterward) —
+so the correct order is **notebook 02 first, producer second**, then regenerate everything else.
 
 **Bonus, kept on purpose:** the mojibake is an unusually good teaching artifact for Part 1's own
 thesis — the corpus is the model, down to its defects — so the probe results document it rather than

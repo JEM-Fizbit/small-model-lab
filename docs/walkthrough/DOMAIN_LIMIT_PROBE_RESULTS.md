@@ -35,301 +35,270 @@ verbatim text below is the real evidence.
 | prompt | says "Once upon a time" | opens w/ fairy-tale framing | says "Paris" | re-uses "France"/"capital" | ran to token cap |
 |---|---|---|---|---|---|
 | `What is the capital of France?` | 0/5 | 0/5 | 0/5 | 0/5 | 2/5 |
-| `The capital of France is` | 0/5 | 1/5 | 0/5 | 0/5 | 0/5 |
-| `Once upon a time there was a little girl who` | 0/5 | 3/5 | 0/5 | 0/5 | 2/5 |
+| `The capital of France is` | 0/5 | 0/5 | 0/5 | 0/5 | 1/5 |
+| `Once upon a time there was a little girl who` | 0/5 | 1/5 | 0/5 | 0/5 | 1/5 |
 
 ## Verdict
 
 **No. The model never opens with "Once upon a time" on either France prompt — 0 of 10
-samples.** It also never says "Paris" (0/10), and never picks the words "France" or
-"capital" back up after the prompt (0/10): it drops the subject on the very next token and
-does not return to it.
+samples — and no other fairy-tale framing appears in the opening window either (0/10).** It
+also never says "Paris" (0/10), and never picks the words "France" or "capital" back up
+after the prompt (0/10): it drops the subject on the very next token and does not return
+to it.
 
-What it actually does is continue the prompt as TinyStories prose — and the two phrasings
-fail in visibly different ways:
+What it actually does is continue the prompt as TinyStories prose, and the two phrasings
+fail in different ways:
 
 - **`The capital of France is`** — it finishes the sentence with a story-register predicate
-  and moves on: *"is going on a faraway journey"*, *"is special."*, *"is fixed!"*,
-  *"is fun."*, *"is better than before and its original size."* All five then run on into a
-  small story populated by TinyStories regulars (Tim, Sam, Timmy, Mr. Smith), and all five
-  terminate cleanly at `<|endstory|>`. Fairy-tale framing does show up here, but as
-  *register*, not as an opener: sample 1 closes with "And they all lived happily ever
-  after," and sample 4 pivots straight into "One day, …".
-- **`What is the capital of France?`** — the more degraded of the two. The model reads the
-  question as **a line of dialogue inside a scene already in progress** and carries the
-  scene on: four of the five samples emit a closing quotation mark that no opening quote
-  ever matched, and sample 2 attributes the question to a character outright —
-  *`France?â€ Tom said, pointing to a book on the wall`* (that `â€` is a mangled closing
-  curly quote — see "Also observed"). None answers. 2 of 5 never reach an
-  end-of-story token at all and run to the 200-token cap, against 0 of 5 for the statement
-  form: the question mark actively destabilises it.
+  and moves straight on: *"is loud and has a lot of gum."*, *"is six."*, *"is good for the
+  little boy."*, *"is the best part of the world."*, *"is very strong."* All five then run
+  on into narrative populated by TinyStories regulars (Timmy, Mia, Tom, Anna and Ben). Not
+  one contains a line of dialogue.
+- **`What is the capital of France?`** — the more degraded of the two, and the more
+  revealing. All five samples continue into a scene *containing dialogue*, as though the
+  question were a line someone had just spoken. Sample 3 makes it plainest, continuing
+  `I use it to attach fire in the oven." Fred was so surprised.` — closing a quotation
+  that was never opened. None answers. 2 of 5 run to the 200-token cap without ever
+  emitting an end-of-story token, against 1 of 5 for the statement form.
 
 The control (`Once upon a time there was a little girl who`) returns coherent, on-genre
-toddler fiction in 5/5 samples, every one of them containing "One day". So the contrast is
-not story-mode versus some other mode — it is **fluent** versus **unanchored**.
+toddler fiction in 5/5. So the contrast is not story-mode versus some other mode — it is
+**fluent** versus **unanchored**.
 
 Which means the claim's substance holds and its wording does not. The model doesn't *reach
 for* a fairy-tale opener when it's out of its depth, because there is no other mode for it
 to switch out of. It is always already mid-story; a question about France is just more story
 to continue.
 
+*(On counting: a straight `"` is both an opening and a closing quote, so "how many samples
+emit an unopened closing quote" cannot be answered reliably by substring matching — a
+sample that simply opens with dialogue looks identical to one closing a quote that was
+never opened. Hence the concrete example above rather than a count.)*
+
 ## Also observed
 
-The model also reproduces its corpus's **encoding bugs**. `â€œ` appears mid-sentence in two
-samples (question sample 2, control sample 5). This is not a fault in this script or in the
-tokenizer's decoder — valid curly quotes round-trip through it cleanly. It is upstream:
-**~2% of TinyStories stories ship with double-encoded UTF-8** (sampling 3,000 stories from
-the published train split gives 60 hits, e.g. `daddyâ€™s tie` where `daddy's tie` was meant),
-and `train_v2_checkpoint.py` reads `ex["text"]` straight from `load_dataset` without
-re-encoding, so it inherits them as-is.
+**The mojibake is gone.** An earlier run of this probe, against the checkpoint that
+predated the corpus fix, emitted double-encoded UTF-8 in 2 of these 15 samples — `â€œ`
+appearing mid-sentence where a curly quote was meant. In this run it appears **0 times**.
 
-At that rate the byte-pairs recur often enough for the BPE to spend **73 of its 8,192
-tokens** on mojibake fragments — including dedicated merges for `œMommy`, `œHello`,
-` couldnâ` and `€™` (that is, `"Mommy`, `"Hello` and ` couldn'` as the corpus mis-encodes
-them). Roughly 0.9% of the vocabulary is modelling a text-encoding bug rather than English.
+That artifact was never ours: **~7.5% of TinyStories stories ship mojibaked**
+(`daddyâ€™s tie` where `daddy's tie` was meant), and the loader read them through
+unchanged, so the BPE spent 28 of its 8,192 tokens learning the garbled byte-pairs as if
+they were words. The data path now repairs the encoding on load — see `docs/DECISIONS.md`
+ADR-0013 for the measurement and ADR-0014 for the retrain — and the retrained vocabulary
+contains merges for *real* curly punctuation (`.”`, `,”`, ` “`) where the old one had
+merges for the mangled forms of `"Mommy` and ` couldn'`.
 
-It is a sharper version of the point the section is already making: the corpus is the model,
-down to its defects.
-
-*Since this run:* the data path now repairs the mojibake on load and seeds its RNGs
-(`docs/DECISIONS.md` ADR-0013). This checkpoint predates both, so the samples above still
-show the artifact — retraining would re-roll every figure derived from it, which is why it
-has not been done yet.
+It made a sharper version of the point this section is already making, which is why it is
+recorded rather than quietly erased: the corpus is the model, down to its defects — and
+fixing the corpus fixes the model.
 
 ## Every sample, verbatim
 
 ### `question` — prompt: `What is the capital of France?`
 
-**Sample 1** (seed `0`, 770 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
-
-The prompt is shown in the fence too; everything after it is the model's.
-
-```text
-What is the capital of France? I just wanted to attach it to the friends."
-
-Lily nodded and said, "Okay, let's borrow the buckle with the bow!"
-
-They decided to pull the buckle and record the show. They turned it off to their stuffed animals. They had fun playing with the buckle and coloring the car. They made the car go fast and clear. They also made a new friend.
-
-But then, a big dog came near the fence. The dog saw the balloons and said, "Hello, I am Zoom. Do you want to play with me?"
-
-Tim and Lily smiled and said, "Yes, sir, we want to play with you. We want to play with you?"
-
-The dog did not like that. It growled at them and picked them up. It bit them and made them cry. The dog did not care the dog.
-
-The dog did not like the hat. It did not like Lily and Tom. It was mean and roared
-```
-
-**Sample 2** (seed `1`, 696 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
-
-The prompt is shown in the fence too; everything after it is the model's.
-
-```text
-What is the capital of France?â€ Tom said, pointing to a book on the wall and with a big smile.
-
-"I want to test it!" Mia said, pointing to the stars.
-
-"OK, but be careful," Tom said. He took the book and led it to the corner. He opened it and made a click. He looked inside and saw a picture on the wall.
-
-"Wow, look at this!" Tom said.
-
-They looked at the picture and saw a picture of a rainbow. They heard a loud noise. They felt a sharp pain in their eyes. They looked out the window and saw their mom.
-
-"Oh, there is a star!" Mom said. "What is it?"
-
-"A comet?" Tom asked.
-
-"A comet?" Lily asked.
-
-"That is the comet. It has a big nose and a long nose and a long beard and a long tail. It looks like a light. Maybe we can
-```
-
-**Sample 3** (seed `2`, 590 chars, ~157 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 1** (seed `0`, 453 chars, ~131 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
 What is the capital of France?
 
-The girl smiled and said, "I'm mail for you. What do you know?"
+Anna and Ben look at each other. They are curious. They see a man with a buckle on his shirt. It is a tie for a belt.
 
-The girl said, "I want to invite me to my family. That's a great idea". The girl smiled and said, "Yes! Follow me!"
+"Wow, that's crazy!" Anna says. She takes a stamp and puts it on the tie. She gives it to Ben and Anna.
 
-The girl went back to the mailbox and the mailman showed her the camera. She said, "Look, that's so good! Can I have a bus?" The camera said, "Of course you can go."
+"Here, you can have my bow. It makes words better," Ben says.
 
-The girl was so excited. She quickly put on the camera and the camera. She began to sit at the park and feel the wind and the sun on her face.
+"Thank you, Ben. You are very kind. You are very kind," Anna says.
 
-The camera zoomed around in circles, enjoying the sunshine. She was so happy to enjoy the mall.
+They hug and hug. They are happy. They have seen the tie and the tie. They have fun in the park.
 ```
 
-**Sample 4** (seed `3`, 306 chars, ~72 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 2** (seed `1`, 769 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-What is the capital of France? I was trying to cheer you up the driver." She stayed very still, and then she said, "Thank you, Clare. Let's go home and have some food and cookies." Ben and Mia liked milk. They made a sandwich and crunchy sandwich. They laughed and smiled. They were friends. They both liked to act and play in the park.
+What is the capital of France? My cap is bright and had a laser. I want to play with it. I want to make a button on paper. It is a map of the world!"
+
+Mom shook her head. She shook her head. She said, "No, Ben. You have to wash your hands. You have to behave. You need to wash your hands and clean your room. You need to wash your hands and brush your teeth. And it is not clean, you need to wash your clothes. And you need to wash your hands and water. Gemels are dirty and dirty. You need to wash your hands and dry your clothes and brush your teeth."
+
+Ben pouted. He wanted to do something he did. He thought he wanted to clean his paints and clean. He said, "But Mama, I want to paint on my bed. I love paint very much. I don't want to paint on my bed. I will paint my curtain."
+
+Mom sighed. She
 ```
 
-**Sample 5** (seed `4`, 505 chars, ~134 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 3** (seed `2`, 738 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-What is the capital of France? We love it and safe. And we love it?"
+What is the capital of France? I use it to attach fire in the oven." Fred was so surprised. He asked, "Can I see your cooler?" The man smiled and said, "Yes, let's give it to the snowman."
 
-Lily nodded and said, "Yes, you are right. But we also need to learn how to measure how big them are. And that is how we make a new friend."
+They cut some wood, the snowman, and the snowman flew away. The snowman was not wild anymore. He did not have his stack. He did not know he was nice.
 
-They finished their work and cleaned up the screen. Then they put the game back in the closet. They made a lot of noise and said, "Oops, we win! Now we can play again tomorrow!"
+Fred heard the snowman's snowman's snowman. The snowman was quiet and hungry. He shouted, "Help, help!" But no one came. The snowman was in his car. He had scratches Fred's car and paws. He had a mean face. He had a big nose.
 
-Mom smiled and said, "That sounds great, Lily and Ben. That's a good imagination. I'm proud of you, Lily. You are right. You are the best, too."
+Then, a big boy came. He saw the snowman. The boy was wet and dirty. He said, "Oh no, my snowman's hat is dirty. He feels bad. He helps me." The big boy said, "I am sorry, I broke my snowman. I didn't
+```
+
+**Sample 4** (seed `3`, 511 chars, ~141 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+
+The prompt is shown in the fence too; everything after it is the model's.
+
+```text
+What is the capital of France? It is a small sign that said "Scelcome" to your book. Don't touch it. It is not a toy. You can use it for a fake cap."
+
+Sara thought for a moment. She did not know the fashion was for her. She wanted to be her friend. She said, "Okay, mom. I will try again. I will be a good girl."
+
+Mom smiled and hugged Sara. She said, "I love you too, Sara. You are a good brother. He likes you and the sticker. You are a friend too."
+
+Sara and her mom smiled and hugged each other. They were happy. They were friends again.
+```
+
+**Sample 5** (seed `4`, 450 chars, ~114 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+
+The prompt is shown in the fence too; everything after it is the model's.
+
+```text
+What is the capital of France?
+
+"That's not a nice fruit. It is from the most beautiful things in the world," Mia says.
+
+The man smiles. He says, "I am so glad. But next time, why? Why don't you read your book lots of fun and enjoy watching more cartoons tomorrow. And another one, then some of them, and I love you very much."
+
+Mia and Tom start eating their music. They guess they like rainbows, and how they make a rainbow. They learn that they are happy and have a lot of fun.
 ```
 
 ### `statement` — prompt: `The capital of France is`
 
-**Sample 1** (seed `0`, 227 chars, ~53 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 1** (seed `0`, 363 chars, ~84 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-The capital of France is going on a faraway journey. They fly high in the sky and then they give the bow to a language. On the way, the bow's bow down, landing and power. It always makes the most beautiful songs. And they all lived happily ever after.
+The capital of France is loud and has a lot of gum. 
+
+The owner thanked Timmy and they watched as the wealthy man for being very well. Suddenly, Timmy noticed that one of the bag was missing. It was a pink balloon! 
+
+Timmy was so happy and wanted to tell the man where he was going. He ran home and told his owner about his shiny string. They went on the ground and Timmy was not afraid.
 ```
 
-**Sample 2** (seed `1`, 126 chars, ~31 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 2** (seed `1`, 495 chars, ~131 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-The capital of France is special. They hug and say goodbye.
+The capital of France is six. Dogn is fun. Mia and Tom both like the joke.
 
-Tim and Sam are happy. They are not lonely anymore. They have a friend. They are friends.
+They hear a noise. It is a cat! The cat is angry. It wants to eat the cake. It runs to them with its mouth loudly. The cat runs to the dog and bites the cake. It breaks its paw. It breaks the cake and makes a loud noise.
+
+Mia and Tom are scared. They run away from the dog. They try to get up from their mom. Mom hears them and comes to the kitchen. She sees the mess and the mess. She is not happy. She is not angry anymore. She is not happy.
 ```
 
-**Sample 3** (seed `2`, 433 chars, ~98 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 3** (seed `2`, 92 chars, ~21 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-The capital of France is fixed!
-
-The people cheered that the people of their seats and the little girl's father grinned. He made sure the cooler was nice and safe.
-
-The family thanked the little girl for teaching them how to use. They were happy and thanked the little girl for Halloween. 
-
-The little girl was so proud of herself for doing something, she had learned in the back that day. Then, she ran off to tell her parents the youth that day. 
-
-The End
+The capital of France is good for the little boy. He makes mistakes and makes her happy. His heart is a good friend.
 ```
 
-**Sample 4** (seed `3`, 569 chars, ~139 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 4** (seed `3`, 67 chars, ~18 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-The capital of France is fun.
-
-One day, the driver got very angry. He was making noises and body started to shake. The driver tried to help, but it was too late. The driver had his eyes and he could not get out. He started to cry.
-
-The driver was sad because he was lost. He wished he could help him. He wished he could help. So, he asked the driver to help him. The driver lifted his head and flew to the driver.
-
-The driver was so happy to be free. He thanked the driver and ran back to his house. He was happy to be safe and sound. He said goodbye to the driver and continued his adventure.
+The capital of France is the best part of the world. Fighting is worth a lot of their life.
 ```
 
-**Sample 5** (seed `4`, 388 chars, ~97 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 5** (seed `4`, 833 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-The capital of France is better than before and its original size. Mr. Smith, the little bird, was ready to go on an adventure.
+The capital of France is very strong. It makes a loud beep and funny sounds. Anna and Ben are happy.
 
-As they walked, they saw a big tree. Timmy wanted to climb the tree to climb down. But he was too small to reach the top of the hill. He climbed up and fell down, up in the air. He was so happy and he jumped up and down. He had a great day playing in the park with his sister, Timmy.
+They show their moms. They all like their supplies. They take pictures of their books and their books. They play with different colors and shapes. They clap their hands. They are proud of their work. They like their games.
+
+But they do not know that their game was a bad game. They only had their game to win the game and make a new game. They have to win the game. They are sad and angry. They have nothing to play.
+
+They feel sad and angry. They want their mom to play more. They want to play more than Lily and Ben. They are not nice. They do not share. They want to win too.
+
+Their moms also tell them to stop. They say they made a mistake. They say they are safe. They say they did not need a fight. They say they are sorry. They say they should play
 ```
 
 ### `control` — prompt: `Once upon a time there was a little girl who`
 
-**Sample 1** (seed `0`, 533 chars, ~132 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 1** (seed `0`, 786 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-Once upon a time there was a little girl who loved to play. One day she was playing in the park when she heard a loud noise. She went to investigate and saw a big dog. The dog was angry and ran away. 
+Once upon a time there was a little girl who loved to play. One day she was playing in her backyard when she found a small toy. She looked at it very hard to make shapes with it. She tried to open it but it was stuck. 
 
-The little girl was sad and didn't know what to do. She picked up the dog and ran inside. She saw the dog in the bushes and ran after it.
+So she went to her mom and asked, "What's wrong?" Mom replied, "That's a stupid toy, it's small and had an idea. Inside the toy box was a surprise for me." 
 
-The little girl was so happy that she had a toy to play with. So she decided to take it home and show her friends. She was very happy to have her pup back. She hugged the dog and promised to come back and play with her again. 
+The little girl was so excited and she grabbed the toy box and began to play with it. She wanted to play with it all for herself! She was having so much fun! 
 
-The end.
+Her mom smiled and said, "Don't be envious, Lily. It's a special toy. We can play with it together, but it's best to put it away so it can be easier".
+
+Lily was so excited to play with the toy. She and her mom had so much fun playing with her old toy they tried to keep sitting. After a while
 ```
 
-**Sample 2** (seed `1`, 834 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
+**Sample 2** (seed `1`, 601 chars, ~146 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-Once upon a time there was a little girl who was very good at picking flowers. She even made a big hole with her finger.
+Once upon a time there was a little girl who wanted to go on an adventure. She asked her mom if she could go. Her mom said: "Yes, you can go!" 
 
-One day, the girl was walking through the forest and she saw a beautiful stone. She picked it up and said, "I want it to find that one! It looks so pretty!"
+So the girl left her diary and her eyes went. She put on her special laptied her pen and began to wander across the woods. Then, she saw some birds flying in the trees, and birds flying to the trees. 
 
-The girl happily ran to the stone and looked inside. She saw all kinds of things to do. She carefully stepped closer to pick it up.
+The little girl tried to pick them up, but it was too hard for her to fit. She kept looking around her waist and finally came to a bush. The wild leaves were alive with the wild animals and the girl was so happy. 
 
-The girl looked at the stone and said, "This stone belongs to me."
-
-The tree was very surprised but compassionate. It said, "I know so a butterfly and it was very special. You should have been here for so long!"
-
-The little girl took the stone home and put it in her pocket. She thanked the tree for its kind words and thanked it.
-
-The next day, the stone was back to size and was able to weigh things! The little girl was so happy that she could tell all the other
+The girl was so thankful she had met the animals who had been to the magical place!
 ```
 
-**Sample 3** (seed `2`, 787 chars, ~200 tokens, hit the token cap — inferred by re-encoding):
+**Sample 3** (seed `2`, 606 chars, ~145 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-Once upon a time there was a little girl who loved to wear fancy clothes. One day she went to the park to play with her friends, Sammy. Sammy was so excited to play with the other kids, so he ran around and around, trying to join them.
+Once upon a time there was a little girl who was sad. She had lost her favorite toy, a small toy bear. It was in her bedroom, and she was so happy.
 
-Suddenly, Sammy's friend, Sarah, came over to play. Sammy saw that the other kids in the park were there, and he didn't like that. He wanted to join in, so Sammy started to laugh.
+One day her mom took her to the store to buy new toys. The little girl saw a leather doll and she wanted to buy it. She took the teddy bear inside and wrote a letter. 
 
-"Let's make a fort!" Sammy said pleading.
-
-"Ok, Sammy," she said.
-
-So Sammy and Sarah all went to the park and built a fort in the attic. They built a house, built towers and tunnels. When Sammy had finished, he was so proud of his work.
-
-"Mum, can I play with your fancy fort with your friends?" Sammy asked.
-
-"Of course you can," Sammy replied.
-
-They spent the afternoon having a tea party and talking about the
+The family was overjoyed and thanked each other when they brought the teddy bear home. From that day on, they were the best of friends in the store and grew how to bring the teddy bear back. And when the little girl came back, she told her mom about her surprise. Her mom smiled and said, "You did a great job! You did a great job!"
 ```
 
-**Sample 4** (seed `3`, 745 chars, ~169 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 4** (seed `3`, 641 chars, ~143 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-Once upon a time there was a little girl who loved to share her toys. Every day she would go to the playground, out of the pond and play with her friends. Everyone was really excited about it and they always had fun playing together. 
+Once upon a time there was a little girl who was really helpless. She was walking in a big garden when she saw something interesting. It was a shiny mint, but it was very hard. She decided to take it home and take it home with her.
 
-One day they were playing in the park when they heard a loud noise. It sounded like a roar coming from the bushes. The little girl got scared and tried to hide behind the bark. 
+The little girl was so happy and excited to see the perfume. She put the perfume into the garden and smiled. Suddenly, she heard a voice calling out. It was her mother! She knew she had to share it with others if she was frightened. She quickly hid her mother, and stayed with her. 
 
-But then something magical happened. The little girl became very scared. She started looking around and around, but she couldn't see where it was going. She was stuck! 
-
-This made the noise when she saw it, it was a dead bush! She quickly jumped up and told her mom what had happened. Her mom hugged her and said it was ok now, and gave the little girl a big hug. 
-
-The End.
+The little girl was so grateful, she ran back home with the perfume and continued on her way. But she never forgot the perfume and the little girl never found it alone.
 ```
 
-**Sample 5** (seed `4`, 727 chars, ~179 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
+**Sample 5** (seed `4`, 704 chars, ~164 tokens, stopped at `<|endstory|>` — inferred by re-encoding):
 
 The prompt is shown in the fence too; everything after it is the model's.
 
 ```text
-Once upon a time there was a little girl who loved to play around. One day she went to the park and found a humble, ugly dog. The little girl was so excited to play with it.
+Once upon a time there was a little girl who was both very gifted. She was always curious and loved exploring and the world around her.
 
-The dog stopped and looked up at the little girl. He said, â€œYou can't join me.â€ The little girl smiled and said, â€œI like this, I can bring your toy dolls around.â€
+One day she was playing in her garden when she saw a mole. She was so excited. She had never seen a swan before and it scared her. She ran away with the duck and ran away.
 
-The boy was very excited! He then gave the little girl the little girl. He was very friendly. The little girl said, â€œI can wear my favorite toy.â€ The monster disagreed with her. They had lots of fun playing together.
+But her parents were very impressed. She told them that she wanted to keep her lucky girl and that she was very helpful. She said she would just have to be a pet and explore the pond.
 
-The little girl and the little girl played together every day. They were very happy and shared their toys. They had so much fun together. The little girl was so happy that she had a great time for her pet.
+So she went to the pond and said she would get her. She would remember that Sunday. She liked herself very much and would be there to stay in her big blue sea.
+
+The girl was so happy she could find everyone she met. She knew that it was a wonderful day.
 ```
 
 ## Caveats
