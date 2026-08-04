@@ -107,9 +107,9 @@ DISTILL_SVG = r'''<svg viewBox="0 0 820 210" role="img" aria-label="Distillation
 <line x1="177" y1="92" x2="220" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="387" y1="92" x2="430" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="597" y1="92" x2="640" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
-<text x="198" y="84" text-anchor="middle" font-size="11" fill="#998f7d">read</text>
-<text x="408" y="84" text-anchor="middle" font-size="11" fill="#998f7d">writes answers</text>
-<text x="618" y="84" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
+<text x="198" y="40" text-anchor="middle" font-size="11" fill="#998f7d">read</text>
+<text x="408" y="40" text-anchor="middle" font-size="11" fill="#998f7d">writes answers</text>
+<text x="618" y="40" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
 </svg>'''
 
 LORA_SVG = r'''<svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big base model is frozen; only a small adapter of weight deltas is trained; together they make TrialScout.">

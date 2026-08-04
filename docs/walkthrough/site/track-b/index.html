@@ -555,9 +555,9 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <line x1="177" y1="92" x2="220" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="387" y1="92" x2="430" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
 <line x1="597" y1="92" x2="640" y2="92" stroke="#6e6557" stroke-width="2" marker-end="url(#arD)"/>
-<text x="198" y="84" text-anchor="middle" font-size="11" fill="#998f7d">read</text>
-<text x="408" y="84" text-anchor="middle" font-size="11" fill="#998f7d">writes answers</text>
-<text x="618" y="84" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
+<text x="198" y="40" text-anchor="middle" font-size="11" fill="#998f7d">read</text>
+<text x="408" y="40" text-anchor="middle" font-size="11" fill="#998f7d">writes answers</text>
+<text x="618" y="40" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
 </svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>Distillation: the expensive teacher (Claude) writes structured answers for 1,500 trials; those become the gold labels the cheap student (Qwen) is fine-tuned to&nbsp;reproduce.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
