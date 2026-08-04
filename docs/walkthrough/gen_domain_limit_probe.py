@@ -185,6 +185,11 @@ them). Roughly 0.9% of the vocabulary is modelling a text-encoding bug rather th
 
 It is a sharper version of the point the section is already making: the corpus is the model,
 down to its defects.
+
+*Since this run:* the data path now repairs the mojibake on load and seeds its RNGs
+(`docs/DECISIONS.md` ADR-0013). This checkpoint predates both, so the samples above still
+show the artifact — retraining would re-roll every figure derived from it, which is why it
+has not been done yet.
 """.strip()
 
 

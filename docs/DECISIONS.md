@@ -4,6 +4,55 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0013 — Repair TinyStories' mojibake and seed the trainer; do NOT retrain the committed checkpoint
+
+**Decision:** Track A's data path now (a) repairs double-encoded UTF-8 in the TinyStories text on
+load and (b) seeds both RNGs the run depends on (`SEED = 1337`, `--seed` on the script). Applied in
+`notebooks/train_v2_checkpoint.py` and mirrored into notebook 02 (cells 4 and 10). **The committed
+`tiny_gpt_v2` checkpoint was NOT retrained**, so it — and every artifact derived from it — still
+carries the mojibake. Retrain opportunistically, the next time something else already forces one.
+
+**Why (the bug):** ~7.5% of TinyStories stories ship mojibaked — `daddyâ€™s tie` where `daddy's tie`
+was meant — because the text was UTF-8 bytes decoded as CP1252 somewhere upstream. This is *not* our
+loader: `train_v2_checkpoint.py` reads `ex["text"]` straight from `load_dataset` with no re-encoding,
+and the tokenizer's decoder round-trips valid text cleanly. It arrives broken. At that prevalence the
+byte-pairs recur often enough for the BPE to spend **73 of its 8,192 tokens** (~0.9% of vocabulary) on
+mojibake fragments — including dedicated merges for the mangled forms of `"Mommy`, `"Hello` and
+` couldn'` — and the model duly emits them at generation time (see
+`docs/walkthrough/DOMAIN_LIMIT_PROBE_RESULTS.md`, "Also observed"). Fixing the data is strictly
+better than post-processing the output: the vocabulary is the thing being corrupted.
+
+**Why the repair is shaped the way it is:** most of the damage is *lossy*, not merely scrambled. A
+right double quote (U+201D) is UTF-8 `E2 80 9D`, and CP1252 has no mapping for `0x9D`, so that byte
+was dropped upstream — leaving a bare `â€` that no round-trip can reverse. That lossy variant is 5.5%
+of stories against 2% losslessly reversible, so the repair restores the dropped byte first, then
+reverses the encoding. It is deliberately conservative: any string that doesn't round-trip cleanly is
+returned untouched, because corrupting good text is worse than leaving the bug in. Verified against
+3,000 real upstream stories — **226 repaired, 2,774 byte-identical, 0 clean strings modified,
+0 mojibake missed** — plus a unit table covering legitimate accents (`café`, `naïve`, `Zoë`), real
+curly quotes, emoji, and empty input.
+
+**Why seeding matters more than the mojibake:** the trainer had **no seeding at all** — neither
+`mx.random.seed` (weight init) nor `np.random.seed` (batch order). A rerun therefore produced a
+*different* model, which means the committed notebook outputs, loss curves and walk-through figures
+could never be reproduced from the code that claims to generate them. For a repo whose stated
+principle is "learnable — no black boxes," an unreproducible trainer is the more serious defect. It
+is also what made "just retrain to fix the mojibake" feel expensive: a retrain was a re-roll, not a
+re-run. Verified: same seed ⇒ identical weight-init fingerprint and identical batch indices across
+fresh processes; a different seed diverges.
+
+**Why not retrain now:** six committed artifacts derive from the current checkpoint — notebook 02
+outputs, notebook 03 outputs, `loss_curve_tuned.png`, the generation trace pasted into `GEN_LOOP_SVG`
+(`content.py`), `WE_MATRIX_SVG` (`content_concepts.py`), and `DOMAIN_LIMIT_PROBE_RESULTS.md`. A
+retrain re-rolls all of them for a largely cosmetic gain. **Known drift, accepted:** until someone
+retrains, the code in notebook 02 no longer matches the outputs committed beside it — the cell-4
+output line predates the repair counter, and the model that produced the later outputs saw the
+unrepaired corpus. Anyone rerunning gets a clean model and different (not worse) numbers.
+
+**Bonus, kept on purpose:** the mojibake is an unusually good teaching artifact for Part 1's own
+thesis — the corpus is the model, down to its defects — so the probe results document it rather than
+quietly erasing it.
+
 ## ADR-0012 — Renamed the project: slm-lab → small-model-lab
 
 **Decision:** Renamed the repo, site, and all branding from `slm-lab` to `small-model-lab` on 2026-06-12, the day before first public promotion.
