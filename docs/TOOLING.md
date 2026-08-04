@@ -42,6 +42,35 @@ These commands are read-only and do not run model code, install dependencies, or
 
 These are local, but they mutate files or generated artifacts. Review diffs before committing.
 
+### Regenerating Track A After A Retrain
+
+**Use the orchestrator; do not do this by hand.** Twelve surfaces derive from the Track A
+checkpoint, and the two trainers write to the *same* checkpoint path while producing
+*different* models — so hand-regeneration reliably ships a stale figure or a downgraded
+checkpoint.
+
+```bash
+uv run python scripts/regenerate_track_a.py --check      # what is stale? writes nothing
+uv run python scripts/regenerate_track_a.py --derived    # rebuild from the current checkpoint
+uv run python scripts/regenerate_track_a.py --all        # retrain in order, then rebuild (~65 min)
+```
+
+- **Order is load-bearing:** notebook 02 first (it overwrites the checkpoint *without* the
+  `<|endstory|>` token), then `train_v2_checkpoint.py` to restore the shipped one, then the
+  derived figures. `--all` enforces this; `--derived` refuses to run against a checkpoint
+  that has no end-of-story token.
+- **`--check` is the staleness gate.** It compares each artifact's recorded provenance in
+  `docs/walkthrough/TRACK_A_MANIFEST.json` against the checkpoint on disk, and verifies the
+  token ids rendered in `TOKENIZE_SVG`. Run it before publishing.
+- **Three surfaces still need a human** and are listed by every run: `GENLOOP_SVG` (its seed
+  is chosen so the figure demonstrates its own caption — re-pick with
+  `gen_generation_trace.py --hunt`), `TOKENIZE_SVG`'s token ids, and the verbatim
+  `rawoutput` story pasted into `content.py`.
+- **Notebook 01 is not part of this.** It trains inline, saves no checkpoint, and five of the
+  site's live-pulled output blocks come from it — so it stays stable across Track A retrains.
+- Hashes in the manifest detect staleness; they are **not** byte-equality tests. MLX on the
+  GPU is not bitwise deterministic (see `docs/DECISIONS.md` ADR-0013).
+
 ### External Data / Model Downloads
 
 - `uv run jupyter lab` can trigger notebook-driven dataset/model work.

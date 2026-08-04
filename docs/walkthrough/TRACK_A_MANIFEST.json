@@ -1,0 +1,194 @@
+{
+  "artifacts": {
+    "PROBS_SVG": {
+      "generator": "docs/walkthrough/gen_probs_figure.py",
+      "target": "docs/walkthrough/content_concepts.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "TEMP_SVG": {
+      "generator": "docs/walkthrough/gen_temp_figure.py",
+      "target": "docs/walkthrough/content_concepts.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "ATTENTION_SVG": {
+      "generator": "docs/walkthrough/gen_attention_figure.py",
+      "target": "docs/walkthrough/content_concepts.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "WE_MATRIX_SVG": {
+      "generator": "docs/walkthrough/gen_embedding_matrix.py",
+      "target": "docs/walkthrough/content_concepts.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "DOMAIN_LIMIT_PROBE_RESULTS.md": {
+      "generator": "docs/walkthrough/gen_domain_limit_probe.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "notebooks/03_tiny_gpt_chat.ipynb": {
+      "generator": "scripts/execute_notebook.py (cells 0-6; cell 7 is an interactive REPL)",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    },
+    "notebooks/02_tiny_gpt_tuned.ipynb": {
+      "generator": "scripts/execute_notebook.py (all cells)",
+      "from_checkpoint": "notebook-02 self-trained",
+      "note": "notebook 02 trains its OWN model (no <|endstory|>) and overwrites the checkpoint; the producer must run after it. These outputs are that model's, not the shipped one's.",
+      "final_train_line": "step 3000/3000  train 1.695  val 2.168  lr 6.00e-05  (1043s)",
+      "token_ids_shown": [
+        5381,
+        284,
+        103,
+        240
+      ]
+    },
+    "notebooks/loss_curve_tuned.png": {
+      "generator": "notebook 02 plotting cell",
+      "from_checkpoint": "notebook-02 self-trained",
+      "note": "notebook 02 trains its OWN model (no <|endstory|>) and overwrites the checkpoint; the producer must run after it. These outputs are that model's, not the shipped one's.",
+      "final_train_line": "step 3000/3000  train 1.695  val 2.168  lr 6.00e-05  (1043s)"
+    },
+    "GENLOOP_SVG": {
+      "generator": "docs/walkthrough/gen_genloop_figure.py",
+      "target": "docs/walkthrough/content.py",
+      "from_checkpoint": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b"
+    }
+  },
+  "checkpoint": {
+    "weights_sha256": "d32f34656a10b6c15277a3b1aff1acec79bdbcf82819cfd90b92d034a025883b",
+    "tokenizer_sha256": "4417ea67d13cf01b1f10db5d8dc1822f4dda3f54e337a2e0336c0868a3616a4b",
+    "config": {
+      "block_size": 256,
+      "n_embd": 384,
+      "n_head": 6,
+      "n_layer": 6,
+      "vocab_size": 8192,
+      "eos_token": "<|endstory|>"
+    },
+    "has_eos": true
+  },
+  "generated_utc": "2026-08-04T14:01:55+00:00",
+  "settings": {
+    "gen_domain_limit_probe.py": {
+      "TEMPERATURE": 0.8,
+      "MAX_NEW_TOKENS": 200,
+      "TOP_K": null,
+      "STOP_AT_EOS": true,
+      "N_SAMPLES": 5,
+      "SEED": 0,
+      "PROMPTS": [
+        [
+          "question",
+          "What is the capital of France?"
+        ],
+        [
+          "statement",
+          "The capital of France is"
+        ],
+        [
+          "control",
+          "Once upon a time there was a little girl who"
+        ]
+      ],
+      "STORY_OPENERS": [
+        "once upon a time",
+        "one day",
+        "there was a",
+        "there lived",
+        "there once"
+      ],
+      "OPENER_WINDOW_CHARS": 60,
+      "CHILD_REGISTER": [
+        "little girl",
+        "little boy",
+        "mom",
+        "mum",
+        "dad",
+        "happily ever after",
+        "once upon a time",
+        "one day",
+        "play",
+        "toy",
+        "happy",
+        "smile"
+      ],
+      "FACT_MARKERS": [
+        "paris"
+      ],
+      "CLAIM_PHRASE": "once upon a time",
+      "SUBJECT_MARKERS": [
+        "france",
+        "capital"
+      ]
+    },
+    "gen_generation_trace.py": {
+      "PROMPT": "Once upon a time",
+      "STEPS": 6,
+      "TOP_K": 4,
+      "TEMPERATURE": 0.8,
+      "SEED": 3,
+      "HUNT_RANGE": 40,
+      "SELECTION_CRITERION": "the final step must sample a token that is NOT the most likely one, so the figure actually shows the weighted die refusing the favourite"
+    },
+    "gen_probs_figure.py": {
+      "PROMPT": "One day, Lily went to the",
+      "TEMPERATURE": 1.0,
+      "TOP_K": 5
+    },
+    "gen_temp_figure.py": {
+      "PROMPT": "Tom was very",
+      "PANELS": [
+        [
+          0.5,
+          "plays it safe",
+          "#5f6c33",
+          148,
+          156
+        ],
+        [
+          1.1,
+          "adventurous",
+          "#8c6a2a",
+          493,
+          501
+        ]
+      ],
+      "TOP_K": 5
+    },
+    "gen_attention_figure.py": {
+      "SENTENCE": "The dragon looked at the boy and it",
+      "LAYER": 1,
+      "HEAD": 3,
+      "MIN_ARC_PCT": 1,
+      "REFERENT": "dragon",
+      "MIN_REFERENT_PCT": 40,
+      "SLIDE_OFFSETS": [
+        0.0,
+        0.07,
+        -0.07,
+        0.14,
+        -0.14,
+        0.21,
+        -0.21,
+        0.28,
+        -0.28,
+        0.35,
+        -0.35
+      ]
+    },
+    "gen_embedding_matrix.py": {},
+    "train_v2_checkpoint.py": {
+      "EOS": "<|endstory|>",
+      "N_STORIES": 25000,
+      "SEED": 1337,
+      "TELLTALE": [
+        "\u00c2",
+        "\u00c3",
+        "\u00e2",
+        "\u00c5"
+      ]
+    }
+  },
+  "manual_surfaces": {
+    "TOKENIZE_SVG (content_concepts.py)": "renders four real token ids; --check verifies them against the current tokenizer.",
+    "rawoutput story (content.py, \"a complete story from chat.py\")": "a verbatim generated story pasted into the prose. Replace it with a fresh sample."
+  }
+}

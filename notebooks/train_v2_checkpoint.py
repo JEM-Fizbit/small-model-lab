@@ -46,12 +46,21 @@ grad_clip = 1.0
 eval_every = 250
 
 SEED = 1337  # everything random downstream (weight init, batch order) derives from this.
-             # Without it a rerun produces a DIFFERENT model, which makes the committed
-             # notebook outputs, loss curves and walk-through figures unreproducible.
+             # Without it a rerun produces a wholly different model, which makes the
+             # committed notebook outputs, loss curves and figures unreproducible.
+             #
+             # What the seed does and does NOT buy you (measured, 2026-08-04): it pins
+             # weight init and batch order exactly — two fresh processes agree to 10
+             # decimal places on the first steps. It does NOT give a bit-identical
+             # checkpoint on the GPU: Metal kernels accumulate in nondeterministic order,
+             # so runs drift apart in the last decimals and the final weights differ.
+             # (Forcing mx.set_default_device(mx.cpu) IS bit-reproducible, and far too
+             # slow to train on.) So: same seed ⇒ same experiment, not the same bytes.
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--steps", type=int, default=3000, help="training steps (3000 ≈ notebook quality)")
-parser.add_argument("--seed", type=int, default=SEED, help="RNG seed — same seed ⇒ same checkpoint")
+parser.add_argument("--seed", type=int, default=SEED,
+                    help="RNG seed — pins init + batch order (not bit-identical on GPU; see note above)")
 parser.add_argument("--out", default=str(Path(__file__).parent / "checkpoints" / "tiny_gpt_v2"))
 args = parser.parse_args()
 max_steps = args.steps

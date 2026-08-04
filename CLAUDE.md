@@ -43,6 +43,11 @@ This project exists to make the process **learnable — no black boxes**. Every 
 uv sync                  # install deps into .venv (Python 3.12)
 uv run jupyter lab       # open the annotated notebooks
 uv run ruff check .      # lint
+
+# after any Track A retrain — twelve surfaces derive from the checkpoint, and the
+# regeneration ORDER matters (see docs/TOOLING.md before running these):
+uv run python scripts/regenerate_track_a.py --check     # what's stale? writes nothing
+uv run python scripts/regenerate_track_a.py --all       # retrain in order + rebuild
 ```
 
 `uv run` can synchronize the environment if it is missing or stale. For docs/metadata-only work, prefer `git diff --check` and `uv lock --check`; see [`docs/TOOLING.md`](docs/TOOLING.md).
