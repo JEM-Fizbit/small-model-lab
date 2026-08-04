@@ -66,10 +66,18 @@ MANUAL = [
      "confirms it still reproduces. Replace it by hand if it stops."),
 ]
 
-# the pasted story records the seed/temp that produced it, so it can be re-derived and checked
-STORY_MARKER = '("rawoutput", """Once upon a time'
+# Curated excerpts record the seed/temp that produced them, so they can be re-derived rather
+# than trusted. Two forms exist: a caption that states the seed, and inline headers in a
+# multi-sample block.
 STORY_CAPTION = r'"a complete story from chat\.py[^"]*seed (\d+), temp ([\d.]+)\)"'
 STORY_MAX_NEW = 300
+# "--- temperature 0.6 (seed 13) ---" followed by the sample it labels. The lookahead must
+# stop at the block's closing quotes as well as the next header — anchoring the last sample
+# on \Z instead swallows the rest of the file and reports a spurious drift.
+INLINE_SAMPLE = re.compile(
+    r'--- temperature ([\d.]+) \(seed (\d+)\) ---\n(.*?)(?=\n\n--- temperature|""")', re.S)
+INLINE_MAX_NEW = 150
+PROMPT = "Once upon a time"
 
 TOKENIZE_PROMPT = " Once upon a time"   # the phrase whose ids TOKENIZE_SVG renders
 
@@ -236,23 +244,39 @@ def check_quoted_story():
     import tiny_gpt
 
     src = (WALK / "content.py").read_text()
-    cap = re.search(STORY_CAPTION, src)
-    if STORY_MARKER not in src or not cap:
-        print("\nquoted story: marker or seed caption not found")
-        return ["quoted story"]
-    start = src.index(STORY_MARKER) + len(STORY_MARKER) - len("Once upon a time")
-    committed = src[start:src.index('""",\n   "a complete story', start)].replace('\\"', '"')
-
-    seed, temp = int(cap.group(1)), float(cap.group(2))
     model, tok, cfg = tiny_gpt.load(str(CKPT))
-    mx.random.seed(seed)
-    regen = "Once upon a time" + "".join(
-        tiny_gpt.stream(model, tok, cfg, "Once upon a time",
-                        n_new=STORY_MAX_NEW, temperature=temp))
-    ok = committed.strip() == regen.strip()
-    print(f"\nquoted story (caption claims seed {seed}, temp {temp}): "
-          f"{'OK — reproduces from the shipped checkpoint' if ok else 'DRIFT — does NOT reproduce'}")
-    return [] if ok else ["quoted story"]
+    bad = []
+
+    def reproduces(seed, temp, n_new, committed):
+        mx.random.seed(seed)
+        regen = PROMPT + "".join(tiny_gpt.stream(model, tok, cfg, PROMPT,
+                                                 n_new=n_new, temperature=temp))
+        return committed.strip() == regen.strip()
+
+    print("\ncurated excerpts (each records the seed that produced it):")
+
+    # 1. the single story whose CAPTION carries the seed. Anchor on the caption and walk back
+    #    to the block it belongs to, so adding other rawoutput blocks can't mis-target this.
+    cap = re.search(STORY_CAPTION, src)
+    if not cap:
+        print("  ?  chat.py story: seed caption not found")
+        bad.append("chat.py story")
+    else:
+        head = src.rindex('("rawoutput", """', 0, cap.start()) + len('("rawoutput", """')
+        committed = src[head:src.rindex('""",', head, cap.start())].replace('\\"', '"')
+        seed, temp = int(cap.group(1)), float(cap.group(2))
+        ok = reproduces(seed, temp, STORY_MAX_NEW, committed)
+        print(f"  {'OK ' if ok else 'DRIFT'} chat.py story (seed {seed}, temp {temp})")
+        if not ok:
+            bad.append("chat.py story")
+
+    # 2. multi-sample blocks that state seed + temperature inline, one per sample
+    for temp, seed, sample in INLINE_SAMPLE.findall(src):
+        ok = reproduces(int(seed), float(temp), INLINE_MAX_NEW, sample.replace('\\"', '"'))
+        print(f"  {'OK ' if ok else 'DRIFT'} §14 demo sample (seed {seed}, temp {temp})")
+        if not ok:
+            bad.append(f"§14 sample seed {seed}")
+    return bad
 
 
 def check_prose_citations():

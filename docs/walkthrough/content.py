@@ -1503,7 +1503,20 @@ notebook 01's, because the vocabulary is different now; it's the <em>shape</em> 
 <p>Same generation loop as before, but now each step samples a word-chunk, not a single
 letter. Here is what the tuned model writes, at two different temperatures:</p>
 """),
-  ("output", "02", "def generate(prompt, n_new=200", "what the tuned model writes", 1400),
+  ("rawoutput", """--- temperature 0.6 (seed 13) ---
+Once upon a time, there was a boy named Timmy. Timmy loved to play outside in the sunshine. One day, Timmy's mom gave him a bag of candy. Timmy was so happy!
+
+At the store, Timmy saw a big, shiny jar of candy. He wanted to buy it, but he had an idea. He took a bite and it tasted really yummy. Timmy ate the candy and felt very happy.
+
+After he finished eating, Timmy's dad gave him a big hug. Timmy was so happy and ate the candy. He had a great time playing with his toys and playing with his friends. The end.
+
+--- temperature 0.9 (seed 0) ---
+Once upon a time there was a little boy named Jack. Jack was three years old and loved to explore. One day, Jack was very excited to go on an adventure with his mom. As he walked through the park, he spotted something shiny in the grass. Jack opened it, and saw a silver necklace! He was very excited.
+
+Suddenly, Jack heard a voice! Jack's dad looked at it. He said: "What is that pretty things?". Jack smiled, "I'm going to catch the necklace and enjoy it!"
+
+Jack took the necklace home and he took it home with him. He said: "This is my precious present for you at home!" Jack was so excited he couldn't wait to get married!""",
+   "the tuned model at two temperatures — generated from the saved checkpoint that chat.py loads, at the seeds shown, so you can reproduce them exactly"),
   ("callout", "key", "Look what changed", r"""
 <p>Real words. Names that persist across sentences (&ldquo;Timmy,&rdquo; &ldquo;Jack&rdquo;).
 Dialogue with quotation marks. The arc of a little story. It still wanders and contradicts
