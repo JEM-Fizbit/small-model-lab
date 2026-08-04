@@ -1184,7 +1184,7 @@ trained Part 1 model, with one attention head's actual weights drawn as arcs:</p
 <text x="215" y="260" text-anchor="middle" font-size="9.5" fill="#8d4257">the best-matching “key”</text>
 <text x="30" y="292" font-size="10.5" fill="#6e6557">“the” get ≈0%. This head has learned to track who the sentence is about; other heads in the same</text>
 <text x="30" y="308" font-size="10.5" fill="#6e6557">model attend to different things (recent words, sentence starts) — together they give the next layer rich context.</text>
-</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% of the blend to “dragon”. The thickness of each arc is the real weight from the trained model, the q·k matching from Part 1's formula,&nbsp;drawn.</figcaption></figure>
+</svg><figcaption><span class="fignum" id="fig-8">Fig.&nbsp;8</span>Attention, measured (not illustrated): when “it” builds its understanding, this head hands 43% of the blend to “dragon” — eight times what it gives “boy”, the other thing “it” could mean. The thickness of each arc is the real weight from the trained model, the q·k matching from Part 1's formula,&nbsp;drawn.</figcaption></figure>
 <aside class="callout aside"><div class="callout-title">Why it's the heart of it</div><div class="callout-body">
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>
 place information moves <em>between</em> tokens. Stack several attention+MLP blocks and the model can build
