@@ -67,6 +67,20 @@ MANUAL = [
 
 TOKENIZE_PROMPT = " Once upon a time"   # the phrase whose ids TOKENIZE_SVG renders
 
+# --- measured numbers quoted in PROSE, which no generator rewrites --------------
+# Figure captions and body text cite values straight out of the figures. Nothing regenerates
+# them, so a retrain leaves them quietly wrong — exactly the failure this whole script exists
+# to prevent, and it bit us once (a caption still claimed 76% after the number became 43%).
+# Each entry pulls the truth back out of the (regenerated, therefore current) figure.
+PROSE_CITATIONS = [
+    ("content_concepts.py", r"this head hands (\d+)% ", "ATTENTION_SVG", "content_concepts.py",
+     r'font-weight="700"[^>]*>(\d+)%<',
+     "attention caption vs the strongest arc in ATTENTION_SVG"),
+    ("content.py", r"the die lands on a (\d+\.\d)% underdog", "GENLOOP_SVG", "content.py",
+     r"A (\d+\.\d)% chunk wins about one roll",
+     "generation-loop caption vs the sampled share in GENLOOP_SVG"),
+]
+
 
 def sha256(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -167,10 +181,34 @@ def check():
     print("  OK — all present in the figure" if not missing
           else f"  STALE — {missing} missing; update the ids drawn in TOKENIZE_SVG")
 
+    drifted = check_prose_citations()
+
     print("\nmanual surfaces (no script can finish these):")
     for name, why in MANUAL:
         print(f"  - {name}\n      {why}")
-    return 1 if (stale or missing) else 0
+    return 1 if (stale or missing or drifted) else 0
+
+
+def check_prose_citations():
+    """Do the numbers quoted in prose still match the figures they describe?"""
+    print("\nmeasured numbers quoted in prose:")
+    drifted = []
+    for prose_mod, prose_re, fig, fig_mod, fig_re, label in PROSE_CITATIONS:
+        prose = (WALK / prose_mod).read_text()
+        # the figure literal also contains the value, so search prose with the SVG blanked out
+        prose = re.sub(r"_SVG = r'''.*?'''", "«SVG»", prose, flags=re.S)
+        pm = re.search(prose_re, prose)
+        fm = re.search(fig_re, read_svg(fig_mod, fig))
+        if not pm or not fm:
+            print(f"  ?  {label}: pattern not found (prose={bool(pm)}, figure={bool(fm)})")
+            drifted.append(label)
+            continue
+        ok = float(pm.group(1)) == float(fm.group(1))
+        print(f"  {'OK ' if ok else 'DRIFT'} {label}: prose says {pm.group(1)}, "
+              f"figure says {fm.group(1)}")
+        if not ok:
+            drifted.append(label)
+    return drifted
 
 
 def derived(man):

@@ -854,8 +854,9 @@ it a <em>language</em> model and not a bag of independent words.</p>
 trained Part 1 model, with one attention head's actual weights drawn as arcs:</p>
 """),
   ("diagram", ATTENTION_SVG,
-   "Attention, measured (not illustrated): when “it” builds its understanding, this head hands 76% "
-   "of the blend to “dragon”. The thickness of each arc is the real weight from the trained model, "
+   "Attention, measured (not illustrated): when “it” builds its understanding, this head hands 43% "
+   "of the blend to “dragon” — eight times what it gives “boy”, the other thing “it” could mean. "
+   "The thickness of each arc is the real weight from the trained model, "
    "the q·k matching from Part 1's formula, drawn."),
   ("callout", "aside", "Why it's the heart of it", r"""
 <p>Everything else (embeddings, linear layers, the bend) works token-by-token. Attention is the <em>only</em>

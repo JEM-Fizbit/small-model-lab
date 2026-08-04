@@ -1340,7 +1340,7 @@ write too.</p>
   ("diagram", GENLOOP_SVG,
    "The loop, replaying live (a slow ~47&nbsp;s cycle): score the menu, roll the weighted die, watch the pick lift into the sentence, "
    "feed the whole line back in. Every probability is real &mdash; and so is step&nbsp;6's surprise, where "
-   "the die lands on a 13.9% underdog. That's what sampling means; &sect;17 (temperature) is the dial that "
+   "the die lands on a 19.5% underdog. That's what sampling means; &sect;17 (temperature) is the dial that "
    "tunes it. Reproduce the trace: <code>docs/walkthrough/gen_generation_trace.py</code>."),
   ("code", "01", "def generate(prompt, n_new=400", "Predict one character, append, repeat."),
   ("gloss", r"""
