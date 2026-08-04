@@ -171,10 +171,17 @@ to continue.
 
 SIDE_OBSERVATION = """
 The model also reproduces its corpus's **encoding bugs**. `â€œ` appears mid-sentence in two
-samples (question sample 2, control sample 5). That is not a decoding fault in this script —
-valid curly quotes round-trip through this tokenizer cleanly. It is that **37 of the 8,192
-learned BPE tokens are double-encoded UTF-8 fragments** (`ĠcouldnÃ¢`, `ĠdonÃ¢`, `âĤ¬âĦ¢`), so
-the training text itself contained mojibake and the tokenizer learned it as vocabulary.
+samples (question sample 2, control sample 5). This is not a fault in this script or in the
+tokenizer's decoder — valid curly quotes round-trip through it cleanly. It is upstream:
+**~2% of TinyStories stories ship with double-encoded UTF-8** (sampling 3,000 stories from
+the published train split gives 60 hits, e.g. `daddyâ€™s tie` where `daddy's tie` was meant),
+and `train_v2_checkpoint.py` reads `ex["text"]` straight from `load_dataset` without
+re-encoding, so it inherits them as-is.
+
+At that rate the byte-pairs recur often enough for the BPE to spend **73 of its 8,192
+tokens** on mojibake fragments — including dedicated merges for `œMommy`, `œHello`,
+` couldnâ` and `€™` (that is, `"Mommy`, `"Hello` and ` couldn'` as the corpus mis-encodes
+them). Roughly 0.9% of the vocabulary is modelling a text-encoding bug rather than English.
 
 It is a sharper version of the point the section is already making: the corpus is the model,
 down to its defects.
