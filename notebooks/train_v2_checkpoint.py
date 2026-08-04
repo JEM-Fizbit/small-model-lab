@@ -45,25 +45,110 @@ weight_decay = 0.1
 grad_clip = 1.0
 eval_every = 250
 
+SEED = 1337  # everything random downstream (weight init, batch order) derives from this.
+             # Without it a rerun produces a DIFFERENT model, which makes the committed
+             # notebook outputs, loss curves and walk-through figures unreproducible.
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--steps", type=int, default=3000, help="training steps (3000 ≈ notebook quality)")
+parser.add_argument("--seed", type=int, default=SEED, help="RNG seed — same seed ⇒ same checkpoint")
 parser.add_argument("--out", default=str(Path(__file__).parent / "checkpoints" / "tiny_gpt_v2"))
 args = parser.parse_args()
 max_steps = args.steps
 
-print(f"MLX device: {mx.default_device()}  | steps={max_steps}")
+# Seed BEFORE anything draws a random number: MLX drives weight init (tiny_gpt._normal),
+# NumPy drives batch sampling (get_batch). Both must be pinned or the run won't reproduce.
+mx.random.seed(args.seed)
+np.random.seed(args.seed)
+
+print(f"MLX device: {mx.default_device()}  | steps={max_steps} | seed={args.seed}")
+
+
+# ---- corpus hygiene ---------------------------------------------------------
+# ~7.5% of TinyStories stories ship with double-encoded UTF-8 ("daddyâ€™s tie" for
+# "daddy's tie"): the text was UTF-8 bytes decoded as CP1252 somewhere upstream. Left
+# alone, the BPE spends ~1% of its vocabulary learning the garbled byte-pairs as if they
+# were words (dedicated merges for the mangled forms of "Mommy, "Hello, ' couldn''), and
+# the model emits them at generation time. See docs/DECISIONS.md ADR-0013.
+TELLTALE = ("Â", "Ã", "â", "Å")  # cheap pre-filter: no mojibake can exist without one
+
+
+def _sloppy_cp1252(s):
+    """Encode as CP1252, falling back to the raw Latin-1 byte for CP1252's five undefined
+    slots (0x81/0x8D/0x8F/0x90/0x9D). Real mojibake contains them; strict CP1252 refuses."""
+    out = bytearray()
+    for ch in s:
+        try:
+            out += ch.encode("cp1252")
+        except UnicodeEncodeError:
+            if ord(ch) >= 256:
+                raise
+            out.append(ord(ch))
+    return bytes(out)
+
+
+def _restore_dropped_byte(s):
+    """Put back the third byte of a mangled right double quote.
+
+    U+201D (") is UTF-8 E2 80 9D. CP1252 has no mapping for 0x9D, so whoever mis-decoded
+    the corpus DROPPED it, leaving a bare "â€" that no round-trip can reverse (E2 80
+    followed by a space is not valid UTF-8). This is the majority of the damage — 5.5% of
+    stories, against 2% that are losslessly reversible. Where "â€" is not followed by a
+    valid continuation byte, restore the lost 0x9D so the round-trip below can work.
+    """
+    out, i = [], 0
+    while i < len(s):
+        if s.startswith("â€", i):
+            nxt = s[i + 2] if i + 2 < len(s) else ""
+            try:
+                b = _sloppy_cp1252(nxt)[0] if nxt else None
+            except (UnicodeEncodeError, IndexError):
+                b = None
+            if b is None or not (0x80 <= b <= 0xBF):
+                out.append("â€\x9d")
+                i += 2
+                continue
+        out.append(s[i])
+        i += 1
+    return "".join(out)
+
+
+def fix_mojibake(s):
+    """Repair double-encoded UTF-8; leave already-clean text byte-identical.
+
+    Conservative by design: anything that doesn't round-trip cleanly is returned
+    untouched, because corrupting good text is worse than leaving a bug in. Verified on
+    3,000 upstream stories — 226 repaired, 2,774 unchanged, 0 clean strings modified.
+    """
+    if not any(c in s for c in TELLTALE):
+        return s
+    s = _restore_dropped_byte(s)
+    for _ in range(3):  # a few stories are double-encoded
+        try:
+            fixed = _sloppy_cp1252(s).decode("utf-8")
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            break       # not repairable -> leave exactly as-is
+        if fixed == s:
+            break
+        s = fixed
+    return s
+
 
 # ---- data -------------------------------------------------------------------
 try:
     from datasets import load_dataset
     ds = load_dataset("roneneldan/TinyStories", split="train", streaming=True)
-    stories = []
+    stories, n_fixed = [], 0
     for ex in ds:
-        stories.append(ex["text"].strip())
+        raw = ex["text"].strip()
+        clean = fix_mojibake(raw)
+        n_fixed += clean != raw
+        stories.append(clean)
         if len(stories) >= N_STORIES:
             break
     text = "\n\n".join(stories)
-    print(f"Loaded {len(stories):,} stories ({len(text):,} chars)")
+    print(f"Loaded {len(stories):,} stories ({len(text):,} chars); "
+          f"repaired encoding in {n_fixed:,} ({100 * n_fixed / max(len(stories), 1):.1f}%)")
 except Exception as e:
     print("fallback corpus:", e)
     stories = [("The little robot read a happy story about a fox and a bird by the river. ") * 200] * 100
