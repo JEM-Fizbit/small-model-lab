@@ -60,10 +60,16 @@ FILE_ARTIFACTS = [("DOMAIN_LIMIT_PROBE_RESULTS.md", "gen_domain_limit_probe.py")
 # --- surfaces a script CANNOT finish: they need a human decision ---------------
 MANUAL = [
     ("TOKENIZE_SVG (content_concepts.py)",
-     "renders four real token ids; --check verifies them against the current tokenizer."),
+     "renders four real token ids; --check verifies them against notebook 02's output."),
     ('rawoutput story (content.py, "a complete story from chat.py")',
-     "a verbatim generated story pasted into the prose. Replace it with a fresh sample."),
+     "a verbatim generated story pasted into the prose; --check re-runs its stated seed and "
+     "confirms it still reproduces. Replace it by hand if it stops."),
 ]
+
+# the pasted story records the seed/temp that produced it, so it can be re-derived and checked
+STORY_MARKER = '("rawoutput", """Once upon a time'
+STORY_CAPTION = r'"a complete story from chat\.py[^"]*seed (\d+), temp ([\d.]+)\)"'
+STORY_MAX_NEW = 300
 
 TOKENIZE_PROMPT = " Once upon a time"   # the phrase whose ids TOKENIZE_SVG renders
 
@@ -182,11 +188,71 @@ def check():
           else f"  STALE — {missing} missing; update the ids drawn in TOKENIZE_SVG")
 
     drifted = check_prose_citations()
+    drifted += check_quoted_story()
+    drifted += check_site_rebuilt()
 
     print("\nmanual surfaces (no script can finish these):")
     for name, why in MANUAL:
         print(f"  - {name}\n      {why}")
     return 1 if (stale or missing or drifted) else 0
+
+
+SITE_PAGES = {"content_concepts.py": "ideas/index.html", "content.py": "track-a/index.html"}
+
+
+def check_site_rebuilt():
+    """Has docs/walkthrough/site/ been rebuilt since the content modules changed?
+
+    Regenerating a figure updates content*.py, but the PUBLISHED page is the built HTML.
+    Forget `build.py` and every check above passes while the live site still shows the old
+    numbers — which is the same silent-staleness failure in a different place.
+    """
+    print("\nbuilt site vs content modules:")
+    stale = []
+    for name, _gen, module in SVG_ARTIFACTS:
+        page = WALK / "site" / SITE_PAGES.get(module, "")
+        if not page.exists():
+            continue
+        svg = read_svg(module, name)
+        fingerprint = svg[:400]          # the opening tag + aria-label: changes on any edit
+        if fingerprint not in page.read_text():
+            stale.append(name)
+    if stale:
+        print(f"  STALE — {', '.join(stale)} differ from the built page.")
+        print("     run: uv run python docs/walkthrough/build.py")
+    else:
+        print(f"  OK — all {len(SVG_ARTIFACTS)} figures match the built pages")
+    return stale
+
+
+def check_quoted_story():
+    """Re-run the pasted story's own seed and confirm it still reproduces.
+
+    Its caption asserts a provenance ("seed 1, temp 0.8") — that is a factual claim about
+    the shipped checkpoint, so it gets checked rather than trusted.
+    """
+    import mlx.core as mx
+    sys.path.insert(0, str(NOTEBOOKS))
+    import tiny_gpt
+
+    src = (WALK / "content.py").read_text()
+    cap = re.search(STORY_CAPTION, src)
+    if STORY_MARKER not in src or not cap:
+        print("\nquoted story: marker or seed caption not found")
+        return ["quoted story"]
+    start = src.index(STORY_MARKER) + len(STORY_MARKER) - len("Once upon a time")
+    committed = src[start:src.index('""",\n   "a complete story', start)].replace('\\"', '"')
+
+    seed, temp = int(cap.group(1)), float(cap.group(2))
+    model, tok, cfg = tiny_gpt.load(str(CKPT))
+    mx.random.seed(seed)
+    regen = "Once upon a time" + "".join(
+        tiny_gpt.stream(model, tok, cfg, "Once upon a time",
+                        n_new=STORY_MAX_NEW, temperature=temp))
+    ok = committed.strip() == regen.strip()
+    print(f"\nquoted story (caption claims seed {seed}, temp {temp}): "
+          f"{'OK — reproduces from the shipped checkpoint' if ok else 'DRIFT — does NOT reproduce'}")
+    return [] if ok else ["quoted story"]
 
 
 def check_prose_citations():
