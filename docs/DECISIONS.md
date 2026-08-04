@@ -4,6 +4,60 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0015 — Two repos: a public teaching artifact, a private workshop nested inside it
+
+*Decided 2026-06-08; recorded here 2026-08-04. The split was documented in `CLAUDE.md`,
+`AGENTS.md` and the private README but never in this log — which made "why are there two
+repos?" a question you had to answer from three files.*
+
+**Decision:** Split the project across two repositories on the second day of its life.
+Public **`small-model-lab`** holds the teaching artifact: `notebooks/`, the
+`docs/walkthrough/` builder and site, the Track B pipeline, this decision log, `README.md`.
+Private **`small-model-lab-private`** holds the working scaffolding: the live `BACKLOG.md`
+(including business and strategy notes), `HANDOFF.md`, the full agent contract with personal
+framing, and `specs/`. The private repo is cloned into `_private/` **inside** the public
+working tree and gitignored there, so the two live together on disk with independent
+histories.
+
+**Why split at all — audience, not secrecy.** Nothing in the private repo is confidential in
+an interesting way. It is simply *for a different reader*. The public repo is a **product**
+someone lands on from a link and reads end to end; the private one is the **workshop** —
+what to build next, why it might matter commercially, where the last session stopped. That
+material makes the public artifact worse, not better: it dates instantly, it presumes
+context the reader does not have, and it turns a clean teaching resource into somebody's
+project-management residue.
+
+**Why nested rather than a sibling directory.** Co-location without leakage. An agent (or a
+returning human) resuming work reads `_private/HANDOFF.md` and `_private/BACKLOG.md` from
+the same working directory as the code they describe, with no second checkout to know about
+and no relative paths climbing out of the tree. `.gitignore` guarantees the public repo can
+never carry it. The cost is one non-obvious rule: `_private/` is a separate repo and must be
+committed from inside it.
+
+**Why so early.** 2026-06-08 was two days after project init and four days before the first
+public promotion. Separating cleanly is trivial at that point and progressively harder
+afterwards: the same day, the public history had to be **rewritten** to purge internal
+content that had already accumulated across its first commits. Doing it once, before anyone
+was watching, is why it stayed cheap.
+
+**Consequences, including the one that bites.**
+
+- **Absolute local paths are forbidden in the public repo** — they identify a person and a
+  machine. This is enforced socially rather than mechanically, and it has failed at least
+  once since: notebook 02's save cell printed `/Users/…` into a committed output (fixed in
+  the same session that recorded this ADR).
+- **`git status` at the public root does not see the private repo.** Uncommitted private
+  work is invisible from where you normally check, so "is everything committed?" is two
+  questions, not one. This caught us on 2026-08-04: session notes sat untracked in
+  `_private/` while the public tree reported clean.
+- **Decisions live public, status lives private.** This log is deliberately public — the
+  *why* trail is part of the teaching artifact. Anything mutable (what's next, what's
+  blocked) belongs in `_private/BACKLOG.md` instead.
+
+**Alternative not taken:** a single repo with a private branch or a scrubbing pre-commit
+hook. Both put internal content one mistake away from publication, and neither survives a
+`git push --all`. Two histories cannot leak into each other by accident.
+
 ## ADR-0014 — Retrained the Track A checkpoint and regenerated every derived artifact
 
 **Decision:** Reversed ADR-0013's "do not retrain". Retrained Track A on the repaired,
