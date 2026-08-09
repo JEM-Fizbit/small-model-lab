@@ -959,7 +959,13 @@ the shape of the whole field.</p>
   ("callout", "key", "Why two passes", r"""
 <p>The jump from gibberish to coherent stories (same architecture, a few changes) is the
 most instructive thing in the project. It separates <em>knowing the parts</em> from
-<em>knowing what matters</em>. We build the parts first (the from-scratch pass), then turn the dials (the tuned pass).</p>
+<em>knowing what matters</em>.</p>
+<p><b>The second pass was not planned.</b> The original phase plan, committed alongside notebook 01,
+runs straight from the tiny GPT to the clinical-trial pipeline &mdash; there was no second Track A
+notebook in it. Notebook 02 exists because notebook 01&rsquo;s output made the case for it: reading
+the character-level gibberish is what surfaced the tokenizer as the thing holding quality back. It
+arrived in the repo as &ldquo;Phase 1.5&rdquo;, a number that appears nowhere in the plan. We have left
+the sequence as it happened, because the detour is the lesson.</p>
 """),
   ("callout", "aside", "A note on hardware", r"""
 <p>All of this runs locally on an Apple-silicon Mac using <strong>MLX</strong>, Apple's
@@ -1374,6 +1380,10 @@ language&rdquo; and &ldquo;is coherent&rdquo; is the job of the upgrades stage t
  "part_banner": "Stage 3 · The upgrades that move quality (notebook 02)",
  "blocks": [
   ("prose", r"""
+<p>This stage exists because the last one disappointed. Notebook 01 did exactly what it was designed
+to do &mdash; every part visible, nothing hidden &mdash; and then produced text nobody could read.
+That raised the obvious question: what is actually holding it back? The question came from the
+output, not from the plan.</p>
 <p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the five changes that
 actually improve a from-scratch run. Holding the architecture fixed is deliberate: it isolates
 what each upgrade buys. One of these, the tokenizer, does most of the work.</p>

@@ -437,31 +437,49 @@ model-graded where necessary.</p>
  "part": "The result", "part_banner": "Stage 4 · The result",
  "blocks": [
   ("prose", r"""
-<p>Here is the payoff, on the 150 trials the model never saw: the fine-tuned Qwen student against the
-&ldquo;majority-class&rdquo; baseline (always guess the most common value for each field), which is the
-floor any real model must clear:</p>
+<p>Here is the payoff, on the 150 trials the model never saw. Two comparisons matter, and they say
+different things. The <b>majority-class baseline</b> (always guess the most common value for each
+field) is the floor any real model must clear. The <b>untuned Qwen</b> column is the more honest
+question: what did the <em>same open model</em> score on the <em>same prompt</em> before it was
+fine-tuned at all?</p>
 """),
   ("table", r"""
 <table>
-<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Qwen student</th><th>Lift</th></tr></thead>
+<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Qwen student</th><th>Fine-tuning gain</th></tr></thead>
 <tbody>
-<tr><td><b>overall structured</b></td><td>0.368</td><td><b>0.922</b></td><td><b>+0.554</b></td></tr>
-<tr><td>valid JSON</td><td>—</td><td>1.000</td><td>—</td></tr>
-<tr><td>phase</td><td>0.447</td><td>1.000</td><td>+0.553</td></tr>
-<tr><td>modality</td><td>0.413</td><td>0.773</td><td>+0.360</td></tr>
-<tr><td>primary_endpoint_type</td><td>0.280</td><td>0.900</td><td>+0.620</td></tr>
-<tr><td>sponsor_type</td><td>0.673</td><td>0.980</td><td>+0.307</td></tr>
-<tr><td>est_readout</td><td>0.033</td><td>0.993</td><td>+0.960</td></tr>
-<tr><td>risk_flags (set-F1)</td><td>0.364</td><td>0.884</td><td>+0.520</td></tr>
+<tr><td><b>overall structured</b></td><td>0.368</td><td><b>0.711</b></td><td><b>0.922</b></td><td><b>+0.211</b></td></tr>
+<tr><td>valid JSON</td><td>—</td><td>—</td><td>1.000</td><td>—</td></tr>
+<tr><td>phase</td><td>0.447</td><td>0.960</td><td>1.000</td><td>+0.040</td></tr>
+<tr><td>modality</td><td>0.413</td><td>0.593</td><td>0.773</td><td>+0.180</td></tr>
+<tr><td>primary_endpoint_type</td><td>0.280</td><td>0.880</td><td>0.900</td><td>+0.020</td></tr>
+<tr><td>sponsor_type</td><td>0.673</td><td>0.287</td><td>0.980</td><td>+0.693</td></tr>
+<tr><td>est_readout</td><td>0.033</td><td>0.833</td><td>0.993</td><td>+0.160</td></tr>
+<tr><td>risk_flags (set-F1)</td><td>0.364</td><td>0.710</td><td>0.884</td><td>+0.174</td></tr>
 </tbody></table>
 """),
+  ("callout", "aside", "Reading the untuned column honestly", r"""
+<p>Those numbers come from a controlled A/B (<code>eval/SCHEMA_VS_FREEFORM_RESULTS.md</code>) run on the
+<em>same</em> frozen 150-trial gold set with the <em>same</em> scorer, so the comparison is fair &mdash;
+but not identical in every step: there, the model&rsquo;s output was mapped to the scored fields by a
+neutral Claude judge, whereas the student&rsquo;s column is scored straight from its own JSON.</p>
+<p>One more number worth knowing before you quote the gain. Asked for a <em>free-form</em> summary rather
+than schema&rsquo;d JSON, the same untuned model scores <b>0.755</b> overall &mdash; slightly
+<em>higher</em> than the 0.711 it manages on the production prompt, and close enough at n=150 to be the
+same result. Fine-tuning&rsquo;s gain is real, but it is measured against a base model that was already
+capable when asked in the right way.</p>
+"""),
   ("callout", "key", "What this number means", r"""
-<p><strong>0.368 → 0.922.</strong> The fine-tuned 4B model (trained for under an hour on a laptop, run
-for free) nearly reproduces the expensive Claude teacher, and produces valid JSON <em>every single
-time</em>. The biggest lifts land where the task is most learnable: <code>est_readout</code> (a
-deterministic date → &ldquo;H1/H2 YYYY&rdquo; rule, 0.03 → 0.99) and <code>phase</code> (perfect). This
-is the win Part 1 was building toward: the same training loop (tokens, loss, gradient descent) now
-doing a real job, well.</p>
+<p><strong>0.71 → 0.92, against a 0.37 floor.</strong> The fine-tuned 4B model (trained for under an
+hour on a laptop, run for free) nearly reproduces the expensive Claude teacher, and produces valid
+JSON <em>every single time</em>. Quoting the lift from the floor (+0.554) flatters it; the honest
+figure is what fine-tuning added to a model that was already fairly good, <b>+0.211</b>. This is the
+win Part 1 was building toward: the same training loop (tokens, loss, gradient descent) now doing a
+real job, well.</p>
+<p>The most instructive row is <code>sponsor_type</code>, where the untuned model scores <b>0.287</b>
+&mdash; <em>worse than guessing</em> (0.673). It isn&rsquo;t ignorant of the answer; it writes
+<code>"INDUSTRY"</code> when the schema wants <code>industry</code>, and a value outside the controlled
+vocabulary scores zero. Much of what fine-tuning buys here is not new knowledge but learning to answer
+in the required form.</p>
 <p>One field still lags: <code>modality</code>, at 0.77. Can we push it higher by running an improvement
 <em>loop</em>? We try, in <a href="#ceiling">§8</a>.</p>
 """),
