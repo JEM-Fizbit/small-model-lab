@@ -29,6 +29,11 @@ track-b-trialscout/data/gold/
 # ...but keep small sample/schema fixtures that ARE the contract:
 !track-b-trialscout/schema/*.jsonl
 !**/sample_*.jsonl
+# ...and the frozen v1 eval record. NOT regenerable (the teacher moved on and the
+# split was never reproducible), and it is what makes the published v1 figures
+# checkable after the schema changed. See eval/v1-frozen/README.md + ADR-0017.
+!track-b-trialscout/eval/v1-frozen/*.jsonl
+!track-b-trialscout/eval/v1-frozen/schema/*.jsonl
 
 # HuggingFace / datasets cache
 .cache/

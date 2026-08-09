@@ -1,0 +1,56 @@
+{
+  "name": "emit_readout",
+  "description": "Emit a structured, investor-relevant readout for one oncology clinical trial.",
+  "type": "object",
+  "properties": {
+    "nct_id": { "type": "string", "description": "The trial's NCT identifier, copied verbatim." },
+    "phase": {
+      "type": "string",
+      "enum": ["Early Phase 1", "Phase 1", "Phase 1/2", "Phase 2", "Phase 2/3", "Phase 3", "Phase 4"],
+      "description": "Normalized trial phase."
+    },
+    "indication": {
+      "type": "string",
+      "description": "Concise tumor type + biomarker/line if stated, e.g. 'EGFR+ NSCLC, 2L' or 'higher-risk MDS, 1L'."
+    },
+    "modality": {
+      "type": "string",
+      "enum": ["small molecule", "monoclonal antibody", "antibody-drug conjugate", "bispecific",
+               "cell therapy", "gene therapy", "cancer vaccine", "radiotherapy", "oncolytic virus",
+               "combination", "other"],
+      "description": "Primary therapeutic modality of the investigational agent(s). Use 'combination' only when two distinct modalities are co-equal."
+    },
+    "primary_endpoint_type": {
+      "type": "string",
+      "enum": ["overall survival (OS)", "progression-free survival (PFS)", "objective response rate (ORR)",
+               "disease-free survival (DFS)", "pathologic complete response (pCR)",
+               "safety/tolerability", "pharmacokinetics", "other"],
+      "description": "Category of the primary outcome measure(s)."
+    },
+    "sponsor_type": {
+      "type": "string",
+      "enum": ["large pharma", "biotech", "academic/cooperative group", "government", "other"],
+      "description": "Classify the lead sponsor. 'large pharma' = top-20 global pharma; 'biotech' = smaller commercial sponsor; map sponsor_class OTHER/NIH/NETWORK to academic/government appropriately."
+    },
+    "est_readout": {
+      "type": "string",
+      "description": "Estimated primary readout window derived from primary_completion_date, as 'H1 YYYY' / 'H2 YYYY', or 'unknown' if absent."
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["single-arm", "no comparator", "small enrollment (<50)", "surrogate endpoint",
+                 "early-phase", "open-label", "non-randomized", "PK/dose-finding only",
+                 "status: terminated/withdrawn/suspended", "long timeline (>4y)", "biomarker-restricted"]
+      },
+      "description": "Investor-relevant risk flags supported by the record. Empty array if none apply."
+    },
+    "investor_note": {
+      "type": "string",
+      "description": "<=2 sentences: the catalyst-relevant takeaway — what this trial would prove, for whom, and what to watch. No hype, no fabricated facts."
+    }
+  },
+  "required": ["nct_id", "phase", "indication", "modality", "primary_endpoint_type",
+               "sponsor_type", "est_readout", "risk_flags", "investor_note"]
+}
