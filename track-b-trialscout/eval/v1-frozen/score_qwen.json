@@ -1,0 +1,27 @@
+{
+  "phase": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+  },
+  "modality": {
+    "accuracy": 0.773,
+    "macro_f1": 0.57
+  },
+  "primary_endpoint_type": {
+    "accuracy": 0.9,
+    "macro_f1": 0.792
+  },
+  "sponsor_type": {
+    "accuracy": 0.98,
+    "macro_f1": 0.969
+  },
+  "est_readout": {
+    "accuracy": 0.993
+  },
+  "risk_flags": {
+    "set_f1": 0.884
+  },
+  "_overall_structured": 0.922,
+  "_n": 150,
+  "_valid_json": 1.0
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "v1",
+  "frozen_on": "2026-08-10",
+  "reason": "Superseded by the v2 schema (list-valued `modalities`). These files are the frozen record behind the published v1 figures, which are cited on the public walk-through and in external writing. They are NOT regenerable from scripts -- the teacher run is stochastic in ordering and the model behind it drifts -- which is why they are committed against the repo's usual no-data rule.",
+
+  "measurement": {
+    "test_set": "150 held-out oncology trials (gold_test.jsonl)",
+    "overall_structured": 0.922,
+    "overall_structured_snapped": 0.925,
+    "note": "preds_qwen.jsonl is the raw model output, pre-normalizer. The published headline 0.922 is the raw score; 0.925 is the same predictions after schema/normalize.py snap_to_enum, which shipped later (ADR-0011). verify_v1.py checks both."
+  },
+
+  "model": {
+    "base": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+    "adapter": "track-b-trialscout/train/adapters/qwen (gitignored, local only)",
+    "adapter_file": "adapters.safetensors",
+    "adapter_sha256": "95e8dbd5a3f2dde9931a57e05b784c620ba3577d2eb81963eeebca90645ee5c7",
+    "adapter_size_bytes": 29384266
+  },
+
+  "training": {
+    "fine_tune_type": "lora",
+    "num_layers": 16,
+    "lora_rank": 8,
+    "lora_scale": 20.0,
+    "lora_dropout": 0.0,
+    "iters": 700,
+    "batch_size": 4,
+    "learning_rate": 0.0001,
+    "max_seq_length": 1536,
+    "optimizer": "adam",
+    "mask_prompt": true,
+    "grad_checkpoint": true,
+    "seed": 0,
+    "train_rows": 1200,
+    "augment_rows": 0,
+    "note": "Trained BEFORE the Phase-4 rare-modality augment existed. adapters/qwen_v2 is the +300-row variant (ADR-0011) and is a different artifact."
+  },
+
+  "gold": {
+    "teacher": "claude-sonnet-4-6",
+    "method": "forced tool-use, temperature 0, prompt-cached prefix",
+    "rows_labeled": 1500,
+    "split": "80/10/10, random.Random(42) over all.jsonl write order",
+    "split_caveat": "NOT reproducible: all.jsonl is written in ThreadPoolExecutor completion order, so a fresh teacher run yields a different split. This is why gold_test.jsonl is committed here rather than described.",
+    "spend_usd": 13.11,
+    "labeled_on": "2026-06-06"
+  },
+
+  "provenance": {
+    "scores_committed_at": "07ade7f99e90d968b02cbc4d3fd0cdf114de9d1f",
+    "scores_committed_on": "2026-06-07",
+    "frozen_at": "ab5ba0d3b5aade7e567ad33290915760bcc29f21"
+  }
+}
