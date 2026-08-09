@@ -4,6 +4,57 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0016 — The `modality` enum was mis-specified: most of its residual error is ours, not the model's
+
+*Recorded 2026-08-08, while fact-checking an essay against this repo. Refines ADR-0011, which
+attributed the `combination` boundary to "partly irreducible teacher-label noise" — accurate as far as
+it went, but it located the fault in the labelling rather than in the schema that forced it.*
+
+**Decision:** Record that `modality` as specified is not fit for reuse, and that any production use of
+this readout schema should make the field list-valued before anything else is tuned. The shipped
+artifacts are **not** changed: gold stays frozen, `adapters/qwen` remains the reference, and the
+published numbers stand.
+
+**What's wrong.** The enum mixes two different kinds of thing: ten genuine modalities (`small molecule`,
+`monoclonal antibody`, `antibody-drug conjugate`, …) plus `combination`, which is not a modality but a
+statement about *how many* modalities are present. The rule patching that seam — *"use `combination`
+only when two distinct modalities are co-equal"* — asks for a judgement that is not a property of the
+drug. Most oncology trials test more than one agent, so the question is live on a large share of the
+corpus and has no stable answer.
+
+**The evidence.** On the frozen 150-trial test set, `adapters/qwen` makes 34 modality errors. **Eleven of
+them — a third — are that single boundary, and they run in both directions**: 6 × gold `combination` →
+predicted `small molecule`, 5 × the reverse. Two worked cases show why neither side is obviously wrong:
+
+- **NCT00496301** — gemcitabine + capecitabine + sorafenib. Three drugs, but all one modality, so gold
+  says `small molecule`; the model said `combination`, applying the everyday sense of the word.
+- **NCT02406781** — pembrolizumab (antibody) + cyclophosphamide (small molecule). Two modalities, so gold
+  says `combination`; the model said `small molecule`.
+
+**NCT05063604** (citalopram vs psychotherapy) appears to be a *teacher* error in the other direction:
+gold `combination`, where psychotherapy is not a drug modality at all. The student was marked wrong for
+being right.
+
+**Why this matters beyond this field.** A share of what presented as model error was specification error.
+The teacher wasn't careless; it was over-constrained by a schema that admitted no correct answer, and the
+student then reproduced the inconsistency faithfully — which is exactly what distillation is supposed to
+do. The generalisable check: **when a model contradicts itself at a category boundary, test whether your
+own taxonomy drew that boundary before concluding the model is weak.**
+
+**Separately — and don't conflate the two — the rest of `modality`'s weakness is rarity, not ambiguity.**
+Macro-F1 (0.57) sits far below accuracy (0.773) because of the long tail: ADC n=5 recall 0.40, monoclonal
+antibody n=10 recall 0.50, gene therapy n=1 recall 0.00, while cell therapy (6/6), cancer vaccine (5/5)
+and oncolytic virus (1/1) are perfect. That half **is** fixable with data, and ADR-0011's Phase-4 run
+showed it — ADC 0.40→0.60 — even though the overall score was a wash.
+
+**The fix, when it's wanted:** `modalities: ["small molecule", "monoclonal antibody"]` as a list, dropping
+`combination` entirely; add `primary_agent` or an agent count separately if the readout needs it. **Do not
+retro-label the existing gold** — that moves goalposts against a frozen test set. A schema change means
+regenerating gold and re-running the eval end to end, which is why this is recorded as a decision rather
+than done in passing.
+
+---
+
 ## ADR-0015 — Two repos: a public teaching artifact, a private workshop nested inside it
 
 *Decided 2026-06-08; recorded here 2026-08-04. The split was documented in `CLAUDE.md`,
