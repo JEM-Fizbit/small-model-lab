@@ -29,7 +29,8 @@ ARMS = [
     ("base_strict",       "Untuned, no vocab",    "score_base_strict.json"),
     ("base_vocab",        "Untuned + enum list",  "score_base_vocab.json"),
     ("frontier_zeroshot", "Frontier zero-shot",   "score_frontier_zeroshot.json"),
-    ("qwen_v2s",          "Fine-tuned student",   "score_qwen_v2s.json"),
+    ("qwen_v2s",          "Student (no aug)",     "score_qwen_v2s.json"),
+    ("qwen_v2s_aug",      "Student (PRODUCTION)", "score_qwen_v2s_aug.json"),
 ]
 
 ROWS = [
@@ -80,7 +81,7 @@ def main():
 
     # the diagnostic that answers "did the ambiguity move?"
     diag = ""
-    stu = scores.get("qwen_v2s", {}).get("modalities", {}).get("_error_shape")
+    stu = scores.get("qwen_v2s_aug", scores.get("qwen_v2s", {})).get("modalities", {}).get("_error_shape")
     if diag is not None and stu:
         counts = stu["counts"]
         total_err = sum(v for k, v in counts.items() if k != "exact")
@@ -96,7 +97,7 @@ def main():
                   f"`combination` argument or merely *relocated* it. v1's benchmark: 20 of 34 "
                   f"modality errors involved `combination` on one side or the other.")
 
-    per_label = scores.get("qwen_v2s", {}).get("modalities", {}).get("_per_label")
+    per_label = scores.get("qwen_v2s_aug", scores.get("qwen_v2s", {})).get("modalities", {}).get("_per_label")
     front_label = scores.get("frontier_zeroshot", {}).get("modalities", {}).get("_per_label", {})
     tail = ""
     if per_label:
@@ -140,6 +141,13 @@ the strict column, and the student is not given that help.
 scoring `modality` by hard accuracy. This is seven components scoring `modalities` by
 set-F1, which awards partial credit where v1 awarded none. The two numbers share a scale
 and measure different things. The v1 figures remain reproducible in `eval/v1-frozen/`.
+
+**Why PRODUCTION looks worse on some modality rows.** `qwen_v2s_aug` scores lower here on
+modalities macro-F1 (0.569 vs 0.653) yet is the promoted adapter. Frozen-set macro-F1 weights
+every label equally across classes with n=1-5, so it is mostly sampling noise. On the
+properly-powered diagnostic set the ordering reverses (0.689 vs 0.663) and the augmented adapter
+wins every adequately-sampled rare class. See `PHASE6_DIAGNOSTIC.md` and ADR-0020. The two
+columns are tied on the headline (0.939), which is the number this page is for.
 
 **The frontier column is a scaffold ablation, not an independent referee.** Gold was
 produced by the same model *with* decision rules and worked examples; this arm has the
