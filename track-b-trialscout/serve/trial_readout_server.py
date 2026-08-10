@@ -48,7 +48,7 @@ from fingerprint import check as check_schema  # noqa: E402  refuse a v1 adapter
 
 # --- config (no magic numbers: every knob named + commented) ---
 BASE_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"  # ADR-0002/0009: Qwen won the A/B
-ADAPTER = ROOT / "train" / "adapters" / "qwen_v2s"       # the 28 MB LoRA we trained (gitignored)
+ADAPTER = ROOT / "train" / "adapters" / "qwen_v2s_aug"   # the 28 MB LoRA we trained (gitignored)
 # NOTE: must track the schema. Pointing this at a v1 adapter while schema/ is v2 produces
 # output that still VALIDATES (the normalizer snaps unknown values to "other") but is wrong.
 # Caught by --selftest on 2026-08-10; that silent-validity failure mode is why the selftest exists.

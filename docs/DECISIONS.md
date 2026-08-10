@@ -174,10 +174,105 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0020 — Built the rare-class diagnostic set; it reversed ADR-0019 and promoted the augmented adapter
+
+*Decided 2026-08-10. ADR-0019 concluded rare-class augmentation failed. This entry shows that
+conclusion was an artifact of the measurement, and that ADR-0011 reached the same false conclusion
+for the same reason five months earlier.*
+
+**Decision:** Build a **held-out rare-class diagnostic set** (402 trials, `data/gold/rare_diagnostic.jsonl`,
+Sonnet 5, schema v2, $3.33) and score against it as a named diagnostic, separate from the frozen
+150-trial headline set. On the evidence it produced, **promote `adapters/qwen_v2s_aug`** to the
+production reference, reversing ADR-0019.
+
+### Why an instrument had to come before more training
+
+The frozen test set is a *representative* sample, which is right for a headline score and useless
+for a long tail. It contains **5 ADCs, 3 oncolytic viruses and 2 bispecifics**, so a single trial is
+worth 20, 33 and 50 recall points. Any experiment targeting those classes returns a number dominated
+by which handful of trials happened to land in the split. ADR-0011 and ADR-0019 both ran that
+experiment and both read "no effect" off an instrument that could not have shown one.
+
+The diagnostic set targets 45 trials per rare class via CT.gov term searches, excluding every NCT in
+the raw pull, all gold splits, the Phase-4 augment and the v1 archive — **verified 0/402 overlap**.
+It is never trained on.
+
+### The result: the effect was there the whole time
+
+Same two adapters, same day, two instruments:
+
+| modality | frozen n | frozen delta | diagnostic n | diagnostic delta |
+|---|---|---|---|---|
+| antibody-drug conjugate | 5 | **+0.00** | 44 | **+0.14** |
+| oncolytic virus | 3 | **+0.00** | 42 | **+0.12** |
+| bispecific/multispecific | 2 | **+0.00** | 45 | **+0.07** |
+| hormonal/endocrine | 8 | +0.12 | 23 | +0.22 |
+
+Three classes reported as *exactly unchanged* by the frozen set show real gains once there is enough
+support to see them. Aggregate on the diagnostic: overall 0.938 → 0.943, modalities set-F1
+0.794 → 0.811, macro-F1 0.663 → 0.689.
+
+**The frozen set was also reporting badly wrong levels, not just wrong deltas:**
+
+| modality | frozen said | actual at n≈44 |
+|---|---|---|
+| antibody-drug conjugate | 0.40 | **0.77** |
+| oncolytic virus | 0.33 | **0.88** |
+| bispecific | 0.00 | **0.73** |
+
+Those were 2/5, 1/3 and 0/2 samples. **This retracts a claim made in ADR-0017's outcome** — that
+"distillation transferred the conventions but not the pharmacology", which rested on ADC 0.40 against
+the frontier's 1.00. At adequate sample size the student reaches 0.77 and the gap is far smaller.
+The claim was stated with more confidence than five trials could support. The frontier arm has not
+been re-run on the diagnostic, so the residual gap is **unquantified**, not merely smaller.
+
+### Why the two instruments disagreed about macro-F1
+
+On the frozen set the augmented adapter looked *worse* (macro-F1 0.653 → 0.569); on the diagnostic it
+looks *better* (0.663 → 0.689). Not a contradiction: frozen macro-F1 weights every label equally
+across classes with n=1–5, so it is mostly sampling noise. The diagnostic's classes carry n=23–100.
+Where the two disagree, the one with support wins.
+
+### Promotion
+
+`qwen_v2s_aug` is better on every rare class with adequate support and **tied on the frozen headline
+(0.939 both)** — so no published site number changes. The MCP server now points at it. Its schema
+fingerprint is stamped and verified (`25b940d46e148024`).
+
+### Limitations, recorded rather than buried
+
+- **The diagnostic shares its sampling method with the augment training data.** Both come from the
+  same CT.gov term searches; the NCT ids are disjoint and verified, but the *distribution* is not
+  independent. This measures "rare-modality trials of the kind these searches surface", which mildly
+  favours the augmented model. The gains are real; on a natural sample they would likely be smaller.
+- **Gene therapy remains unmeasurable** (n=1). The searches returned trials the teacher classified as
+  cell therapy or oncolytic virus — arguably correct, since oncology gene therapy largely *is* those.
+- **`other protein or peptide therapeutic` is confirmed a bad category, not a rare one.** The frozen
+  set's apparent +0.30 was noise on n=10; at n=43 the delta is **+0.00**, stuck at 0.56 with 127
+  training rows. It cannot be fixed with data and needs splitting in a future schema version.
+
+### The generalisable lesson
+
+**Before running an experiment to move a metric, check that the metric can move.** Compute the
+smallest detectable effect from the per-class sample size and compare it to the effect you expect. If
+one trial is worth 20 points and you are hoping for 10, the experiment is already decided. A frozen
+representative test set is the correct instrument for a headline number and the wrong one for a long
+tail, and its failure mode — reporting a confident zero — is indistinguishable from the intervention
+genuinely not working. This project made that mistake twice, five months apart, and both times
+reasoned at length about *why* the intervention failed rather than asking whether it could have been
+seen to succeed.
+
+---
+
 ## ADR-0019 — Rare-modality augmentation failed again, and this time we know why: the test set can't see it
 
 *Decided 2026-08-10, immediately after ADR-0017. Second attempt at the same experiment ADR-0011
 ran under schema v1, with the confound removed and a frontier control added.*
+
+> **SUPERSEDED by ADR-0020 (same day).** `qwen_v2s_aug` WAS promoted. The conclusion below is
+> wrong, and the reason it is wrong is the point: the frozen test set could not resolve the effect.
+> On a properly-powered diagnostic set the augmentation gains ADC +0.14, oncolytic +0.12,
+> bispecific +0.07. Left in place unedited because the reasoning failure is the lesson.
 
 **Decision:** Do **not** promote `adapters/qwen_v2s_aug`. The production reference stays
 `adapters/qwen_v2s`. The relabelled 299-trial augment is kept (`data/gold/augment_rare.jsonl`,
