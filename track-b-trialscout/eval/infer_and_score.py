@@ -47,7 +47,8 @@ def extract_json(text: str) -> dict | None:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
-    ap.add_argument("--adapter", required=True)
+    ap.add_argument("--adapter", default=None,
+                    help="LoRA adapter path. OMIT to score the UNTUNED base model through the\n                         identical path -- same prompt, same JSON parse, same normalizer, same\n                         scorer. That is the apples-to-apples fine-tuning comparison.")
     ap.add_argument("--label", required=True)
     ap.add_argument("--max-tokens", type=int, default=400)
     ap.add_argument("--limit", type=int, default=0, help="score only the first N test trials (0 = all)")
@@ -55,8 +56,12 @@ def main():
     test_set = GOLD_TEST[:args.limit] if args.limit else GOLD_TEST
 
     from mlx_lm import load, generate
-    print(f"[{args.label}] loading {args.model} + adapter {args.adapter} ...", flush=True)
-    model, tok = load(args.model, adapter_path=args.adapter)
+    if args.adapter:
+        print(f"[{args.label}] loading {args.model} + adapter {args.adapter} ...", flush=True)
+        model, tok = load(args.model, adapter_path=args.adapter)
+    else:
+        print(f"[{args.label}] loading {args.model} (UNTUNED base, no adapter) ...", flush=True)
+        model, tok = load(args.model)
 
     preds, parsed_ok = {}, 0
     for i, g in enumerate(test_set, 1):

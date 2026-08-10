@@ -1,12 +1,3 @@
-# Structured-field baseline (majority-class) on the gold test set
-
-Overall structured score: **0.476** (n=150)
-
-Schema v2 (ADR-0017): 7 scored components. The v1 floor was **0.368** over 6
-components with a single-valued `modality` — a different measurement, not a
-regression or an improvement.
-
-```json
 {
   "phase": {
     "accuracy": 0.447,
@@ -107,6 +98,3 @@ regression or an improvement.
   "_n": 150,
   "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy."
 }
-```
-
-The fine-tuned student must beat this floor.

@@ -4,6 +4,206 @@ Locked design decisions with rationale. Newest at top. This file is also part of
 
 ---
 
+## ADR-0017 — Schema v2: `modalities` is a list, `intervention_class` is a field, and the v1 measurement is committed
+
+*Decided 2026-08-10. Implements the fix ADR-0016 recorded but deliberately did not make, and goes
+further than it proposed: designing the replacement surfaced two defects worse than the one we set
+out to fix.*
+
+**Decision:** Replace the single-valued `modality` enum with a list-valued **`modalities`**, drawn
+from a 14-value taxonomy anchored on published industry conventions, and add a scalar
+**`intervention_class`**. Drop `combination` entirely. Move external-beam radiotherapy out of the
+modality vocabulary and split `radiopharmaceutical` in as a real drug modality. Regenerate gold
+under the new schema rather than relabelling the old (ADR-0011's rule: relabelling moves goalposts).
+Commit the v1 measurement as a frozen, runnable record.
+
+### The two defects we didn't know about
+
+ADR-0016 diagnosed `combination`. Checking the corpus against ClinicalTrials.gov intervention types
+while designing the replacement found worse:
+
+- **117 of 1,500 trials (7.8%) have no drug intervention at all** — no `DRUG`, `BIOLOGICAL`,
+  `GENETIC` or `COMBINATION_PRODUCT`. They are surgical-technique trials, radiotherapy-fractionation
+  trials, devices, behavioural and supportive-care studies. Real examples the teacher was obliged to
+  assign a *drug modality* to: *laparoscopic D2 radical gastrectomy*, *pancreaticojejunal
+  anastomosis*, *hyperbaric oxygen*, *chlorhexidine skin cleanser*, *cutting scalp hair*. The
+  question has no correct answer for these, so the teacher invented one. 63 landed in `other`, 45 in
+  `radiotherapy`.
+- **`radiotherapy` conflated two unrelated things.** 65% of that bucket is external-beam technique —
+  not a drug, no asset, no P&L — mixed with genuine radiopharmaceuticals (*Ultratrace Iobenguane
+  I-131*). To an analyst those could not be further apart.
+
+A third issue is utility rather than correctness: 61 of the 599 `small molecule` rows were
+cytotoxic-chemotherapy-only regimens. Chemically correct, commercially useless — nobody in the
+industry files carboplatin and a patented targeted inhibitor under one heading.
+
+**So `combination` was the visible symptom of a broader fault: the field collapsed three orthogonal
+axes into one.** What kind of molecule (modality), how many agents (combination), and what kind of
+intervention (drug vs procedure vs device vs radiation) are separate questions everywhere in the
+industry, and were one question here.
+
+### Why this taxonomy, and not one we invented
+
+The v1 enum was designed from first principles, which is how it acquired a value that isn't a
+modality. The replacement is anchored on how the industry actually classifies:
+
+- the **small-molecule / biologic** split that organises regulatory pathways (CDER NME vs BLA) and
+  the [BIO/Citeline/QLS success-rate work](https://www.bio.org/clinical-development-success-rates-and-contributing-factors-2011-2020);
+- **biologic subtypes** as formalised by [WHO INN nomenclature](https://www.who.int/publications/m/item/inn-22-542) —
+  `-tug` monospecific, `-bart` engineered constant regions, `-ment` fragments, `-mig`
+  bispecific/multispecific;
+- the **ATMP classes** [EMA defines in law](https://www.ema.europa.eu/en/human-regulatory-overview/advanced-therapy-medicinal-products-overview) —
+  gene therapy, somatic cell therapy, tissue-engineered, combined;
+- the emerging buckets analysts track separately — ADCs, multispecifics, cell and gene therapy at
+  [35% of oncology trials per IQVIA](https://www.iqvia.com/insights/the-iqvia-institute/reports-and-publications/reports/global-trends-in-r-and-d-2025),
+  plus radioligand therapy, which [*Nature Reviews Drug Discovery* treats as its own modality](https://www.nature.com/articles/d41573-025-00096-w)
+  precisely because it is a systemic tumour-seeking molecule, the opposite of irradiating a field
+  from outside the body.
+
+Two values were added on evidence from this corpus rather than from the literature:
+`hormonal/endocrine therapy` (41 trials — more common here than `bispecific`, which already had a
+value) and `oligonucleotide/RNA therapeutic` (only 4 trials, kept because it is a top-tier modality
+industry-wide and the vocabulary should outlive this dataset). Protein degraders (2 trials) were
+*not* given a value; they are small molecules and fold into `targeted small molecule`.
+
+**Rule-reducibility was a design constraint, not an afterthought.** The classification keys on three
+signals present in the record: CT.gov's controlled `intervention.type` vocabulary, INN stems, and
+explicit class words. Testing the stems against the corpus found they match **21% of unique
+intervention names** (`-mab` 412, `-tinib` 201, `-zomib` 31, ADC stems 22) — decisive where present,
+absent four times in five. So they are written into the teacher rule as tiebreakers, not as the
+classifier.
+
+### Why not `agent_count` or `primary_agent`
+
+ADR-0016 floated both. Neither survives contact with the problem it is meant to solve.
+**`agent_count`** recreates the original ambiguity under a new name: counting agents means deciding
+which are investigational and which are backbone, and whether a placebo or an imaging tracer counts
+— the same judgement, relocated, and now scored as if it were a fact. **`primary_agent`** would be
+free text, so it needs a judge to score, and it duplicates information the caller already has: the
+agent names are in the record they passed in.
+
+`intervention_class` is the opposite kind of field, which is why it earned a place. It maps from a
+controlled vocabulary already in the input, it answers the first question an analyst actually asks
+("is there an asset here?"), and it is what lets `modalities: []` mean *no drug* rather than
+*the model didn't answer*.
+
+### Design details that are load-bearing
+
+- **The list is explicitly unordered and alphabetically sorted**, in gold, in the normalizer and at
+  inference. The tempting alternative — lead agent first — smuggles the "which one is primary?"
+  judgement back in as list order, where set-F1 would not score it. An unscored assertion is worse
+  than no assertion.
+- **Backbone and comparator agents are included.** A trial of an ADC plus carboplatin returns both.
+  This is the clause that removes the judgement: no one has to decide what the "real" agent is.
+- **Scoring reuses `risk_flags`' set-F1.** No new machinery. The consequence is stated wherever the
+  number appears: set-F1 gives partial credit where v1's accuracy gave none, so a v2 overall and a
+  v1 overall are **different measurements that share a scale**, not an improvement.
+- **A missing `modalities` key scores zero; an explicit `[]` is a valid answer.** Both look like an
+  empty list to `.get(field, [])`, and conflating them would hand free marks to a broken output on
+  exactly the 8% of trials that have no drug.
+
+### The latent trap this also fixed
+
+The 80/10/10 split was produced by `random.Random(42).shuffle()` over rows read back from
+`all.jsonl` — a file written in `ThreadPoolExecutor` **completion order**. It looks deterministic and
+is not: every fresh teacher run silently reshuffles the corpus into a different "frozen" test set.
+Nobody would have noticed; the docs would still have said 150 held-out trials. The assignment is now
+committed as `data/splits.json` and read, never re-derived.
+
+### Committing the v1 record — a deliberate exception to the no-data rule
+
+`.gitignore` excludes datasets because they are *regenerable from scripts*. The v1 gold is not, for
+two independent reasons: the split was never reproducible (above), and the teacher moves (ADR-0018).
+Meanwhile the v1 figures are cited on the public walk-through and in outside writing, and were
+**checkable by nobody** — gold and adapters are gitignored, so a reader could not recompute 0.922 at
+all.
+
+`eval/v1-frozen/` therefore commits 316 KB: the 150-trial test gold, the raw predictions, the v1
+harness, schema and normalizer, and `verify_v1.py`, which re-derives the entire published table and
+exits non-zero on drift. No model, adapter, API key or network needed. The adapter itself stays
+local, with its SHA-256 in `MANIFEST.json`. Recomputing the scores from the predictions needs only
+what is committed; regenerating the predictions needs the adapter.
+
+This makes the published numbers *more* verifiable than before the change, which is the standard a
+schema migration on a teaching artifact should meet.
+
+---
+
+## ADR-0018 — Teacher upgraded to Sonnet 5; determinism became something we measure, not request
+
+*Decided 2026-08-10, during the schema-v2 regeneration (ADR-0017).*
+
+**Decision:** The teacher is now **`claude-sonnet-5`**, replacing `claude-sonnet-4-6`. The request
+shape is per-model and the cost cap reads per-model pricing. Label stability is no longer asserted
+from `temperature=0` — it is **measured** by relabelling the same trials twice and reporting the
+agreement.
+
+**Why change a teacher mid-project.** ADR-0007 did not choose *Sonnet 4.6*; it chose *a strong
+teacher*, on the ADR-0003 principle that teacher quality caps student quality. In June 2026 that
+resolved to Sonnet 4.6 because it was the best available. Applying the same rule in August 2026
+gives Sonnet 5. Keeping 4.6 would have been fidelity to an accident of timing rather than to the
+decision — and on a project whose central claim is *a small fine-tuned model approaching frontier
+performance*, a teacher one generation behind quietly weakens the claim every month it ages. Gold
+was being regenerated anyway for the schema change, which made this the one cheap moment: doing it
+later means paying for a second full teacher run.
+
+**What it cost in code.** The current model family removed the sampling parameters — `temperature=0`
+now returns HTTP 400 — and adaptive thinking shares the `max_tokens` budget with the response, so the
+old 700-token ceiling could truncate a readout before the tool call was emitted. Request shape moved
+into one `request_kwargs()` function, and `PRICING` became per-model. That second part matters more
+than it looks: the cap aborts a paid run when the *running estimate* reaches it, so an over-stated
+price halts a job partway through. Accurate beats conservative for a guardrail that can misfire.
+
+**The determinism question, answered with data instead of a parameter.** ADR-0007 justified
+`temperature=0` as "makes labels consistent". With no such knob available, the honest move is to
+measure. Two runs over the same 40 boundary-stressed trials:
+
+| field | Sonnet 4.6, temp 0 | Sonnet 5, no temp knob |
+|---|---|---|
+| `intervention_class` | 40/40 | 40/40 |
+| `modalities` | 38/40 exact · set-F1 0.988 | **39/40 exact** · set-F1 0.975 |
+| `est_readout` (vs the stated rule) | 36/36 | 36/36 |
+| phase / endpoint / sponsor | 40/40 | 40/40 |
+
+Losing `temperature` cost nothing measurable. The knob was never what produced the stability.
+
+**The finding worth keeping: a better model followed the rule less.** Sonnet 5 initially mapped
+`2014-05-21` to `"H2 2014"`. May is nowhere near the June boundary — it was overriding the explicit
+*months 01–06 → H1* instruction with its own domain reasoning, adding a realistic lag between trial
+completion and results being reported. Raising effort from `low` to `medium` made it do this
+**consistently** rather than intermittently: more thinking produced a more confidently
+non-compliant answer. The fix was one sentence ("a MECHANICAL mapping, not a forecast; do not add a
+reporting lag"), verified at 36/36 across two runs.
+
+The generalisable version, and it is the same lesson as ADR-0016 from the other direction: **when a
+capable model disagrees with your spec, check whether it is wrong or whether your spec is
+under-written.** Here the model's reading was arguably the more useful one; it was wrong only
+because our scorer defines correctness as the mechanical mapping. An instruction that survives a
+weaker model can fail against a stronger one, because a stronger model is likelier to notice that
+your rule is a simplification and to improve on it.
+
+**A second finding, unrelated but surfaced by the same probe: `risk_flags` is the noisiest field in
+the schema, and nothing in the repo said so.** Teacher self-consistency is only ~28/40 exact
+(set-F1 ~0.93) for *both* teachers, and cross-teacher agreement is 12/40 (set-F1 0.801). It is
+published at 0.884 — meaning the student is graded against a target that disagrees with itself about
+as much as the student disagrees with it. That is not caused by the teacher change; the teacher
+change is only how it became visible. Recorded here rather than buried because any future reading of
+`risk_flags` 0.88 should know the ceiling is not 1.0.
+
+**Consequences.**
+
+- Gold is now Sonnet 5 output; `eval/v1-frozen/` remains Sonnet 4.6 output and is labelled as such.
+- The frontier comparator (`eval/frontier_arm.py`) uses the same model as the teacher, which makes it
+  a clean *scaffold ablation* — same model, schema only, no rules or worked examples — rather than an
+  independent referee. It bounds what the prompt engineering is worth; it cannot validate the labels.
+- `PRICING` in `make_gold.py` carries Sonnet 5's introductory rate and **must be updated after
+  2026-08-31**, when it reverts to $3/$15.
+- The Phase-4 rare-modality augment (ADR-0011) was **not** relabelled. It remains v1-convention,
+  Sonnet 4.6 data, and `format_for_mlx.py` now refuses to merge it rather than silently training on
+  two conventions at once.
+
+---
+
 ## ADR-0016 — The `modality` enum was mis-specified: most of its residual error is ours, not the model's
 
 *Recorded 2026-08-08, while fact-checking an essay against this repo. Refines ADR-0011, which
@@ -24,7 +224,15 @@ corpus and has no stable answer.
 
 **The evidence.** On the frozen 150-trial test set, `adapters/qwen` makes 34 modality errors. **Eleven of
 them — a third — are that single boundary, and they run in both directions**: 6 × gold `combination` →
-predicted `small molecule`, 5 × the reverse. Two worked cases show why neither side is obviously wrong:
+predicted `small molecule`, 5 × the reverse.
+
+> **Correction (2026-08-10, while implementing the fix).** Eleven is the count for the
+> `combination ↔ small molecule` pair alone. Counting every error with `combination` on *either*
+> side, it is **20 of 34 — 59%, not a third**: add 4 × gold `combination` → `monoclonal antibody`,
+> 2 × the reverse, and 3 others. The entry understated its own case. Reproduce with
+> `eval/v1-frozen/` (`gold_test.jsonl` vs `preds_qwen.jsonl`).
+
+Two worked cases show why neither side is obviously wrong:
 
 - **NCT00496301** — gemcitabine + capecitabine + sorafenib. Three drugs, but all one modality, so gold
   says `small molecule`; the model said `combination`, applying the everyday sense of the word.
