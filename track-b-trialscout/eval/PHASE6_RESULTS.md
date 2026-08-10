@@ -50,7 +50,7 @@ This is the number that decides whether the list-valued field *resolved* v1's `c
 | oligonucleotide/RNA therapeutic | 1 | 1.00 | 1.00 |  |
 | other | 1 | 0.00 | 1.00 | yes |
 
-The student beats the frontier arm on the overall score and loses badly on the rare classes. Its macro-F1 (which weights every label equally) is **below** the frontier arm's for exactly this reason, while its set-F1 (which follows the frequency distribution) is above. Read together: distillation transferred the *conventions* — the H1/H2 rule, the sponsor taxonomy, the chemo-vs-targeted split — but not the *pharmacology*. 1,192 training examples contain only a handful of each rare drug class, and the student cannot learn from what it has barely seen. This is ADR-0016's second half, confirmed: the remainder of this field's weakness is rarity, not ambiguity, and rarity is fixable with targeted data.
+> **Read the n column before this table.** Several of these classes have 1-5 gold examples, where one trial swings recall by 20-100 points. Measured on the properly-powered diagnostic set (ADR-0020, n=34-100 per class) the same model scores ADC **0.77** and oncolytic virus **0.88**, not the 0.40 and 0.33 shown here. These frozen-set rare-class figures are sampling noise and must not be quoted as capability. See `PHASE6_DIAGNOSTIC.md`.
 
 ## What is comparable to what
 

@@ -43,9 +43,20 @@ def enum_appendix() -> str:
                  'months 01-06 -> H1, 07-12 -> H2), or "unknown".')
     return "\n".join(lines)
 
-RAW = {json.loads(l)["nct_id"]: json.loads(l)
-       for l in (ROOT / "data" / "raw" / "trials.jsonl").read_text().splitlines() if l.strip()}
-GOLD_TEST = [json.loads(l) for l in (ROOT / "data" / "gold" / "test.jsonl").read_text().splitlines() if l.strip()]
+# Every raw source, not just the main pull: --gold can point at the rare-class diagnostic
+# (ADR-0020) or the augment, whose records live in their own files.
+RAW = {}
+for _f in sorted((ROOT / "data" / "raw").glob("*.jsonl")):
+    for _l in _f.read_text().splitlines():
+        if _l.strip():
+            _r = json.loads(_l)
+            RAW[_r["nct_id"]] = _r
+def load_gold(stem: str):
+    return [json.loads(line) for line in (ROOT / "data" / "gold" / f"{stem}.jsonl").read_text().splitlines()
+            if line.strip()]
+
+
+GOLD_TEST = load_gold("test")
 
 
 def extract_json(text: str) -> dict | None:
@@ -75,6 +86,17 @@ def main():
     ap.add_argument("--label", required=True)
     ap.add_argument("--max-tokens", type=int, default=400)
     ap.add_argument("--limit", type=int, default=0, help="score only the first N test trials (0 = all)")
+    ap.add_argument("--restart", action="store_true",
+                    help="discard an existing preds_<label>.jsonl instead of resuming from it")
+    ap.add_argument("--memory-limit-gb", type=float, default=8.0,
+                    help="cap MLX's allocation. Apple Silicon shares ONE pool between the system "
+                         "and the GPU, so an unbounded eval does not just run slowly -- it evicts "
+                         "the desktop to swap and the whole machine crawls. Measured: batch 16 on "
+                         "a 24 GB M5 caused ~7 GB of pageouts. 0 disables the cap.")
+    ap.add_argument("--gold", type=str, default="test",
+                    help="gold file stem under data/gold/. 'test' is the frozen 150-trial headline "
+                         "set; 'rare_diagnostic' is the held-out rare-class instrument (ADR-0020), "
+                         "which is NOT the headline and must be reported separately.")
     ap.add_argument("--batch-size", type=int, default=1,
                     help="prompts decoded together. DEFAULT 1 (sequential) ON PURPOSE -- see below. "
                          "Batching amortises the per-token weight read across prompts, and a "
@@ -89,9 +111,16 @@ def main():
                     help="append the allowed enum values to the prompt. Use for UNTUNED baselines: "
                          "the training prompt never lists them, so a base model cannot know them.")
     args = ap.parse_args()
-    test_set = GOLD_TEST[:args.limit] if args.limit else GOLD_TEST
+    gold_rows = load_gold(args.gold)
+    test_set = gold_rows[:args.limit] if args.limit else gold_rows
 
     from mlx_lm import load, generate, batch_generate
+    if args.memory_limit_gb:
+        import mlx.core as mx
+        mx.set_memory_limit(int(args.memory_limit_gb * 1e9))
+        mx.set_cache_limit(int(args.memory_limit_gb * 0.25 * 1e9))
+        print(f"[{args.label}] MLX capped at {args.memory_limit_gb} GB so the desktop stays usable",
+              flush=True)
     if args.adapter:
         print(f"[{args.label}] loading {args.model} + adapter {args.adapter} ...", flush=True)
         model, tok = load(args.model, adapter_path=args.adapter)
@@ -111,10 +140,25 @@ def main():
             return 1
         return 0
 
+    # Resume: generations are ~4-8 s each, so an interrupted run must not lose them. Every
+    # parsed readout is appended to disk as it is produced, and an existing file is picked up.
+    out_dir = ROOT / "eval"
+    preds_path = out_dir / f"preds_{args.label}.jsonl"
     preds, parsed_ok, t0 = {}, 0, time.time()
+    if preds_path.exists() and not args.restart:
+        for line in preds_path.read_text().splitlines():
+            if line.strip():
+                r = json.loads(line)
+                preds[r["nct_id"]] = r
+        parsed_ok = len(preds)
+        print(f"[{args.label}] resuming: {parsed_ok} readouts already on disk "
+              f"(--restart to discard them)", flush=True)
+    todo = [g for g in test_set if g["nct_id"] not in preds]
+    preds_f = preds_path.open("a")
+
     bs = max(1, args.batch_size)
-    for start in range(0, len(test_set), bs):
-        chunk = test_set[start:start + bs]
+    for start in range(0, len(todo), bs):
+        chunk = todo[start:start + bs]
         prompts = [prompt_for(g) for g in chunk]
         if bs == 1:
             texts = [generate(model, tok, prompt=prompts[0], max_tokens=args.max_tokens, verbose=False)]
@@ -123,16 +167,17 @@ def main():
                                   max_tokens=args.max_tokens, verbose=False)
             texts = resp.texts
         for g, text in zip(chunk, texts):
+            before = len(preds)
             parsed_ok += record(g["nct_id"], text)
-        done = min(start + bs, len(test_set))
-        print(f"  [{args.label}] {done}/{len(test_set)}  parsed_ok={parsed_ok}  "
-              f"({(time.time()-t0)/done:.2f}s/trial)", flush=True)
+            if len(preds) > before:                       # flush immediately: kill-safe
+                preds_f.write(json.dumps(preds[g["nct_id"]]) + "\n")
+        preds_f.flush()
+        done = min(start + bs, len(todo))
+        rate = (time.time() - t0) / max(done, 1)
+        print(f"  [{args.label}] {done}/{len(todo)}  parsed_ok={parsed_ok}  "
+              f"({rate:.2f}s/trial, ~{rate*(len(todo)-done)/60:.0f} min left)", flush=True)
+    preds_f.close()
 
-    # Save the generations BEFORE scoring. Generation is ~20 minutes of local compute and
-    # scoring is milliseconds; a scorer bug should never throw the expensive half away.
-    out_dir = ROOT / "eval"
-    (out_dir / f"preds_{args.label}.jsonl").write_text(
-        "".join(json.dumps(p) + "\n" for p in preds.values()))
     res = score(test_set, preds)
     res["_valid_json"] = round(parsed_ok / len(test_set), 3)
     (out_dir / f"score_{args.label}.json").write_text(json.dumps(res, indent=2))
