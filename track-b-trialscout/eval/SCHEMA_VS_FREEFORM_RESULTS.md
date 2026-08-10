@@ -13,22 +13,36 @@ output text** (never the raw trial) and maps it to the 6 scored fields via force
 output"*, not *"what is the right answer"*. If a summary omits the sponsor, the judge can't recover it.
 
 **Model:** base `Qwen3-4B-Instruct-2507-4bit` — **NOT** the fine-tuned student (see caveat 1).
+**Schema:** v2 (ADR-0017). Judge `claude-sonnet-4-6`, unchanged from v1 so the two arms stay comparable to each other.
 Run: `eval/compare_schema_vs_freeform.py`, n=150, judge `claude-sonnet-4-6`, both arms parsed 150/150.
 
-## Result — free-form edges out schema overall; schema wins one field decisively
+## Result — free-form still edges out schema overall; one field flips decisively the other way
 
-| field | schema acc | free-form acc | winner |
-|---|---|---|---|
-| **OVERALL structured** | **0.711** | **0.755** | free-form |
-| phase | 0.960 | 0.987 | ~tie |
-| modality | 0.593 | 0.793 | **free-form +0.20** |
-| primary_endpoint_type | 0.880 | 0.893 | ~tie |
-| sponsor_type | 0.287 | 0.833 | **free-form +0.55** |
-| **est_readout** | **0.833** | **0.220** | **schema +0.61** |
-| risk_flags (set-F1) | 0.710 | 0.801 | free-form |
+*Re-run 2026-08-10 under schema v2 (ADR-0017). The v1 figures are in `eval/v1-frozen/` and in this
+file's git history. Both arms were regenerated and re-judged; only the schema changed.*
 
-**The essay's placeholder direction (schema 95 vs free-form 80) does not reproduce here — it
-inverts**, except on one field that proves the underlying point.
+| field | schema | free-form | winner | v1 verdict |
+|---|---|---|---|---|
+| **OVERALL structured** | **0.770** | **0.785** | free-form +0.015 | free-form +0.044 |
+| phase | 0.933 | 0.980 | ~tie | ~tie |
+| intervention_class | 0.920 | 0.920 | tie | *(new field)* |
+| modalities (set-F1) | 0.780 | 0.838 | free-form +0.058 | **free-form +0.200** |
+| primary_endpoint_type | 0.873 | 0.900 | ~tie | ~tie |
+| sponsor_type | 0.273 | 0.867 | **free-form +0.594** | free-form +0.546 |
+| **est_readout** | **0.927** | **0.213** | **schema +0.714** | schema +0.613 |
+| risk_flags (set-F1) | 0.682 | 0.778 | free-form +0.096 | free-form +0.091 |
+
+**Every v1 conclusion reproduces, and the sharpest one got sharper.** `est_readout` — the derived,
+committed field — widened from a +0.61 schema win to **+0.714**. `sponsor_type` remains a large
+free-form win. Overall, free-form still edges ahead, though the gap narrowed to within noise.
+
+**The one real change: modality's free-form advantage largely evaporated, +0.200 → +0.058.** That is
+worth dwelling on. In v1 the schema arm was forced to choose between ten modalities and
+`combination`, a value that is not a modality (ADR-0016); free-form prose simply sidestepped the bad
+category by describing the drugs in words. Fixing the taxonomy removed most of the schema arm's
+handicap. **A large part of what looked like "prose beats schemas for this field" was really "this
+particular schema was badly specified"** — the same finding as ADR-0016, arriving from a third
+independent direction.
 
 ## Why (the mechanism — this is the real finding)
 
@@ -52,7 +66,7 @@ matter most for derived/committed fields that a free summary won't volunteer.**
 ## Caveats (load-bearing — read before citing)
 
 1. **This is the BASE model, not the deployed system.** The fine-tuned TrialScout student scores
-   **0.922** schema'd on this same test set (`score_qwen.json`). Fine-tuning is precisely what teaches
+   **0.939** schema'd on this same test set (`score_qwen_v2s.json`). Fine-tuning is precisely what teaches
    the model to emit the controlled vocabulary the base model fluffs. So *"schema beats free-form"*
    **is** true for the shipped product — but that contrast bundles **schema + fine-tuning**, not schema
    alone. This A/B isolates the prompt; it does not say fine-tuning is unnecessary.
@@ -71,7 +85,7 @@ inverts. The defensible, more interesting claims the data **does** support:
   clean, large win in the predicted direction.
 - For **lookup** facts (sponsor, modality), a free summary + a capable extractor **matched or beat**
   the schema'd base model — because the schema's value shows up only **after** the model has learned
-  the vocabulary (fine-tuning: 0.922).
+  the vocabulary (fine-tuning: 0.939).
 - The honest one-liner: *an explicit schema's payoff is largest for values the model must compute and
   commit, and for a model fine-tuned to the schema's vocabulary; for surfacing raw facts, "summarize
   it" plus a strong reader is surprisingly hard to beat.*

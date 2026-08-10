@@ -1,5 +1,11 @@
 # Phase 4 results — recursive error-mining loop (B6)
 
+> **⚠️ Schema v1 artifact.** These numbers were measured under the v1 schema (single-valued
+> `modality`, with a `combination` value) and the Sonnet 4.6 teacher. Both were replaced on
+> 2026-08-10 — see ADR-0016, ADR-0017 and ADR-0018. They remain reproducible via
+> [`eval/v1-frozen/`](v1-frozen/); the current scorecard is [`PHASE6_RESULTS.md`](PHASE6_RESULTS.md).
+> They are kept, not deleted, because the published walk-through and outside writing cite them.
+
 **One-line:** the loop ran end-to-end and worked *as a process*; the model gain was **marginal**
 because TrialScout was already near its ceiling, and the dominant residual error is teacher-label
 noise (the `combination` boundary), not something more data can fix.

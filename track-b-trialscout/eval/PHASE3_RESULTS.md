@@ -1,5 +1,11 @@
 # Phase 3 results — TrialScout fine-tune A/B
 
+> **⚠️ Schema v1 artifact.** These numbers were measured under the v1 schema (single-valued
+> `modality`, with a `combination` value) and the Sonnet 4.6 teacher. Both were replaced on
+> 2026-08-10 — see ADR-0016, ADR-0017 and ADR-0018. They remain reproducible via
+> [`eval/v1-frozen/`](v1-frozen/); the current scorecard is [`PHASE6_RESULTS.md`](PHASE6_RESULTS.md).
+> They are kept, not deleted, because the published walk-through and outside writing cite them.
+
 **Winner: Qwen3-4B**, fine-tuned via LoRA on 1,200 Claude-distilled gold examples. It nearly reproduces the teacher on the held-out 150-trial test set, running fully local at a fraction of the cost/latency.
 
 ## Scores vs the majority-class baseline

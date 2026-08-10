@@ -150,7 +150,7 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#6e6557">→ Claude-as-judge</text>
 <rect x="648" y="78" width="140" height="70" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
 <text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">Overall score</text>
-<text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.368 → 0.922</text>
+<text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.476 → 0.939</text>
 <text x="718" y="139" text-anchor="middle" font-size="11" fill="#5f6c33">vs baseline</text>
 <line x1="162" y1="112" x2="203" y2="112" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
 <line x1="355" y1="104" x2="398" y2="62" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
@@ -247,7 +247,8 @@ not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's act
   "nct_id": "NCT03631407",
   "phase": "Phase 2",
   "indication": "Microsatellite stable (MSS) advanced/metastatic colorectal cancer",
-  "modality": "combination",
+  "intervention_class": "drug/biologic",
+  "modalities": ["monoclonal antibody", "targeted small molecule"],
   "primary_endpoint_type": "objective response rate (ORR)",
   "sponsor_type": "large pharma",
   "est_readout": "H1 2021",
@@ -441,52 +442,62 @@ model-graded where necessary.</p>
  "part": "The result", "part_banner": "Stage 4 · The result",
  "blocks": [
   ("prose", r"""
-<p>Here is the payoff, on the 150 trials the model never saw. Two comparisons matter, and they say
-different things. The <b>majority-class baseline</b> (always guess the most common value for each
-field) is the floor any real model must clear. The <b>untuned Qwen</b> column is the more honest
-question: what did the <em>same open model</em> score on the <em>same prompt</em> before it was
-fine-tuned at all?</p>
+<p>Here is the payoff, on the 150 trials the model never saw. Four comparisons matter, and
+they say different things. The <b>majority-class baseline</b> (always guess the most common value
+for each field) is the floor. <b>Untuned Qwen</b> is the same open model on the same prompt before
+any fine-tuning, told the list of allowed values but nothing else. The <b>frontier model</b> is
+Claude Sonnet 5 &mdash; the expensive model that wrote the training labels &mdash; handed the schema
+and nothing else, no rules and no worked examples. That last column is the one that makes the
+headline honest: it is the bar a small local model has to clear.</p>
 """),
   ("table", r"""
 <table>
-<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Qwen student</th><th>Fine-tuning gain</th></tr></thead>
+<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Frontier model</th><th>Qwen student</th><th>Fine-tuning gain</th></tr></thead>
 <tbody>
-<tr><td><b>overall structured</b></td><td>0.368</td><td><b>0.711</b></td><td><b>0.922</b></td><td><b>+0.211</b></td></tr>
-<tr><td>valid JSON</td><td>—</td><td>—</td><td>1.000</td><td>—</td></tr>
-<tr><td>phase</td><td>0.447</td><td>0.960</td><td>1.000</td><td>+0.040</td></tr>
-<tr><td>modality</td><td>0.413</td><td>0.593</td><td>0.773</td><td>+0.180</td></tr>
-<tr><td>primary_endpoint_type</td><td>0.280</td><td>0.880</td><td>0.900</td><td>+0.020</td></tr>
-<tr><td>sponsor_type</td><td>0.673</td><td>0.287</td><td>0.980</td><td>+0.693</td></tr>
-<tr><td>est_readout</td><td>0.033</td><td>0.833</td><td>0.993</td><td>+0.160</td></tr>
-<tr><td>risk_flags (set-F1)</td><td>0.364</td><td>0.710</td><td>0.884</td><td>+0.174</td></tr>
+<tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.939</b></td><td><b>+0.242</b></td></tr>
+<tr><td>valid JSON</td><td>&mdash;</td><td>1.000</td><td>1.000</td><td>1.000</td><td>&mdash;</td></tr>
+<tr><td>phase</td><td>0.447</td><td>0.987</td><td>1.000</td><td>1.000</td><td>+0.013</td></tr>
+<tr><td>intervention_class</td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.927</td><td>+0.287</td></tr>
+<tr><td>modalities (set-F1)</td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.870</td><td>+0.175</td></tr>
+<tr><td>primary_endpoint_type</td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.927</td><td>+0.287</td></tr>
+<tr><td>sponsor_type</td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.993</td><td>+0.160</td></tr>
+<tr><td>est_readout</td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.980</td><td>+0.560</td></tr>
+<tr><td>risk_flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.876</td><td>+0.214</td></tr>
 </tbody></table>
 """),
-  ("callout", "aside", "Reading the untuned column honestly", r"""
-<p>Those numbers come from a controlled A/B (<code>eval/SCHEMA_VS_FREEFORM_RESULTS.md</code>) run on the
-<em>same</em> frozen 150-trial gold set with the <em>same</em> scorer, so the comparison is fair &mdash;
-but not identical in every step: there, the model&rsquo;s output was mapped to the scored fields by a
-neutral Claude judge, whereas the student&rsquo;s column is scored straight from its own JSON.</p>
-<p>One more number worth knowing before you quote the gain. Asked for a <em>free-form</em> summary rather
-than schema&rsquo;d JSON, the same untuned model scores <b>0.755</b> overall &mdash; slightly
-<em>higher</em> than the 0.711 it manages on the production prompt, and close enough at n=150 to be the
-same result. Fine-tuning&rsquo;s gain is real, but it is measured against a base model that was already
-capable when asked in the right way.</p>
+  ("callout", "aside", "Why the untuned column needs a footnote", r"""
+<p>Asked with the <em>bare</em> training prompt, untuned Qwen scores <b>0.121</b> &mdash; far
+<em>below</em> the 0.476 floor. It isn&rsquo;t incapable; it has simply never been told the menu.
+The training prompt names the fields but never lists their allowed values, because the student
+absorbs those from 1,192 worked examples. So the base model answers <code>other</code> to almost
+everything and hands back a raw date where the schema wants &ldquo;H1 2029&rdquo;.</p>
+<p>Paste the allowed values into the prompt and the same model jumps to <b>0.697</b>. That single
+change is worth <b>+0.576</b> &mdash; more than everything fine-tuning adds afterwards. It is the
+most useful number on this page: most of what looks like &ldquo;the small model can&rsquo;t do
+this&rdquo; is really &ldquo;nobody told it what the answers may be.&rdquo; The table quotes the
+fair version, 0.697, so the fine-tuning gain isn&rsquo;t flattered.</p>
 """),
+
   ("callout", "key", "What this number means", r"""
-<p><strong>0.71 → 0.92, against a 0.37 floor.</strong> The fine-tuned 4B model (trained for under an
-hour on a laptop, run for free) nearly reproduces the expensive Claude teacher, and produces valid
-JSON <em>every single time</em>. Quoting the lift from the floor (+0.554) flatters it; the honest
-figure is what fine-tuning added to a model that was already fairly good, <b>+0.211</b>. This is the
-win Part 1 was building toward: the same training loop (tokens, loss, gradient descent) now doing a
-real job, well.</p>
-<p>The most instructive row is <code>sponsor_type</code>, where the untuned model scores <b>0.287</b>
-&mdash; <em>worse than guessing</em> (0.673). It isn&rsquo;t ignorant of the answer; it writes
-<code>"INDUSTRY"</code> when the schema wants <code>industry</code>, and a value outside the controlled
-vocabulary scores zero. Much of what fine-tuning buys here is not new knowledge but learning to answer
-in the required form.</p>
-<p>One field still lags: <code>modality</code>, at 0.77. Can we push it higher by running an improvement
-<em>loop</em>? We try, in <a href="#ceiling">§8</a>.</p>
+<p><strong>0.70 &rarr; 0.94, against a 0.48 floor &mdash; and past the frontier model&rsquo;s
+0.90.</strong> A 4-billion-parameter model, fine-tuned for an hour on a laptop and run for free,
+scores <em>higher</em> on this task than the frontier model that taught it, when both are handed
+the same schema and scored the same way. That is the whole thesis of the chapter, measured.</p>
+<p><strong>Now the caveat that has to travel with it.</strong> The gold answers were written by that
+frontier model <em>with</em> a page of decision rules and worked examples. The student trained on
+those conventions; the frontier column never saw them. So the honest sentence is
+&ldquo;<em>fine-tuning beats prompting, on the conventions the teacher was given</em>&rdquo; &mdash;
+not &ldquo;a 4B model is smarter than a frontier model.&rdquo; The gap is widest exactly where
+conventions live: <code>est_readout</code>, a mechanical date rule, 0.980 against 0.827.</p>
+<p><strong>And the win runs out on the tail.</strong> Weighting every modality equally instead of by
+how often it appears, the student scores <b>0.653</b> and the frontier model <b>0.805</b>. On rare
+drug classes the frontier model is far better: antibody-drug conjugates 1.00 against the
+student&rsquo;s 0.40, oncolytic viruses 1.00 against 0.33. Distillation transferred the
+<em>conventions</em> and not the <em>pharmacology</em> &mdash; 1,192 examples contain only a handful
+of each rare class, and a model cannot learn from what it has barely seen. The student wins the
+average and loses the long tail, which is exactly where a specialist reader would notice.</p>
 """),
+
  ],
 },
 
@@ -499,7 +510,7 @@ both through the <em>same</em> harness and let the score decide. That's the disc
 measurement, not a preference.</p>
 <p>In the end Qwen won by default and by margin. Gemma 4 E2B <em>failed to train at all</em>: the only
 available checkpoint is a multimodal (vision+text) build whose weights the LoRA trainer couldn't target.
-And Qwen's 0.922 is so near the ceiling that even a perfectly-trained Gemma would have to beat it to flip
+And Qwen's score is so near the ceiling that even a perfectly-trained Gemma would have to beat it to flip
 the call, implausible on this task. So the measured decision is Qwen, robustly.</p>
 """),
   ("callout", "aside", "A failed arm is still a result", r"""
@@ -514,26 +525,48 @@ the arm that didn't work and why it doesn't change the conclusion.</p>
  "id": "ceiling", "num": "8", "title": "Can you beat the teacher? (The error-mining loop)",
  "blocks": [
   ("prose", r"""
-<p>The weakest field was <code>modality</code> at 0.77. The natural next move is a
+<p>The weakest field was <code>modality</code>. The natural next move is a
 <strong>recursive improvement loop</strong>, a general pattern worth naming: <em>mine the model's errors
-→ generate targeted new training data for exactly those cases → retrain → measure → repeat</em>, each
-pass trying to climb a little higher. It's the honest, buildable kernel of the &ldquo;self-improving
-AI&rdquo; idea. So we ran one turn of it: snapped near-miss enums for free (auto-correcting almost-right values to the nearest allowed one; that alone nudged overall 0.922 → 0.925), then added 300 fresh gold
+&rarr; generate targeted new training data for exactly those cases &rarr; retrain &rarr; measure &rarr; repeat</em>,
+each pass trying to climb a little higher. It's the honest, buildable kernel of the &ldquo;self-improving
+AI&rdquo; idea. We ran one turn of it: snapped near-miss enum values for free, then added 300 fresh gold
 examples of the rare modalities the model kept missing.</p>
-<p>It barely moved further: a <strong>statistical wash</strong>, overall 0.925 → 0.930, with modality's gain
-offset by a small dip elsewhere. That's the signature of a <strong>plateau</strong>: a loop like this
-climbs at first, then flattens. Digging in showed why: the residual <code>modality</code> errors cluster
-on the genuinely ambiguous <code>combination</code> boundary, cases where the <em>teacher's own labels</em>
-disagree. You can't loop your way out of that with more data; it's <strong>label noise</strong>, and it
-sets a hard ceiling.</p>
+<p>It barely moved: a <strong>statistical wash</strong>. We concluded the residual errors were
+<strong>label noise</strong> &mdash; cases where the teacher's own answers disagreed &mdash; and that
+you can't loop your way out of that with more data.</p>
+<p><strong>That conclusion was half wrong, and finding out why is the most useful thing in this
+chapter.</strong> Going back through the errors months later, the biggest cluster wasn't the model
+being unsure. It was our <em>schema</em> being unanswerable. The <code>modality</code> field offered
+ten real modalities plus <code>combination</code> &mdash; which is not a modality at all, but a
+statement about <em>how many</em> there are. Nearly six errors in ten sat on that seam, running in
+both directions, because the question had no stable answer. Worse: one oncology trial in six tests
+no drug at all &mdash; a surgical technique, a radiotherapy schedule, a device &mdash; and the schema
+forced a drug modality onto every one of them.</p>
+<p>So we rebuilt the field: <code>modalities</code> became a <em>list</em> (a trial pairing an
+antibody with chemotherapy says both), <code>combination</code> was deleted, and a new
+<code>intervention_class</code> field lets a trial answer &ldquo;there is no drug here.&rdquo;
+Then we regenerated every label and retrained from scratch. The &ldquo;how many&rdquo; argument fell
+from <b>59% of modality errors to 36%</b>. Two-thirds of what we had written off as irreducible noise
+was our own specification, and it was fixable.</p>
+<p>What remains is real, and it is the <em>other</em> half of the original diagnosis: rarity. The
+model still misses antibody-drug conjugates (0.40) and oncolytic viruses (0.33), because 1,192
+examples contain only a handful of each. That is a data problem, not a ceiling.</p>
 """),
-  ("callout", "key", "The two ceilings", r"""
-<p>This is the honest lesson of the whole project: <strong>(1) you can't beat your teacher</strong>, the
-student asymptotes <em>to</em> the teacher, not past it; and <strong>(2) you can't out-data label noise</strong>:
-once the remaining errors are cases the teacher itself gets inconsistently, more examples just teach the
-inconsistency. A <em>legitimately</em> self-improving model would need a cheap, non-gameable <em>verifier</em>
-of truth, not just more teacher labels. That's the real frontier, and the honest place to stop here.</p>
+
+  ("callout", "key", "Three ceilings, and only two are real", r"""
+<p><strong>(1) You can't beat your teacher</strong> &mdash; a distilled student asymptotes toward the
+model that taught it, not past it. Real. <strong>(2) You can't out-data label noise</strong>: once the
+remaining errors are cases the teacher itself answers inconsistently, more examples just teach the
+inconsistency. Also real &mdash; the teacher agrees with itself only about 70% of the time on
+<code>risk_flags</code>, so that field's practical ceiling is well under 1.0.</p>
+<p><strong>(3) &ldquo;The category is just ambiguous&rdquo; &mdash; often not real, and the most
+comfortable place to stop.</strong> It sounds like humility and it looks like a ceiling, but here it
+was a specification we had written badly and could simply rewrite. The check that separates the two:
+<em>when a model contradicts itself at a category boundary, test whether your own taxonomy drew that
+boundary before concluding the model is weak.</em> A genuinely self-improving system would need a
+cheap, non-gameable <em>verifier</em> of truth. Fixing your own schema is the part you can do today.</p>
 """),
+
  ],
 },
 
