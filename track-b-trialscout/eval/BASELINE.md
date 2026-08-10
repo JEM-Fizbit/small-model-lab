@@ -1,6 +1,10 @@
 # Structured-field baseline (majority-class) on the gold test set
 
-Overall structured score: **0.368** (n=150)
+Overall structured score: **0.476** (n=150)
+
+Schema v2 (ADR-0017): 7 scored components. The v1 floor was **0.368** over 6
+components with a single-valued `modality` — a different measurement, not a
+regression or an improvement.
 
 ```json
 {
@@ -8,27 +12,101 @@ Overall structured score: **0.368** (n=150)
     "accuracy": 0.447,
     "macro_f1": 0.088
   },
-  "modality": {
-    "accuracy": 0.413,
-    "macro_f1": 0.058
+  "intervention_class": {
+    "accuracy": 0.827,
+    "macro_f1": 0.129
   },
   "primary_endpoint_type": {
-    "accuracy": 0.28,
-    "macro_f1": 0.055
+    "accuracy": 0.38,
+    "macro_f1": 0.069
   },
   "sponsor_type": {
-    "accuracy": 0.673,
-    "macro_f1": 0.201
+    "accuracy": 0.667,
+    "macro_f1": 0.2
   },
   "est_readout": {
-    "accuracy": 0.033
+    "accuracy": 0.04
+  },
+  "modalities": {
+    "set_f1": 0.33,
+    "macro_f1": 0.042,
+    "_error_shape": {
+      "counts": {
+        "subset (predicted fewer)": 36,
+        "disjoint": 87,
+        "exact": 27
+      },
+      "exact_set_accuracy": 0.18,
+      "cardinality_only_errors": 36,
+      "cardinality_only_share_of_errors": 0.293
+    },
+    "exact_set_accuracy": 0.18,
+    "_per_label": {
+      "antibody-drug conjugate": {
+        "n": 5,
+        "recall": 0.0
+      },
+      "bispecific/multispecific antibody": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "cancer vaccine": {
+        "n": 7,
+        "recall": 0.0
+      },
+      "cell therapy": {
+        "n": 7,
+        "recall": 0.0
+      },
+      "cytotoxic chemotherapy": {
+        "n": 49,
+        "recall": 0.0
+      },
+      "gene therapy": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "hormonal/endocrine therapy": {
+        "n": 8,
+        "recall": 0.0
+      },
+      "monoclonal antibody": {
+        "n": 35,
+        "recall": 0.0
+      },
+      "oligonucleotide/RNA therapeutic": {
+        "n": 1,
+        "recall": 0.0
+      },
+      "oncolytic virus": {
+        "n": 3,
+        "recall": 0.0
+      },
+      "other": {
+        "n": 1,
+        "recall": 0.0
+      },
+      "other protein or peptide therapeutic": {
+        "n": 10,
+        "recall": 0.0
+      },
+      "radiopharmaceutical": {
+        "n": 4,
+        "recall": 0.0
+      },
+      "targeted small molecule": {
+        "n": 63,
+        "recall": 1.0
+      }
+    }
   },
   "risk_flags": {
-    "set_f1": 0.364
+    "set_f1": 0.643
   },
-  "_overall_structured": 0.368,
-  "_n": 150
+  "_overall_structured": 0.476,
+  "_n": 150,
+  "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy."
 }
 ```
 
-The Phase 3 fine-tuned student must beat this floor.
+The fine-tuned student must beat this floor.
