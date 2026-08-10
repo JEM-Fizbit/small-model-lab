@@ -9,7 +9,7 @@ Run:  uv run python track-b-trialscout/eval/infer_and_score.py \
           --adapter track-b-trialscout/train/adapters/qwen --label qwen
 """
 from __future__ import annotations
-import argparse, json, sys
+import argparse, json, sys, time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,13 +75,23 @@ def main():
     ap.add_argument("--label", required=True)
     ap.add_argument("--max-tokens", type=int, default=400)
     ap.add_argument("--limit", type=int, default=0, help="score only the first N test trials (0 = all)")
+    ap.add_argument("--batch-size", type=int, default=1,
+                    help="prompts decoded together. DEFAULT 1 (sequential) ON PURPOSE -- see below. "
+                         "Batching amortises the per-token weight read across prompts, and a "
+                         "16-prompt micro-benchmark on an M5 showed 2.5x (5.85 -> 2.33 s/trial). "
+                         "Measured end to end over the full 150 it was only ~1.4x, because a batch "
+                         "runs until its SLOWEST member finishes and output lengths vary widely. "
+                         "It also CHANGED 6 of 150 predictions (overall 0.939 -> 0.936): different "
+                         "padding, different numerics. A 1.4x speedup is not worth a score that "
+                         "cannot be reconciled with the published one. Use >1 only for throughput "
+                         "work where exact reproduction does not matter.")
     ap.add_argument("--with-enums", action="store_true",
                     help="append the allowed enum values to the prompt. Use for UNTUNED baselines: "
                          "the training prompt never lists them, so a base model cannot know them.")
     args = ap.parse_args()
     test_set = GOLD_TEST[:args.limit] if args.limit else GOLD_TEST
 
-    from mlx_lm import load, generate
+    from mlx_lm import load, generate, batch_generate
     if args.adapter:
         print(f"[{args.label}] loading {args.model} + adapter {args.adapter} ...", flush=True)
         model, tok = load(args.model, adapter_path=args.adapter)
@@ -89,20 +99,34 @@ def main():
         print(f"[{args.label}] loading {args.model} (UNTUNED base, no adapter) ...", flush=True)
         model, tok = load(args.model)
 
-    preds, parsed_ok = {}, 0
-    for i, g in enumerate(test_set, 1):
-        raw = RAW[g["nct_id"]]
-        user = build_prompt(raw) + (enum_appendix() if args.with_enums else "")
-        prompt = tok.apply_chat_template(
-            [{"role": "user", "content": user}],
-            add_generation_prompt=True, tokenize=False)
-        out = generate(model, tok, prompt=prompt, max_tokens=args.max_tokens, verbose=False)
-        obj = extract_json(out)
+    def prompt_for(g):
+        user = build_prompt(RAW[g["nct_id"]]) + (enum_appendix() if args.with_enums else "")
+        return tok.apply_chat_template([{"role": "user", "content": user}],
+                                       add_generation_prompt=True, tokenize=False)
+
+    def record(nct_id, text):
+        obj = extract_json(text)
         if obj:
-            parsed_ok += 1
-            preds[g["nct_id"]] = snap_to_enum({"nct_id": g["nct_id"], **obj})
-        if i % 30 == 0:
-            print(f"  [{args.label}] {i}/{len(test_set)}  parsed_ok={parsed_ok}", flush=True)
+            preds[nct_id] = snap_to_enum({"nct_id": nct_id, **obj})
+            return 1
+        return 0
+
+    preds, parsed_ok, t0 = {}, 0, time.time()
+    bs = max(1, args.batch_size)
+    for start in range(0, len(test_set), bs):
+        chunk = test_set[start:start + bs]
+        prompts = [prompt_for(g) for g in chunk]
+        if bs == 1:
+            texts = [generate(model, tok, prompt=prompts[0], max_tokens=args.max_tokens, verbose=False)]
+        else:
+            resp = batch_generate(model, tok, prompts=[tok.encode(p) for p in prompts],
+                                  max_tokens=args.max_tokens, verbose=False)
+            texts = resp.texts
+        for g, text in zip(chunk, texts):
+            parsed_ok += record(g["nct_id"], text)
+        done = min(start + bs, len(test_set))
+        print(f"  [{args.label}] {done}/{len(test_set)}  parsed_ok={parsed_ok}  "
+              f"({(time.time()-t0)/done:.2f}s/trial)", flush=True)
 
     # Save the generations BEFORE scoring. Generation is ~20 minutes of local compute and
     # scoring is milliseconds; a scorer bug should never throw the expensive half away.
