@@ -207,6 +207,7 @@ def main():
     print(f"=== {label} ===")
     print(json.dumps(res, indent=2))
     if args.baseline:
+        (ROOT / "eval" / "score_majority.json").write_text(json.dumps(res, indent=2))
         (ROOT / "eval" / "BASELINE.md").write_text(
             f"# Structured-field baseline (majority-class) on the gold test set\n\n"
             f"Overall structured score: **{res['_overall_structured']}** (n={res['_n']})\n\n"

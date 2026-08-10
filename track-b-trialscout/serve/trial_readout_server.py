@@ -146,12 +146,22 @@ def _fetch_trial(nct_id: str) -> dict | None:
 def _render_markdown(readout: dict, valid: bool, errors: list[str]) -> str:
     r = readout
     risk = r.get("risk_flags") or []
+    mods = r.get("modalities")
+    # An empty list is a claim ("this trial has no drug asset"), not a missing answer,
+    # so it gets said out loud rather than rendered as an empty bullet.
+    if mods:
+        mod_line = ", ".join(mods)
+    elif isinstance(mods, list):
+        mod_line = "_none — this trial tests no drug or biologic_"
+    else:
+        mod_line = "unknown"
     lines = [
         f"# TrialScout readout — {r.get('nct_id')}",
         "",
         f"- **Phase**: {r.get('phase')}",
         f"- **Indication**: {r.get('indication')}",
-        f"- **Modality**: {r.get('modality')}",
+        f"- **Intervention type**: {r.get('intervention_class')}",
+        f"- **Modalities**: {mod_line}",
         f"- **Primary endpoint**: {r.get('primary_endpoint_type')}",
         f"- **Sponsor type**: {r.get('sponsor_type')}",
         f"- **Est. readout**: {r.get('est_readout')}",
@@ -200,9 +210,13 @@ async def trial_readout(
 
     Fetches the trial from ClinicalTrials.gov v2 by its NCT ID, then runs the fine-tuned
     Qwen3-4B TrialScout model (locally, no API spend) to extract a normalized readout:
-    phase, indication, modality, primary endpoint type, sponsor type, estimated readout
-    window, investor-relevant risk flags, and a <=2-sentence investor note. The output is
-    validated against the TrialScout JSON schema.
+    phase, indication, intervention class, therapeutic modalities, primary endpoint type,
+    sponsor type, estimated readout window, investor-relevant risk flags, and a
+    <=2-sentence investor note. The output is validated against the TrialScout JSON schema.
+
+    `modalities` is a LIST -- a trial combining an antibody with chemotherapy returns both.
+    It is EMPTY when the trial tests no drug at all (surgery, external-beam radiotherapy,
+    a device, supportive care); `intervention_class` says which of those it is.
 
     Scope: trained only on **phased interventional oncology** trials. Non-oncology or
     phase-less trials are out of distribution; the tool reports if a trial is ineligible.
@@ -214,8 +228,9 @@ async def trial_readout(
     Returns:
         str: Markdown summary, or a JSON object:
             {
-              "readout": {nct_id, phase, indication, modality, primary_endpoint_type,
-                          sponsor_type, est_readout, risk_flags[], investor_note},
+              "readout": {nct_id, phase, indication, intervention_class, modalities[],
+                          primary_endpoint_type, sponsor_type, est_readout,
+                          risk_flags[], investor_note},
               "schema_valid": bool,
               "schema_errors": [str]
             }

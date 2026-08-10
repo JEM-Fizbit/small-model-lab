@@ -20,7 +20,9 @@ schema/trial_readout.schema.json  +  schema/fewshot.jsonl (hand-crafted gold)
 
 ## The task (output schema)
 
-Each trial → a JSON readout: `phase`, `indication`, `modality`, `primary_endpoint_type`, `sponsor_type`, `est_readout` (H1/H2 YYYY), `risk_flags[]`, and a ≤2-sentence `investor_note`. Controlled vocabularies + the full contract live in [`schema/trial_readout.schema.json`](schema/trial_readout.schema.json).
+Each trial → a JSON readout: `phase`, `indication`, `intervention_class`, `modalities[]`, `primary_endpoint_type`, `sponsor_type`, `est_readout` (H1/H2 YYYY), `risk_flags[]`, and a ≤2-sentence `investor_note`. Controlled vocabularies + the full contract live in [`schema/trial_readout.schema.json`](schema/trial_readout.schema.json).
+
+`modalities` is a **list** — a trial pairing an antibody with chemotherapy returns both — and is **empty** when the trial tests no drug at all, with `intervention_class` saying what it does test (surgery, external-beam radiation, a device, supportive care). Schema v1 had a single `modality` with a `combination` value; see ADR-0016 and ADR-0017 for why that was replaced, and [`eval/v1-frozen/`](eval/v1-frozen/) for the v1 measurement, still runnable.
 
 ## Run it
 

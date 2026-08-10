@@ -134,7 +134,7 @@ LORA_SVG = r'''<svg viewBox="0 0 720 220" role="img" aria-label="LoRA: the big b
 <text x="634" y="126" text-anchor="middle" font-size="11" fill="#5f6c33">base + adapter</text>
 </svg>'''
 
-EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; seven structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">Gold test set</text>
@@ -143,7 +143,7 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">TrialScout</text>
 <text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#5f6c33">predicts a readout</text>
 <rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
-<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">6 structured fields</text>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">7 structured fields</text>
 <text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#6e6557">→ accuracy / F1 per field</text>
 <rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
 <text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">investor_note (free text)</text>
@@ -205,8 +205,10 @@ you can scan, filter, compare, and screen at a glance, instead of reading regist
 registry of studies. Each record is semi-structured data (a title, phase, status, lead sponsor, the
 conditions and drugs under test, the primary outcome measure, key dates, enrollment, trial design) plus
 free text. We fetch it from the registry's API and trim it to the ~20 fields that matter:
-<strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
-JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
+<strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact ten-field
+JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>,
+<code>intervention_class</code> (is this even a drug trial?), <code>modalities</code> (what kinds of
+drug, as a list),
 <code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
 <strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
 trials, and easy to score.</p>
@@ -261,7 +263,7 @@ not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's act
 }''', "TrialScout's actual output for this real trial"),
   ("filecode", "track-b-trialscout/schema/trial_readout.schema.json",
    "The output contract (excerpt): controlled vocabularies the model must pick from.",
-   '"modality": {', "Empty array if none apply."),
+   '"intervention_class": {', "Empty array if none apply."),
   ("gloss", r"""
 <p><b>What this is:</b> a JSON Schema, the <em>contract</em> for the model's output. Each enum
 (<code>modality</code>, <code>primary_endpoint_type</code>, <code>sponsor_type</code>,
@@ -418,13 +420,15 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
 in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
 value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
-compares the six scoreable fields to gold (accuracy and macro-F1 for the four enums, exact match for
-<code>est_readout</code>, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives
+compares the seven scoreable fields to gold (accuracy and macro-F1 for the four single-value enums,
+exact match for <code>est_readout</code>, and set-F1 for the two list fields, <code>modalities</code>
+and <code>risk_flags</code>; F1 is a 0–1 score balancing false positives
 against misses, 1.0 perfect), exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 """),
   ("callout", "aside", "Two kinds of grading", r"""
-<p>Six structured fields grade themselves: the four enums by string match, <code>est_readout</code> by
-exact match, and the <code>risk_flags</code> set by overlap. Free text can't: <code>investor_note</code>
+<p>Seven structured fields grade themselves: the four single-value enums by string match,
+<code>est_readout</code> by exact match, and the two list fields (<code>modalities</code>,
+<code>risk_flags</code>) by set overlap. Free text can't: <code>investor_note</code>
 is scored by <strong>Claude-as-judge</strong> (a separate model call rates the note for faithfulness),
 and <code>indication</code>, free text too, isn't auto-scored at all. Automatic where possible,
 model-graded where necessary.</p>

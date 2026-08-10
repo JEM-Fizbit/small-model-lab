@@ -41,7 +41,10 @@ SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
 JUDGE_MODEL = "claude-sonnet-4-6"
 
 SENTINEL = "NOT_STATED"
-SCALARS = ["phase", "modality", "primary_endpoint_type", "sponsor_type", "est_readout"]
+SCALARS = ["phase", "intervention_class", "primary_endpoint_type", "sponsor_type", "est_readout"]
+# Set-valued fields need an "addressed?" flag of their own: for these, [] is a real answer
+# ("no drug asset", "no risks raised") and must not be confused with never mentioning them.
+SET_FIELDS = ["modalities", "risk_flags"]
 
 
 JUDGE_SYSTEM = f"""You normalize a model's output about one oncology clinical trial into a fixed schema. The output may be JSON or prose. Your job is to capture WHAT THE OUTPUT ITSELF CONVEYS — never to supply the correct answer from your own knowledge.
@@ -57,15 +60,17 @@ Normalization of an ADDRESSED value (this is reformatting, NOT outside knowledge
 - est_readout: a date "YYYY-MM[-DD]" or a stated month/half -> "H1 YYYY" (month 01-06) or "H2 YYYY" (07-12). If the value is just a bare year with no month/half, or the field is not addressed, output "{SENTINEL}".
 - if an addressed value is genuinely ambiguous within the enum (e.g. sponsor_type "INDUSTRY" could be biotech OR large pharma and the output does not say which), pick the closest single enum the TEXT itself supports; if none fits, "other". Do NOT resolve it by looking up the named entity.
 
-Hard rule on entities: naming a sponsor ("Enterome") or drug ("pembrolizumab") is NOT, by itself, stating its TYPE or MODALITY CLASS. In PROSE, if only the name appears and the type/class is never characterized, that field is "{SENTINEL}". (In JSON, a populated type/modality field IS addressed — normalize it.)
+Hard rule on entities: naming a sponsor ("Enterome") or drug ("pembrolizumab") is NOT, by itself, stating its TYPE or MODALITY CLASS. In PROSE, if only the name appears and the type/class is never characterized, that field is "{SENTINEL}" (or discussed_modalities=false). This is the whole point of the measurement: it asks whether the output SURFACED the class, not whether you can recognize the drug. (In JSON, a populated intervention_class or modalities field IS addressed — normalize it.)
 
 Enums:
 - phase: {SCHEMA['properties']['phase']['enum']}
-- modality: {SCHEMA['properties']['modality']['enum']}
+- intervention_class: {SCHEMA['properties']['intervention_class']['enum']}
+- modalities items: {SCHEMA['properties']['modalities']['items']['enum']}
 - primary_endpoint_type: {SCHEMA['properties']['primary_endpoint_type']['enum']}
 - sponsor_type: {SCHEMA['properties']['sponsor_type']['enum']}
 - risk_flags items: {SCHEMA['properties']['risk_flags']['items']['enum']}
-risk_flags: list the risks/limitations the output raises, normalized to that vocabulary. discussed_risks=false + empty array only if the output does not address risks/limitations at all."""
+risk_flags: list the risks/limitations the output raises, normalized to that vocabulary. discussed_risks=false + empty array only if the output does not address risks/limitations at all.
+modalities: list the distinct therapeutic modalities the output characterizes, normalized to that vocabulary. discussed_modalities=false + empty array if the output never characterizes what KIND of therapy is involved. If the output explicitly says the trial tests no drug (surgery, radiotherapy technique, a device, supportive care), that IS addressing it: discussed_modalities=true with an empty array."""
 
 TOOL = {
     "name": "report_stated",
@@ -74,14 +79,16 @@ TOOL = {
         "type": "object",
         "properties": {
             "phase": {"type": "string"},
-            "modality": {"type": "string"},
+            "intervention_class": {"type": "string"},
             "primary_endpoint_type": {"type": "string"},
             "sponsor_type": {"type": "string"},
             "est_readout": {"type": "string"},
+            "discussed_modalities": {"type": "boolean"},
+            "modalities": {"type": "array", "items": {"type": "string"}},
             "discussed_risks": {"type": "boolean"},
             "risk_flags": {"type": "array", "items": {"type": "string"}},
         },
-        "required": SCALARS + ["discussed_risks", "risk_flags"],
+        "required": SCALARS + ["discussed_modalities", "modalities", "discussed_risks", "risk_flags"],
     },
 }
 
@@ -125,12 +132,15 @@ def stated_map(ext: dict) -> dict:
     m = {f: _scalar(ext.get(f, SENTINEL)) for f in SCALARS}
     m["_risk_discussed"] = bool(ext.get("discussed_risks"))
     m["risk_flags"] = ext.get("risk_flags", []) if ext.get("discussed_risks") else []
+    m["_modalities_discussed"] = bool(ext.get("discussed_modalities"))
+    m["modalities"] = ext.get("modalities", []) if ext.get("discussed_modalities") else []
     return m
 
 
 def pred_from_stated(nct_id: str, m: dict) -> dict:
     """Snap the stated map into a scorable readout (SENTINEL stays -> counts as a miss vs gold)."""
-    r = {"nct_id": nct_id, **{f: m[f] for f in SCALARS}, "risk_flags": m["risk_flags"]}
+    r = {"nct_id": nct_id, **{f: m[f] for f in SCALARS},
+         "modalities": m["modalities"], "risk_flags": m["risk_flags"]}
     return snap_to_enum(r)
 
 
@@ -152,6 +162,21 @@ def decompose(test_set, stated_by_id):
         out[f] = {"correct": round(correct/n, 3), "wrong": round(wrong/n, 3), "omitted": round(omitted/n, 3)}
     rf_disc = sum(1 for r in g if stated_by_id[r["nct_id"]]["_risk_discussed"]) / n
     out["risk_flags"] = {"discussed": round(rf_disc, 3), "not_discussed": round(1 - rf_disc, 3)}
+    # modalities gets the fuller treatment: unlike risk_flags it has a gold set to check
+    # against, so "addressed but wrong" is separable from "never addressed".
+    md_disc = exact = wrong = 0
+    for r in g:
+        m = stated_by_id[r["nct_id"]]
+        if not m["_modalities_discussed"]:
+            continue
+        md_disc += 1
+        if sorted(snap_to_enum({"modalities": m["modalities"]})["modalities"]) == sorted(r.get("modalities", [])):
+            exact += 1
+        else:
+            wrong += 1
+    out["modalities"] = {"discussed": round(md_disc/n, 3), "not_discussed": round(1 - md_disc/n, 3),
+                         "exact_when_discussed": round(exact/md_disc, 3) if md_disc else 0.0,
+                         "wrong_when_discussed": round(wrong/md_disc, 3) if md_disc else 0.0}
     return out
 
 
