@@ -174,6 +174,83 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0019 — Rare-modality augmentation failed again, and this time we know why: the test set can't see it
+
+*Decided 2026-08-10, immediately after ADR-0017. Second attempt at the same experiment ADR-0011
+ran under schema v1, with the confound removed and a frontier control added.*
+
+**Decision:** Do **not** promote `adapters/qwen_v2s_aug`. The production reference stays
+`adapters/qwen_v2s`. The relabelled 299-trial augment is kept (`data/gold/augment_rare.jsonl`,
+Sonnet 5, schema v2, $2.46) because it is sound data and the next experiment needs it.
+
+**The setup.** ADR-0017 left `modalities` strong on common classes and weak on rare ones — ADC recall
+0.40, oncolytic virus 0.33, bispecific 0.00 — while the frontier model scored 1.00 on the first two
+from the same records. That control is what made this worth running: the signal is provably in the
+input, so a failure to learn it is about training, not about the data being uninformative. The 300
+rare-modality trials from ADR-0011 were relabelled under v2 and merged into train only
+(1,192 → 1,491 rows). Val/test frozen, hyperparameters identical, seed identical. Only the data moved.
+
+**Result: nothing.** Overall **0.939 → 0.939**. Val loss did improve (0.570 → 0.460, and still
+descending at iteration 700 where the un-augmented run had turned upward at 600), so the extra data
+was learnable — it just did not land where it was aimed.
+
+| | no augment | +augment | frontier |
+|---|---|---|---|
+| overall | 0.939 | 0.939 | 0.897 |
+| modalities set-F1 | 0.870 | 0.854 | 0.859 |
+| modalities exact-set | 0.780 | 0.740 | 0.760 |
+| **modalities macro-F1** | 0.653 | **0.569** | 0.805 |
+
+| modality | train rows | test n | recall before | after | frontier |
+|---|---|---|---|---|---|
+| antibody-drug conjugate | 32 → 74 | 5 | 0.40 | 0.40 | 1.00 |
+| oncolytic virus | 12 → 63 | 3 | 0.33 | 0.33 | 1.00 |
+| bispecific | 29 → 79 | 2 | 0.00 | 0.00 | 0.50 |
+| other protein or peptide | 106 → 127 | 10 | 0.20 | **0.50** | 0.60 |
+
+**The mechanism, measured rather than guessed.** The obvious hypothesis was distribution shift — a
+training set over-weighted toward rare classes making the model trigger-happy. That is **not** what
+happened: net rare-class predictions changed by **+0**. What changed was precision on the classes
+that got more data. ADC predictions went 2 → 4 while true positives stayed at 2 (precision
+1.00 → 0.50); oncolytic 1 → 2, true positives stayed 1. **More examples of a class taught the model
+that the class exists more often, not how to recognise it.** Recall could not move because correct
+answers did not increase — only wrong ones did.
+
+**The finding that actually matters, and it is methodological.** This experiment cannot resolve what
+it was built to measure. The frozen test set holds **5 ADCs, 3 oncolytic viruses and 2 bispecifics**,
+so one trial is worth 20, 33 and 50 recall points respectively. "0.40 → 0.40" is 2/5 both times. We
+cannot distinguish *no effect* from *a real effect* at these sample sizes, and no amount of extra
+**training** data changes that, because the constraint is **test** support.
+
+The one class that did move is the tell: `other protein or peptide therapeutic` has **n=10**, the
+largest test support among the weak classes, and it is the only one that showed a clear improvement
+(recall 0.20 → 0.50, precision 0.29 → 0.62). That is consistent with augmentation working and being
+invisible everywhere the test set is too thin to show it.
+
+A prediction was registered before the run and was **wrong in the informative direction**: oncolytic
+virus and bispecific were expected to gain most (5.2× and 2.7× more data) and `other protein or
+peptide` to stay flat because its problem was definitional rather than scarcity. The opposite
+happened, and the reason is test-set support, not the quality of the reasoning about the categories.
+
+**Consequences.**
+
+- ADR-0011 reached "rare-class augmentation is a wash" and attributed it to teacher-label noise.
+  ADR-0016 attributed the remainder to rarity. Both were reasoning about a measurement that was
+  never sensitive enough to answer the question. **The wash was in the instrument.**
+- Measuring tail performance needs a **rare-class-enriched diagnostic set**, held separately from the
+  headline test set, which must stay frozen and representative. Roughly 30–50 trials per rare class,
+  teacher-labelled once, scored as a named diagnostic rather than folded into the overall. That is
+  the actual next experiment.
+- `other protein or peptide therapeutic` remains a badly-drawn category (127 training rows, recall
+  0.50, the worst ratio of support to performance in the schema). Splitting it — fusion protein /
+  cytokine / enzyme — is a schema-v3 candidate.
+- The general lesson, and it generalises past this repo: **before running an experiment to improve a
+  metric, check whether the metric can move.** A frozen representative test set is the right
+  instrument for a headline score and the wrong one for a long tail, and the failure mode is
+  indistinguishable from "the intervention didn't work."
+
+---
+
 ## ADR-0018 — Teacher upgraded to Sonnet 5; determinism became something we measure, not request
 
 *Decided 2026-08-10, during the schema-v2 regeneration (ADR-0017).*
