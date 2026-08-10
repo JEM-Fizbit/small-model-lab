@@ -1,6 +1,6 @@
 # serve/ — TrialScout as an MCP "expert" (Phase 5 / B7)
 
-This packages the Track-B winner — **Qwen3-4B + our LoRA adapter** (scored 0.922 vs a 0.368
+This packages the Track-B winner — **Qwen3-4B + our LoRA adapter** (scores 0.939 vs a 0.476
 baseline, ADR-0002/0009) — as an **MCP server** so any MCP client (Claude Code, Claude Desktop)
 can call it. It runs the model **locally via MLX — no API spend**.
 

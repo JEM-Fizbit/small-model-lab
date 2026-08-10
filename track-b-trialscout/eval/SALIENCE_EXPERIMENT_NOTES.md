@@ -1,5 +1,18 @@
 # Salience experiment — running notes (for the article)
 
+> **⚠️ Schema v1 artifact.** These numbers were measured under the v1 schema (single-valued
+> `modality`, with a `combination` value) and the Sonnet 4.6 teacher. Both were replaced on
+> 2026-08-10 — see ADR-0016, ADR-0017 and ADR-0018. They remain reproducible via
+> [`eval/v1-frozen/`](v1-frozen/); the current scorecard is [`PHASE6_RESULTS.md`](PHASE6_RESULTS.md).
+> They are kept, not deleted, because the published walk-through and outside writing cite them.
+>
+> **This experiment was not re-run.** `salience_omission_eval.py` has been carried forward to the v2
+> fields (`modalities` gets its own addressed/omitted flag, since for a set field `[]` is an answer
+> rather than a silence), so it executes against the current schema — but the numbers below are v1
+> and were left as-is. It is a research note supporting an essay rather than a published site
+> figure, and the two free local arms added in ADR-0017 (`base_strict`, `base_vocab`) measure the
+> same base-model-vocabulary effect more directly and without a judge in the loop.
+
 Working notes on testing the claim: *a generic LLM asked to free-form summarize and
 self-select the salient features will miss what a domain expert deems important; an
 expert-designed extraction schema injects that judgment and gets closer to the correct

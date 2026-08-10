@@ -23,7 +23,10 @@ ADR-0016 diagnosed `combination`. Checking the corpus against ClinicalTrials.gov
 while designing the replacement found worse:
 
 - **117 of 1,500 trials (7.8%) have no drug intervention at all** — no `DRUG`, `BIOLOGICAL`,
-  `GENETIC` or `COMBINATION_PRODUCT`. They are surgical-technique trials, radiotherapy-fractionation
+  `GENETIC` or `COMBINATION_PRODUCT`. (That is the mechanical count from the intervention types.
+  The regenerated gold puts the true figure more than twice as high — **251, 16.8%** — because many
+  trials carry a `DRUG` that is not *anticancer* therapy: antiemetics, a PET tracer, a skin cream.
+  See the Outcome below.) They are surgical-technique trials, radiotherapy-fractionation
   trials, devices, behavioural and supportive-care studies. Real examples the teacher was obliged to
   assign a *drug modality* to: *laparoscopic D2 radical gastrectomy*, *pancreaticojejunal
   anastomosis*, *hyperbaric oxygen*, *chlorhexidine skin cleanser*, *cutting scalp hair*. The
@@ -126,6 +129,48 @@ what is committed; regenerating the predictions needs the adapter.
 
 This makes the published numbers *more* verifiable than before the change, which is the standard a
 schema migration on a teaching artifact should meet.
+
+### Outcome (measured 2026-08-10)
+
+Gold regenerated (1,492/1,500 valid, $11.87), student retrained on the identical v1 recipe
+(1,192 rows, 700 iters, seed 0; val loss 0.656 → **0.570**), everything re-scored on the **same
+150 test trials** — the pinned split held, so the trials are identical to v1's.
+
+| arm | overall | what it isolates |
+|---|---|---|
+| majority floor | 0.476 | always guess the most common value |
+| untuned Qwen, training prompt | 0.121 | never told the enum vocabularies |
+| untuned Qwen + enum list | 0.697 | same model, menu supplied, nothing else |
+| frontier zero-shot (Sonnet 5) | 0.897 | frontier, schema only, no scaffold |
+| **fine-tuned student** | **0.939** | valid JSON 1.000 |
+
+**Telling the base model the allowed values is worth +0.576** (0.121 → 0.697) — more than everything
+fine-tuning adds on top (+0.242). Most of what reads as "the small model can't do this" was "nobody
+told it what the answers may be." Independent corroboration that 0.697 is the right number for that
+arm: v1's published untuned figure, obtained by a completely different route (a Claude judge reading
+the model's prose), was 0.711.
+
+**The student beats the frontier arm, 0.939 vs 0.897** — but the win is entirely convention-following
+on common cases, and it inverts on the tail. Macro-F1 over modality labels: student **0.653**,
+frontier **0.805**. ADC recall 0.40 vs 1.00, oncolytic virus 0.33 vs 1.00, bispecific 0.00 vs 0.50.
+Distillation transferred the *conventions* — the H1/H2 rule, the sponsor taxonomy, the
+chemo-vs-targeted split — and not the *pharmacology*, because 1,192 examples contain only a handful
+of each rare class. "A 4B model beats a frontier model" is true of the average and false of the tail.
+
+**Was the ambiguity fixed or relocated?** Fixed, about two-thirds of it. Modality errors that are a
+*how-many* dispute fell from **20 of 34 (59%)** under v1 to **12 of 33 (36%)**. The strictest
+comparable measure, exact-set accuracy, is 0.780 against v1's 0.773 — while answering a harder
+question on a corpus where 16.8% of trials now correctly return an empty list.
+
+**What the regeneration cost elsewhere.** Measured against v1 gold on the same 1,492 trials: `phase`
+0.995, `sponsor_type` 0.985, `est_readout` 0.977 — stable. `primary_endpoint_type` 0.905.
+`risk_flags` **0.298 exact / set-F1 0.837** — it moved enormously, for teacher reasons rather than
+schema reasons (ADR-0018).
+
+**An unplanned finding.** The `other` bucket of `intervention_class` exposed ~12 trials in the corpus
+that are not oncology at all — asthma, oral contraceptives, PCOS fertility studies. v1 hid them by
+assigning each a drug modality. A data-pull defect, logged rather than fixed here.
+
 
 ---
 
@@ -260,6 +305,31 @@ showed it — ADC 0.40→0.60 — even though the overall score was a wash.
 retro-label the existing gold** — that moves goalposts against a frozen test set. A schema change means
 regenerating gold and re-running the eval end to end, which is why this is recorded as a decision rather
 than done in passing.
+
+### Outcome (2026-08-10) — acted on, and the diagnosis was two-thirds right
+
+Superseded in full by **ADR-0017**, which rebuilt the field, and **ADR-0018**, which changed the
+teacher. What this entry got right, wrong, and missed:
+
+- **Right, and confirmed:** `combination` was a specification error, not model weakness. Removing it
+  cut *how-many* disputes from 59% of modality errors to 36%. Roughly two-thirds of what ADR-0011
+  called "irreducible teacher-label noise" was our own schema.
+- **Right, and still unfixed:** the rarity half. ADC recall is **0.40 — identical to v1**, bispecific
+  0.00, oncolytic virus 0.33. The frontier model scores 1.00 on the first and third, which proves
+  these are learnable and that the gap is training data, not a ceiling. Exactly as this entry
+  predicted, and the obvious next move.
+- **Understated:** the evidence, corrected inline above — 20 of 34 errors, not eleven.
+- **Missed entirely, and worse than what it found:** `modality` was being asked of trials with no
+  drug. **251 of 1,492 (16.8%)** test a surgical technique, a radiotherapy schedule, a device or
+  supportive care, and the schema forced a drug modality onto every one. `radiotherapy` was also
+  65% external-beam technique — not a drug modality at all — mixed with real radiopharmaceuticals.
+  This entry looked hard at one bad enum value and did not ask whether the field was being asked of
+  the right trials.
+
+The generalisable lesson survives intact and gains a second half. The original: *when a model
+contradicts itself at a category boundary, test whether your own taxonomy drew that boundary.* The
+addition: *and check whether the question applies to every row you are asking it of.*
+
 
 ---
 

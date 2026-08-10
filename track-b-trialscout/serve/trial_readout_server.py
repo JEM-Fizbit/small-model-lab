@@ -2,7 +2,7 @@
 """TrialScout MCP server — the fine-tuned Qwen3-4B "expert", exposed as a callable tool.
 
 This is Phase 5 (B7): package the winner of the Track-B A/B (Qwen3-4B + LoRA adapter,
-which scored 0.922 vs a 0.368 baseline) as an MCP server so any MCP client (Claude Code,
+which scores 0.939 vs a 0.476 baseline under schema v2) as an MCP server so any MCP client (Claude Code,
 Claude Desktop, …) can call it. It runs the model **locally and free** via MLX — no API spend.
 
 Two tools, one shared inference core:
