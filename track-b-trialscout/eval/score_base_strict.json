@@ -1,0 +1,100 @@
+{
+  "phase": {
+    "accuracy": 0.44,
+    "macro_f1": 0.114
+  },
+  "intervention_class": {
+    "accuracy": 0.027,
+    "macro_f1": 0.029
+  },
+  "primary_endpoint_type": {
+    "accuracy": 0.32,
+    "macro_f1": 0.205
+  },
+  "sponsor_type": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0
+  },
+  "est_readout": {
+    "accuracy": 0.0
+  },
+  "modalities": {
+    "set_f1": 0.007,
+    "macro_f1": 0.001,
+    "_error_shape": {
+      "counts": {
+        "disjoint": 149,
+        "exact": 1
+      },
+      "exact_set_accuracy": 0.007,
+      "cardinality_only_errors": 0,
+      "cardinality_only_share_of_errors": 0.0
+    },
+    "exact_set_accuracy": 0.007,
+    "_per_label": {
+      "antibody-drug conjugate": {
+        "n": 5,
+        "recall": 0.0
+      },
+      "bispecific/multispecific antibody": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "cancer vaccine": {
+        "n": 7,
+        "recall": 0.0
+      },
+      "cell therapy": {
+        "n": 7,
+        "recall": 0.0
+      },
+      "cytotoxic chemotherapy": {
+        "n": 49,
+        "recall": 0.0
+      },
+      "gene therapy": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "hormonal/endocrine therapy": {
+        "n": 8,
+        "recall": 0.0
+      },
+      "monoclonal antibody": {
+        "n": 35,
+        "recall": 0.0
+      },
+      "oligonucleotide/RNA therapeutic": {
+        "n": 1,
+        "recall": 0.0
+      },
+      "oncolytic virus": {
+        "n": 3,
+        "recall": 0.0
+      },
+      "other": {
+        "n": 1,
+        "recall": 1.0
+      },
+      "other protein or peptide therapeutic": {
+        "n": 10,
+        "recall": 0.0
+      },
+      "radiopharmaceutical": {
+        "n": 4,
+        "recall": 0.0
+      },
+      "targeted small molecule": {
+        "n": 63,
+        "recall": 0.0
+      }
+    }
+  },
+  "risk_flags": {
+    "set_f1": 0.055
+  },
+  "_overall_structured": 0.121,
+  "_n": 150,
+  "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy.",
+  "_valid_json": 1.0
+}
