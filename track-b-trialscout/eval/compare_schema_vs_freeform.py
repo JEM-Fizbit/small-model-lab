@@ -203,10 +203,13 @@ def main():
     print(f"  B (schema)    overall_structured = {schema_res['_overall_structured']}")
     print(f"  A (free-form) overall_structured = {ff_res['_overall_structured']}")
     print("\nper-field accuracy (schema / free-form):")
-    for fld in ["phase", "modality", "primary_endpoint_type", "sponsor_type"]:
+    # Driven off the harness's own field lists, not a hardcoded copy: a schema change
+    # should never be able to crash the report AFTER the paid judge calls have been made.
+    from harness import CATEGORICAL, SET_VALUED
+    for fld in CATEGORICAL + ["est_readout"]:
         print(f"  {fld:24s} {schema_res[fld]['accuracy']:.3f} / {ff_res[fld]['accuracy']:.3f}")
-    print(f"  {'est_readout':24s} {schema_res['est_readout']['accuracy']:.3f} / {ff_res['est_readout']['accuracy']:.3f}")
-    print(f"  {'risk_flags (set-F1)':24s} {schema_res['risk_flags']['set_f1']:.3f} / {ff_res['risk_flags']['set_f1']:.3f}")
+    for fld in SET_VALUED:
+        print(f"  {fld + ' (set-F1)':24s} {schema_res[fld]['set_f1']:.3f} / {ff_res[fld]['set_f1']:.3f}")
     print("\nwrote eval/score_schema_vs_freeform.json + preds_schema_vs_freeform.jsonl")
 
 

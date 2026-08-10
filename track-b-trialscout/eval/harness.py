@@ -132,13 +132,28 @@ def _sets_for(field, rows):
     return [r.get(field, MISSING) for r in rows]
 
 
+def _scalar(v):
+    """Coerce a predicted scalar to something hashable and comparable.
+
+    An untuned model happily emits `"phase": ["PHASE1","PHASE2"]` where the schema wants one
+    string. That is a WRONG ANSWER, not a crash and not an omission, so it is stringified and
+    scored as wrong — same convention as salience_omission_eval._scalar. Gold is always
+    well-formed, so this only ever touches predictions.
+    """
+    if v is None or isinstance(v, str):
+        return v
+    if isinstance(v, list):
+        return " ".join(map(str, v))
+    return str(v)
+
+
 def score(gold, pred_by_id):
     """gold: list of rows; pred_by_id: {nct_id: readout dict}."""
     g = [r for r in gold if r["nct_id"] in pred_by_id]
     p = [pred_by_id[r["nct_id"]] for r in g]
     out = {}
     for field in CATEGORICAL:
-        gv = [r.get(field) for r in g]; pv = [x.get(field) for x in p]
+        gv = [r.get(field) for r in g]; pv = [_scalar(x.get(field)) for x in p]
         acc = sum(1 for a, b in zip(gv, pv) if a == b) / len(gv)
         out[field] = {"accuracy": round(acc, 3), "macro_f1": round(macro_f1(gv, pv), 3)}
     # est_readout exact match

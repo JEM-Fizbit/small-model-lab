@@ -1,0 +1,103 @@
+{
+  "phase": {
+    "accuracy": 0.987,
+    "macro_f1": 0.964
+  },
+  "intervention_class": {
+    "accuracy": 0.64,
+    "macro_f1": 0.441
+  },
+  "primary_endpoint_type": {
+    "accuracy": 0.64,
+    "macro_f1": 0.63
+  },
+  "sponsor_type": {
+    "accuracy": 0.833,
+    "macro_f1": 0.715
+  },
+  "est_readout": {
+    "accuracy": 0.42
+  },
+  "modalities": {
+    "set_f1": 0.695,
+    "macro_f1": 0.582,
+    "_error_shape": {
+      "counts": {
+        "subset (predicted fewer)": 10,
+        "exact": 80,
+        "partial overlap": 15,
+        "superset (predicted extra)": 14,
+        "disjoint": 31
+      },
+      "exact_set_accuracy": 0.533,
+      "cardinality_only_errors": 24,
+      "cardinality_only_share_of_errors": 0.343
+    },
+    "exact_set_accuracy": 0.533,
+    "_per_label": {
+      "antibody-drug conjugate": {
+        "n": 5,
+        "recall": 0.4
+      },
+      "bispecific/multispecific antibody": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "cancer vaccine": {
+        "n": 7,
+        "recall": 0.857
+      },
+      "cell therapy": {
+        "n": 7,
+        "recall": 1.0
+      },
+      "cytotoxic chemotherapy": {
+        "n": 49,
+        "recall": 0.918
+      },
+      "gene therapy": {
+        "n": 2,
+        "recall": 0.0
+      },
+      "hormonal/endocrine therapy": {
+        "n": 8,
+        "recall": 0.875
+      },
+      "monoclonal antibody": {
+        "n": 35,
+        "recall": 0.914
+      },
+      "oligonucleotide/RNA therapeutic": {
+        "n": 1,
+        "recall": 1.0
+      },
+      "oncolytic virus": {
+        "n": 3,
+        "recall": 0.667
+      },
+      "other": {
+        "n": 1,
+        "recall": 0.0
+      },
+      "other protein or peptide therapeutic": {
+        "n": 10,
+        "recall": 0.3
+      },
+      "radiopharmaceutical": {
+        "n": 4,
+        "recall": 1.0
+      },
+      "targeted small molecule": {
+        "n": 63,
+        "recall": 0.841
+      }
+    }
+  },
+  "risk_flags": {
+    "set_f1": 0.662
+  },
+  "_overall_structured": 0.697,
+  "_n": 150,
+  "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy.",
+  "_valid_json": 1.0
+}

@@ -5,56 +5,208 @@
   "note": "base model (NOT fine-tuned); same model both arms; judge reads only model output text.",
   "B_schema": {
     "phase": {
-      "accuracy": 0.96,
-      "macro_f1": 0.834
+      "accuracy": 0.933,
+      "macro_f1": 0.766
     },
-    "modality": {
-      "accuracy": 0.593,
-      "macro_f1": 0.466
+    "intervention_class": {
+      "accuracy": 0.92,
+      "macro_f1": 0.698
     },
     "primary_endpoint_type": {
-      "accuracy": 0.88,
-      "macro_f1": 0.889
+      "accuracy": 0.873,
+      "macro_f1": 0.874
     },
     "sponsor_type": {
-      "accuracy": 0.287,
-      "macro_f1": 0.373
+      "accuracy": 0.273,
+      "macro_f1": 0.382
     },
     "est_readout": {
-      "accuracy": 0.833
+      "accuracy": 0.927
+    },
+    "modalities": {
+      "set_f1": 0.78,
+      "macro_f1": 0.578,
+      "_error_shape": {
+        "counts": {
+          "partial overlap": 12,
+          "exact": 99,
+          "superset (predicted extra)": 10,
+          "disjoint": 23,
+          "subset (predicted fewer)": 6
+        },
+        "exact_set_accuracy": 0.66,
+        "cardinality_only_errors": 16,
+        "cardinality_only_share_of_errors": 0.314
+      },
+      "exact_set_accuracy": 0.66,
+      "_per_label": {
+        "antibody-drug conjugate": {
+          "n": 5,
+          "recall": 0.6
+        },
+        "bispecific/multispecific antibody": {
+          "n": 2,
+          "recall": 0.0
+        },
+        "cancer vaccine": {
+          "n": 7,
+          "recall": 1.0
+        },
+        "cell therapy": {
+          "n": 7,
+          "recall": 1.0
+        },
+        "cytotoxic chemotherapy": {
+          "n": 49,
+          "recall": 0.939
+        },
+        "gene therapy": {
+          "n": 2,
+          "recall": 0.0
+        },
+        "hormonal/endocrine therapy": {
+          "n": 8,
+          "recall": 0.875
+        },
+        "monoclonal antibody": {
+          "n": 35,
+          "recall": 0.857
+        },
+        "oligonucleotide/RNA therapeutic": {
+          "n": 1,
+          "recall": 0.0
+        },
+        "oncolytic virus": {
+          "n": 3,
+          "recall": 0.333
+        },
+        "other": {
+          "n": 1,
+          "recall": 1.0
+        },
+        "other protein or peptide therapeutic": {
+          "n": 10,
+          "recall": 0.4
+        },
+        "radiopharmaceutical": {
+          "n": 4,
+          "recall": 1.0
+        },
+        "targeted small molecule": {
+          "n": 63,
+          "recall": 0.714
+        }
+      }
     },
     "risk_flags": {
-      "set_f1": 0.71
+      "set_f1": 0.682
     },
-    "_overall_structured": 0.711,
+    "_overall_structured": 0.77,
     "_n": 150,
+    "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy.",
     "_judge_ok": 1.0
   },
   "A_freeform": {
     "phase": {
-      "accuracy": 0.987,
-      "macro_f1": 0.961
+      "accuracy": 0.98,
+      "macro_f1": 0.956
     },
-    "modality": {
-      "accuracy": 0.793,
-      "macro_f1": 0.837
+    "intervention_class": {
+      "accuracy": 0.92,
+      "macro_f1": 0.699
     },
     "primary_endpoint_type": {
-      "accuracy": 0.893,
-      "macro_f1": 0.891
+      "accuracy": 0.9,
+      "macro_f1": 0.914
     },
     "sponsor_type": {
-      "accuracy": 0.833,
-      "macro_f1": 0.712
+      "accuracy": 0.867,
+      "macro_f1": 0.706
     },
     "est_readout": {
-      "accuracy": 0.22
+      "accuracy": 0.213
+    },
+    "modalities": {
+      "set_f1": 0.838,
+      "macro_f1": 0.752,
+      "_error_shape": {
+        "counts": {
+          "partial overlap": 12,
+          "exact": 109,
+          "superset (predicted extra)": 10,
+          "disjoint": 15,
+          "subset (predicted fewer)": 4
+        },
+        "exact_set_accuracy": 0.727,
+        "cardinality_only_errors": 14,
+        "cardinality_only_share_of_errors": 0.341
+      },
+      "exact_set_accuracy": 0.727,
+      "_per_label": {
+        "antibody-drug conjugate": {
+          "n": 5,
+          "recall": 0.8
+        },
+        "bispecific/multispecific antibody": {
+          "n": 2,
+          "recall": 0.0
+        },
+        "cancer vaccine": {
+          "n": 7,
+          "recall": 1.0
+        },
+        "cell therapy": {
+          "n": 7,
+          "recall": 1.0
+        },
+        "cytotoxic chemotherapy": {
+          "n": 49,
+          "recall": 0.857
+        },
+        "gene therapy": {
+          "n": 2,
+          "recall": 0.5
+        },
+        "hormonal/endocrine therapy": {
+          "n": 8,
+          "recall": 0.875
+        },
+        "monoclonal antibody": {
+          "n": 35,
+          "recall": 1.0
+        },
+        "oligonucleotide/RNA therapeutic": {
+          "n": 1,
+          "recall": 1.0
+        },
+        "oncolytic virus": {
+          "n": 3,
+          "recall": 1.0
+        },
+        "other": {
+          "n": 1,
+          "recall": 1.0
+        },
+        "other protein or peptide therapeutic": {
+          "n": 10,
+          "recall": 0.5
+        },
+        "radiopharmaceutical": {
+          "n": 4,
+          "recall": 1.0
+        },
+        "targeted small molecule": {
+          "n": 63,
+          "recall": 0.825
+        }
+      }
     },
     "risk_flags": {
-      "set_f1": 0.801
+      "set_f1": 0.778
     },
-    "_overall_structured": 0.755,
+    "_overall_structured": 0.785,
     "_n": 150,
+    "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy.",
     "_judge_ok": 1.0
   }
 }

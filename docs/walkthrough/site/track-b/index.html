@@ -405,8 +405,10 @@ you can scan, filter, compare, and screen at a glance, instead of reading regist
 registry of studies. Each record is semi-structured data (a title, phase, status, lead sponsor, the
 conditions and drugs under test, the primary outcome measure, key dates, enrollment, trial design) plus
 free text. We fetch it from the registry's API and trim it to the ~20 fields that matter:
-<strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact nine-field
-JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>, <code>modality</code>,
+<strong>that trimmed record is TrialScout's input.</strong> Its <em>output</em> is a compact ten-field
+JSON readout: <code>nct_id</code>, <code>phase</code>, <code>indication</code>,
+<code>intervention_class</code> (is this even a drug trial?), <code>modalities</code> (what kinds of
+drug, as a list),
 <code>primary_endpoint_type</code>, <code>sponsor_type</code>, <code>est_readout</code> (its expected readout as a half-year, e.g. &ldquo;H2 2026&rdquo;), <code>risk_flags</code>, and a ≤2-sentence <code>investor_note</code>. Most output fields are
 <strong>enums</strong> (a fixed menu of allowed values), so the readouts are directly comparable across
 trials, and easy to score.</p>
@@ -459,12 +461,23 @@ not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's act
                     enrollment of 41, ORR as a surrogate endpoint, and the biomarker-restricted
                     (MSS only) population limiting addressable market breadth."
 }</pre></div>
-<figure class="codefig"><div class="codebar"><span class="srcname">trial_readout.schema.json</span></div><div class="hl"><pre><span></span><span class="w">    </span><span class="nt">&quot;modality&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<figure class="codefig"><div class="codebar"><span class="srcname">trial_readout.schema.json</span></div><div class="hl"><pre><span></span><span class="w">    </span><span class="nt">&quot;intervention_class&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;small molecule&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;monoclonal antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;antibody-drug conjugate&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bispecific&quot;</span><span class="p">,</span>
-<span class="w">               </span><span class="s2">&quot;cell therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gene therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancer vaccine&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radiotherapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oncolytic virus&quot;</span><span class="p">,</span>
-<span class="w">               </span><span class="s2">&quot;combination&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Primary therapeutic modality of the investigational agent(s). Use &#39;combination&#39; only when two distinct modalities are co-equal.&quot;</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;drug/biologic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;external-beam radiation&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;procedure/surgery&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;device&quot;</span><span class="p">,</span>
+<span class="w">               </span><span class="s2">&quot;behavioral/supportive care&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;diagnostic/imaging&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What kind of intervention this trial actually tests. Decide this BEFORE modalities. &#39;drug/biologic&#39; if any drug or biologic is given as anticancer therapy under study; otherwise the non-drug category that fits. Not every oncology trial has a drug asset - surgical-technique, radiotherapy-technique, device and supportive-care trials do not.&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;modalities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;targeted small molecule&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cytotoxic chemotherapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hormonal/endocrine therapy&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;monoclonal antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bispecific/multispecific antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;antibody-drug conjugate&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;other protein or peptide therapeutic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oligonucleotide/RNA therapeutic&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;cell therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gene therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oncolytic virus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancer vaccine&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="s2">&quot;radiopharmaceutical&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The DISTINCT therapeutic modalities present among the drugs/biologics this trial gives as anticancer therapy, as an unordered set sorted alphabetically. One entry per distinct modality, however many agents share it. MUST be an empty array [] when intervention_class is not &#39;drug/biologic&#39;. This field says WHICH modalities are present, never how many agents there are and never which agent leads.&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;primary_endpoint_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
@@ -560,7 +573,7 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <text x="618" y="40" text-anchor="middle" font-size="11" fill="#998f7d">fine-tune</text>
 </svg><figcaption><span class="fignum" id="fig-1">Fig.&nbsp;1</span>Distillation: the expensive teacher (Claude) writes structured answers for 1,500 trials; those become the gold labels the cheap student (Qwen) is fine-tuned to&nbsp;reproduce.</figcaption></figure>
 <figure class="codefig"><div class="codebar"><span class="srcname">make_gold.py</span></div><div class="hl"><pre><span></span>            <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                <span class="n">model</span><span class="o">=</span><span class="n">MODEL</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                 <span class="n">system</span><span class="o">=</span><span class="n">SYS</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">TOOLS</span><span class="p">,</span>
                 <span class="n">tool_choice</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;emit_readout&quot;</span><span class="p">},</span>
                 <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;TRIAL:</span><span class="se">\n</span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">trial</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">Return the readout.&quot;</span><span class="p">}],</span>
@@ -609,7 +622,7 @@ is poor), and <strong>resumable</strong> writes (a crash loses nothing).</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">--- PILOT (10 trials) ---&quot;</span><span class="p">)</span>
     <span class="n">pilot_ok</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">pilot</span><span class="p">:</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">label_one</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">label_one</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">effort</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">res</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">valid</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;readout&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="n">pilot_ok</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">record</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
@@ -709,7 +722,7 @@ English?&rdquo;, useless for &ldquo;is this <em>correct</em>?&rdquo;. A useful m
 scorecard. So the eval harness is a first-class deliverable, not an afterthought: it runs the student
 over the 150 held-out trials and scores each field against the gold answer.</p>
 </div>
-<figure class="imgfig diagram wide"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; six structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
+<figure class="imgfig diagram wide"><svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the student predicts a readout for each held-out trial; seven structured fields are scored by accuracy and F1, the free-text note by Claude-as-judge, into an overall score versus the baseline.">
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">Gold test set</text>
@@ -718,7 +731,7 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 <text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">TrialScout</text>
 <text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#5f6c33">predicts a readout</text>
 <rect x="400" y="30" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
-<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">6 structured fields</text>
+<text x="505" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">7 structured fields</text>
 <text x="505" y="72" text-anchor="middle" font-size="10.5" fill="#6e6557">→ accuracy / F1 per field</text>
 <rect x="400" y="136" width="210" height="58" rx="10" fill="#fff" stroke="#d8cfbd" stroke-width="1.5"/>
 <text x="505" y="160" text-anchor="middle" font-size="12" font-weight="700" fill="#231f18">investor_note (free text)</text>
@@ -757,13 +770,15 @@ over the 150 held-out trials and scores each field against the gold answer.</p>
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
 in training, generates text, pulls the first <code>{…}</code> object out, and snaps any near-miss enum
 value to the closest legal one (so eval matches what the deployed server does). <code>score()</code> then
-compares the six scoreable fields to gold (accuracy and macro-F1 for the four enums, exact match for
-<code>est_readout</code>, set-F1 for the risk-flag list; F1 is a 0–1 score balancing false positives
+compares the seven scoreable fields to gold (accuracy and macro-F1 for the four single-value enums,
+exact match for <code>est_readout</code>, and set-F1 for the two list fields, <code>modalities</code>
+and <code>risk_flags</code>; F1 is a 0–1 score balancing false positives
 against misses, 1.0 perfect), exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 </div>
 <aside class="callout aside"><div class="callout-title">Two kinds of grading</div><div class="callout-body">
-<p>Six structured fields grade themselves: the four enums by string match, <code>est_readout</code> by
-exact match, and the <code>risk_flags</code> set by overlap. Free text can't: <code>investor_note</code>
+<p>Seven structured fields grade themselves: the four single-value enums by string match,
+<code>est_readout</code> by exact match, and the two list fields (<code>modalities</code>,
+<code>risk_flags</code>) by set overlap. Free text can't: <code>investor_note</code>
 is scored by <strong>Claude-as-judge</strong> (a separate model call rates the note for faithfulness),
 and <code>indication</code>, free text too, isn't auto-scored at all. Automatic where possible,
 model-graded where necessary.</p>

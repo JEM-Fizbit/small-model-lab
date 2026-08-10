@@ -6,8 +6,12 @@ are like-for-like and which are not, so the table cannot be read as more compara
 
 Arms, in the order they belong on the page:
   majority          floor. Predict the most common value of each field.
-  base_strict       untuned Qwen, scored EXACTLY as the student is: parse its own JSON.
-  base_judged       untuned Qwen, with a Claude judge mapping its output to the fields.
+  base_strict       untuned Qwen on the training prompt, scored EXACTLY as the student is.
+                    That prompt never lists the enum vocabularies -- the student learns them
+                    from 1,192 examples -- so this arm answers "other" to nearly everything.
+  base_vocab        the same, with the allowed values appended to the prompt and nothing
+                    else. base_strict -> base_vocab is the cost of not knowing the menu;
+                    base_vocab -> student is what fine-tuning adds beyond it.
   frontier_zeroshot the teacher's model with the schema but none of the teacher scaffold.
   qwen_v2s          the fine-tuned student.
 
@@ -22,8 +26,8 @@ EVAL = ROOT / "eval"
 
 ARMS = [
     ("majority",          "Baseline (floor)",     "score_majority.json"),
-    ("base_strict",       "Untuned Qwen (strict)", "score_base_strict.json"),
-    ("base_judged",       "Untuned Qwen (judged)", "score_base_judged.json"),
+    ("base_strict",       "Untuned, no vocab",    "score_base_strict.json"),
+    ("base_vocab",        "Untuned + enum list",  "score_base_vocab.json"),
     ("frontier_zeroshot", "Frontier zero-shot",   "score_frontier_zeroshot.json"),
     ("qwen_v2s",          "Fine-tuned student",   "score_qwen_v2s.json"),
 ]
@@ -93,11 +97,27 @@ def main():
                   f"modality errors involved `combination` on one side or the other.")
 
     per_label = scores.get("qwen_v2s", {}).get("modalities", {}).get("_per_label")
+    front_label = scores.get("frontier_zeroshot", {}).get("modalities", {}).get("_per_label", {})
     tail = ""
     if per_label:
-        tail = ("\n\n### Per-modality recall (the rare-class tail)\n\n| modality | n in gold | recall |\n|---|---|---|\n"
-                + "\n".join(f"| {k} | {v['n']} | {v['recall']:.2f} |"
-                            for k, v in sorted(per_label.items(), key=lambda x: -x[1]["n"])))
+        rows_t = []
+        for k, v in sorted(per_label.items(), key=lambda x: -x[1]["n"]):
+            fr = front_label.get(k, {}).get("recall")
+            gap = "yes" if fr is not None and fr - v["recall"] > 0.2 else ""
+            rows_t.append(f"| {k} | {v['n']} | {v['recall']:.2f} | "
+                          f"{('%.2f' % fr) if fr is not None else '—'} | {gap} |")
+        tail = ("\n\n### Per-modality recall — where the student's win runs out\n\n"
+                "| modality | n in gold | student | frontier zero-shot | frontier much better |\n"
+                "|---|---|---|---|---|\n" + "\n".join(rows_t) +
+                "\n\nThe student beats the frontier arm on the overall score and loses badly on the "
+                "rare classes. Its macro-F1 (which weights every label equally) is **below** the "
+                "frontier arm's for exactly this reason, while its set-F1 (which follows the "
+                "frequency distribution) is above. Read together: distillation transferred the "
+                "*conventions* — the H1/H2 rule, the sponsor taxonomy, the chemo-vs-targeted split — "
+                "but not the *pharmacology*. 1,192 training examples contain only a handful of each "
+                "rare drug class, and the student cannot learn from what it has barely seen. This is "
+                "ADR-0016's second half, confirmed: the remainder of this field's weakness is rarity, "
+                "not ambiguity, and rarity is fixable with targeted data.")
 
     out = f"""# Schema-v2 scorecard — TrialScout
 
