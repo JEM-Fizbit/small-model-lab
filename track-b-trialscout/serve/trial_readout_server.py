@@ -43,6 +43,8 @@ sys.path.insert(0, str(ROOT / "schema"))
 from format_for_mlx import build_prompt  # noqa: E402  exact prompt the model was trained on
 from fetch_trials import compact  # noqa: E402         CT.gov study object -> compact record
 from normalize import snap_to_enum  # noqa: E402        snap near-miss enum values to schema vocab
+from derive import merge_risk_flags  # noqa: E402      compute the arithmetic risk flags, don't ask
+from fingerprint import check as check_schema  # noqa: E402  refuse a v1 adapter on a v2 schema
 
 # --- config (no magic numbers: every knob named + commented) ---
 BASE_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"  # ADR-0002/0009: Qwen won the A/B
@@ -78,6 +80,12 @@ def _load_model() -> tuple[Any, Any]:
     global _MODEL
     if _MODEL is None:
         from mlx_lm import load
+        # A wrong adapter still produces schema-VALID output (the normalizer snaps unknown
+        # values to "other"), so validation cannot catch this. Check the contract instead.
+        ok, msg = check_schema(ADAPTER)
+        if not ok:
+            raise RuntimeError(msg)
+        print(f"[trialscout] {msg}", file=sys.stderr, flush=True)
         print(f"[trialscout] loading {BASE_MODEL} + adapter {ADAPTER} ...", file=sys.stderr, flush=True)
         _MODEL = load(BASE_MODEL, adapter_path=str(ADAPTER))
         print("[trialscout] model ready", file=sys.stderr, flush=True)
@@ -128,6 +136,10 @@ def _infer(raw_record: dict) -> dict:
     # nct_id first for readability; our injected value wins over any the model echoed
     readout = {"nct_id": nct, **{k: v for k, v in obj.items() if k != "nct_id"}}
     readout = snap_to_enum(readout)  # fix near-miss enum values (casing / out-of-vocab) pre-validation
+    # Seven of the eleven risk flags are arithmetic on fields in the record. Compute those and
+    # keep only the model's four judgement flags -- it is measurably worse at `enrollment < 50`
+    # than an `if` statement, having learned the teacher's errors. See schema/derive.py.
+    readout["risk_flags"] = merge_risk_flags(raw_record, readout.get("risk_flags"))
     errors = sorted(e.message for e in _VALIDATOR.iter_errors(readout))
     return {"_ok": True, "readout": readout, "_schema_valid": not errors, "_schema_errors": errors}
 

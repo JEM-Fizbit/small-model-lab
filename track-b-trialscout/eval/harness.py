@@ -20,6 +20,7 @@ Run:  uv run python track-b-trialscout/eval/harness.py --baseline majority
 """
 from __future__ import annotations
 import argparse, json
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -172,6 +173,23 @@ def score(gold, pred_by_id):
         block: dict = {"set_f1": round(sum(per) / len(per), 3) if per else 0.0}
         if n_missing:
             block["_omitted"] = n_missing
+        if field == "risk_flags":
+            # Split what the model is genuinely responsible for from what is arithmetic.
+            # See schema/derive.py: seven of these eleven are pure functions of the record.
+            try:
+                sys.path.insert(0, str(ROOT / "schema"))
+                from derive import DETERMINISTIC_FLAGS, JUDGEMENT_FLAGS
+                def sub(sets, keep):
+                    return [[x for x in s_ if x in keep] for s_ in sets]
+                block["judgement_subset_f1"] = round(
+                    set_f1(sub(gs, JUDGEMENT_FLAGS), sub(scored_ps, JUDGEMENT_FLAGS)), 3)
+                block["deterministic_subset_f1"] = round(
+                    set_f1(sub(gs, DETERMINISTIC_FLAGS), sub(scored_ps, DETERMINISTIC_FLAGS)), 3)
+                block["_note"] = ("judgement_subset_f1 is the honest number for what the model is "
+                                  "asked to reason about; the deterministic subset should be computed "
+                                  "from the record (schema/derive.py), not generated.")
+            except Exception:
+                pass
         if field == "modalities":
             block["macro_f1"] = round(multilabel_macro_f1(gs, scored_ps), 3)
             block["_error_shape"] = set_error_shape(gs, scored_ps)
