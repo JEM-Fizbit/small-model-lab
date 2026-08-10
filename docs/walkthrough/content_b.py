@@ -548,9 +548,29 @@ antibody with chemotherapy says both), <code>combination</code> was deleted, and
 Then we regenerated every label and retrained from scratch. The &ldquo;how many&rdquo; argument fell
 from <b>59% of modality errors to 36%</b>. Two-thirds of what we had written off as irreducible noise
 was our own specification, and it was fixable.</p>
-<p>What remains is real, and it is the <em>other</em> half of the original diagnosis: rarity. The
-model still misses antibody-drug conjugates (0.40) and oncolytic viruses (0.33), because 1,192
-examples contain only a handful of each. That is a data problem, not a ceiling.</p>
+<p>What remains is the <em>other</em> half of the original diagnosis: rarity. The scorecard said the
+model was still missing antibody-drug conjugates (0.40) and oncolytic viruses (0.33), so we bought
+300 more examples of exactly those classes, retrained, and measured again. Nothing moved. Both
+figures came back identical, to two decimal places.</p>
+<p><strong>They came back identical because the test set could not see the difference.</strong> Those
+150 held-out trials contain <b>5</b> antibody-drug conjugates and <b>3</b> oncolytic viruses. One
+trial is worth 20 and 33 recall points. &ldquo;0.40&rdquo; was two trials out of five. We had built a
+scorecard that was excellent for a headline number and blind to precisely the thing we were trying to
+fix &mdash; and we had already drawn a confident conclusion from it once before.</p>
+<p>So we built a second, larger test set weighted toward the rare classes: <b>402 trials</b>, 45 per
+modality, never trained on. On that one, the extra data had worked all along &mdash; ADCs
+<b>0.64&nbsp;&rarr;&nbsp;0.77</b>, oncolytic viruses <b>0.76&nbsp;&rarr;&nbsp;0.88</b>. The real
+recall was never 0.40; it was 0.77, and five trials had told us otherwise.</p>
+"""),
+  ("callout", "key", "Check that your ruler can measure the thing", r"""
+<p>Before running an experiment to move a number, work out the smallest change your measurement could
+<em>detect</em>, and compare it to the change you are hoping for. If one test example is worth 20
+points and you expect a gain of 10, the result is decided before you start &mdash; and the answer you
+get back is a confident <em>zero</em>, which looks exactly like the intervention not working.</p>
+<p>This project made that mistake twice, months apart, and both times wrote a thoughtful explanation
+of <em>why</em> the extra data hadn't helped. Neither explanation was true. A test set that mirrors
+the real world is the right tool for &ldquo;how good is this overall&rdquo; and the wrong tool for
+&ldquo;did this help the rare cases&rdquo;, and you need both.</p>
 """),
 
   ("callout", "key", "Three ceilings, and only two are real", r"""
