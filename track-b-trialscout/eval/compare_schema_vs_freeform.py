@@ -68,7 +68,8 @@ Hard rules:
 
 Field normalization (apply to what the writeup says):
 - phase: one of {SCHEMA['properties']['phase']['enum']}. If the writeup gives a numeric phase, normalize (e.g. "phase 1/2" -> "Phase 1/2").
-- modality: the single best-fit modality of the lead investigational agent, from {SCHEMA['properties']['modality']['enum']}.
+- intervention_class: from {SCHEMA['properties']['intervention_class']['enum']}. If the writeup describes only a surgical technique, a radiotherapy technique, a device or supportive care, say that — do not assume a drug is involved.
+- modalities: a LIST of the distinct therapeutic modalities the writeup actually names, drawn from {SCHEMA['properties']['modalities']['items']['enum']}, sorted alphabetically. Empty list [] if the writeup describes no drug or biologic. Include one entry per distinct modality however many agents share it. Do NOT infer a modality the writeup does not support — naming a drug is not the same as characterizing its class.
 - primary_endpoint_type: from {SCHEMA['properties']['primary_endpoint_type']['enum']}.
 - sponsor_type: from {SCHEMA['properties']['sponsor_type']['enum']} (a top-20 global pharma -> "large pharma", other industry -> "biotech").
 - est_readout: the expected primary readout as "H1 YYYY" or "H2 YYYY" (months 01-06 -> H1, 07-12 -> H2). If the writeup gives only a year, use the half it states; if it gives no readout timing at all, use "unknown".

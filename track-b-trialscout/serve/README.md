@@ -17,7 +17,7 @@ fine-tuned model that does one narrow job well, exposed as a tool a larger model
 | `trial_readout_from_record(record, response_format?)` | Read out a trial record you already have (offline / custom). | no |
 
 Both return the same readout contract (`schema/trial_readout.schema.json`): `phase`, `indication`,
-`modality`, `primary_endpoint_type`, `sponsor_type`, `est_readout`, `risk_flags[]`, `investor_note`.
+`intervention_class`, `modalities[]`, `primary_endpoint_type`, `sponsor_type`, `est_readout`, `risk_flags[]`, `investor_note`.
 `response_format` is `"markdown"` (default, human-readable) or `"json"` (the structured object plus
 `schema_valid` / `schema_errors`). Output is validated against the schema on every call — no black box.
 

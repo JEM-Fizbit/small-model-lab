@@ -75,12 +75,13 @@ def main():
     # --- comparison report ---
     lines = ["# Phase 3 results — TrialScout fine-tune A/B\n",
              f"Majority-class baseline (floor): **{base}**\n",
-             "| model | overall structured | valid JSON | phase | modality | endpoint | sponsor | readout | risk set-F1 |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "| model | overall structured | valid JSON | phase | int. class | modalities set-F1 | endpoint | sponsor | readout | risk set-F1 |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for label, res in results.items():
         lines.append(
             f"| {label} | **{res['_overall_structured']}** | {res.get('_valid_json','-')} | "
-            f"{res['phase']['accuracy']} | {res['modality']['accuracy']} | "
+            f"{res['phase']['accuracy']} | {res['intervention_class']['accuracy']} | "
+            f"{res['modalities']['set_f1']} | "
             f"{res['primary_endpoint_type']['accuracy']} | {res['sponsor_type']['accuracy']} | "
             f"{res['est_readout']['accuracy']} | {res['risk_flags']['set_f1']} |")
     if results:
