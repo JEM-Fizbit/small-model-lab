@@ -23,13 +23,15 @@ GOLD = ROOT / "data" / "gold"
 AUG_GOLD = GOLD / "augment_rare.jsonl"                   # ...their labels (train-only)
 OUT = ROOT / "train" / "mlx_data"
 
-TARGET_FIELDS = ["phase", "indication", "modality", "primary_endpoint_type",
-                 "sponsor_type", "est_readout", "risk_flags", "investor_note"]
+TARGET_FIELDS = ["phase", "indication", "intervention_class", "modalities",
+                 "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags",
+                 "investor_note"]
 
 INSTRUCTION = (
     "You are TrialScout. Read the oncology clinical-trial record below and return ONLY a JSON "
-    "object with exactly these fields: phase, indication, modality, primary_endpoint_type, "
-    "sponsor_type, est_readout, risk_flags (array), investor_note. No prose, no code fence."
+    "object with exactly these fields: phase, indication, intervention_class, modalities (array), "
+    "primary_endpoint_type, sponsor_type, est_readout, risk_flags (array), investor_note. "
+    "No prose, no code fence."
 )
 
 
@@ -65,8 +67,16 @@ def main():
         rows = [json.loads(l) for l in (GOLD / f"{split}.jsonl").read_text().splitlines() if l.strip()]
         if split == "train" and AUG_GOLD.exists():
             aug = [json.loads(l) for l in AUG_GOLD.read_text().splitlines() if l.strip()]
-            rows = rows + aug  # augment feeds TRAIN only; val/test stay frozen for a clean delta
-            print(f"  (train augmented with {len(aug)} rare-modality rows -> {len(rows)} total)")
+            # Schema gate. The Phase-4 augment was labeled under schema v1 (single-valued
+            # `modality`, with `combination`). Merging those rows into a v2 training set
+            # would teach two contradictory conventions at once, and would do it silently.
+            stale = [r for r in aug if "modalities" not in r]
+            if stale:
+                print(f"  SKIPPING {AUG_GOLD.name}: {len(stale)}/{len(aug)} rows predate the "
+                      f"current schema (no `modalities` field). Relabel it before using it.")
+            else:
+                rows = rows + aug  # augment feeds TRAIN only; val/test stay frozen
+                print(f"  (train augmented with {len(aug)} rare-modality rows -> {len(rows)} total)")
         n = 0
         with (OUT / f"{fname}.jsonl").open("w") as f:
             for g in rows:
