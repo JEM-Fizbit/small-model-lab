@@ -13,12 +13,23 @@
       "type": "string",
       "description": "Concise tumor type + biomarker/line if stated, e.g. 'EGFR+ NSCLC, 2L' or 'higher-risk MDS, 1L'."
     },
-    "modality": {
+    "intervention_class": {
       "type": "string",
-      "enum": ["small molecule", "monoclonal antibody", "antibody-drug conjugate", "bispecific",
-               "cell therapy", "gene therapy", "cancer vaccine", "radiotherapy", "oncolytic virus",
-               "combination", "other"],
-      "description": "Primary therapeutic modality of the investigational agent(s). Use 'combination' only when two distinct modalities are co-equal."
+      "enum": ["drug/biologic", "external-beam radiation", "procedure/surgery", "device",
+               "behavioral/supportive care", "diagnostic/imaging", "other"],
+      "description": "What kind of intervention this trial actually tests. Decide this BEFORE modalities. 'drug/biologic' if any drug or biologic is given as anticancer therapy under study; otherwise the non-drug category that fits. Not every oncology trial has a drug asset - surgical-technique, radiotherapy-technique, device and supportive-care trials do not."
+    },
+    "modalities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["targeted small molecule", "cytotoxic chemotherapy", "hormonal/endocrine therapy",
+                 "monoclonal antibody", "bispecific/multispecific antibody", "antibody-drug conjugate",
+                 "other protein or peptide therapeutic", "oligonucleotide/RNA therapeutic",
+                 "cell therapy", "gene therapy", "oncolytic virus", "cancer vaccine",
+                 "radiopharmaceutical", "other"]
+      },
+      "description": "The DISTINCT therapeutic modalities present among the drugs/biologics this trial gives as anticancer therapy, as an unordered set sorted alphabetically. One entry per distinct modality, however many agents share it. MUST be an empty array [] when intervention_class is not 'drug/biologic'. This field says WHICH modalities are present, never how many agents there are and never which agent leads."
     },
     "primary_endpoint_type": {
       "type": "string",
@@ -51,6 +62,6 @@
       "description": "<=2 sentences: the catalyst-relevant takeaway — what this trial would prove, for whom, and what to watch. No hype, no fabricated facts."
     }
   },
-  "required": ["nct_id", "phase", "indication", "modality", "primary_endpoint_type",
-               "sponsor_type", "est_readout", "risk_flags", "investor_note"]
+  "required": ["nct_id", "phase", "indication", "intervention_class", "modalities",
+               "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags", "investor_note"]
 }
