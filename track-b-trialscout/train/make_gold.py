@@ -30,9 +30,24 @@ SPLITS = ROOT / "data" / "splits.json"   # frozen train/val/test assignment by N
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
 FEWSHOT = [json.loads(l) for l in (ROOT / "schema" / "fewshot.jsonl").read_text().splitlines() if l.strip()]
 
-MODEL = "claude-sonnet-4-6"
-# Sonnet pricing ($/token), approximate — the cap is the real guardrail.
-P_IN, P_OUT, P_CACHE_W, P_CACHE_R = 3.0/1e6, 15.0/1e6, 3.75/1e6, 0.30/1e6
+MODEL = "claude-sonnet-5"
+
+# Per-model pricing ($/1M tokens). The cap is the real guardrail, but it can only be
+# honest if these track the model actually being called.
+PRICING = {
+    # Sonnet 5 is on introductory pricing until 2026-08-31, then reverts to $3/$15.
+    # These have to be ACCURATE, not merely conservative: the cap aborts the run when
+    # the running estimate hits it, so over-stating the price halts a paid job early
+    # and under-stating it overspends. UPDATE THIS AFTER 2026-08-31.
+    "claude-sonnet-5":   {"in": 2.0, "out": 10.0},
+    "claude-sonnet-4-6": {"in": 3.0, "out": 15.0},
+}
+
+# The current model family (Sonnet 5, Opus 5, Fable 5) removed the sampling parameters:
+# `temperature` now returns 400. Depth is controlled by `output_config.effort` instead,
+# and adaptive thinking is on by default — which shares the max_tokens budget with the
+# response, so the old 700 can truncate a readout before it is emitted.
+NO_SAMPLING_PARAMS = ("claude-sonnet-5", "claude-opus-5", "claude-fable-5", "claude-opus-4-8")
 
 TOP_PHARMA = ("Pfizer, Roche, Genentech, Novartis, Merck, AstraZeneca, Bristol-Myers Squibb, "
               "Johnson & Johnson, Janssen, AbbVie, Sanofi, GSK, Amgen, Gilead, Takeda, "
@@ -70,7 +85,7 @@ Rules:
   Worked cases: gemcitabine + capecitabine + sorafenib -> ["cytotoxic chemotherapy", "targeted small molecule"] (three agents, two modalities). Pembrolizumab + cyclophosphamide -> ["cytotoxic chemotherapy", "monoclonal antibody"]. Trastuzumab deruxtecan + carboplatin -> ["antibody-drug conjugate", "cytotoxic chemotherapy"]. Citalopram vs psychotherapy for depression in cancer patients -> intervention_class "behavioral/supportive care", modalities [] (no anticancer drug is under study). Stereotactic body radiotherapy alone -> "external-beam radiation", [].
 - primary_endpoint_type: classify from the primary outcome measure(s). DLT/MTD/PK -> "safety/tolerability" or "pharmacokinetics".
 - sponsor_type: lead_sponsor_class INDUSTRY -> "large pharma" if the name is a top-20 global pharma ({TOP_PHARMA}), else "biotech". OTHER/NETWORK -> "academic/cooperative group". NIH/FED/OTHER_GOV -> "government".
-- est_readout: from primary_completion_date (YYYY-MM): months 01-06 -> "H1 YYYY", 07-12 -> "H2 YYYY". Missing -> "unknown".
+- est_readout: a MECHANICAL mapping of primary_completion_date, not a forecast of when results are published. Take the month from the date as given: 01-06 -> "H1 YYYY", 07-12 -> "H2 YYYY". Missing -> "unknown". Do NOT add a reporting lag, and do NOT reason about when data would realistically be presented — 2014-05-21 is "H1 2014" and 2011-06 is "H1 2011", full stop. The year is always the year in the date.
 - risk_flags: include ONLY those supported by the record. Map: 1 arm / non-randomized -> "single-arm"/"non-randomized"; enrollment <50 -> "small enrollment (<50)"; phase 1 or early -> "early-phase"; DLT/MTD/PK primary -> "PK/dose-finding only"; PFS/ORR/pCR primary -> "surrogate endpoint"; terminated/withdrawn/suspended status -> "status: terminated/withdrawn/suspended"; biomarker in indication -> "biomarker-restricted". Empty array if none apply.
 - investor_note: <=2 sentences. State what the trial would prove and the key caveat. Factual, no hype, never invent data not in the record.
 
@@ -125,20 +140,37 @@ client = anthropic.Anthropic()
 SYS = [{"type": "text", "text": system_prompt(), "cache_control": {"type": "ephemeral"}}]
 TOOLS = [tool_def()]
 
-def label_one(trial: dict, stop: threading.Event):
+def request_kwargs(model: str, effort: str = "medium") -> dict:
+    """Per-family request shape. Kept in one place so the difference is visible."""
+    if model in NO_SAMPLING_PARAMS:
+        # No temperature knob exists on this family. Determinism is not something we can
+        # request, so it is something we MEASURE -- see the self-consistency probe in
+        # ADR-0018. The larger max_tokens stops adaptive thinking from crowding out the
+        # tool call. Effort is `medium`, not `low`: at `low` the teacher put a June
+        # primary-completion date in H2 about half the time, flunking its own
+        # months-01-06-are-H1 rule. Cheap arithmetic still needs room to happen.
+        return {"max_tokens": 2000, "output_config": {"effort": effort}}
+    return {"max_tokens": 700, "temperature": 0}
+
+
+def label_one(trial: dict, stop: threading.Event, model: str = MODEL, effort: str = "medium"):
     if stop.is_set(): return {"skipped": True}
+    price = PRICING.get(model, PRICING["claude-sonnet-4-6"])
+    p_in, p_out = price["in"]/1e6, price["out"]/1e6
+    p_cache_w, p_cache_r = p_in*1.25, p_in*0.10
     for attempt in range(4):
         try:
             r = client.messages.create(
-                model=MODEL, max_tokens=700, temperature=0,
+                model=model,
                 system=SYS, tools=TOOLS,
                 tool_choice={"type": "tool", "name": "emit_readout"},
                 messages=[{"role": "user", "content": f"TRIAL:\n{json.dumps(trial, ensure_ascii=False)}\nReturn the readout."}],
+                **request_kwargs(model, effort),
             )
             u = r.usage
-            cost = (P_IN*u.input_tokens + P_OUT*u.output_tokens
-                    + P_CACHE_W*(getattr(u, "cache_creation_input_tokens", 0) or 0)
-                    + P_CACHE_R*(getattr(u, "cache_read_input_tokens", 0) or 0))
+            cost = (p_in*u.input_tokens + p_out*u.output_tokens
+                    + p_cache_w*(getattr(u, "cache_creation_input_tokens", 0) or 0)
+                    + p_cache_r*(getattr(u, "cache_read_input_tokens", 0) or 0))
             readout = next((b.input for b in r.content if b.type == "tool_use"), None)
             return {"nct_id": trial["nct_id"], "readout": readout, "cost": cost}
         except Exception as e:
@@ -151,6 +183,11 @@ def main():
     ap.add_argument("--target", type=int, default=1500)
     ap.add_argument("--cap", type=float, default=24.0)
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--effort", type=str, default="medium",
+                    choices=["low", "medium", "high"],
+                    help="output_config.effort for current-family teachers (ignored otherwise)")
+    ap.add_argument("--model", type=str, default=MODEL,
+                    help=f"teacher model id (default {MODEL}); pricing + request shape adapt to it")
     ap.add_argument("--input", type=str, default=str(RAW), help="raw trials JSONL to label")
     ap.add_argument("--out", type=str, default="all",
                     help="gold file stem to append to (gold/<stem>.jsonl). 'all' also does the 80/10/10 split.")
@@ -190,7 +227,7 @@ def main():
     print("\n--- PILOT (10 trials) ---")
     pilot_ok = 0
     for t in pilot:
-        res = label_one(t, stop)
+        res = label_one(t, stop, args.model, args.effort)
         if res and not res.get("error") and valid(res["readout"])[0]:
             pilot_ok += 1
         record(res)
@@ -207,7 +244,7 @@ def main():
     print(f"\n--- BULK ({len(rest)} trials, {args.workers} workers) ---")
     t0 = time.time()
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        futs = [ex.submit(label_one, t, stop) for t in rest]
+        futs = [ex.submit(label_one, t, stop, args.model, args.effort) for t in rest]
         for i, fut in enumerate(as_completed(futs), 1):
             record(fut.result())
             if cost[0] >= args.cap and not stop.is_set():
@@ -250,7 +287,7 @@ def main():
               f"- labeled this run: **{n_ok}** valid, {n_bad} failed\n"
               f"{split_line}"
               f"- spend: **${cost[0]:.2f}** (cap ${args.cap})\n"
-              f"- teacher: {MODEL}, forced tool-use, prompt-cached prefix\n")
+              f"- teacher: {args.model}, forced tool-use, prompt-cached prefix\n")
     (GOLD / f"REPORT_{args.out}.md").write_text(report)
     print("\n" + report)
 
