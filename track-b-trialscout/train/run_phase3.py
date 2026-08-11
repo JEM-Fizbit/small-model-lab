@@ -20,7 +20,12 @@ MODELS = [
     ("qwen",  "mlx-community/Qwen3-4B-Instruct-2507-4bit"),
     ("gemma", "mlx-community/gemma-4-E2B-it-4bit"),
 ]
-ITERS, BATCH, LR, MAXSEQ = 700, 4, "1e-4", 1536
+# MAXSEQ 2048, not 1536: with uncapped interventions + descriptions the longest prompt is
+# 2541 tokens once descriptions are capped at 300 chars. At 1536 or 2048 some examples are
+# silently truncated --
+# which is the exact failure the v3 audit set out to remove. ITERS 700 -> 1000: val loss was
+# still descending at 700 on 1,491 rows (0.494 -> 0.460), so the budget was the binding limit.
+ITERS, BATCH, LR, MAXSEQ = 1000, 4, "1e-4", 2560
 
 
 def baseline_overall() -> float:

@@ -36,9 +36,16 @@ from format_for_mlx import trial_input  # noqa: E402  same trimmed record the st
 from make_gold import PRICING, request_kwargs, canonical  # noqa: E402  one pricing source
 
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
-GOLD_TEST = [json.loads(l) for l in (ROOT / "data" / "gold" / "test.jsonl").read_text().splitlines() if l.strip()]
-RAW = {json.loads(l)["nct_id"]: json.loads(l)
-       for l in (ROOT / "data" / "raw" / "trials.jsonl").read_text().splitlines() if l.strip()}
+def load_gold(stem):
+    return [json.loads(x) for x in (ROOT / "data" / "gold" / f"{stem}.jsonl").read_text().splitlines() if x.strip()]
+
+
+GOLD_TEST = load_gold("test")
+RAW = {}
+for _f in sorted((ROOT / "data" / "raw").glob("*.jsonl")):
+    for _l in _f.read_text().splitlines():
+        if _l.strip():
+            _r = json.loads(_l); RAW[_r["nct_id"]] = _r
 
 # The ENTIRE system prompt. Deliberately minimal: this is the control condition, so it gets
 # the contract and nothing else. Every rule, worked example and disambiguation that
@@ -89,9 +96,11 @@ def main():
     ap.add_argument("--cap", type=float, default=3.0)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--label", type=str, default="frontier_zeroshot")
+    ap.add_argument("--gold", type=str, default="test", help="gold stem under data/gold/")
     args = ap.parse_args()
 
-    test = GOLD_TEST[:args.limit] if args.limit else GOLD_TEST
+    rows_g = load_gold(args.gold)
+    test = rows_g[:args.limit] if args.limit else rows_g
     cost, lock, stop = [0.0], threading.Lock(), threading.Event()
     preds, failed = {}, 0
 

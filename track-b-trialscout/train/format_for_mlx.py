@@ -23,6 +23,11 @@ GOLD = ROOT / "data" / "gold"
 AUG_GOLD = GOLD / "augment_rare.jsonl"                   # ...their labels (train-only)
 OUT = ROOT / "train" / "mlx_data"
 
+# 600 truncated 32% of trials. Measured token cost of lifting it entirely, with uncapped
+# interventions and descriptions on: median prompt 536, p95 969, max 1733 -- so it fits inside
+# a 2048 max-seq-length with room to spare. None = no truncation.
+SUMMARY_CHARS = None
+
 TARGET_FIELDS = ["phase", "indication", "intervention_class", "modalities",
                  "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags",
                  "investor_note"]
@@ -39,7 +44,7 @@ def trial_input(raw: dict) -> dict:
     """The compact record shown to the model (matches what the teacher saw, summary trimmed)."""
     r = dict(raw)
     if r.get("brief_summary"):
-        r["brief_summary"] = r["brief_summary"][:600]
+        r["brief_summary"] = r["brief_summary"][:SUMMARY_CHARS]
     r.pop("nct_id", None)  # nct_id is known at scoring time; don't make the model copy it
     return r
 
