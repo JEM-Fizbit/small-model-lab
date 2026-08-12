@@ -1,0 +1,102 @@
+{
+  "phase": {
+    "accuracy": 1.0,
+    "macro_f1": 1.0
+  },
+  "intervention_class": {
+    "accuracy": 0.947,
+    "macro_f1": 0.66
+  },
+  "primary_endpoint_type": {
+    "accuracy": 0.927,
+    "macro_f1": 0.918
+  },
+  "sponsor_type": {
+    "accuracy": 0.987,
+    "macro_f1": 0.975
+  },
+  "est_readout": {
+    "accuracy": 0.987
+  },
+  "modalities": {
+    "set_f1": 0.888,
+    "macro_f1": 0.66,
+    "_error_shape": {
+      "counts": {
+        "superset (predicted extra)": 9,
+        "exact": 113,
+        "partial overlap": 11,
+        "subset (predicted fewer)": 11,
+        "disjoint": 6
+      },
+      "exact_set_accuracy": 0.753,
+      "cardinality_only_errors": 20,
+      "cardinality_only_share_of_errors": 0.541
+    },
+    "exact_set_accuracy": 0.753,
+    "_per_label": {
+      "antibody-drug conjugate": {
+        "n": 5,
+        "recall": 0.4
+      },
+      "bispecific/multispecific antibody": {
+        "n": 2,
+        "recall": 0.5
+      },
+      "cancer vaccine": {
+        "n": 7,
+        "recall": 1.0
+      },
+      "cell therapy": {
+        "n": 7,
+        "recall": 0.857
+      },
+      "cytotoxic chemotherapy": {
+        "n": 51,
+        "recall": 0.882
+      },
+      "gene therapy": {
+        "n": 1,
+        "recall": 1.0
+      },
+      "hormonal/endocrine therapy": {
+        "n": 10,
+        "recall": 0.9
+      },
+      "monoclonal antibody": {
+        "n": 38,
+        "recall": 0.895
+      },
+      "oligonucleotide/RNA therapeutic": {
+        "n": 2,
+        "recall": 0.5
+      },
+      "oncolytic virus": {
+        "n": 3,
+        "recall": 0.333
+      },
+      "other protein or peptide therapeutic": {
+        "n": 8,
+        "recall": 0.25
+      },
+      "radiopharmaceutical": {
+        "n": 4,
+        "recall": 1.0
+      },
+      "targeted small molecule": {
+        "n": 68,
+        "recall": 0.853
+      }
+    }
+  },
+  "risk_flags_judgement": {
+    "set_f1": 0.815,
+    "judgement_subset_f1": 0.815,
+    "deterministic_subset_f1": 1.0,
+    "_note": "judgement_subset_f1 is the honest number for what the model is asked to reason about; the deterministic subset should be computed from the record (schema/derive.py), not generated."
+  },
+  "_overall_structured": 0.936,
+  "_n": 150,
+  "_scoring_note": "schema v2: 7 components (4 categorical accuracies, est_readout exact match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 overall, which had 6 components and scored modality by hard accuracy.",
+  "_valid_json": 1.0
+}

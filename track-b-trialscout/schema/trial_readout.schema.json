@@ -3,10 +3,21 @@
   "description": "Emit a structured, investor-relevant readout for one oncology clinical trial.",
   "type": "object",
   "properties": {
-    "nct_id": { "type": "string", "description": "The trial's NCT identifier, copied verbatim." },
+    "nct_id": {
+      "type": "string",
+      "description": "The trial's NCT identifier, copied verbatim."
+    },
     "phase": {
       "type": "string",
-      "enum": ["Early Phase 1", "Phase 1", "Phase 1/2", "Phase 2", "Phase 2/3", "Phase 3", "Phase 4"],
+      "enum": [
+        "Early Phase 1",
+        "Phase 1",
+        "Phase 1/2",
+        "Phase 2",
+        "Phase 2/3",
+        "Phase 3",
+        "Phase 4"
+      ],
       "description": "Normalized trial phase."
     },
     "indication": {
@@ -15,32 +26,63 @@
     },
     "intervention_class": {
       "type": "string",
-      "enum": ["drug/biologic", "external-beam radiation", "procedure/surgery", "device",
-               "behavioral/supportive care", "diagnostic/imaging", "other"],
+      "enum": [
+        "drug/biologic",
+        "external-beam radiation",
+        "procedure/surgery",
+        "device",
+        "behavioral/supportive care",
+        "diagnostic/imaging",
+        "other"
+      ],
       "description": "What kind of intervention this trial actually tests. Decide this BEFORE modalities. 'drug/biologic' if any drug or biologic is given as anticancer therapy under study; otherwise the non-drug category that fits. Not every oncology trial has a drug asset - surgical-technique, radiotherapy-technique, device and supportive-care trials do not."
     },
     "modalities": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["targeted small molecule", "cytotoxic chemotherapy", "hormonal/endocrine therapy",
-                 "monoclonal antibody", "bispecific/multispecific antibody", "antibody-drug conjugate",
-                 "other protein or peptide therapeutic", "oligonucleotide/RNA therapeutic",
-                 "cell therapy", "gene therapy", "oncolytic virus", "cancer vaccine",
-                 "radiopharmaceutical", "other"]
+        "enum": [
+          "targeted small molecule",
+          "cytotoxic chemotherapy",
+          "hormonal/endocrine therapy",
+          "monoclonal antibody",
+          "bispecific/multispecific antibody",
+          "antibody-drug conjugate",
+          "other protein or peptide therapeutic",
+          "oligonucleotide/RNA therapeutic",
+          "cell therapy",
+          "gene therapy",
+          "oncolytic virus",
+          "cancer vaccine",
+          "radiopharmaceutical",
+          "other"
+        ]
       },
       "description": "The DISTINCT therapeutic modalities present among the drugs/biologics this trial gives as anticancer therapy, as an unordered set sorted alphabetically. One entry per distinct modality, however many agents share it. MUST be an empty array [] when intervention_class is not 'drug/biologic'. This field says WHICH modalities are present, never how many agents there are and never which agent leads."
     },
     "primary_endpoint_type": {
       "type": "string",
-      "enum": ["overall survival (OS)", "progression-free survival (PFS)", "objective response rate (ORR)",
-               "disease-free survival (DFS)", "pathologic complete response (pCR)",
-               "safety/tolerability", "pharmacokinetics", "other"],
+      "enum": [
+        "overall survival (OS)",
+        "progression-free survival (PFS)",
+        "objective response rate (ORR)",
+        "disease-free survival (DFS)",
+        "pathologic complete response (pCR)",
+        "safety/tolerability",
+        "pharmacokinetics",
+        "other"
+      ],
       "description": "Category of the primary outcome measure(s)."
     },
     "sponsor_type": {
       "type": "string",
-      "enum": ["large pharma", "biotech", "academic/cooperative group", "government", "other"],
+      "enum": [
+        "large pharma",
+        "biotech",
+        "academic/cooperative group",
+        "government",
+        "other"
+      ],
       "description": "Classify the lead sponsor. 'large pharma' = top-20 global pharma; 'biotech' = smaller commercial sponsor; map sponsor_class OTHER/NIH/NETWORK to academic/government appropriately."
     },
     "est_readout": {
@@ -51,17 +93,51 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["single-arm", "no comparator", "small enrollment (<50)", "surrogate endpoint",
-                 "early-phase", "open-label", "non-randomized", "PK/dose-finding only",
-                 "status: terminated/withdrawn/suspended", "long timeline (>4y)", "biomarker-restricted"]
+        "enum": [
+          "single-arm",
+          "no comparator",
+          "small enrollment (<50)",
+          "surrogate endpoint",
+          "early-phase",
+          "open-label",
+          "non-randomized",
+          "PK/dose-finding only",
+          "status: terminated/withdrawn/suspended",
+          "long timeline (>4y)",
+          "biomarker-restricted"
+        ]
       },
-      "description": "Investor-relevant risk flags supported by the record. Empty array if none apply."
+      "description": "DERIVED, not generated. The pipeline computes the seven arithmetic flags from the record (schema/derive.py) and unions them with the model's `risk_flags_judgement`. Present in the served readout; never requested from a model. See ADR-0022: the teacher got `enrollment < 50` wrong 20 times in 150, and the student learned the mistake.",
+      "x-derived": true
+    },
+    "risk_flags_judgement": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "surrogate endpoint",
+          "biomarker-restricted",
+          "PK/dose-finding only",
+          "no comparator"
+        ]
+      },
+      "description": "Risk flags that require READING the trial, as an unordered set sorted alphabetically. Only these four. Everything else in `risk_flags` is arithmetic on fields already in the record and is computed by the pipeline, not asked of you. Empty array if none apply."
     },
     "investor_note": {
       "type": "string",
-      "description": "<=2 sentences: the catalyst-relevant takeaway — what this trial would prove, for whom, and what to watch. No hype, no fabricated facts."
+      "description": "<=2 sentences: the catalyst-relevant takeaway \u2014 what this trial would prove, for whom, and what to watch. No hype, no fabricated facts."
     }
   },
-  "required": ["nct_id", "phase", "indication", "intervention_class", "modalities",
-               "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags", "investor_note"]
+  "required": [
+    "nct_id",
+    "phase",
+    "indication",
+    "intervention_class",
+    "modalities",
+    "primary_endpoint_type",
+    "sponsor_type",
+    "est_readout",
+    "investor_note",
+    "risk_flags_judgement"
+  ]
 }

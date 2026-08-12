@@ -79,14 +79,14 @@ Rules:
   10. hormonal or endocrine agent (aromatase inhibitor, SERD/SERM, anti-androgen, GnRH analogue, progestin, somatostatin analogue) -> "hormonal/endocrine therapy"
   11. classical cytotoxic chemotherapy (platinum, taxane, antimetabolite, anthracycline, alkylator, topoisomerase inhibitor, vinca alkaloid) -> "cytotoxic chemotherapy"
   12. other protein, peptide, fusion protein, enzyme, cytokine or interferon -> "other protein or peptide therapeutic"
-  13. any other small molecule, including kinase inhibitors (-tinib), PARP (-parib), CDK (-ciclib), proteasome (-zomib), IMiDs and targeted degraders -> "targeted small molecule"
+  13. any other small molecule -> "targeted small molecule". This includes kinase inhibitors (-tinib), PARP (-parib), CDK (-ciclib), proteasome (-zomib), IMiDs and targeted degraders, AND ALSO agents that are easy to mis-file as biologics: photosensitizers (aminolevulinic acid, methylaminolevulinate, Levulan), topical immune agonists (imiquimod, ingenol mebutate), cytoprotectants (dexrazoxane, amifostine), retinoids, and albumin-bound formulations of a small molecule (nab-sirolimus, nab-paclitaxel — the carrier is not the drug). "other protein or peptide therapeutic" is for actual proteins and peptides; it is NOT a second "other" bucket.
   14. genuinely none of the above -> "other"
   GROUNDING RULE — every value you list must be traceable to a SPECIFIC agent NAMED in the record. Never add a modality because the trial "probably" also uses chemotherapy, because it is described as a combination, or because the tumor type usually implies a backbone. If no named agent supports it, do NOT list it. Two DIFFERENT monospecific antibodies given together are still just ["monoclonal antibody"] — "bispecific/multispecific" means ONE molecule that binds two or more targets, never two molecules given together.
   Worked cases: gemcitabine + capecitabine + sorafenib -> ["cytotoxic chemotherapy", "targeted small molecule"] (three agents, two modalities). Pembrolizumab + cyclophosphamide -> ["cytotoxic chemotherapy", "monoclonal antibody"]. Trastuzumab deruxtecan + carboplatin -> ["antibody-drug conjugate", "cytotoxic chemotherapy"]. Citalopram vs psychotherapy for depression in cancer patients -> intervention_class "behavioral/supportive care", modalities [] (no anticancer drug is under study). Stereotactic body radiotherapy alone -> "external-beam radiation", [].
 - primary_endpoint_type: classify from the primary outcome measure(s). DLT/MTD/PK -> "safety/tolerability" or "pharmacokinetics".
 - sponsor_type: lead_sponsor_class INDUSTRY -> "large pharma" if the name is a top-20 global pharma ({TOP_PHARMA}), else "biotech". OTHER/NETWORK -> "academic/cooperative group". NIH/FED/OTHER_GOV -> "government".
 - est_readout: a MECHANICAL mapping of primary_completion_date, not a forecast of when results are published. Take the month from the date as given: 01-06 -> "H1 YYYY", 07-12 -> "H2 YYYY". Missing -> "unknown". Do NOT add a reporting lag, and do NOT reason about when data would realistically be presented — 2014-05-21 is "H1 2014" and 2011-06 is "H1 2011", full stop. The year is always the year in the date.
-- risk_flags: include ONLY those supported by the record. Map: 1 arm / non-randomized -> "single-arm"/"non-randomized"; enrollment <50 -> "small enrollment (<50)"; phase 1 or early -> "early-phase"; DLT/MTD/PK primary -> "PK/dose-finding only"; PFS/ORR/pCR primary -> "surrogate endpoint"; terminated/withdrawn/suspended status -> "status: terminated/withdrawn/suspended"; biomarker in indication -> "biomarker-restricted". Empty array if none apply.
+- risk_flags_judgement: ONLY these four, and only when the record supports them. PFS/ORR/pCR primary -> "surrogate endpoint"; DLT/MTD/PK primary -> "PK/dose-finding only"; a biomarker restricts eligibility -> "biomarker-restricted"; a single-arm design with no control at all -> "no comparator". Empty array if none apply. Do NOT report enrollment size, phase, masking, randomization, status or timeline — those are computed from the record by the pipeline, and you are measurably worse at them than an `if` statement.
 - investor_note: <=2 sentences. State what the trial would prove and the key caveat. Factual, no hype, never invent data not in the record.
 
 Worked examples:
@@ -94,15 +94,23 @@ Worked examples:
 {ex}"""
 
 def tool_def() -> dict:
+    """The teacher's tool: every field EXCEPT the ones the pipeline derives.
+
+    A field marked `x-derived` is computed from the record (schema/derive.py). Offering it to
+    the teacher would invite a second, worse opinion on arithmetic it cannot do reliably.
+    """
+    props = {k: v for k, v in SCHEMA["properties"].items() if not v.get("x-derived")}
+    req = [r for r in SCHEMA["required"] if r in props]
     return {"name": SCHEMA["name"], "description": SCHEMA["description"],
-            "input_schema": {"type": "object", "properties": SCHEMA["properties"], "required": SCHEMA["required"]}}
+            "input_schema": {"type": "object", "properties": props, "required": req}}
 
 # Derived from the schema rather than hand-listed, so a field changing shape (scalar ->
 # array, as `modality` -> `modalities` did) can't silently slip past the pilot gate.
-SCALAR_ENUMS = {k: set(v["enum"]) for k, v in SCHEMA["properties"].items() if "enum" in v}
-ARRAY_ENUMS = {k: set(v["items"]["enum"]) for k, v in SCHEMA["properties"].items()
+_ASKED = {k: v for k, v in SCHEMA["properties"].items() if not v.get("x-derived")}
+SCALAR_ENUMS = {k: set(v["enum"]) for k, v in _ASKED.items() if "enum" in v}
+ARRAY_ENUMS = {k: set(v["items"]["enum"]) for k, v in _ASKED.items()
                if v.get("type") == "array" and "enum" in v.get("items", {})}
-REQUIRED = SCHEMA["required"]
+REQUIRED = [r for r in SCHEMA["required"] if r in _ASKED]
 
 def valid(readout: dict) -> tuple[bool, str]:
     if not isinstance(readout, dict): return False, "not a dict"

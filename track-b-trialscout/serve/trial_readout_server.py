@@ -139,7 +139,7 @@ def _infer(raw_record: dict) -> dict:
     # Seven of the eleven risk flags are arithmetic on fields in the record. Compute those and
     # keep only the model's four judgement flags -- it is measurably worse at `enrollment < 50`
     # than an `if` statement, having learned the teacher's errors. See schema/derive.py.
-    readout["risk_flags"] = merge_risk_flags(raw_record, readout.get("risk_flags"))
+    readout["risk_flags"] = merge_risk_flags(raw_record, readout.get("risk_flags_judgement"))
     errors = sorted(e.message for e in _VALIDATOR.iter_errors(readout))
     return {"_ok": True, "readout": readout, "_schema_valid": not errors, "_schema_errors": errors}
 

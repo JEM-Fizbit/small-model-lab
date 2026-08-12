@@ -53,10 +53,24 @@ afterwards the model stays resident for the life of the server.
 
 ## Training
 
-LoRA fine-tune (16 layers, batch 4, max-seq 1536, grad checkpointing) peaks around **10 GB** and runs
-~55–70 min for 700 iterations. **Do not run inference at the same time** — both want the same pool,
-and the combination is what makes a 24 GB machine unusable. Training is also the one job worth
-running while you are away.
+| config | peak memory | wall clock |
+|---|---|---|
+| 16 layers, batch 4, max-seq **1536**, 700 iters | ~10 GB | ~55–70 min |
+| 16 layers, batch 4, max-seq **2560**, 1000 iters | **14.3 GB** | ~2 h |
+
+Activation memory scales with sequence length, so the v3 config (2560, needed so no example is
+truncated) costs ~40% more than v2's. Measured on the 24 GB M5: it ran without swapping, but left
+the machine at **8% free** — stable, and with no headroom for anything else.
+
+**Do not run inference at the same time** — both want the same pool, and that combination is what
+makes a 24 GB machine unusable. Training is the one job worth running while you are away. If you
+must work alongside it, drop to `--batch-size 2`, which roughly halves activation memory for about
+30 extra minutes.
+
+**Check the validation curve before shipping the final weights.** `mlx_lm.lora` saves the LAST
+iteration, not the best. On the v3 run val loss bottomed at iteration 400 (0.496) and rose to 0.640
+by 1000 — the saved adapter was the worst checkpoint, and using `0000400_adapters.safetensors`
+recovered +0.008 overall for free. The optimum is config-specific: v2 was still improving at 700.
 
 ## Quick health check while something is running
 

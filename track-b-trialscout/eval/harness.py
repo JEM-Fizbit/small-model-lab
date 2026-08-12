@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GOLD = ROOT / "data" / "gold"
 
 CATEGORICAL = ["phase", "intervention_class", "primary_endpoint_type", "sponsor_type"]
-SET_VALUED = ["modalities", "risk_flags"]
+SET_VALUED = ["modalities", "risk_flags_judgement"]  # risk_flags is derived, not scored
 
 # Distinguishes "the model answered []" from "the model omitted the field". Both look like
 # an empty list to .get(field, []), but [] is a claim (no drug asset) and a missing key is
@@ -173,7 +173,7 @@ def score(gold, pred_by_id):
         block: dict = {"set_f1": round(sum(per) / len(per), 3) if per else 0.0}
         if n_missing:
             block["_omitted"] = n_missing
-        if field == "risk_flags":
+        if field == "risk_flags_judgement":
             # Split what the model is genuinely responsible for from what is arithmetic.
             # See schema/derive.py: seven of these eleven are pure functions of the record.
             try:
