@@ -2,7 +2,7 @@
 """TrialScout MCP server — the fine-tuned Qwen3-4B "expert", exposed as a callable tool.
 
 This is Phase 5 (B7): package the winner of the Track-B A/B (Qwen3-4B + LoRA adapter,
-which scores 0.939 vs a 0.476 baseline under schema v2) as an MCP server so any MCP client (Claude Code,
+which scores 0.932 on a 1,444-trial natural held-out set under schema v3) as an MCP server so any MCP client (Claude Code,
 Claude Desktop, …) can call it. It runs the model **locally and free** via MLX — no API spend.
 
 Two tools, one shared inference core:
@@ -48,7 +48,7 @@ from fingerprint import check as check_schema  # noqa: E402  refuse a v1 adapter
 
 # --- config (no magic numbers: every knob named + commented) ---
 BASE_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"  # ADR-0002/0009: Qwen won the A/B
-ADAPTER = ROOT / "train" / "adapters" / "qwen_v2s_aug"   # the 28 MB LoRA we trained (gitignored)
+ADAPTER = ROOT / "train" / "adapters" / "qwen_v3_it400"  # the 28 MB LoRA we trained (gitignored)
 # NOTE: must track the schema. Pointing this at a v1 adapter while schema/ is v2 produces
 # output that still VALIDATES (the normalizer snaps unknown values to "other") but is wrong.
 # Caught by --selftest on 2026-08-10; that silent-validity failure mode is why the selftest exists.
