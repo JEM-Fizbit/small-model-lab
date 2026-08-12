@@ -45,12 +45,18 @@ def enum_appendix() -> str:
 
 # Every raw source, not just the main pull: --gold can point at the rare-class diagnostic
 # (ADR-0020) or the augment, whose records live in their own files.
+# Every compact-record source. studies_full.jsonl is the untouched CT.gov archive -- same
+# directory, different shape (nctId lives under protocolSection), so it is skipped by name
+# AND by a defensive check. Globbing a directory means anything dropped in it becomes input.
 RAW = {}
 for _f in sorted((ROOT / "data" / "raw").glob("*.jsonl")):
+    if _f.name == "studies_full.jsonl":
+        continue
     for _l in _f.read_text().splitlines():
         if _l.strip():
             _r = json.loads(_l)
-            RAW[_r["nct_id"]] = _r
+            if "nct_id" in _r:
+                RAW[_r["nct_id"]] = _r
 def load_gold(stem: str):
     return [json.loads(line) for line in (ROOT / "data" / "gold" / f"{stem}.jsonl").read_text().splitlines()
             if line.strip()]

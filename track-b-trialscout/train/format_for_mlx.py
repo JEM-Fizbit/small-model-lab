@@ -29,7 +29,7 @@ OUT = ROOT / "train" / "mlx_data"
 SUMMARY_CHARS = None
 
 TARGET_FIELDS = ["phase", "indication", "intervention_class", "modalities",
-                 "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags",
+                 "primary_endpoint_type", "sponsor_type", "est_readout", "risk_flags_judgement",
                  "investor_note"]
 
 INSTRUCTION = (

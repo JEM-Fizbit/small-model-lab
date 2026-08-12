@@ -82,10 +82,13 @@ def derive_risk_flags(record: dict) -> list[str]:
 
 
 def merge_risk_flags(record: dict, model_flags: list[str] | None) -> list[str]:
-    """The served answer: computed flags for the seven, the model's answer for the four.
+    """The served answer: computed flags for the seven, the model's `risk_flags_judgement` for
+    the four.
 
     Anything the model emits from the deterministic set is discarded — not merged — because the
-    record is the authority for those and a second opinion adds only noise.
+    record is the authority for those and a second opinion adds only noise. As of schema v3 the
+    model is not even offered those seven (they are `x-derived`), so this filter is now a
+    belt-and-braces guard rather than the main mechanism.
     """
     judged = {f for f in (model_flags or []) if f in JUDGEMENT_FLAGS}
     return sorted(set(derive_risk_flags(record)) | judged)

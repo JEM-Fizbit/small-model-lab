@@ -41,11 +41,18 @@ def load_gold(stem):
 
 
 GOLD_TEST = load_gold("test")
+# Every compact-record source. studies_full.jsonl is the untouched CT.gov archive -- same
+# directory, different shape (nctId lives under protocolSection), so it is skipped by name
+# AND by a defensive check. Globbing a directory means anything dropped in it becomes input.
 RAW = {}
 for _f in sorted((ROOT / "data" / "raw").glob("*.jsonl")):
+    if _f.name == "studies_full.jsonl":
+        continue
     for _l in _f.read_text().splitlines():
         if _l.strip():
-            _r = json.loads(_l); RAW[_r["nct_id"]] = _r
+            _r = json.loads(_l)
+            if "nct_id" in _r:
+                RAW[_r["nct_id"]] = _r
 
 # The ENTIRE system prompt. Deliberately minimal: this is the control condition, so it gets
 # the contract and nothing else. Every rule, worked example and disambiguation that
