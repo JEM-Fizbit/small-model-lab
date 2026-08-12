@@ -29,8 +29,8 @@ ARMS = [
     ("base_strict",       "Untuned, no vocab",    "score_base_strict.json"),
     ("base_vocab",        "Untuned + enum list",  "score_base_vocab.json"),
     ("frontier_zeroshot", "Frontier zero-shot",   "score_frontier_zeroshot.json"),
-    ("qwen_v2s",          "Student (no aug)",     "score_qwen_v2s.json"),
-    ("qwen_v2s_aug",      "Student (PRODUCTION)", "score_qwen_v2s_aug.json"),
+    ("qwen_v2s_aug",      "v2 student",           "score_qwen_v2s_aug.json"),
+    ("qwen_v3_it400",     "v3 student (PRODUCTION)", "score_qwen_v3_it400.json"),
 ]
 
 ROWS = [
@@ -44,7 +44,8 @@ ROWS = [
     ("primary_endpoint_type", lambda r: r["primary_endpoint_type"]["accuracy"]),
     ("sponsor_type",       lambda r: r["sponsor_type"]["accuracy"]),
     ("est_readout",        lambda r: r["est_readout"]["accuracy"]),
-    ("risk_flags (set-F1)", lambda r: r["risk_flags"]["set_f1"]),
+    ("risk_flags (set-F1)", lambda r: (r.get("risk_flags") or {}).get("set_f1")),
+    ("risk_flags_judgement (set-F1)", lambda r: (r.get("risk_flags_judgement") or {}).get("set_f1")),
 ]
 
 
@@ -81,7 +82,7 @@ def main():
 
     # the diagnostic that answers "did the ambiguity move?"
     diag = ""
-    stu = scores.get("qwen_v2s_aug", scores.get("qwen_v2s", {})).get("modalities", {}).get("_error_shape")
+    stu = scores.get("qwen_v3_it400", scores.get("qwen_v2s_aug", {})).get("modalities", {}).get("_error_shape")
     if diag is not None and stu:
         counts = stu["counts"]
         total_err = sum(v for k, v in counts.items() if k != "exact")
@@ -97,7 +98,7 @@ def main():
                   f"`combination` argument or merely *relocated* it. v1's benchmark: 20 of 34 "
                   f"modality errors involved `combination` on one side or the other.")
 
-    per_label = scores.get("qwen_v2s_aug", scores.get("qwen_v2s", {})).get("modalities", {}).get("_per_label")
+    per_label = scores.get("qwen_v3_it400", scores.get("qwen_v2s_aug", {})).get("modalities", {}).get("_per_label")
     front_label = scores.get("frontier_zeroshot", {}).get("modalities", {}).get("_per_label", {})
     tail = ""
     if per_label:
@@ -142,7 +143,13 @@ scoring `modality` by hard accuracy. This is seven components scoring `modalitie
 set-F1, which awards partial credit where v1 awarded none. The two numbers share a scale
 and measure different things. The v1 figures remain reproducible in `eval/v1-frozen/`.
 
-**Why PRODUCTION looks worse on some modality rows.** `qwen_v2s_aug` scores lower here on
+**The rare-class rows in the table below are NOT reliable.** Several classes have 1-8 gold
+examples here, where one trial swings recall by 12-50 points. The trustworthy figures come from
+the 1,444-trial natural held-out set (ADR-0022): ADC **0.91** not 0.40, bispecific **0.79** not
+0.50, macro-F1 **0.737** not 0.660. This page's *headline* is sound -- 0.936 here against 0.932
+there -- but its per-class detail is noise. See `PHASE6_DIAGNOSTIC.md`.
+
+**Historic note on PRODUCTION columns.** `qwen_v2s_aug` scores lower here on
 modalities macro-F1 (0.569 vs 0.653) yet is the promoted adapter. Frozen-set macro-F1 weights
 every label equally across classes with n=1-5, so it is mostly sampling noise. On the
 properly-powered diagnostic set the ordering reverses (0.689 vs 0.663) and the augmented adapter

@@ -464,32 +464,63 @@ not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's act
 }</pre></div>
 <figure class="codefig"><div class="codebar"><span class="srcname">trial_readout.schema.json</span></div><div class="hl"><pre><span></span><span class="w">    </span><span class="nt">&quot;intervention_class&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;drug/biologic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;external-beam radiation&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;procedure/surgery&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;device&quot;</span><span class="p">,</span>
-<span class="w">               </span><span class="s2">&quot;behavioral/supportive care&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;diagnostic/imaging&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;drug/biologic&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;external-beam radiation&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;procedure/surgery&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;device&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;behavioral/supportive care&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;diagnostic/imaging&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;other&quot;</span>
+<span class="w">      </span><span class="p">],</span>
 <span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;What kind of intervention this trial actually tests. Decide this BEFORE modalities. &#39;drug/biologic&#39; if any drug or biologic is given as anticancer therapy under study; otherwise the non-drug category that fits. Not every oncology trial has a drug asset - surgical-technique, radiotherapy-technique, device and supportive-care trials do not.&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;modalities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;targeted small molecule&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cytotoxic chemotherapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hormonal/endocrine therapy&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;monoclonal antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;bispecific/multispecific antibody&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;antibody-drug conjugate&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;other protein or peptide therapeutic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oligonucleotide/RNA therapeutic&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;cell therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gene therapy&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;oncolytic virus&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancer vaccine&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;radiopharmaceutical&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">&quot;targeted small molecule&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;cytotoxic chemotherapy&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;hormonal/endocrine therapy&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;monoclonal antibody&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;bispecific/multispecific antibody&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;antibody-drug conjugate&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;other protein or peptide therapeutic&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;oligonucleotide/RNA therapeutic&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;cell therapy&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;gene therapy&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;oncolytic virus&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;cancer vaccine&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;radiopharmaceutical&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;other&quot;</span>
+<span class="w">        </span><span class="p">]</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The DISTINCT therapeutic modalities present among the drugs/biologics this trial gives as anticancer therapy, as an unordered set sorted alphabetically. One entry per distinct modality, however many agents share it. MUST be an empty array [] when intervention_class is not &#39;drug/biologic&#39;. This field says WHICH modalities are present, never how many agents there are and never which agent leads.&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;primary_endpoint_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;overall survival (OS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;progression-free survival (PFS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;objective response rate (ORR)&quot;</span><span class="p">,</span>
-<span class="w">               </span><span class="s2">&quot;disease-free survival (DFS)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pathologic complete response (pCR)&quot;</span><span class="p">,</span>
-<span class="w">               </span><span class="s2">&quot;safety/tolerability&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pharmacokinetics&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;overall survival (OS)&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;progression-free survival (PFS)&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;objective response rate (ORR)&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;disease-free survival (DFS)&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;pathologic complete response (pCR)&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;safety/tolerability&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;pharmacokinetics&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;other&quot;</span>
+<span class="w">      </span><span class="p">],</span>
 <span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Category of the primary outcome measure(s).&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;sponsor_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;large pharma&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;biotech&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;academic/cooperative group&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;government&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;large pharma&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;biotech&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;academic/cooperative group&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;government&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;other&quot;</span>
+<span class="w">      </span><span class="p">],</span>
 <span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Classify the lead sponsor. &#39;large pharma&#39; = top-20 global pharma; &#39;biotech&#39; = smaller commercial sponsor; map sponsor_class OTHER/NIH/NETWORK to academic/government appropriately.&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;est_readout&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -500,11 +531,35 @@ not a parser. Here is a real held-out trial (NCT03631407), with TrialScout's act
 <span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;single-arm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;no comparator&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;small enrollment (&lt;50)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;surrogate endpoint&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;early-phase&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;open-label&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;non-randomized&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PK/dose-finding only&quot;</span><span class="p">,</span>
-<span class="w">                 </span><span class="s2">&quot;status: terminated/withdrawn/suspended&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;long timeline (&gt;4y)&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;biomarker-restricted&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">&quot;single-arm&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;no comparator&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;small enrollment (&lt;50)&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;surrogate endpoint&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;early-phase&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;open-label&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;non-randomized&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;PK/dose-finding only&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;status: terminated/withdrawn/suspended&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;long timeline (&gt;4y)&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;biomarker-restricted&quot;</span>
+<span class="w">        </span><span class="p">]</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Investor-relevant risk flags supported by the record. Empty array if none apply.&quot;</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DERIVED, not generated. The pipeline computes the seven arithmetic flags from the record (schema/derive.py) and unions them with the model&#39;s `risk_flags_judgement`. Present in the served readout; never requested from a model. See ADR-0022: the teacher got `enrollment &lt; 50` wrong 20 times in 150, and the student learned the mistake.&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;x-derived&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;risk_flags_judgement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;enum&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">          </span><span class="s2">&quot;surrogate endpoint&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;biomarker-restricted&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;PK/dose-finding only&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;no comparator&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Risk flags that require READING the trial, as an unordered set sorted alphabetically. Only these four. Everything else in `risk_flags` is arithmetic on fields already in the record and is computed by the pipeline, not asked of you. Empty array if none apply.&quot;</span>
 </pre></div>
 <figcaption>The output contract (excerpt): controlled vocabularies the model must pick from.</figcaption></figure>
 <div class="gloss"><div class="gloss-tag">what this says</div>
@@ -949,10 +1004,16 @@ figures came back identical, to two decimal places.</p>
 trial is worth 20 and 33 recall points. &ldquo;0.40&rdquo; was two trials out of five. We had built a
 scorecard that was excellent for a headline number and blind to precisely the thing we were trying to
 fix &mdash; and we had already drawn a confident conclusion from it once before.</p>
-<p>So we built a second, larger test set weighted toward the rare classes: <b>402 trials</b>, 45 per
-modality, never trained on. On that one, the extra data had worked all along &mdash; ADCs
-<b>0.64&nbsp;&rarr;&nbsp;0.77</b>, oncolytic viruses <b>0.76&nbsp;&rarr;&nbsp;0.88</b>. The real
-recall was never 0.40; it was 0.77, and five trials had told us otherwise.</p>
+<p>So we built a second, larger test set weighted toward the rare classes &mdash; 402 trials, 45 per
+modality. On that one the extra data had worked all along. But that set had its own flaw, and it is
+worth seeing: we had found those trials by <em>searching</em> for the class name, and a search for
+&ldquo;bispecific antibody&rdquo; can only return trials that <em>say</em> &ldquo;bispecific
+antibody&rdquo;. It was stacked with the easy cases and could not, by construction, contain the hard
+ones. <strong>Two test sets, two different biases, both confidently wrong.</strong></p>
+<p>The third attempt was the boring one that worked: <b>1,444 fresh trials, sampled at random</b>,
+no enrichment, matching the real mix to within a percentage point. On that, the model reads
+antibody-drug conjugates at <b>0.91</b> and bispecifics at <b>0.79</b>. Not 0.40. Not 0.77. The model
+had been fine the whole time and we had measured it three ways before getting one worth trusting.</p>
 </div>
 <aside class="callout key"><div class="callout-title">Check that your ruler can measure the thing</div><div class="callout-body">
 <p>Before running an experiment to move a number, work out the smallest change your measurement could
@@ -960,9 +1021,14 @@ recall was never 0.40; it was 0.77, and five trials had told us otherwise.</p>
 points and you expect a gain of 10, the result is decided before you start &mdash; and the answer you
 get back is a confident <em>zero</em>, which looks exactly like the intervention not working.</p>
 <p>This project made that mistake twice, months apart, and both times wrote a thoughtful explanation
-of <em>why</em> the extra data hadn't helped. Neither explanation was true. A test set that mirrors
-the real world is the right tool for &ldquo;how good is this overall&rdquo; and the wrong tool for
-&ldquo;did this help the rare cases&rdquo;, and you need both.</p>
+of <em>why</em> the extra data hadn't helped. Neither explanation was true. Then the fix for it &mdash;
+a test set enriched by searching for each rare class &mdash; introduced a second, opposite bias, and
+produced a number that was too flattering instead of too harsh.</p>
+<p><strong>The part worth remembering:</strong> the small test set was perfectly good at its actual
+job. Its overall score, <b>0.936</b>, sits within noise of the 1,444-trial answer, <b>0.932</b>. It
+was only ever unreliable <em>per category</em>, where five examples decide a number. A cheap
+measurement can be trustworthy in aggregate and worthless in detail, and the two failure modes look
+identical until you check.</p>
 </div></aside>
 <aside class="callout key"><div class="callout-title">Three ceilings, and only two are real</div><div class="callout-body">
 <p><strong>(1) You can't beat your teacher</strong> &mdash; a distilled student asymptotes toward the

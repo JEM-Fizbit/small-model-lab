@@ -557,10 +557,16 @@ figures came back identical, to two decimal places.</p>
 trial is worth 20 and 33 recall points. &ldquo;0.40&rdquo; was two trials out of five. We had built a
 scorecard that was excellent for a headline number and blind to precisely the thing we were trying to
 fix &mdash; and we had already drawn a confident conclusion from it once before.</p>
-<p>So we built a second, larger test set weighted toward the rare classes: <b>402 trials</b>, 45 per
-modality, never trained on. On that one, the extra data had worked all along &mdash; ADCs
-<b>0.64&nbsp;&rarr;&nbsp;0.77</b>, oncolytic viruses <b>0.76&nbsp;&rarr;&nbsp;0.88</b>. The real
-recall was never 0.40; it was 0.77, and five trials had told us otherwise.</p>
+<p>So we built a second, larger test set weighted toward the rare classes &mdash; 402 trials, 45 per
+modality. On that one the extra data had worked all along. But that set had its own flaw, and it is
+worth seeing: we had found those trials by <em>searching</em> for the class name, and a search for
+&ldquo;bispecific antibody&rdquo; can only return trials that <em>say</em> &ldquo;bispecific
+antibody&rdquo;. It was stacked with the easy cases and could not, by construction, contain the hard
+ones. <strong>Two test sets, two different biases, both confidently wrong.</strong></p>
+<p>The third attempt was the boring one that worked: <b>1,444 fresh trials, sampled at random</b>,
+no enrichment, matching the real mix to within a percentage point. On that, the model reads
+antibody-drug conjugates at <b>0.91</b> and bispecifics at <b>0.79</b>. Not 0.40. Not 0.77. The model
+had been fine the whole time and we had measured it three ways before getting one worth trusting.</p>
 """),
   ("callout", "key", "Check that your ruler can measure the thing", r"""
 <p>Before running an experiment to move a number, work out the smallest change your measurement could
@@ -568,9 +574,14 @@ recall was never 0.40; it was 0.77, and five trials had told us otherwise.</p>
 points and you expect a gain of 10, the result is decided before you start &mdash; and the answer you
 get back is a confident <em>zero</em>, which looks exactly like the intervention not working.</p>
 <p>This project made that mistake twice, months apart, and both times wrote a thoughtful explanation
-of <em>why</em> the extra data hadn't helped. Neither explanation was true. A test set that mirrors
-the real world is the right tool for &ldquo;how good is this overall&rdquo; and the wrong tool for
-&ldquo;did this help the rare cases&rdquo;, and you need both.</p>
+of <em>why</em> the extra data hadn't helped. Neither explanation was true. Then the fix for it &mdash;
+a test set enriched by searching for each rare class &mdash; introduced a second, opposite bias, and
+produced a number that was too flattering instead of too harsh.</p>
+<p><strong>The part worth remembering:</strong> the small test set was perfectly good at its actual
+job. Its overall score, <b>0.936</b>, sits within noise of the 1,444-trial answer, <b>0.932</b>. It
+was only ever unreliable <em>per category</em>, where five examples decide a number. A cheap
+measurement can be trustworthy in aggregate and worthless in detail, and the two failure modes look
+identical until you check.</p>
 """),
 
   ("callout", "key", "Three ceilings, and only two are real", r"""
