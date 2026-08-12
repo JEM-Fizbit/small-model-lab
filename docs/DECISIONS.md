@@ -174,6 +174,224 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0022 — Schema v3: stop asking the model to do arithmetic, and stop trusting one instrument
+
+*Decided 2026-08-10, immediately after ADR-0021. Two changes to what the model is asked for, plus
+the natural held-out set that finally measures rare classes without a sampling bias.*
+
+**Decision:** `risk_flags` becomes a **derived** output field (`x-derived`), computed by
+`schema/derive.py` and never requested from a model. The model is asked only for
+**`risk_flags_judgement`** — the four flags that require reading the trial. Sharpen the modality rule
+so small molecules stop landing in the protein bucket. Retrain, and use the **best** checkpoint
+rather than the last. Build a **natural-distribution held-out set** to replace the enriched
+diagnostic as the rare-class instrument.
+
+### Seven of eleven risk flags were arithmetic
+
+`small enrollment (<50)` is `record["enrollment"] < 50`. The number is in the record. Measured on the
+frozen 150:
+
+- the **teacher** disagreed with the record **20 times**
+- the **student** disagreed **31 times** — worse, because it faithfully learned the teacher's errors
+
+Distillation working exactly as designed, on an answer that should never have been generated.
+Seven flags are pure functions of the record (enrollment, status, phase, allocation, masking, arms,
+dates); four need reading comprehension (`surrogate endpoint`, `biomarker-restricted`,
+`PK/dose-finding only`, `no comparator`). The served readout still carries all eleven — the
+consumer's contract is unchanged — but the seven are computed and the four are asked.
+
+A note on scoring: computed flags score **lower** against the old gold (0.825 vs the student's 0.907)
+because gold is wrong on them and the student reproduces the same wrongness. Scoring worse against a
+flawed answer key is the correct direction.
+
+**`no comparator` shifted from 2.3% of trials to 69%** under the sharpened rule, because the old rule
+barely defined it. It is not redundant with the computed `single-arm` flag — 355 trials get it
+*without* being single-arm (multi-arm non-randomised dose-cohort designs, which is the more
+analytically interesting case) — but P(no comparator | single-arm) = 0.99, so one direction is
+duplication. Any `risk_flags_judgement` number is incomparable to an earlier `risk_flags` number.
+
+### The saved adapter was the worst checkpoint
+
+`mlx_lm.lora` writes the final iteration, not the best. Validation loss on the v3 run:
+
+| iter | 200 | **400** | 600 | 800 | 1000 |
+|---|---|---|---|---|---|
+| val loss | 0.531 | **0.496** | 0.522 | 0.563 | 0.640 |
+
+I had raised the budget 700 → 1000 *because ADR-0019's run was still descending at 700*. That
+evidence came from a different target and different inputs and did not transfer. Using
+`0000400_adapters.safetensors` recovers **+0.008** overall for nothing. The lesson is not "use 400";
+it is that **the optimum is config-specific and must be read off the curve every time.**
+
+### v3 vs v2, with the incomparable parts removed
+
+The overall scores cannot be compared: v3's risk component is four judgement flags where v2's was
+eleven including seven easy computed ones. On the six fields whose definition did not change:
+
+| field | v2 | v3 | Δ |
+|---|---|---|---|
+| modalities macro-F1 | 0.569 | **0.660** | **+0.091** |
+| modalities set-F1 | 0.854 | **0.888** | **+0.034** |
+| modalities exact-set | 0.740 | 0.753 | +0.013 |
+| intervention_class | 0.940 | 0.947 | +0.007 |
+| phase / est_readout | 1.000 / 0.987 | unchanged | 0.000 |
+| primary_endpoint_type | 0.933 | 0.927 | −0.006 |
+| sponsor_type | 1.000 | 0.987 | −0.013 |
+| **six-field mean** | 0.9523 | **0.9560** | **+0.0037** |
+
+**This is a SYSTEM comparison, not a model comparison.** Each model is scored against the gold it was
+trained to match, and v2 never saw the full records. No clean model-vs-model test exists, and the
++0.0037 should not be read as more precise than that.
+
+**One thing got worse and belongs here rather than in a footnote:** cardinality-only modality errors
+rose from **36% to 54%** of all modality errors. More visible agents means more opportunity to
+disagree about *how many* modalities a trial has — the exact argument ADR-0017 set out to reduce. It
+is arguably a good trade (macro-F1 +0.091, disjoint errors 11 → 6), but it is a real regression on
+the metric that motivated the schema change.
+
+### The enriched diagnostic was biased, and I built the bias in
+
+ADR-0020's diagnostic recruited rare-class trials by CT.gov free-text search. A search for
+"bispecific antibody" can only return trials that *say* "bispecific antibody" — so it systematically
+over-samples the easy instances and **structurally cannot contain the hard ones**, which are exactly
+the codenamed assets the model fails on:
+
+| modality | announces its class: diagnostic | natural corpus |
+|---|---|---|
+| bispecific | 67% | 15% |
+| antibody-drug conjugate | 48% | 24% |
+| oncolytic virus | 76% | 44% |
+
+So ADR-0020's rare-class figures (ADC 0.77, bispecific 0.73) are **optimistic by construction**. This
+also partly walks back that entry's own correction: it said the frozen set *understated* the model at
+ADC 0.40. The truth is between — the frozen set was noise at n=5, the diagnostic is biased upward.
+
+**You cannot sample for "trials whose class is hidden"** — the failure mode is invisible to the
+recruitment method. The fix is not a cleverer enrichment but a **larger natural sample**:
+`data/gold/holdout_natural.jsonl`, 1,444 trials, teacher-labelled, distribution matching the corpus
+to within a percentage point, giving adequate n for **11 of 14 classes** (ADC 42, bispecific 29).
+Three classes — gene therapy 6, oligonucleotide 7, oncolytic virus 3 — remain unmeasurable at natural
+frequency, and for those only the enriched set exists, reported separately and labelled optimistic.
+
+### Outcome — and a claim retracted for the third and final time
+
+`qwen_v3_it400` on the natural held-out set (n=1,444, valid JSON 1.000): **overall 0.932**, against
+0.936 on the frozen 150. Per-class recall, with what each earlier instrument had claimed:
+
+| modality | natural n | recall | frozen-150 said | enriched said (v2 model) |
+|---|---|---|---|---|
+| antibody-drug conjugate | 42 | **0.91** | 0.40 (n=5) | 0.77 |
+| bispecific | 29 | **0.79** | 0.50 (n=2) | 0.73 |
+| cell therapy | 57 | 0.95 | 0.86 (n=7) | 0.90 |
+| cancer vaccine | 51 | 0.94 | 1.00 (n=7) | 0.89 |
+| radiopharmaceutical | 23 | 0.74 | 1.00 (n=4) | 0.91 |
+| other protein or peptide | 106 | **0.48** | 0.25 (n=8) | 0.56 |
+| oligonucleotide/RNA | 7 | 0.14 | 0.50 (n=2) | 0.36 |
+
+**"Distillation transferred the conventions but not the pharmacology" is retracted.** That claim was
+made in ADR-0017's outcome on the strength of ADC 0.40, softened in ADR-0020, and it is simply wrong:
+on 42 naturally-sampled ADCs the student scores **0.91**, near the frontier's 1.00. Modality macro-F1
+is **0.737** here against 0.660 on the frozen 150 — higher, because the tiny-class noise is gone. The
+model handles the drug classes that actually occur; it was the instruments that kept saying otherwise.
+
+Three revisions of one claim, from three instruments, is the real lesson of this ADR: **the frozen
+set was noise per-class, the enriched set was optimistic by construction, and only a large natural
+sample gave a number worth acting on.** Each intermediate correction felt like rigour and was
+premature.
+
+**What survives as a genuine weakness, now specific rather than a general "tail problem":**
+
+- **`other protein or peptide therapeutic`: 0.48 on n=106.** Ample training data (105 rows), ample
+  test support, and the v3 rule fix that moved 21 misfiled small molecules out barely helped. A
+  badly-drawn category, confirmed on the strongest evidence available. Splitting it is a v4 candidate.
+- **`oligonucleotide/RNA`: 0.14 on n=7** — genuinely too rare in oncology to learn or to measure here.
+- **`other`: 0.12 on n=24** — a catch-all is not a learnable class, which is unsurprising and fine.
+
+**An unexpected result worth keeping:** the frozen 150 gave 0.936 against the natural set's 0.932. As
+a *headline* instrument it was trustworthy all along and stays in service; it is only its *per-class*
+rows that were noise. Cheap aggregate, expensive detail — and the two must not be read the same way.
+
+
+---
+
+## ADR-0021 — Audited every truncation rule; three were costing signal and none had been chosen on evidence
+
+*Decided 2026-08-10, prompted by a single question: "are we arbitrarily blinding ourselves?" The
+answer was yes, in four places, and the audit found more than the one defect that prompted it.*
+
+**Decision:** Archive the untouched ClinicalTrials.gov study objects and move **every** trim to
+prompt-build time, where it is a parameter rather than a permanent loss. Remove the `interventions`
+cap, add intervention descriptions, lift the `brief_summary` cap. Keep two caps that measured
+harmless. Stamp the corpus with a fetch date.
+
+### What was being discarded
+
+Four limits, all round numbers, none set against data. Three applied at **download** time, so what
+they discarded was unrecoverable without re-fetching:
+
+| limit | trials at the cap | verdict |
+|---|---|---|
+| `brief_summary[:600]` | 695 / 2,205 (32%) | lifted (was already at prompt-build, so reversible) |
+| `primary_outcomes[:4]` | 209 (9%) | **kept** — endpoint accuracy 0.952 at the cap vs 0.958 below it |
+| `interventions[:6]` | 180 (8%) | **removed** |
+| `conditions[:8]` | 107 (5%) | **kept** — nothing scores that field |
+| `intervention.description` | dropped entirely | **restored**, capped at 300 chars |
+
+`interventions[:6]` was the serious one. On the full archive, **122 trials exceeded it and 510
+agents were discarded — one trial lost 24 of 30.** For a field whose definition is *"list every
+distinct modality among the agents"*, this was deleting the answer. And it was invisible to the
+eval: gold was built from the same truncated record, so both sides were wrong together and the
+model may have been answering correctly for the input it was given. Measured effect where the cap
+bit: modalities exact-set **0.699 → 0.568**.
+
+Dropping `intervention.description` cost differently. On 7% of trials the description carries the
+only class word in the record — *"BM7PE **immunotoxin** is supplied as a liquid solution"* — where
+the intervention name is a bare code. That is precisely the failure mode behind the weakest modality
+classes.
+
+**Two caps were kept, and that matters as much as the two removed.** Removing a limit that costs
+nothing is churn. `primary_outcomes[:4]` was measured harmless and stays.
+
+### Two things the re-fetch revealed that were not the point of it
+
+**ClinicalTrials.gov is live, and the corpus had drifted.** Re-fetching the same 2,205 NCT ids found
+**53 trials (2.4%) with a changed `overall_status`, 49 with a changed `primary_completion_date`, 31
+with changed `enrollment`** since the June pull. Those fields feed `est_readout` and four risk flags,
+so **gold is only valid against the snapshot it was built from**. `data/raw/SNAPSHOT.json` now
+records the date, the study count and a hash of the archive. This also removed the option of a cheap
+partial regeneration: deriving flags from a new record while keeping labels from an old one silently
+mixes two snapshots.
+
+**Re-fetching had to be by NCT id, not by re-running discovery.** The discovery query walks CT.gov
+pages and returns a *different* corpus; running it would have silently invalidated `data/splits.json`
+and every frozen comparison built on it — the same class of failure as the original shuffle bug in
+ADR-0017, arrived at from the opposite direction.
+
+### Setting the new limits, and a mistake worth recording
+
+With descriptions on and the summary uncapped, prompts grow, and `--max-seq-length 1536` would then
+truncate — recreating the exact failure the audit set out to remove, one layer down.
+
+A **400-record sample** put the longest prompt at 1,733 tokens. The **full 2,205** put it at 3,900,
+driven by one trial with 20 interventions and 14,560 characters of description. **Tail-sensitive
+limits cannot be set from a sample**, and this was the fourth time in one session that sampling
+misled a decision here.
+
+Set from the full distribution instead: descriptions capped at **300 characters** — which retains
+**97%** of the class-word signal, because the class is named in the first sentence — and
+`--max-seq-length` **1536 → 2560**, which truncates **zero** of 2,193 real training examples.
+
+### Consequences
+
+- `data/raw/studies_full.jsonl`: 66 MB, 2,205 untouched studies. Any future trim decision is a
+  config change, never a re-fetch.
+- `compact()` takes explicit `limits`; the defaults are documented with the measurement behind each.
+- Training peak memory rose ~10 GB → **14.3 GB** at the longer sequence length (`serve/RUNBOOK.md`).
+- The generalisable rule: **a limit applied at ingest is a decision you cannot revisit.** Archive
+  raw, trim late, and measure what each limit costs before keeping it.
+
+---
+
 ## ADR-0020 — Built the rare-class diagnostic set; it reversed ADR-0019 and promoted the augmented adapter
 
 *Decided 2026-08-10. ADR-0019 concluded rare-class augmentation failed. This entry shows that
