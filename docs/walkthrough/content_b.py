@@ -150,7 +150,7 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <text x="505" y="178" text-anchor="middle" font-size="10.5" fill="#6e6557">→ Claude-as-judge</text>
 <rect x="648" y="78" width="140" height="70" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
 <text x="718" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">Overall score</text>
-<text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.476 → 0.939</text>
+<text x="718" y="123" text-anchor="middle" font-size="11" fill="#5f6c33">0.476 → 0.932</text>
 <text x="718" y="139" text-anchor="middle" font-size="11" fill="#5f6c33">vs baseline</text>
 <line x1="162" y1="112" x2="203" y2="112" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
 <line x1="355" y1="104" x2="398" y2="62" stroke="#6e6557" stroke-width="2" marker-end="url(#arE)"/>
@@ -427,6 +427,11 @@ and <code>risk_flags</code>; F1 is a 0–1 score balancing false positives
 against misses, 1.0 perfect), exactly the metrics the baseline was measured with, so the comparison is fair.</p>
 """),
   ("callout", "aside", "Two kinds of grading", r"""
+<p><strong>One field is no longer asked of the model at all.</strong> Seven of the eleven risk flags
+are arithmetic on numbers already in the record &mdash; <code>small enrollment (&lt;50)</code> is
+literally <code>enrollment &lt; 50</code>. The teacher got that comparison wrong 20 times in 150, and
+the student faithfully learned the mistake. Those seven are now computed by the pipeline; the model is
+asked only for the four that need reading the trial.</p>
 <p>Seven structured fields grade themselves: the four single-value enums by string match,
 <code>est_readout</code> by exact match, and the two list fields (<code>modalities</code>,
 <code>risk_flags</code>) by set overlap. Free text can't: <code>investor_note</code>
@@ -442,7 +447,8 @@ model-graded where necessary.</p>
  "part": "The result", "part_banner": "Stage 4 · The result",
  "blocks": [
   ("prose", r"""
-<p>Here is the payoff, on the 150 trials the model never saw. Four comparisons matter, and
+<p>Here is the payoff, on <b>1,444 trials the model never saw</b> &mdash; a fresh, randomly-sampled
+held-out set, not the small one we started with. Four comparisons matter, and
 they say different things. The <b>majority-class baseline</b> (always guess the most common value
 for each field) is the floor. <b>Untuned Qwen</b> is the same open model on the same prompt before
 any fine-tuning, told the list of allowed values but nothing else. The <b>frontier model</b> is
@@ -454,15 +460,15 @@ headline honest: it is the bar a small local model has to clear.</p>
 <table>
 <thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Frontier model</th><th>Qwen student</th><th>Fine-tuning gain</th></tr></thead>
 <tbody>
-<tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.939</b></td><td><b>+0.242</b></td></tr>
+<tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.932</b></td><td><b>+0.235</b></td></tr>
 <tr><td>valid JSON</td><td>&mdash;</td><td>1.000</td><td>1.000</td><td>1.000</td><td>&mdash;</td></tr>
-<tr><td>phase</td><td>0.447</td><td>0.987</td><td>1.000</td><td>1.000</td><td>+0.013</td></tr>
-<tr><td>intervention_class</td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.927</td><td>+0.287</td></tr>
-<tr><td>modalities (set-F1)</td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.870</td><td>+0.175</td></tr>
-<tr><td>primary_endpoint_type</td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.927</td><td>+0.287</td></tr>
-<tr><td>sponsor_type</td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.993</td><td>+0.160</td></tr>
-<tr><td>est_readout</td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.980</td><td>+0.560</td></tr>
-<tr><td>risk_flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.876</td><td>+0.214</td></tr>
+<tr><td>phase</td><td>0.447</td><td>0.987</td><td>1.000</td><td>0.997</td><td>+0.010</td></tr>
+<tr><td>intervention_class</td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.944</td><td>+0.304</td></tr>
+<tr><td>modalities (set-F1)</td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.862</td><td>+0.167</td></tr>
+<tr><td>primary_endpoint_type</td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.936</td><td>+0.296</td></tr>
+<tr><td>sponsor_type</td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.976</td><td>+0.143</td></tr>
+<tr><td>est_readout</td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.976</td><td>+0.556</td></tr>
+<tr><td>risk flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td></tr>
 </tbody></table>
 """),
   ("callout", "aside", "Why the untuned column needs a footnote", r"""
