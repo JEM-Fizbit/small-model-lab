@@ -586,7 +586,7 @@ extraction task (SEC filings, lab reports, support tickets), not just trials.</p
       <div class="prose">
 <p>To fine-tune the student we need a pile of correct examples (1,500 here): trial in, perfect readout
 out. Writing those by hand would take an analyst weeks. So we <strong>distill</strong>: a strong, expensive
-model (Claude Sonnet) reads each trial and writes the gold answer, and the small student then learns
+model (Claude Sonnet 5) reads each trial and writes the gold answer, and the small student then learns
 to reproduce those answers. The teacher's judgement becomes the student's training data.</p>
 </div>
 <div class="prose">
@@ -598,7 +598,7 @@ called <strong>supervised fine-tuning</strong>.) The only unusual part is <em>wh
 from</em>: not human annotators, but a stronger model. Training a small model on a big model's outputs is
 <strong>knowledge distillation</strong>.</p>
 </div>
-<figure class="imgfig diagram wide"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet teacher, which writes gold JSON labels, which fine-tune the Qwen student model.">
+<figure class="imgfig diagram wide"><svg viewBox="0 0 820 210" role="img" aria-label="Distillation flow: oncology trials are read by the Claude Sonnet 5 teacher, which writes one gold JSON label per trial, which fine-tune the Qwen3-4B student model.">
 <defs><marker id="arD" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <!-- box 1: trials -->
 <rect x="12" y="50" width="165" height="84" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
@@ -607,14 +607,14 @@ from</em>: not human annotators, but a stronger model. Training a small model on
 <text x="94" y="118" text-anchor="middle" font-size="11" fill="#6e6557">1,500 records</text>
 <!-- box 2: teacher (purple) -->
 <rect x="222" y="50" width="165" height="84" rx="11" fill="#e3eaea" stroke="#3d6a72" stroke-width="1.5"/>
-<text x="304" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#2c4a52">Claude Sonnet</text>
+<text x="304" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#2c4a52">Claude Sonnet 5</text>
 <text x="304" y="100" text-anchor="middle" font-size="11" fill="#3d6a72">the teacher</text>
 <text x="304" y="118" text-anchor="middle" font-size="10.5" fill="#3d6a72">forced tool-use</text>
 <!-- box 3: gold -->
 <rect x="432" y="50" width="165" height="84" rx="11" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
 <text x="514" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#231f18">Gold labels</text>
 <text x="514" y="100" text-anchor="middle" font-size="11" fill="#6e6557">structured JSON</text>
-<text x="514" y="118" text-anchor="middle" font-size="10.5" fill="#6e6557">1,200 train / 150 test</text>
+<text x="514" y="118" text-anchor="middle" font-size="10.5" fill="#6e6557">one per trial</text>
 <!-- box 4: student -->
 <rect x="642" y="50" width="165" height="84" rx="11" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
 <text x="724" y="80" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4c5829">Qwen3-4B</text>
