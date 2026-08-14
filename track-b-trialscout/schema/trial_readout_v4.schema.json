@@ -1,0 +1,134 @@
+{
+  "name": "emit_readout",
+  "schema_version": "v4",
+  "description": "TrialScout readout, schema v4. Two tiers with a hard line between them. The `facts` tier is READ from the ClinicalTrials.gov record by schema/facts.py and is never requested from a model -- it is what the registry states. The remaining fields are what the registry only implies, and those are the model's job. v4 moves `phase`, `sponsor_type` and `est_readout` across that line: all three are stated or arithmetic, all three scored 0.97-1.00 under v3, and asking for them inflated the headline with lookups. See ADR-0024.",
+  "type": "object",
+  "properties": {
+    "nct_id": {
+      "type": "string",
+      "x-derived": true,
+      "description": "Registry identifier. Copied from the record."
+    },
+
+    "facts": {
+      "type": "object",
+      "x-derived": true,
+      "description": "Everything the registry states outright, extracted by schema/facts.py. NEVER generated. Fields are omitted when the registry is silent -- absence means 'not stated', which is itself information, and is never filled with a guess.",
+      "properties": {
+        "title": {"type": "string", "description": "Official title, complete. Never abridged."},
+        "phase": {"type": ["string", "null"], "description": "From designModule.phases. Stated, not inferred."},
+        "sponsor": {
+          "type": "object",
+          "description": "Lead sponsor and its registry class. `class` is what sponsor_type used to be asked for.",
+          "properties": {
+            "name": {"type": ["string", "null"]},
+            "class": {"type": ["string", "null"], "enum": ["INDUSTRY", "NIH", "FED", "OTHER_GOV", "NETWORK", "INDIV", "OTHER", "UNKNOWN", null]}
+          }
+        },
+        "status": {
+          "type": "object",
+          "description": "Lifecycle. `is_active` covers recruiting, enrolling-by-invitation, not-yet-recruiting and active-not-recruiting.",
+          "properties": {
+            "overall": {"type": ["string", "null"]},
+            "is_recruiting": {"type": "boolean"},
+            "is_active": {"type": "boolean"},
+            "start_date": {"type": ["string", "null"]},
+            "primary_completion_date": {"type": ["string", "null"]},
+            "primary_completion_type": {"type": ["string", "null"], "description": "ACTUAL or ESTIMATED -- the difference between a fact and a plan."},
+            "completion_date": {"type": ["string", "null"]},
+            "last_update": {"type": ["string", "null"]}
+          }
+        },
+        "enrollment": {"type": ["integer", "null"]},
+        "enrollment_type": {"type": ["string", "null"], "enum": ["ACTUAL", "ESTIMATED", null]},
+        "conditions": {"type": "array", "items": {"type": "string"}},
+        "design": {
+          "type": "object",
+          "description": "The design descriptors an analyst expects at the top of a readout. `randomized` is null -- not false -- when CT.gov reports allocation NA, because inapplicable is not the same as a deliberate non-randomised design.",
+          "properties": {
+            "randomized": {"type": ["boolean", "null"]},
+            "masking": {"type": ["string", "null"], "enum": ["open-label", "single-blind", "double-blind", "triple-blind", "quadruple-blind", null]},
+            "assignment": {"type": ["string", "null"], "enum": ["single-group", "parallel", "crossover", "sequential", "factorial", null]},
+            "purpose": {"type": ["string", "null"]},
+            "placebo_controlled": {"type": "boolean"},
+            "active_comparator": {"type": "boolean"},
+            "n_arms": {"type": ["integer", "null"]},
+            "summary": {"type": "string", "description": "One line, e.g. 'Phase 2, non-randomised, open-label, 3 parallel arms'."}
+          }
+        },
+        "arms": {
+          "type": "array",
+          "description": "Arms as the registry gives them. `description` is null on ~20% of trials; that null is preserved so a readout can say the registry is silent rather than imply a distinction it cannot source.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {"type": ["string", "null"]},
+              "type": {"type": ["string", "null"]},
+              "interventions": {"type": "array", "items": {"type": "string"}},
+              "description": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "interventions": {
+          "type": "array",
+          "description": "Interventions with their descriptions retained -- this is where dose and schedule live (89.2% of trials), and it is what the v3 compact ingest discarded.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {"type": ["string", "null"]},
+              "name": {"type": ["string", "null"]},
+              "description": {"type": ["string", "null"]},
+              "other_names": {"type": ["array", "null"], "items": {"type": "string"}},
+              "resolved": {"type": "object", "description": "Acronym resolution from schema/regimens.py, when the name is a known regimen, shorthand or procedure. Absent when unknown -- never guessed."}
+            }
+          }
+        },
+        "agents": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Distinct therapeutic agents with regimen acronyms expanded and brand names folded to generics. This is the list `modalities` is defined over. Procedures and delivery routes are excluded by kind, so a radiotherapy trial cannot acquire a drug modality."
+        },
+        "has_results": {"type": "boolean", "description": "Only 21.4% of this corpus. Stated so a reader knows whether outcome data exists at all -- v4 does not offer an outcome field, because it would be empty four times in five."}
+      }
+    },
+
+    "est_readout": {
+      "type": "string",
+      "x-derived": true,
+      "description": "Readout window computed from facts.status.primary_completion_date. Arithmetic, not judgement. ADR-0018 recorded Sonnet 5 overriding this mechanical rule with a realistic completion-to-publication lag -- a stronger model reasoning past an explicit instruction. The rule is now executed rather than requested."
+    },
+
+    "indication": {
+      "type": "string",
+      "description": "The disease setting in plain English, normalised from facts.conditions. Requires reading: registry condition strings are inconsistent, duplicated and sometimes list the population rather than the disease."
+    },
+    "intervention_class": {
+      "type": "string",
+      "enum": ["drug/biologic", "external-beam radiation", "procedure/surgery", "device", "behavioral/supportive care", "diagnostic/imaging", "other"],
+      "description": "What kind of intervention this trial actually tests. Decide BEFORE modalities. 'drug/biologic' if any drug or biologic is given as anticancer therapy. CT.gov intervention types are a hint, not the answer: a trial can list a DRUG that is only premedication."
+    },
+    "modalities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["targeted small molecule", "cytotoxic chemotherapy", "hormonal/endocrine therapy", "monoclonal antibody", "bispecific/multispecific antibody", "antibody-drug conjugate", "other protein or peptide therapeutic", "oligonucleotide/RNA therapeutic", "cell therapy", "gene therapy", "oncolytic virus", "cancer vaccine", "radiopharmaceutical", "other"]
+      },
+      "description": "The DISTINCT therapeutic modalities among the agents in facts.agents, as an unordered set sorted alphabetically. Empty when intervention_class is not drug/biologic. This is pharmacology -- knowing trastuzumab emtansine is an antibody-drug conjugate is not something the record states."
+    },
+    "primary_endpoint_type": {
+      "type": "string",
+      "enum": ["overall survival (OS)", "progression-free survival (PFS)", "objective response rate (ORR)", "disease-free survival (DFS)", "pathologic complete response (pCR)", "safety/tolerability", "pharmacokinetics", "other"],
+      "description": "Category of the primary outcome measure(s). Requires reading the outcome text, which is free prose."
+    },
+    "risk_flags_judgement": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["surrogate endpoint", "biomarker-restricted", "PK/dose-finding only", "no comparator"]},
+      "description": "Only the four flags that need reading the trial. The seven arithmetic flags are computed by schema/derive.py from the record (ADR-0022) and are not offered here."
+    },
+    "investor_note": {
+      "type": "string",
+      "description": "Two or three sentences an analyst could use, grounded in the facts tier. May reference design, arms and dosing now that they are available; must not restate numbers the facts tier already carries."
+    }
+  },
+  "required": ["indication", "intervention_class", "modalities", "primary_endpoint_type", "risk_flags_judgement", "investor_note"]
+}
