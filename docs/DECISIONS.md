@@ -180,8 +180,15 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 settled by measurement rather than assumption.*
 
 **Decision:** Keep **Sonnet 5** as teacher. Do **not** upgrade to Opus 5. Move the two
-Claude-as-judge scripts off Sonnet 4.6 onto Sonnet 5. Generate future gold at
-**`effort: low`**. Never price a model this repo cannot find in the protocol.
+Claude-as-judge scripts off Sonnet 4.6 onto Sonnet 5. **Stay on `effort: medium`** for v4's
+regeneration. Never price a model this repo cannot find in the protocol.
+
+> **This ADR was first committed recommending `effort: low` on a 40-trial sample. That
+> recommendation was wrong and is retracted below.** The 40-trial reading (0.985 agreement,
+> `modalities` perfect at 40/40) did not survive n=149, and a self-consistency control then showed
+> most of the remaining signal was nondeterminism. The original error is left visible because it is
+> the third instance of the same failure in this project (ADR-0019, ADR-0020): a sample too small to
+> resolve the effect, read confidently.
 
 **Two claims were tested on the same 40 pilot trials, against the production v3 gold.**
 
@@ -201,16 +208,56 @@ peptide therapeutic` is right. The residual gap is concentrated in `risk_flags_j
 capability. Teacher quality caps student quality (ADR-0003), so this was worth $0.79 to know;
 it does not appear to be the binding ceiling.
 
-**Effort is the real lever, because output dominates the bill.** The cacheable prefix is ~3,937
-tokens against a ~387-token per-trial payload — 91% of input is cached at 0.1× — which leaves
-roughly **81% of the cost in output tokens**. So `effort` moves spend further than model tier
-does: low costs 37% less than medium and agrees 0.985, with `modalities` **perfect at 40/40**.
-Consistent with ADR-0018, where *raising* Sonnet 5's effort made it *more* consistently
-non-compliant with the mechanical `est_readout` rule — more deliberation is not more obedience.
+**Effort looked like the real lever, because output dominates the bill.** The cacheable prefix is
+~3,937 tokens against a ~387-token per-trial payload — 91% of input is cached at 0.1× — which
+leaves roughly **81% of the cost in output tokens**. So `effort` should move spend further than
+model tier does, and at n=40 it appeared to be free money: 37% cheaper, 0.985 agreement.
 
-**Not applied retroactively.** The v3 gold was generated at medium and stays that way; mixing
-efforts inside one corpus would put a silent instrument change into the training data, which is
-the ADR-0020 mistake in a new costume. Low becomes the default at the next full regeneration.
+**Re-run on the frozen 150-trial test split, it was 0.972, and `modalities` was 0.964 — not
+1.000.** Then the control that should have been run first: **label the same 150 twice at the same
+setting.**
+
+| comparison | overall | `modalities` | `risk_flags_judgement` |
+|---|---|---|---|
+| **low vs low** — same setting, two runs | **0.982** | 0.987 | 0.912 |
+| low #1 vs medium | 0.972 | 0.964 | 0.912 |
+| low #2 vs medium | 0.973 | 0.951 | 0.917 |
+
+**The teacher disagrees with itself on 29 of 149 trials (19%).** Most of the apparent effort
+effect is run-to-run nondeterminism — adaptive thinking is not seeded, and `temperature` no longer
+exists on this family to pin it. The genuinely effort-attributable gap is ~0.010, not 0.028.
+
+But it is not zero, and it sits in the wrong field. `risk_flags_judgement` scores 0.912 whether
+compared against itself or against medium — **entirely noise, no effort effect**. `modalities`
+scores 0.987 against itself but 0.964/0.951 against medium: low differs from medium *more than it
+differs from itself*, which is the signature of a systematic shift rather than variance. That is
+the one field the whole v3 schema rewrite exists to fix.
+
+**So the saving is $4.40, and the price is a confounded experiment.** 37% of a ~$12 regeneration
+is real money in ratio and trivial in absolute terms. v4 changes the schema; changing teacher
+effort in the same run means any movement in `modalities` cannot be attributed to either. That is
+precisely the ADR-0020 mistake — an instrument changed underneath a measurement — for less than the
+cost of the probes that found it. **Stay on medium.** Revisit effort as its own experiment, against
+a fixed schema, if the regeneration bill ever becomes worth optimising.
+
+**The control is worth more than the decision it settled: the gold has ~1.8% irreducible noise.**
+Teacher self-agreement of 0.982 is a property of the corpus, not of this probe. Every eval in this
+project scores a student against one frozen draw from a distribution that wobbles — so part of what
+has been reported as student error is teacher nondeterminism, and re-running the teacher would move
+the headline by roughly a point in either direction. The student's 0.932 should be read against a
+target that is itself only 0.982 self-consistent. This has never been quantified before and belongs
+in any honest statement of the numbers.
+
+**Left as an open question: which is actually better.** Agreement measures difference, not
+correctness, in either direction. Establishing that low-effort gold is worse (or better) needs a
+retrain and a student eval, or human adjudication — neither done. The decision above rests on
+avoiding a confound, not on a demonstrated quality gap.
+
+**One further signal, weak but pointed the same way.** Both low-effort runs dropped exactly one
+trial for schema-invalid output (149/150), where medium dropped none on the same 150. n=1 per run
+is not evidence, but this project publishes "valid JSON 1.000", and that is the claim it would
+erode first. `make_gold.py` now records *why* each trial was dropped rather than only counting it —
+the reason had been computed and discarded, so the diagnosis above required a rerun.
 
 **The fee card was wrong, and the mechanism that should have caught it did not exist.** It
 asserted Sonnet 5 would revert to $3/$15 on 2026-09-01. That rise was cancelled; $2/$10 is

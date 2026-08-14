@@ -238,6 +238,7 @@ def main():
     cost = [0.0]; lock = threading.Lock(); stop = threading.Event()
     out_f = all_path.open("a")
     n_ok = n_bad = 0
+    failures: list[tuple[str, str]] = []
 
     def record(res):
         nonlocal n_ok, n_bad
@@ -245,14 +246,22 @@ def main():
         with lock:
             cost[0] += res.get("cost", 0.0)
         if res.get("error"):
-            n_bad += 1; return
+            n_bad += 1
+            with lock:
+                failures.append((res.get("nct_id", "?"), f"api: {res['error']}"))
+            return
         ok, why = valid(res["readout"])
         if ok:
             row = canonical({"nct_id": res["nct_id"], **res["readout"]})
             out_f.write(json.dumps(row) + "\n"); out_f.flush()
             n_ok += 1
         else:
+            # Keep the reason. A bare failure COUNT tells you a trial was dropped but not
+            # whether the schema, the prompt, or the model is at fault -- and the dropped
+            # rows are exactly where a silent-validity regression would first show up.
             n_bad += 1
+            with lock:
+                failures.append((res.get("nct_id", "?"), f"invalid: {why}"))
 
     # --- PILOT: first 10, gate on validity before bulk spend ---
     pilot = todo[:10]
@@ -319,7 +328,11 @@ def main():
               f"- labeled this run: **{n_ok}** valid, {n_bad} failed\n"
               f"{split_line}"
               f"- spend: **${cost[0]:.2f}** (cap ${args.cap})\n"
-              f"- teacher: {args.model}, forced tool-use, prompt-cached prefix\n")
+              f"- teacher: {args.model}, effort {args.effort}, forced tool-use, prompt-cached prefix\n")
+    if failures:
+        report += "\n## Dropped trials\n\n" + "".join(
+            f"- `{nct}` — {why}\n" for nct, why in sorted(failures)
+        )
     (GOLD / f"REPORT_{args.out}.md").write_text(report)
     print("\n" + report)
 
