@@ -19,6 +19,7 @@ Read the matching protocol before working in its domain (synced from ai-knowledg
 - ClinicalTrials.gov API work -> docs/protocols/CLINICALTRIALS_GOV_API.md
 - Packaging a local model as an MCP-callable expert -> docs/protocols/LOCAL_MODEL_MCP_EXPERT.md
 - Small-LM fine-tuning / distillation / improvement -> docs/protocols/SLM_DISTILLATION_AND_IMPROVEMENT.md
+- Choosing/pricing an Anthropic model (teacher, judge, ablation) -> docs/protocols/ANTHROPIC_MODEL_REFERENCE.md
 
 ## Repository layout — public / private split (read before committing)
 
@@ -43,6 +44,7 @@ This project exists to make the process **learnable — no black boxes**. Every 
 uv sync                  # install deps into .venv (Python 3.12)
 uv run jupyter lab       # open the annotated notebooks
 uv run ruff check .      # lint
+uv run python scripts/check_fee_card.py   # teacher/judge prices still match the protocol?
 
 # after any Track A retrain — twelve surfaces derive from the checkpoint, and the
 # regeneration ORDER matters (see docs/TOOLING.md before running these):

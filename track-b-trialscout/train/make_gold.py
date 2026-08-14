@@ -34,14 +34,31 @@ MODEL = "claude-sonnet-5"
 
 # Per-model pricing ($/1M tokens). The cap is the real guardrail, but it can only be
 # honest if these track the model actually being called.
+# Fee card. VERIFIED against platform.claude.com/docs/en/about-claude/pricing on 2026-08-10.
+# These must be ACCURATE, not merely conservative: the cap aborts a run when the running
+# estimate reaches it, so over-stating a price halts a paid job early and under-stating it
+# overspends. Re-verify when a model launches or a promotion ends.
+#
+# NOTE: Sonnet 5's $2/$10 launched as introductory pricing "through 2026-08-31" and is now the
+# PERMANENT price -- the scheduled rise to $3/$15 was cancelled. An earlier comment here said
+# the opposite, which would have had us over-budget every future run.
+#
+# Tokeniser caveat: Claude 4.7-and-later models use a newer tokeniser emitting ~30% more tokens
+# for the same text. Measured on 40 identical trials at identical prices, Sonnet 5 cost $0.49
+# against Sonnet 4.6's $0.39 -- 26% more tokens, matching the documented figure. Sonnet 5's
+# effective rate is therefore ~$2.52/$12.60: still ~16% cheaper than Sonnet 4.6, and newer.
 PRICING = {
-    # Sonnet 5 is on introductory pricing until 2026-08-31, then reverts to $3/$15.
-    # These have to be ACCURATE, not merely conservative: the cap aborts the run when
-    # the running estimate hits it, so over-stating the price halts a paid job early
-    # and under-stating it overspends. UPDATE THIS AFTER 2026-08-31.
-    "claude-sonnet-5":   {"in": 2.0, "out": 10.0},
-    "claude-sonnet-4-6": {"in": 3.0, "out": 15.0},
+    "claude-fable-5":    {"in": 10.0, "out": 50.0},
+    "claude-opus-5":     {"in":  5.0, "out": 25.0},
+    "claude-sonnet-5":   {"in":  2.0, "out": 10.0},   # cheapest Sonnet AND the newest
+    "claude-haiku-4-5":  {"in":  1.0, "out":  5.0},
 }
+# Sonnet 4.6 ($3/$15) is deliberately absent: previous-generation, and 50% DEARER than
+# Sonnet 5. There is no job for which it is the right choice, so it is not priced here.
+#
+# There is no default price. An unknown model raises rather than being costed at some
+# other model's rate -- `--cap` is a real spending guard, and a guard that silently
+# invents a price is not a guard. Verified by scripts/check_fee_card.py.
 
 # The current model family (Sonnet 5, Opus 5, Fable 5) removed the sampling parameters:
 # `temperature` now returns 400. Depth is controlled by `output_config.effort` instead,
@@ -163,7 +180,14 @@ def request_kwargs(model: str, effort: str = "medium") -> dict:
 
 def label_one(trial: dict, stop: threading.Event, model: str = MODEL, effort: str = "medium"):
     if stop.is_set(): return {"skipped": True}
-    price = PRICING.get(model, PRICING["claude-sonnet-4-6"])
+    if model not in PRICING:
+        raise SystemExit(
+            f"no fee-card entry for {model!r} -- refusing to spend against a guessed price.\n"
+            f"priced models: {', '.join(sorted(PRICING))}\n"
+            f"add it to PRICING from docs/protocols/ANTHROPIC_MODEL_REFERENCE.md, "
+            f"then run: uv run python scripts/check_fee_card.py"
+        )
+    price = PRICING[model]
     p_in, p_out = price["in"]/1e6, price["out"]/1e6
     p_cache_w, p_cache_r = p_in*1.25, p_in*0.10
     for attempt in range(4):

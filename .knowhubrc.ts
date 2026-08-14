@@ -20,6 +20,14 @@ const config: Config = {
       overwrite: true,
       outputs: ["docs/protocols/LOCAL_MODEL_MCP_EXPERT.md"],
     },
+    // Model roster + pricing. Canonical fee card: scripts/check_fee_card.py lints the
+    // hardcoded PRICING in make_gold.py against this file's inventory table.
+    {
+      plugin: "local",
+      pluginConfig: { path: `${LOCAL_PROTOCOLS_BASE}/ANTHROPIC_MODEL_REFERENCE.md` },
+      overwrite: true,
+      outputs: ["docs/protocols/ANTHROPIC_MODEL_REFERENCE.md"],
+    },
     // Data source (ClinicalTrials.gov v2 — TrialScout's input)
     {
       plugin: "local",

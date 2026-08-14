@@ -38,7 +38,7 @@ from normalize import snap_to_enum           # noqa: E402  same enum-snap as dep
 GENS_DEFAULT = ROOT / "eval" / "preds_schema_vs_freeform.jsonl"   # reused base-model outputs
 GOLD_TEST = [json.loads(l) for l in (ROOT / "data" / "gold" / "test.jsonl").read_text().splitlines() if l.strip()]
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
-JUDGE_MODEL = "claude-sonnet-4-6"
+JUDGE_MODEL = "claude-sonnet-5"   # was sonnet-4-6: older AND 50% dearer
 
 SENTINEL = "NOT_STATED"
 SCALARS = ["phase", "intervention_class", "primary_endpoint_type", "sponsor_type", "est_readout"]
@@ -97,7 +97,7 @@ def extract(client: anthropic.Anthropic, writeup: str) -> dict | None:
     for attempt in range(4):
         try:
             msg = client.messages.create(
-                model=JUDGE_MODEL, max_tokens=500,
+                model=JUDGE_MODEL, max_tokens=1500, output_config={"effort": "low"},
                 system=[{"type": "text", "text": JUDGE_SYSTEM, "cache_control": {"type": "ephemeral"}}],
                 tools=[TOOL], tool_choice={"type": "tool", "name": TOOL["name"]},
                 messages=[{"role": "user", "content": f"ANALYST WRITEUP:\n{writeup}"}],
