@@ -1384,7 +1384,7 @@ language&rdquo; and &ldquo;is coherent&rdquo; is the job of the upgrades stage t
 to do &mdash; every part visible, nothing hidden &mdash; and then produced text nobody could read.
 That raised the obvious question: what is actually holding it back? The question came from the
 output, not from the plan.</p>
-<p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the five changes that
+<p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the six changes that
 actually improve a from-scratch run. Holding the architecture fixed is deliberate: it isolates
 what each upgrade buys. One of these, the tokenizer, does most of the work.</p>
 """),
@@ -1402,6 +1402,8 @@ what each upgrade buys. One of these, the tokenizer, does most of the work.</p>
     <td>insurance against sudden training blow-ups</td></tr>
 <tr><td>Capacity / context</td><td>3.2M params, 128</td><td><b>17M params, 256</b></td>
     <td>more room to learn; a whole story fits in view</td></tr>
+<tr><td>Training corpus</td><td>4,000 stories</td><td><b>25,000 stories</b></td>
+    <td>more text to learn from; a one-line change to the loader</td></tr>
 </tbody></table>
 """),
  ],
