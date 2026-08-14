@@ -172,17 +172,44 @@ def agents(interventions: list[dict]) -> list[str]:
             continue
         if (iv.get("type") or "") not in {"DRUG", "BIOLOGICAL"}:
             continue
-        # An unresolved name may still be prose rather than an agent -- NCT00592111's third
-        # arm is literally "intensive chemo with concurrent growth factor". Where the
-        # registry lists constituents in otherNames, those are the agents; the prose name
-        # is not. Brand spellings are folded to generics so "Adriamycin" does not become a
-        # second drug alongside "doxorubicin".
-        others = iv.get("other_names") or []
-        if others and len(others) > 1:
-            for nm in others:
-                add(nm)
-        else:
-            add(iv.get("name"))
+        # The intervention NAME is the agent. `otherNames` is deliberately NOT mined here.
+        #
+        # An earlier version treated a multi-entry `otherNames` as a constituent list,
+        # generalising from NCT00592111 (prose name "intensive chemo with concurrent growth
+        # factor", constituents listed as other names). That is the exception. CT.gov
+        # specifies the field as SYNONYMS, and the common case is NCT00557193, where
+        # "Asparaginase" carries 19 alternative spellings -- which produced 433 "agents"
+        # for one trial and would have fed straight into modalities.
+        #
+        # The deeper objection is architectural: deciding whether a prose intervention name
+        # implies specific drugs is a judgement about pharmacology, not a field lookup. It
+        # belongs on the inference side of the line this module exists to draw. The names
+        # stay in `interventions[].other_names` where the model can read them.
+        add(iv.get("name"))
+    return out
+
+
+#: Prompt-build bounds. Chosen from the corpus, not by feel: arms are median 1 / p99 9,
+#: interventions median 2 / p99 12, so these leave >99% of trials untouched. ADR-0021's
+#: finding was that limits applied at INGEST are unrecoverable; these apply at prompt-build
+#: against a full archived record, so widening them costs a re-run and no re-fetch.
+MAX_ARMS = 12
+MAX_INTERVENTIONS = 15
+
+
+def project_for_prompt(f: dict, max_arms: int = MAX_ARMS, max_ivs: int = MAX_INTERVENTIONS) -> dict:
+    """Bound the facts tier for prompting, marking any elision in the payload itself.
+
+    A truncation the model cannot see is a truncation it will answer over confidently --
+    the trial with 39 arms would otherwise look like a 12-arm trial. Every cut states its
+    own size, so `modalities` can be qualified rather than silently under-reported.
+    """
+    out = dict(f)
+    for key, cap, label in (("arms", max_arms, "arms"), ("interventions", max_ivs, "interventions")):
+        items = f.get(key) or []
+        if len(items) > cap:
+            out[key] = items[:cap]
+            out[f"{label}_elided"] = len(items) - cap
     return out
 
 

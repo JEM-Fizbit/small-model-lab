@@ -14,9 +14,11 @@ SAFETY (this spends money):
 Run:  uv run python track-b-trialscout/train/make_gold.py --target 1500 --cap 24
 """
 from __future__ import annotations
-import argparse, json, threading, time
+import argparse, json, sys, threading, time
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # so `schema.*` imports resolve
 
 from dotenv import load_dotenv
 import anthropic
@@ -25,9 +27,14 @@ ROOT = Path(__file__).resolve().parents[1]            # track-b-trialscout/
 load_dotenv(ROOT.parent / ".env")
 
 RAW = ROOT / "data" / "raw" / "trials.jsonl"
+RAW_FULL = ROOT / "data" / "raw" / "studies_full.jsonl"   # v4: full records, trimmed at prompt-build
 GOLD = ROOT / "data" / "gold"
 SPLITS = ROOT / "data" / "splits.json"   # frozen train/val/test assignment by NCT id
-SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
+SCHEMA_PATHS = {
+    "v3": ROOT / "schema" / "trial_readout.schema.json",
+    "v4": ROOT / "schema" / "trial_readout_v4.schema.json",
+}
+SCHEMA = json.loads(SCHEMA_PATHS["v3"].read_text())
 FEWSHOT = [json.loads(l) for l in (ROOT / "schema" / "fewshot.jsonl").read_text().splitlines() if l.strip()]
 
 MODEL = "claude-sonnet-5"
@@ -110,6 +117,43 @@ Worked examples:
 
 {ex}"""
 
+def system_prompt_v4() -> str:
+    """v4: same pharmacology, narrower job.
+
+    The v3 prompt spent four of its rules on `phase`, `sponsor_type` and `est_readout`.
+    All three are now read from the record by schema/facts.py, so asking for them here
+    would invite a second opinion on a lookup. What replaces them is guidance on the
+    material v3 never had: arms, dosing text, and a pre-expanded agent list.
+    """
+    base = system_prompt()
+    # Reuse the modality taxonomy verbatim -- it is the expensive part of this prompt and
+    # changing it would confound a schema change with a taxonomy change.
+    start = base.index("- intervention_class:")
+    end = base.index("- primary_endpoint_type:")
+    taxonomy = base[start:end]
+    end2 = base.index("- sponsor_type:")
+    endpoint_rule = base[base.index("- primary_endpoint_type:"):end2]
+    risk_rule = base[base.index("- risk_flags_judgement:"):base.index("- investor_note:")]
+
+    return f"""You are TrialScout, an analyst that turns one oncology clinical-trial record into a structured, investor-relevant readout. Always respond by calling the `emit_readout` tool — never free text.
+
+You are given a FACTS block that has ALREADY been read from the registry: title, phase, sponsor, status, dates, enrollment, design descriptors, arms, interventions with their dose/schedule text, and `agents` — the distinct therapeutic agents with regimen acronyms already expanded (COPP/ABV is already broken into its seven drugs) and procedures already excluded.
+
+Those facts are settled. Do NOT re-derive, re-state or contradict them. Your job is only what the registry does not state outright:
+
+- indication: concise tumor type + biomarker + line of therapy if stated (e.g. "EGFR T790M+ advanced NSCLC, 2L"). Normalise from facts.conditions, which are inconsistent and sometimes name the population rather than the disease.
+{taxonomy}{endpoint_rule}{risk_rule}- investor_note: <=3 sentences. State what the trial would prove and the key caveat. You may now reference design, arms and dosing — they are in the facts block. Do NOT restate numbers the facts block already carries (enrollment, dates, phase); an analyst can read those. Factual, no hype, never invent data not in the record.
+
+Working from the FACTS block:
+- `agents` is the list `modalities` is defined over. Classify EVERY entry. It already excludes radiotherapy, imaging and delivery routes, so an empty `agents` means no drug is under study.
+- `interventions[].other_names` are registry SYNONYMS, not extra agents — "Elspar" and "Asparaginase" are one drug. But where an intervention name is prose ("intensive chemo with concurrent growth factor"), its other_names may be the actual constituents: use judgement, that is why you are being asked.
+- `interventions[].description` carries dose and schedule. Two arms of the same regimen at different durations are still ONE set of modalities.
+- `arms[].description` is null on about a fifth of trials. When the registry does not say what distinguishes two arms, do not invent a distinction.
+- `arms_elided` / `interventions_elided`, if present, mean the list was cut for length: qualify rather than assert completeness.
+
+Worked examples follow the v3 conventions for the fields above."""
+
+
 def tool_def() -> dict:
     """The teacher's tool: every field EXCEPT the ones the pipeline derives.
 
@@ -162,6 +206,28 @@ def canonical(readout: dict) -> dict:
     return out
 
 client = anthropic.Anthropic()
+
+
+def configure(version: str) -> None:
+    """Point the module at a schema version.
+
+    SYS/TOOLS and the validation vocabularies are all *derived* from SCHEMA, so switching
+    version has to rebuild every one of them together. Rebinding them here rather than
+    forking the script keeps one copy of the cost cap, the pilot gate and the resume logic
+    -- duplicating the machinery that guards real spending is the worse trade.
+    """
+    global SCHEMA, SYS, TOOLS, _ASKED, SCALAR_ENUMS, ARRAY_ENUMS, REQUIRED
+    SCHEMA = json.loads(SCHEMA_PATHS[version].read_text())
+    prompt = system_prompt_v4() if version == "v4" else system_prompt()
+    SYS = [{"type": "text", "text": prompt, "cache_control": {"type": "ephemeral"}}]
+    TOOLS = [tool_def()]
+    _ASKED = {k: v for k, v in SCHEMA["properties"].items() if not v.get("x-derived")}
+    SCALAR_ENUMS = {k: set(v["enum"]) for k, v in _ASKED.items() if "enum" in v}
+    ARRAY_ENUMS = {k: set(v["items"]["enum"]) for k, v in _ASKED.items()
+                   if v.get("type") == "array" and "enum" in v.get("items", {})}
+    REQUIRED = [r for r in SCHEMA["required"] if r in _ASKED]
+
+
 SYS = [{"type": "text", "text": system_prompt(), "cache_control": {"type": "ephemeral"}}]
 TOOLS = [tool_def()]
 
@@ -220,14 +286,46 @@ def main():
                     help="output_config.effort for current-family teachers (ignored otherwise)")
     ap.add_argument("--model", type=str, default=MODEL,
                     help=f"teacher model id (default {MODEL}); pricing + request shape adapt to it")
-    ap.add_argument("--input", type=str, default=str(RAW), help="raw trials JSONL to label")
+    ap.add_argument("--schema", type=str, default="v3", choices=["v3", "v4"],
+                    help="schema version. v4 reads FULL records and prompts from the facts tier.")
+    ap.add_argument("--input", type=str, default=None,
+                    help="raw trials JSONL to label (defaults to trials.jsonl for v3, studies_full.jsonl for v4)")
     ap.add_argument("--out", type=str, default="all",
                     help="gold file stem to append to (gold/<stem>.jsonl). 'all' also does the 80/10/10 split.")
     args = ap.parse_args()
+    configure(args.schema)
     GOLD.mkdir(parents=True, exist_ok=True)
     all_path = GOLD / f"{args.out}.jsonl"
 
-    trials = [json.loads(l) for l in Path(args.input).read_text().splitlines() if l.strip()][:args.target]
+    src = Path(args.input) if args.input else (RAW_FULL if args.schema == "v4" else RAW)
+    raw_rows = [json.loads(l) for l in src.read_text().splitlines() if l.strip()]
+    if args.schema == "v4":
+        # v4 prompts from the facts tier, bounded at build time against a full archived
+        # record (ADR-0021: limits applied at INGEST are the ones you cannot revisit).
+        from schema.facts import extract, project_for_prompt
+        trials = [project_for_prompt(extract(r)) for r in raw_rows]
+        trials = [t for t in trials if t.get("nct_id")]
+    else:
+        trials = raw_rows
+
+    if args.out.startswith("all"):
+        # Select the corpus BY the frozen split, never by file order. The archive holds
+        # 3,662 trials and the split names 1,500 of them; today the first 1,500 rows happen
+        # to match, which is luck, not a guarantee. Taking a positional slice is how the
+        # original split silently reshuffled itself between runs -- so this is pinned to
+        # ids and deduped, and the run aborts rather than labelling a corpus that is not
+        # the one the frozen test set describes.
+        assignment = json.loads(SPLITS.read_text())
+        want = [i for name in ("train", "val", "test") for i in assignment[name]]
+        by_id = {t["nct_id"]: t for t in trials}
+        missing = [i for i in want if i not in by_id]
+        if missing:
+            raise SystemExit(
+                f"{len(missing)} of {len(want)} split trials are absent from {src.name} "
+                f"(first few: {missing[:5]}). Refusing to label a partial corpus."
+            )
+        trials = [by_id[i] for i in want]
+    trials = trials[:args.target]
     done = set()
     if all_path.exists():
         for l in all_path.read_text().splitlines():
@@ -297,7 +395,11 @@ def main():
 
     rows = [json.loads(l) for l in all_path.read_text().splitlines() if l.strip()]
     n = len(rows)
-    if args.out == "all":
+    if args.out.startswith("all"):
+        # Split files carry the gold stem's suffix: `all` -> train/val/test (v3),
+        # `all_v4` -> train_v4/val_v4/test_v4. Without this a v4 run would overwrite the
+        # v3 splits in place and destroy the frozen test set the published numbers rest on.
+        sfx = args.out[len("all"):]
         # --- SPLIT: read the frozen assignment, never re-derive it ---
         # This used to be `random.Random(42).shuffle(rows)` over all.jsonl. That looks
         # deterministic and isn't: all.jsonl is written in ThreadPoolExecutor completion
@@ -310,7 +412,7 @@ def main():
             ids = assignment[name]
             parts[name] = [by_id[i] for i in ids if i in by_id]
             missing[name] = len(ids) - len(parts[name])
-            (GOLD / f"{name}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in parts[name]))
+            (GOLD / f"{name}{sfx}.jsonl").write_text("".join(json.dumps(r) + "\n" for r in parts[name]))
         unassigned = [i for i in by_id if i not in set(sum((assignment[s] for s in ("train", "val", "test")), []))]
         split_line = (f"- total gold rows: **{n}** "
                       f"(train {len(parts['train'])}, val {len(parts['val'])}, test {len(parts['test'])})\n"
