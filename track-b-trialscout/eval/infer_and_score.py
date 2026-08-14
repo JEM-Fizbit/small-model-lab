@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "train"))
 sys.path.insert(0, str(ROOT / "eval"))
 sys.path.insert(0, str(ROOT / "schema"))
 from format_for_mlx import build_prompt  # noqa: E402  (after sys.path.insert) exact same prompt as training
-from harness import score  # noqa: E402  (after sys.path.insert) same metrics as the baseline
+from harness import score, CATEGORICAL_V4, SET_VALUED_V4  # noqa: E402  same metrics as the baseline
 from normalize import snap_to_enum  # noqa: E402  same enum-snap the server applies, so eval == deployed
 
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
@@ -116,6 +116,8 @@ def main():
     ap.add_argument("--with-enums", action="store_true",
                     help="append the allowed enum values to the prompt. Use for UNTUNED baselines: "
                          "the training prompt never lists them, so a base model cannot know them.")
+    ap.add_argument("--schema", default="v3", choices=["v3", "v4"],
+                    help="v4 prompts from the facts tier and scores only the 4 inference fields")
     args = ap.parse_args()
     gold_rows = load_gold(args.gold)
     test_set = gold_rows[:args.limit] if args.limit else gold_rows
@@ -134,7 +136,24 @@ def main():
         print(f"[{args.label}] loading {args.model} (UNTUNED base, no adapter) ...", flush=True)
         model, tok = load(args.model)
 
+    # v4 prompts from the facts tier, built by the SAME function training used. Importing it
+    # rather than re-implementing is deliberate: a prompt that drifts between train and eval
+    # shows up as an unexplained score drop, never as an error.
+    FACTS: dict = {}
+    if args.schema == "v4":
+        from schema.facts import extract, project_for_prompt
+        from format_for_mlx import build_prompt_v4
+        for _l in (ROOT / "data" / "raw" / "studies_full.jsonl").read_text().splitlines():
+            if _l.strip():
+                _f = project_for_prompt(extract(json.loads(_l)))
+                if _f.get("nct_id"):
+                    FACTS.setdefault(_f["nct_id"], _f)
+
     def prompt_for(g):
+        if args.schema == "v4":
+            user = build_prompt_v4(FACTS[g["nct_id"]])
+            return tok.apply_chat_template([{"role": "user", "content": user}],
+                                           add_generation_prompt=True, tokenize=False)
         user = build_prompt(RAW[g["nct_id"]]) + (enum_appendix() if args.with_enums else "")
         return tok.apply_chat_template([{"role": "user", "content": user}],
                                        add_generation_prompt=True, tokenize=False)
@@ -184,7 +203,8 @@ def main():
               f"({rate:.2f}s/trial, ~{rate*(len(todo)-done)/60:.0f} min left)", flush=True)
     preds_f.close()
 
-    res = score(test_set, preds)
+    res = (score(test_set, preds, CATEGORICAL_V4, SET_VALUED_V4, include_est_readout=False)
+           if args.schema == "v4" else score(test_set, preds))
     res["_valid_json"] = round(parsed_ok / len(test_set), 3)
     (out_dir / f"score_{args.label}.json").write_text(json.dumps(res, indent=2))
     print(f"\n[{args.label}] overall_structured={res['_overall_structured']}  "

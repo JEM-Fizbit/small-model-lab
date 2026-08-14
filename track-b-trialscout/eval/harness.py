@@ -148,8 +148,22 @@ def _scalar(v):
     return str(v)
 
 
-def score(gold, pred_by_id):
-    """gold: list of rows; pred_by_id: {nct_id: readout dict}."""
+#: v4 scores only what the model is actually asked for. phase, sponsor_type and est_readout
+#: moved to the derived tier (ADR-0024), so scoring them would credit the student for a
+#: lookup it no longer performs -- and would make v3 and v4 headlines look comparable when
+#: they measure different jobs.
+CATEGORICAL_V4 = ["intervention_class", "primary_endpoint_type"]
+SET_VALUED_V4 = ["modalities", "risk_flags_judgement"]
+
+
+def score(gold, pred_by_id, categorical=None, set_valued=None, include_est_readout=True):
+    """gold: list of rows; pred_by_id: {nct_id: readout dict}.
+
+    Field lists are parameters so a schema version cannot silently change what the headline
+    averages over. Pass CATEGORICAL_V4 / SET_VALUED_V4 / include_est_readout=False for v4.
+    """
+    CATEGORICAL = categorical if categorical is not None else globals()["CATEGORICAL"]
+    SET_VALUED = set_valued if set_valued is not None else globals()["SET_VALUED"]
     g = [r for r in gold if r["nct_id"] in pred_by_id]
     p = [pred_by_id[r["nct_id"]] for r in g]
     out = {}
@@ -157,9 +171,10 @@ def score(gold, pred_by_id):
         gv = [r.get(field) for r in g]; pv = [_scalar(x.get(field)) for x in p]
         acc = sum(1 for a, b in zip(gv, pv) if a == b) / len(gv)
         out[field] = {"accuracy": round(acc, 3), "macro_f1": round(macro_f1(gv, pv), 3)}
-    # est_readout exact match
-    out["est_readout"] = {"accuracy": round(
-        sum(1 for r, x in zip(g, p) if r.get("est_readout") == x.get("est_readout")) / len(g), 3)}
+    # est_readout exact match (v3 only -- v4 computes it from the record)
+    if include_est_readout:
+        out["est_readout"] = {"accuracy": round(
+            sum(1 for r, x in zip(g, p) if r.get("est_readout") == x.get("est_readout")) / len(g), 3)}
     # set-valued fields
     for field in SET_VALUED:
         gs_raw, ps_raw = _sets_for(field, g), _sets_for(field, p)
@@ -198,13 +213,19 @@ def score(gold, pred_by_id):
         out[field] = block
     # headline: mean of the categorical accuracies + readout acc + the two set-F1s
     parts = ([out[f]["accuracy"] for f in CATEGORICAL]
-             + [out["est_readout"]["accuracy"]]
+             + ([out["est_readout"]["accuracy"]] if include_est_readout else [])
              + [out[f]["set_f1"] for f in SET_VALUED])
     out["_overall_structured"] = round(sum(parts) / len(parts), 3)
     out["_n"] = len(g)
-    out["_scoring_note"] = ("schema v2: 7 components (4 categorical accuracies, est_readout exact "
-                            "match, modalities set-F1, risk_flags set-F1). NOT comparable to a v1 "
-                            "overall, which had 6 components and scored modality by hard accuracy.")
+    out["_components"] = len(parts)
+    out["_scoring_note"] = (
+        f"{len(parts)} components ({len(CATEGORICAL)} categorical accuracies"
+        + (", est_readout exact match" if include_est_readout else "")
+        + f", {len(SET_VALUED)} set-F1s). Overalls are comparable ONLY across identical "
+        "component sets: v3 averaged 7 and v4 averages 4, because phase, sponsor_type and "
+        "est_readout moved to the derived tier. The v4 number is lower by construction -- "
+        "the three that left all scored 0.976-0.997, i.e. above the v3 mean. The like-for-like "
+        "v3 figure on the v4 components is 0.893, not 0.932.")
     return out
 
 

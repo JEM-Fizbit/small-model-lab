@@ -39,6 +39,32 @@ INSTRUCTION = (
     "No prose, no code fence."
 )
 
+# --- v4 ---------------------------------------------------------------------------------
+# The student's job narrows to what the registry only implies. phase, sponsor_type and
+# est_readout are read or computed by schema/facts.py and schema/derive.py, so training on
+# them would spend LoRA capacity learning a lookup.
+RAW_FULL = ROOT / "data" / "raw" / "studies_full.jsonl"
+OUT_V4 = ROOT / "train" / "mlx_data_v4"
+
+TARGET_FIELDS_V4 = ["indication", "intervention_class", "modalities",
+                    "primary_endpoint_type", "risk_flags_judgement", "investor_note"]
+
+INSTRUCTION_V4 = (
+    "You are TrialScout. Below is an oncology clinical-trial FACTS block already read from "
+    "the registry — treat it as settled. Return ONLY a JSON object with exactly these fields: "
+    "indication, intervention_class, modalities (array), primary_endpoint_type, "
+    "risk_flags_judgement (array), investor_note. Classify every entry in `agents`; an empty "
+    "`agents` means no drug is under study. No prose, no code fence."
+)
+
+
+def build_prompt_v4(facts: dict) -> str:
+    """v4 prompt. Must stay byte-identical between training and inference -- infer_and_score
+    imports this, so a divergence here shows up as an unexplained eval drop, not an error."""
+    f = dict(facts)
+    f.pop("nct_id", None)   # known at scoring time; don't make the model copy it
+    return f"{INSTRUCTION_V4}\n\nTRIAL FACTS:\n{json.dumps(f, ensure_ascii=False)}"
+
 
 def trial_input(raw: dict) -> dict:
     """The compact record shown to the model (matches what the teacher saw, summary trimmed)."""
@@ -57,7 +83,53 @@ def target_json(gold: dict) -> str:
     return json.dumps({k: gold[k] for k in TARGET_FIELDS}, ensure_ascii=False)
 
 
+def main_v4():
+    """Build the v4 training set from the facts tier."""
+    import sys as _sys
+    _sys.path.insert(0, str(ROOT))
+    from schema.facts import extract, project_for_prompt
+
+    facts = {}
+    for line in RAW_FULL.read_text().splitlines():
+        if not line.strip():
+            continue
+        f = project_for_prompt(extract(json.loads(line)))
+        if f.get("nct_id"):
+            facts.setdefault(f["nct_id"], f)
+    OUT_V4.mkdir(parents=True, exist_ok=True)
+    for split, fname in [("train", "train"), ("val", "valid"), ("test", "test")]:
+        src = GOLD / f"{split}_v4.jsonl"
+        if not src.exists():
+            print(f"  MISSING {src.name} — run make_gold.py --schema v4 --out all_v4 first")
+            continue
+        rows = [json.loads(x) for x in src.read_text().splitlines() if x.strip()]
+        n = 0
+        with (OUT_V4 / f"{fname}.jsonl").open("w") as fh:
+            for g in rows:
+                f = facts.get(g["nct_id"])
+                if not f:
+                    continue
+                # Gate on shape, not on presence: a v3 row merged in here would train two
+                # conventions at once and do it silently (the ADR-0020 failure mode).
+                if any(k not in g for k in TARGET_FIELDS_V4):
+                    continue
+                ex = {"messages": [
+                    {"role": "user", "content": build_prompt_v4(f)},
+                    {"role": "assistant",
+                     "content": json.dumps({k: g[k] for k in TARGET_FIELDS_V4}, ensure_ascii=False)},
+                ]}
+                fh.write(json.dumps(ex, ensure_ascii=False) + "\n")
+                n += 1
+        print(f"{fname}.jsonl: {n} examples")
+    print(f"-> {OUT_V4}")
+
+
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--schema", default="v3", choices=["v3", "v4"])
+    if ap.parse_known_args()[0].schema == "v4":
+        return main_v4()
     # raw records come from the main pull + (if present) the Phase-4 rare-modality augment
     raw = {}
     for rf in [RAW, RAW_AUG]:
