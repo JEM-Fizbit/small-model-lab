@@ -83,6 +83,14 @@ def target_json(gold: dict) -> str:
     return json.dumps({k: gold[k] for k in TARGET_FIELDS}, ensure_ascii=False)
 
 
+# Must match --max-seq-length in run_phase3.py. Examples longer than this are truncated by
+# mlx_lm from the RIGHT, which removes the end of the assistant turn -- i.e. the target JSON.
+# Training on a cut target teaches the model to emit malformed JSON, so over-length TRAIN rows
+# are dropped instead, loudly. val/test are never dropped: a test trial that does not fit is a
+# real limitation of the model and must score as one, not be quietly excused.
+MAXSEQ_V4 = 2560
+
+
 def main_v4():
     """Build the v4 training set from the facts tier."""
     import sys as _sys
@@ -96,6 +104,13 @@ def main_v4():
         f = project_for_prompt(extract(json.loads(line)))
         if f.get("nct_id"):
             facts.setdefault(f["nct_id"], f)
+    try:
+        from transformers import AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained("mlx-community/Qwen3-4B-Instruct-2507-4bit")
+    except Exception as e:                                    # noqa: BLE001
+        tokenizer = None
+        print(f"  (no tokenizer, skipping the length guard: {type(e).__name__})")
+
     OUT_V4.mkdir(parents=True, exist_ok=True)
     for split, fname in [("train", "train"), ("val", "valid"), ("test", "test")]:
         src = GOLD / f"{split}_v4.jsonl"
@@ -103,7 +118,7 @@ def main_v4():
             print(f"  MISSING {src.name} — run make_gold.py --schema v4 --out all_v4 first")
             continue
         rows = [json.loads(x) for x in src.read_text().splitlines() if x.strip()]
-        n = 0
+        n = over = 0
         with (OUT_V4 / f"{fname}.jsonl").open("w") as fh:
             for g in rows:
                 f = facts.get(g["nct_id"])
@@ -113,14 +128,25 @@ def main_v4():
                 # conventions at once and do it silently (the ADR-0020 failure mode).
                 if any(k not in g for k in TARGET_FIELDS_V4):
                     continue
+                user = build_prompt_v4(f)
+                target = json.dumps({k: g[k] for k in TARGET_FIELDS_V4}, ensure_ascii=False)
+                if tokenizer is not None:
+                    if len(tokenizer.encode(user)) + len(tokenizer.encode(target)) + 16 > MAXSEQ_V4:
+                        over += 1
+                        if split == "train":
+                            continue
                 ex = {"messages": [
-                    {"role": "user", "content": build_prompt_v4(f)},
-                    {"role": "assistant",
-                     "content": json.dumps({k: g[k] for k in TARGET_FIELDS_V4}, ensure_ascii=False)},
+                    {"role": "user", "content": user},
+                    {"role": "assistant", "content": target},
                 ]}
                 fh.write(json.dumps(ex, ensure_ascii=False) + "\n")
                 n += 1
-        print(f"{fname}.jsonl: {n} examples")
+        note = ""
+        if over:
+            note = (f"  ({over} over {MAXSEQ_V4} tokens"
+                    + (" — DROPPED, a truncated target teaches malformed JSON)" if split == "train"
+                       else " — KEPT; they will be truncated and should score as a real miss)"))
+        print(f"{fname}.jsonl: {n} examples{note}")
     print(f"-> {OUT_V4}")
 
 
