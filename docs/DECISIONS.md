@@ -174,6 +174,74 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0023 — Teacher stays Sonnet 5; effort, not model tier, is the cost lever
+
+*Decided 2026-08-14. A review of every model this project calls, with the two open questions
+settled by measurement rather than assumption.*
+
+**Decision:** Keep **Sonnet 5** as teacher. Do **not** upgrade to Opus 5. Move the two
+Claude-as-judge scripts off Sonnet 4.6 onto Sonnet 5. Generate future gold at
+**`effort: low`**. Never price a model this repo cannot find in the protocol.
+
+**Two claims were tested on the same 40 pilot trials, against the production v3 gold.**
+
+| arm | cost (40 trials) | agreement with production gold |
+|---|---|---|
+| Opus 5, effort medium | $0.79 | 0.962 |
+| Sonnet 5, effort medium *(= production)* | $0.49 | — |
+| **Sonnet 5, effort low** | **$0.31** | **0.985** |
+
+**Opus 5 is not an upgrade here, at 2.5× the price.** Its two `modalities` disagreements
+split one-for-one: on NCT01610570 (mithramycin) it prefers `cytotoxic chemotherapy` over
+Sonnet's `targeted small molecule` — defensible, the drug is a classical cytotoxic antibiotic
+now used as a targeted Sp1 inhibitor. But on NCT00365287 it labels **anti-thymocyte globulin a
+`monoclonal antibody`, and ATG is polyclonal** — plainly wrong, where Sonnet's `other protein or
+peptide therapeutic` is right. The residual gap is concentrated in `risk_flags_judgement`
+(0.867), the deliberately subjective field, and reads as boundary disagreement rather than
+capability. Teacher quality caps student quality (ADR-0003), so this was worth $0.79 to know;
+it does not appear to be the binding ceiling.
+
+**Effort is the real lever, because output dominates the bill.** The cacheable prefix is ~3,937
+tokens against a ~387-token per-trial payload — 91% of input is cached at 0.1× — which leaves
+roughly **81% of the cost in output tokens**. So `effort` moves spend further than model tier
+does: low costs 37% less than medium and agrees 0.985, with `modalities` **perfect at 40/40**.
+Consistent with ADR-0018, where *raising* Sonnet 5's effort made it *more* consistently
+non-compliant with the mechanical `est_readout` rule — more deliberation is not more obedience.
+
+**Not applied retroactively.** The v3 gold was generated at medium and stays that way; mixing
+efforts inside one corpus would put a silent instrument change into the training data, which is
+the ADR-0020 mistake in a new costume. Low becomes the default at the next full regeneration.
+
+**The fee card was wrong, and the mechanism that should have caught it did not exist.** It
+asserted Sonnet 5 would revert to $3/$15 on 2026-09-01. That rise was cancelled; $2/$10 is
+permanent. The number had a canonical home the whole time —
+`ANTHROPIC_MODEL_REFERENCE.md` — and this repo kept a hand-maintained copy with no comparison
+between them. The protocol's own 45-day staleness guard could not help: it protects a reader of
+the protocol, not a project that copied the numbers into code months ago. Fixed structurally:
+the protocol is now synced into `docs/protocols/`, and `scripts/check_fee_card.py` diffs the
+code's `PRICING` against it and re-applies the staleness guard on this project's behalf. It
+found a second defect on first run — `PRICING.get(model, PRICING["claude-sonnet-4-6"])` silently
+costed unknown models at the rate of the one model we should never choose, which quietly
+defeats the `--cap` spending guard. Unknown models now raise.
+
+**Sonnet 4.6 was still in two judges.** Older *and* 50% dearer than Sonnet 5 ($3/$15 vs $2/$10)
+— strictly dominated, and exactly the trap of drifting into a worse-and-costlier variant by
+inertia. Both moved, with `max_tokens` tripled and `effort: low` set explicitly, because the
+current family runs adaptive thinking out of the same budget and would otherwise truncate.
+
+**Caveat on cross-generation cost comparisons.** Claude 4.7-and-later use a tokeniser emitting
+~30% more tokens for identical text; measured here at **+26%** (40 trials, then-identical prices:
+Sonnet 4.6 $0.39, Sonnet 5 $0.49). Sonnet 5's effective rate against a 4.6-era baseline is
+~$2.52/$12.60 — still cheaper, by ~16% rather than the headline 33%.
+
+**Left on the table: the Batch API's 50% discount, never used by this project.** Gold generation
+is exactly its shape — ~1,500 asynchronous requests with no latency requirement. Not adopted yet
+because the saving is conditional: with caching working as it does now, batching without reliable
+cache hits computes to roughly break-even (~$11.4 vs ~$12), and only pays if hits survive
+batching. Worth measuring before v4's regeneration, not worth assuming.
+
+---
+
 ## ADR-0022 — Schema v3: stop asking the model to do arithmetic, and stop trusting one instrument
 
 *Decided 2026-08-10, immediately after ADR-0021. Two changes to what the model is asked for, plus

@@ -43,7 +43,7 @@ GOLD_TEST = [json.loads(l) for l in (ROOT / "data" / "gold" / "test.jsonl").read
 SCHEMA = json.loads((ROOT / "schema" / "trial_readout.schema.json").read_text())
 
 BASE_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit"
-JUDGE_MODEL = "claude-sonnet-4-6"
+JUDGE_MODEL = "claude-sonnet-5"   # was sonnet-4-6: older AND 50% dearer
 
 # The free-form prompt: an investor summary with NO field list. Same trimmed record the
 # schema condition sees (trial_input), so the only difference between A and B is the ask.
@@ -87,7 +87,7 @@ def judge_extract(client: anthropic.Anthropic, writeup: str) -> dict | None:
     for attempt in range(4):
         try:
             msg = client.messages.create(
-                model=JUDGE_MODEL, max_tokens=600,
+                model=JUDGE_MODEL, max_tokens=1800, output_config={"effort": "low"},
                 system=[{"type": "text", "text": JUDGE_SYSTEM, "cache_control": {"type": "ephemeral"}}],
                 tools=[tool_def()], tool_choice={"type": "tool", "name": SCHEMA["name"]},
                 messages=[{"role": "user", "content": f"ANALYST WRITEUP:\n{writeup}"}],
