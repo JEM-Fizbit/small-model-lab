@@ -138,7 +138,7 @@ EVAL_SVG = r'''<svg viewBox="0 0 800 230" role="img" aria-label="Evaluation: the
 <defs><marker id="arE" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6e6557"/></marker></defs>
 <rect x="12" y="80" width="150" height="64" rx="10" fill="#f3ece1" stroke="#963d2c" stroke-width="1.5"/>
 <text x="87" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#231f18">Gold test set</text>
-<text x="87" y="124" text-anchor="middle" font-size="10.5" fill="#6e6557">150 held-out trials</text>
+<text x="87" y="124" text-anchor="middle" font-size="10.5" fill="#6e6557">1,444 held-out trials</text>
 <rect x="205" y="80" width="150" height="64" rx="10" fill="#eceadb" stroke="#5f6c33" stroke-width="1.5"/>
 <text x="280" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4c5829">TrialScout</text>
 <text x="280" y="124" text-anchor="middle" font-size="10.5" fill="#5f6c33">predicts a readout</text>
@@ -314,7 +314,7 @@ the schema. So every answer comes back already valid and parseable, with no JSON
 <li><code>temperature=0</code>: deterministic, no creative drift; we want the teacher's single best call.</li>
 <li><code>system=SYS</code>: the rules + worked examples, marked <em>prompt-cached</em> so the big
 static prefix is billed once, not per trial. That (plus a cap and a pilot gate) kept the whole
-labeling run to about <strong>$14</strong>.</li>
+labeling run to about <strong>$12</strong>.</li>
 </ul>
 """),
   ("callout", "key", "Teacher quality caps student quality", r"""
@@ -326,7 +326,7 @@ bite, hard, in §8.)</p>
   ("callout", "aside", "Automating a job that used to be manual", r"""
 <p>The slow, expensive part of supervised learning has always been <em>getting the labels</em>: a human
 reading each example and hand-writing the answer. Labeling 1,500 trials that way would take an
-analyst weeks. Distillation collapses it to a few hours and about <strong>$14</strong>: the teacher does
+analyst weeks. Distillation collapses it to a few hours and about <strong>$12</strong>: the teacher does
 the tedious annotation. Cheap, fast, scalable labeled data is one of the biggest unlocks in modern ML,
 and the same move works for <em>any</em> structured-extraction task, not just trials.</p>
 """),
@@ -408,14 +408,14 @@ text, so the model learns to <em>produce</em> readouts, not echo inputs.</p>
 <p>In Part 1 we judged the model by <em>reading</em> its output: fine for &ldquo;does this look like
 English?&rdquo;, useless for &ldquo;is this <em>correct</em>?&rdquo;. A useful model needs a real
 scorecard. So the eval harness is a first-class deliverable, not an afterthought: it runs the student
-over the 150 held-out trials and scores each field against the gold answer.</p>
+over the 1,444 held-out trials and scores each field against the gold answer.</p>
 """),
   ("diagram", EVAL_SVG,
    "The eval: for every held-out trial, the student predicts a readout; structured fields are scored "
    "by accuracy/F1, the free-text note by a Claude judge, and rolled into one overall score vs the baseline."),
   ("filecode", "track-b-trialscout/eval/infer_and_score.py",
    "Load base + adapter, generate a readout per test trial, parse it, and score it.",
-   "model, tok = load(args.model, adapter_path=args.adapter)", "res = score(test_set, preds)"),
+   "model, tok = load(args.model, adapter_path=args.adapter)", 'if args.schema == "v4" else score(test_set, preds))'),
   ("gloss", r"""
 <p><b>What this says:</b> <code>load(model, adapter_path=...)</code> loads the frozen base and snaps the
 LoRA adapter on top (that's how LoRA is consumed). For each trial it builds the <em>same</em> prompt used
@@ -470,6 +470,14 @@ headline honest: it is the bar a small local model has to clear.</p>
 <tr><td>est_readout</td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.976</td><td>+0.556</td></tr>
 <tr><td>risk flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td></tr>
 </tbody></table>
+
+"""),
+  ("prose", r"""
+<p><b>One caveat on reading across a row.</b> The <b>Qwen student</b> column is scored on the
+1,444-trial held-out set. The three comparison arms were scored on the frozen 150-trial set and have
+not been re-run at the larger size. The student scores <b>0.936</b> on that smaller set &mdash;
+within noise of the 0.932 above &mdash; so the columns are fair to read side by side, but they are
+not the same measurement, and the gain column inherits that.</p>
 """),
   ("callout", "aside", "Why the untuned column needs a footnote", r"""
 <p>Asked with the <em>bare</em> training prompt, untuned Qwen scores <b>0.121</b> &mdash; far
@@ -636,7 +644,7 @@ expert&rdquo; the whole pipeline was for.</p>
   ("prose", r"""
 <p>That's the full arc. Part 1 built a language model from nothing to <em>understand</em> the machinery;
 Part 2 took a pretrained one and <em>specialised</em> it into a measurably useful expert, for the price of
-some patience and about $14 of teacher calls. The giants are not different in kind; they are this, at scale.
+some patience and about $12 of teacher calls. The giants are not different in kind; they are this, at scale.
 And the techniques here (distillation, LoRA, eval-driven decisions) are exactly how a small team turns a
 big open model into something that does <em>their</em> job.</p>
 """),
@@ -645,7 +653,7 @@ big open model into something that does <em>their</em> job.</p>
    "# 1. Fetch trials", "uv run python track-b-trialscout/eval/harness.py --pred"),
   ("callout", "aside", "Read-along vs. run-it-yourself", r"""
 <p>Unlike Part 1, this chapter is mostly <strong>read-along</strong>: the gold dataset and the trained adapter
-are gitignored (regenerable, not committed), and step 2 spends ~$14 of Anthropic API to recreate the labels.
+are gitignored (regenerable, not committed), and step 2 spends ~$12 of Anthropic API to recreate the labels.
 Everything you need to reproduce it is above and in the
 <a href="https://github.com/JEM-Fizbit/small-model-lab/tree/main/track-b-trialscout">repo</a>, but you can absolutely
 just <em>read</em> it and take the method with you.</p>
