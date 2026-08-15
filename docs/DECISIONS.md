@@ -174,6 +174,75 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0024 — Schema v4: the facts/inference split, and what it cost to learn
+
+*Decided 2026-08-15. Reviewing v3 readouts, essentially every complaint was about a fact
+the record already contained. v4 draws a line: facts are READ, inference is ASKED.*
+
+**Decision:** Ship the two-tier readout. `schema/facts.py` reads what the registry states;
+`schema/derive.py` computes what is arithmetic; the model is asked for six fields only —
+`indication`, `intervention_class`, `modalities`, `primary_endpoint_type`,
+`risk_flags_judgement`, `investor_note`. `schema/assemble.py` joins the three into one
+record. `phase`, `sponsor_type` and `est_readout` move to the derived tier.
+
+**Result on 149 identical trials, each model scored against its own gold, 4 components:**
+
+| field | v3 | v4.0 | v4.1 | v4.1−v3 |
+|---|---|---|---|---|
+| intervention_class | 0.946 | 0.940 | 0.953 | +0.007 |
+| primary_endpoint_type | 0.926 | 0.779 | **0.966** | **+0.040** |
+| modalities | 0.887 | 0.844 | 0.841 | −0.046 |
+| risk_flags_judgement | 0.815 | 0.731 | 0.787 | −0.028 |
+| **overall** | **0.893** | 0.824 | **0.887** | **−0.006** |
+
+Valid JSON 1.000. **The headline is flat and the composition changed**: v4.1 does a
+strictly harder job — the three fields it no longer answers all scored 0.976–0.997 — and
+matches v3 while doing it. The v3 headline of 0.932 was 7 components including those
+lookups; 0.893 is v3 re-scored on v4's 4, and is the only fair comparator.
+
+**v4.0 shipped a bug that cost a full regeneration.** `facts.py` omitted
+`primary_outcomes`. `primary_endpoint_type` is *defined* as "classify the primary outcome
+measure", so the teacher labelled 1,500 trials blind to the one field that answers it.
+Teacher-vs-teacher on the same trials isolates it cleanly: `primary_endpoint_type` 0.711
+and `risk_flags_judgement` 0.741 between v3 and v4.0 gold, against `modalities` 0.909 and
+`intervention_class` 0.953 — the two outcome-dependent fields collapsed, the two that do
+not need outcomes held. The student then reproduced the degraded gold exactly as designed.
+
+Root cause: the module was built from the CT.gov sections that *look* like facts —
+identification, status, design, arms — rather than from the list of fields the readout is
+actually computed from. `brief_summary` went missing the same way. **A tier defined by its
+source rather than by its consumers will omit whatever the consumers happen to need.**
+
+**Restoring outcomes overshot v3** (+0.040): v4.1 passes the outcome *description* as well
+as the measure, and DLT/MTD frequently appear only there. v3 carried `measure` and
+`timeFrame` only.
+
+**`modalities` did not recover, and the likely cause is structural, not the schema.** v3
+trained on **1,499** examples including the 299-trial rare-modality augment (ADR-0020,
+built specifically to lift modality recall); v4.1 trained on **1,178** with no augment.
+Per-class deltas point at the small classes, but at n=4–11 those are 2–4 trials and this
+test set is the instrument ADR-0020 already established is too coarse to read per-class.
+**Untested hypothesis, named as such.** Relabelling the augment under v4.1 (~$2.50) and
+retraining is the experiment.
+
+**The checkpoint trap fired on all three runs.** mlx_lm's auto-saved `adapters.safetensors`
+was the worst or near-worst checkpoint every time: v3 (bottom at 400, saved 1000), v4.0
+(bottom 300 at 0.695, saved 1000 at 1.014), v4.1 (bottom 500 at 0.702, saved 1000 at
+0.764). Three for three is not bad luck; it is what training ~1,200 examples for more
+iterations than they support does. Best-checkpoint selection belongs in the runner.
+
+**Resource default, recorded after two complaints.** Training at batch 4 peaks at 15.34 GB
+of 24; batch 2 peaks at 9.75 GB for identical data seen (500@4 ≡ 1000@2) at ~1.2× wall
+clock. Batch 2 is now the default on this machine. `nice` is near-placebo for MLX — the
+work is GPU and unified memory, the process shows 1–4% CPU.
+
+**What the score still does not measure.** Every number here is fidelity to the teacher.
+The one human check that has been run — an 18-trial readout review — was of the *schema*,
+and it passed: the reviewer called it "a real improvement on its utility". Correctness of
+the labels themselves remains unadjudicated.
+
+---
+
 ## ADR-0023 — Teacher stays Sonnet 5; effort, not model tier, is the cost lever
 
 *Decided 2026-08-14. A review of every model this project calls, with the two open questions
