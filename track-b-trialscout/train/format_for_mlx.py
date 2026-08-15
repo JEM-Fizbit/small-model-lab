@@ -123,6 +123,25 @@ def main_v4(gold_suffix: str = "_v4"):
             print(f"  MISSING {src.name} — run make_gold.py --schema v4 --out all_v4 first")
             continue
         rows = [json.loads(x) for x in src.read_text().splitlines() if x.strip()]
+        if split == "train":
+            # The rare-modality augment (ADR-0020) exists to lift modality recall, and v3
+            # trained on it while v4.0/v4.1 did not -- 1,499 examples against 1,178. That
+            # is the leading explanation for v4.1's modalities gap, so it is merged back.
+            # TRAIN ONLY: val/test stay frozen, or the comparison stops meaning anything.
+            # It must be relabelled under the SAME schema; merging v3-shaped rows here
+            # would teach two conventions at once and do it silently (ADR-0020's lesson).
+            aug_src = GOLD / f"augment_rare{gold_suffix}.jsonl"
+            if aug_src.exists():
+                aug = [json.loads(x) for x in aug_src.read_text().splitlines() if x.strip()]
+                stale = [r for r in aug if any(k not in r for k in TARGET_FIELDS_V4)]
+                if stale:
+                    print(f"  SKIPPING {aug_src.name}: {len(stale)}/{len(aug)} rows do not "
+                          f"match the v4 target shape — relabel before using")
+                else:
+                    rows += aug
+                    print(f"  (train augmented with {len(aug)} rare-modality rows)")
+            else:
+                print(f"  (no {aug_src.name} — training without the rare-modality augment)")
         n = over = 0
         with (OUT_V4 / f"{fname}.jsonl").open("w") as fh:
             for g in rows:
