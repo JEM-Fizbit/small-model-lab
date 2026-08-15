@@ -108,6 +108,30 @@ def _design_sentence(ps: dict, d: dict) -> str:
     return ", ".join(bits) if bits else "design not stated"
 
 
+def _outcomes(ps: dict, max_n: int = 4) -> list[dict]:
+    """Primary outcome measures.
+
+    OMITTED FROM v4.0 AND IT COST A FULL REGENERATION. `primary_endpoint_type` is *defined*
+    as "classify the primary outcome measure", and this module was built from the CT.gov
+    modules that looked like facts -- identification, status, design, arms -- without
+    checking the list against what the readout fields are actually computed from. The
+    teacher then labelled 1,500 trials blind: its endpoint answers agreed with the v3
+    teacher's on only 0.711 of the same trials, and `risk_flags_judgement`, which reads the
+    endpoint to decide "surrogate endpoint" and "PK/dose-finding only", fell to 0.741. The
+    student reproduced the degraded gold exactly as designed.
+
+    `description` is kept: "DLT" and "MTD" frequently appear only there, not in `measure`.
+    """
+    out = []
+    for o in ((ps.get("outcomesModule") or {}).get("primaryOutcomes") or [])[:max_n]:
+        out.append({
+            "measure": o.get("measure"),
+            "description": o.get("description"),
+            "time_frame": o.get("timeFrame"),
+        })
+    return out
+
+
 def _arms(ps: dict) -> list[dict]:
     out = []
     for a in (ps.get("armsInterventionsModule") or {}).get("armGroups") or []:
@@ -195,6 +219,11 @@ def agents(interventions: list[dict]) -> list[str]:
 #: against a full archived record, so widening them costs a re-run and no re-fetch.
 MAX_ARMS = 12
 MAX_INTERVENTIONS = 15
+#: brief_summary matches v3's ingest cap exactly (600), so that field is not a variable
+#: between the two versions. Outcome descriptions are new in v4 -- v3 carried only `measure`
+#: and `timeFrame` -- and 300 keeps the median (123) untouched while clipping a 1013-char tail.
+MAX_SUMMARY_CHARS = 600
+MAX_OUTCOME_DESC_CHARS = 300
 
 
 def project_for_prompt(f: dict, max_arms: int = MAX_ARMS, max_ivs: int = MAX_INTERVENTIONS) -> dict:
@@ -210,6 +239,17 @@ def project_for_prompt(f: dict, max_arms: int = MAX_ARMS, max_ivs: int = MAX_INT
         if len(items) > cap:
             out[key] = items[:cap]
             out[f"{label}_elided"] = len(items) - cap
+    if out.get("brief_summary"):
+        out["brief_summary"] = out["brief_summary"][:MAX_SUMMARY_CHARS]
+    if out.get("primary_outcomes"):
+        out["primary_outcomes"] = [
+            {**o, "description": (o["description"][:MAX_OUTCOME_DESC_CHARS] if o.get("description") else None)}
+            for o in out["primary_outcomes"]
+        ]
+    # CT.gov repeats the brief title as the official title on 8.7% of trials. Sending both
+    # spends tokens to say the same thing twice.
+    if out.get("brief_title") and out["brief_title"] == out.get("title"):
+        out.pop("brief_title")
     return out
 
 
@@ -254,6 +294,11 @@ def extract(study: dict) -> dict:
         # reads them differently. Never flattened to a bare number.
         "enrollment_type": (enroll.get("type") or "").upper() or None,
         "conditions": list((ps.get("conditionsModule") or {}).get("conditions") or []),
+        # What the trial is trying to show. `primary_endpoint_type` is computed from this;
+        # `brief_summary` carries the line-of-therapy and biomarker wording `indication`
+        # needs. Both were in the v3 compact record and both were missing from v4.0.
+        "primary_outcomes": _outcomes(ps),
+        "brief_summary": ((ps.get("descriptionModule") or {}).get("briefSummary") or None),
         "design": _design(ps, arms),
         "arms": arms,
         "interventions": ivs,
