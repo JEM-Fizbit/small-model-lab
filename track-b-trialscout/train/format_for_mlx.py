@@ -91,8 +91,13 @@ def target_json(gold: dict) -> str:
 MAXSEQ_V4 = 2560
 
 
-def main_v4():
-    """Build the v4 training set from the facts tier."""
+def main_v4(gold_suffix: str = "_v4"):
+    """Build the v4 training set from the facts tier.
+
+    ``gold_suffix`` selects which regeneration to read (``_v4``, ``_v41``, ...). Each
+    teacher run writes its own split files, so a re-run never overwrites the gold an
+    existing adapter was trained against.
+    """
     import sys as _sys
     _sys.path.insert(0, str(ROOT))
     from schema.facts import extract, project_for_prompt
@@ -113,7 +118,7 @@ def main_v4():
 
     OUT_V4.mkdir(parents=True, exist_ok=True)
     for split, fname in [("train", "train"), ("val", "valid"), ("test", "test")]:
-        src = GOLD / f"{split}_v4.jsonl"
+        src = GOLD / f"{split}{gold_suffix}.jsonl"
         if not src.exists():
             print(f"  MISSING {src.name} — run make_gold.py --schema v4 --out all_v4 first")
             continue
@@ -154,8 +159,11 @@ def main():
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--schema", default="v3", choices=["v3", "v4"])
-    if ap.parse_known_args()[0].schema == "v4":
-        return main_v4()
+    ap.add_argument("--gold-suffix", default="_v4",
+                    help="which gold regeneration to read: _v4, _v41, ...")
+    known = ap.parse_known_args()[0]
+    if known.schema == "v4":
+        return main_v4(known.gold_suffix)
     # raw records come from the main pull + (if present) the Phase-4 rare-modality augment
     raw = {}
     for rf in [RAW, RAW_AUG]:
