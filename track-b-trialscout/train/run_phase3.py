@@ -38,7 +38,14 @@ def baseline_overall() -> float:
 def train(label: str, model: str, num_layers: int) -> bool:
     LOGS.mkdir(parents=True, exist_ok=True)
     adapter = ADAPTERS / label
-    cmd = [sys.executable, "-m", "mlx_lm", "lora", "--model", model, "--train",
+    # `nice`, because this machine is also somebody's desktop. Training takes ~15.3 GB of
+    # 24 GB unified memory and every core, and at normal priority it competes with the
+    # foreground on equal terms -- measured as "everything else gets laggy", twice.
+    # Priority is free: it changes only who waits, never the arithmetic, so results stay
+    # bit-identical. Memory is NOT addressable this way; the levers there are --batch-size
+    # and --max-seq-length, and both change the training run, so they are a deliberate
+    # decision rather than a default.
+    cmd = ["nice", "-n", "15", sys.executable, "-m", "mlx_lm", "lora", "--model", model, "--train",
            "--data", str(MLX_DATA), "--fine-tune-type", "lora",
            "--num-layers", str(num_layers), "--batch-size", str(BATCH), "--iters", str(ITERS),
            "--learning-rate", LR, "--max-seq-length", str(MAXSEQ),
