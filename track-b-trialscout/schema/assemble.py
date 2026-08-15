@@ -140,7 +140,13 @@ def to_markdown(r: dict) -> str:
     if r.get("sponsor"):
         lines.append(f"- **Sponsor** — {r['sponsor']} ({r.get('sponsor_type', 'unknown')})")
     if r.get("agents"):
-        lines.append(f"- **Agents** — {', '.join(r['agents'])}")
+        # "Interventions", not "Agents". 19.6% of trials name an intervention in prose that
+        # carries its drugs inside it -- "NGM120 30mg with Gemcitabine and Abraxane",
+        # "Busulfan, fludarabine, & cyclophosphamide with ... ATG and cyclosporine". Those
+        # entries are correct registry content, not noise, and the model classifies them
+        # into modalities fine. Calling the list "Agents" promised a curated drug roster it
+        # was never going to be; the honest label costs nothing and fixes the complaint.
+        lines.append(f"- **Interventions** — {', '.join(r['agents'])}")
     if r.get("modalities") is not None:
         lines.append(f"- **Modalities** — {', '.join(r['modalities']) or 'none (no drug under study)'}")
     if r.get("primary_endpoint_type"):
