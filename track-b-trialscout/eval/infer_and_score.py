@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "train"))
 sys.path.insert(0, str(ROOT / "eval"))
 sys.path.insert(0, str(ROOT / "schema"))
+sys.path.insert(0, str(ROOT))   # v4: `schema.facts` is imported as a package, not a bare module
 from format_for_mlx import build_prompt  # noqa: E402  (after sys.path.insert) exact same prompt as training
 from harness import score, CATEGORICAL_V4, SET_VALUED_V4  # noqa: E402  same metrics as the baseline
 from normalize import snap_to_enum  # noqa: E402  same enum-snap the server applies, so eval == deployed
