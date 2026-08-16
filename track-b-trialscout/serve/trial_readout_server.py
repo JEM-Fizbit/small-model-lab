@@ -43,7 +43,10 @@ sys.path.insert(0, str(ROOT / "schema"))
 from format_for_mlx import build_prompt  # noqa: E402  exact prompt the model was trained on
 from fetch_trials import compact  # noqa: E402         CT.gov study object -> compact record
 from normalize import snap_to_enum  # noqa: E402        snap near-miss enum values to schema vocab
-from derive import merge_risk_flags  # noqa: E402      compute the arithmetic risk flags, don't ask
+# merge_risk_flags is no longer called here: schema/assemble.py owns the merge now, so the
+# readout is built in exactly one place rather than partly here and partly at each call site.
+sys.path.insert(0, str(ROOT))
+from schema.assemble import assemble, to_markdown, MODEL_FIELDS  # noqa: E402  the one place the readout is built
 from fingerprint import check as check_schema  # noqa: E402  refuse a v1 adapter on a v2 schema
 
 # --- config (no magic numbers: every knob named + commented) ---
@@ -52,7 +55,7 @@ ADAPTER = ROOT / "train" / "adapters" / "qwen_v3_it400"  # the 28 MB LoRA we tra
 # NOTE: must track the schema. Pointing this at a v1 adapter while schema/ is v2 produces
 # output that still VALIDATES (the normalizer snaps unknown values to "other") but is wrong.
 # Caught by --selftest on 2026-08-10; that silent-validity failure mode is why the selftest exists.
-SCHEMA_PATH = ROOT / "schema" / "trial_readout.schema.json"
+SCHEMA_PATH = ROOT / "schema" / "trial_readout_v4.schema.json"  # the served contract
 CTGOV = "https://clinicaltrials.gov/api/v2/studies"      # public API v2, no key
 MAX_TOKENS = 400                                         # readout JSON fits well under this
 
@@ -115,14 +118,34 @@ def _extract_json(text: str) -> dict | None:
     return None
 
 
-def _infer(raw_record: dict) -> dict:
-    """BLOCKING: run base+adapter on one compact trial record; return readout + validation.
+def _infer(study: dict) -> dict:
+    """BLOCKING: produce the served readout for one FULL ClinicalTrials.gov study record.
 
-    Must be called inside a worker thread (anyio.to_thread) so it doesn't block the event loop.
-    The model was trained to emit the 8 fields *without* nct_id, so we inject it from the input.
+    THE HYBRID (ADR-0025). Two things that shipped together as "v4" were separable, and
+    measurement said to keep only one of them:
+
+      * the FACTS TIER is kept -- title, dates, sponsor, design, arms, dosing and outcomes
+        are read from the record, and phase / sponsor_type / est_readout are computed. Those
+        three went from ~0.98 as model output to exactly right, ~74 fewer field errors per
+        1,444 trials.
+      * the RETRAINED MODEL is not. Asking the model to work from the facts block instead of
+        the compact record measured WORSE on every inference field -- overall 0.868 against
+        v3's 0.893 on 1,439 natural-distribution trials. So the v3 adapter stays.
+
+    The v3 model emits nine fields; six are used and three (`phase`, `sponsor_type`,
+    `est_readout`) are discarded in favour of the computed values. Safe because the four
+    enums are byte-identical between the v3 and v4 schemas -- verified, and worth
+    re-verifying if either schema is edited.
+
+    Must be called inside a worker thread (anyio.to_thread) so it doesn't block the loop.
     """
     from mlx_lm import generate
     model, tok = _load_model()
+    # The model sees exactly what it was trained on: the COMPACT record. Feeding it the
+    # richer facts block is precisely the change that measured worse.
+    raw_record = compact(study)
+    if raw_record is None:
+        return {"_ok": False, "_error": "not a phased interventional trial"}
     prompt = tok.apply_chat_template(
         [{"role": "user", "content": build_prompt(raw_record)}],
         add_generation_prompt=True, tokenize=False)
@@ -132,15 +155,18 @@ def _infer(raw_record: dict) -> dict:
     if obj is None:
         return {"_ok": False, "_error": "model did not emit parseable JSON", "_raw": out[:500]}
 
-    nct = raw_record.get("nct_id") or "unknown"
-    # nct_id first for readability; our injected value wins over any the model echoed
-    readout = {"nct_id": nct, **{k: v for k, v in obj.items() if k != "nct_id"}}
-    readout = snap_to_enum(readout)  # fix near-miss enum values (casing / out-of-vocab) pre-validation
-    # Seven of the eleven risk flags are arithmetic on fields in the record. Compute those and
-    # keep only the model's four judgement flags -- it is measurably worse at `enrollment < 50`
-    # than an `if` statement, having learned the teacher's errors. See schema/derive.py.
-    readout["risk_flags"] = merge_risk_flags(raw_record, readout.get("risk_flags_judgement"))
-    errors = sorted(e.message for e in _VALIDATOR.iter_errors(readout))
+    inferred = snap_to_enum({"nct_id": raw_record.get("nct_id") or "unknown", **obj})
+    # Only the six inference fields cross over; the rest of the readout is read or computed.
+    inferred = {k: v for k, v in inferred.items() if k in MODEL_FIELDS}
+    readout = assemble(study, inferred, provenance=True, detail=True)
+
+    # Validate the six generated fields against the v4 contract. The derived tier is not
+    # validated against a generative schema -- it is read from the record, so "invalid"
+    # would mean the registry disagrees with itself, not that the pipeline erred.
+    # Validate what the MODEL produced, not the assembled record. `risk_flags_judgement` is
+    # consumed during assembly (merged with the arithmetic flags into `risk_flags`), so
+    # validating the assembled object reports it missing and fails every single call.
+    errors = sorted(e.message for e in _VALIDATOR.iter_errors(inferred))
     return {"_ok": True, "readout": readout, "_schema_valid": not errors, "_schema_errors": errors}
 
 
@@ -154,39 +180,26 @@ def _fetch_trial(nct_id: str) -> dict | None:
     if r.status_code == 404:
         return None
     r.raise_for_status()
-    return compact(r.json())
+    study = r.json()
+    # Return the FULL study: the facts tier reads arms, dosing, outcomes and dates that
+    # compact() drops. compact() is still applied, but inside _infer and only to build the
+    # model's prompt -- the record it was trained on. ADR-0021: a limit applied at ingest
+    # is the one you cannot revisit.
+    return study if compact(study) is not None else None
 
 
 # --- shared output formatting (DRY across both tools) ---
 def _render_markdown(readout: dict, valid: bool, errors: list[str]) -> str:
-    r = readout
-    risk = r.get("risk_flags") or []
-    mods = r.get("modalities")
-    # An empty list is a claim ("this trial has no drug asset"), not a missing answer,
-    # so it gets said out loud rather than rendered as an empty bullet.
-    if mods:
-        mod_line = ", ".join(mods)
-    elif isinstance(mods, list):
-        mod_line = "_none — this trial tests no drug or biologic_"
-    else:
-        mod_line = "unknown"
-    lines = [
-        f"# TrialScout readout — {r.get('nct_id')}",
-        "",
-        f"- **Phase**: {r.get('phase')}",
-        f"- **Indication**: {r.get('indication')}",
-        f"- **Intervention type**: {r.get('intervention_class')}",
-        f"- **Modalities**: {mod_line}",
-        f"- **Primary endpoint**: {r.get('primary_endpoint_type')}",
-        f"- **Sponsor type**: {r.get('sponsor_type')}",
-        f"- **Est. readout**: {r.get('est_readout')}",
-        f"- **Risk flags**: {', '.join(risk) if risk else 'none'}",
-        "",
-        f"**Investor note** — {r.get('investor_note')}",
-    ]
+    """Render the assembled readout.
+
+    Delegates to schema/assemble.to_markdown so the served text and any other consumer of
+    the readout cannot drift apart -- this function used to hand-build a v3-shaped summary
+    that listed only the model's fields, which is now a fraction of the record.
+    """
+    body = to_markdown(readout)
     if not valid:
-        lines += ["", f"> ⚠️ Schema check failed ({len(errors)} issue(s)): " + "; ".join(errors)]
-    return "\n".join(lines)
+        body += "\n\n> **Schema validation failed on the generated fields**: " + "; ".join(errors)
+    return body
 
 
 def _format_result(result: dict, fmt: ResponseFormat) -> str:

@@ -15,6 +15,13 @@ import hashlib
 import json
 from pathlib import Path
 
+# v3 ON PURPOSE, even though the SERVED contract is v4 (ADR-0025). This fingerprint answers
+# "was this adapter trained against this vocabulary?", and the deployed adapter is the v3
+# one -- the v4-trained model measured worse and was not shipped. Repointing this at
+# trial_readout_v4.schema.json would fail the guard on a correct setup, and re-stamping the
+# adapter to silence it would destroy the only protection against serving a model against a
+# vocabulary it never saw. The two schemas share identical enums for the six generated
+# fields, which is what makes the hybrid safe; this check is what keeps that true.
 SCHEMA_PATH = Path(__file__).resolve().parent / "trial_readout.schema.json"
 STAMP_FILENAME = "schema_fingerprint.json"
 
