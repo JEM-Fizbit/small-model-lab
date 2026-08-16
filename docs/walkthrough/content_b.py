@@ -386,7 +386,7 @@ point of this chapter.</p>
    "(~28 MB of weight deltas). At runtime you load the base and snap the adapter on top."),
   ("filecode", "track-b-trialscout/train/run_phase3.py",
    "The actual fine-tune command (MLX's LoRA trainer).",
-   'cmd = [sys.executable, "-m", "mlx_lm", "lora",',
+   'cmd = ["nice", "-n", "15", sys.executable, "-m", "mlx_lm", "lora",',
    '"--adapter-path", str(adapter), "--grad-checkpoint", "--mask-prompt", "--seed", "0"]'),
   ("gloss", r"""
 <p><b>Reading the flags:</b> <code>--fine-tune-type lora</code> picks the adapter approach;
@@ -458,26 +458,76 @@ headline honest: it is the bar a small local model has to clear.</p>
 """),
   ("table", r"""
 <table>
-<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Frontier model</th><th>Qwen student</th><th>Fine-tuning gain</th></tr></thead>
+<thead><tr><th>Field</th><th>Baseline (floor)</th><th>Untuned Qwen</th><th>Frontier model</th><th>Qwen student</th><th>Fine-tuning gain</th><th>Shipped tool</th></tr></thead>
 <tbody>
-<tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.932</b></td><td><b>+0.235</b></td></tr>
-<tr><td>valid JSON</td><td>&mdash;</td><td>1.000</td><td>1.000</td><td>1.000</td><td>&mdash;</td></tr>
-<tr><td>phase</td><td>0.447</td><td>0.987</td><td>1.000</td><td>0.997</td><td>+0.010</td></tr>
-<tr><td>intervention_class</td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.944</td><td>+0.304</td></tr>
-<tr><td>modalities (set-F1)</td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.862</td><td>+0.167</td></tr>
-<tr><td>primary_endpoint_type</td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.936</td><td>+0.296</td></tr>
-<tr><td>sponsor_type</td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.976</td><td>+0.143</td></tr>
-<tr><td>est_readout</td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.976</td><td>+0.556</td></tr>
-<tr><td>risk flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td></tr>
+<tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.932</b></td><td><b>+0.235</b></td><td><b>0.939</b></td></tr>
+<tr><td>valid JSON</td><td>&mdash;</td><td>1.000</td><td>1.000</td><td>1.000</td><td>&mdash;</td><td>1.000</td></tr>
+<tr><td>phase <span class="prov">read</span></td><td>0.447</td><td>0.987</td><td>1.000</td><td>0.997</td><td>+0.010</td><td><b>1.000</b></td></tr>
+<tr><td>intervention_class <span class="prov">model</span></td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.944</td><td>+0.304</td><td>0.944</td></tr>
+<tr><td>modalities (set-F1) <span class="prov">model</span></td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.862</td><td>+0.167</td><td>0.862</td></tr>
+<tr><td>primary_endpoint_type <span class="prov">model</span></td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.936</td><td>+0.296</td><td>0.936</td></tr>
+<tr><td>sponsor_type <span class="prov">computed</span></td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.976</td><td>+0.143</td><td><b>1.000</b></td></tr>
+<tr><td>est_readout <span class="prov">computed</span></td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.976</td><td>+0.556</td><td><b>1.000</b></td></tr>
+<tr><td>risk flags (set-F1) <span class="prov">model</span></td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td><td>0.831</td></tr>
 </tbody></table>
 
 """),
   ("prose", r"""
+<p class="tablenote">In the <b>Shipped tool</b> column, <span class="prov">read</span> is copied
+from the registry record and <span class="prov">computed</span> is arithmetic on it &mdash; neither
+is generated. <span class="prov">model</span> marks the four fields the fine-tuned model is actually
+asked for, and those four are identical to the <b>Qwen student</b> column, because it is the same
+adapter.</p>
+
 <p><b>One caveat on reading across a row.</b> The <b>Qwen student</b> column is scored on the
 1,444-trial held-out set. The three comparison arms were scored on the frozen 150-trial set and have
 not been re-run at the larger size. The student scores <b>0.936</b> on that smaller set &mdash;
 within noise of the 0.932 above &mdash; so the columns are fair to read side by side, but they are
 not the same measurement, and the gain column inherits that.</p>
+"""),
+  ("prose", r"""
+<h3>The last column: what actually shipped, and why it differs</h3>
+
+<p>The <b>Qwen student</b> column is the model on its own, and it is the figure the write-up of this
+project quotes. The <b>Shipped tool</b> column is the thing you would actually call &mdash; and the
+difference between them is not a better model. It is <em>the same model asked to do less</em>.</p>
+
+<p>Three of those seven fields were never really predictions. <code>phase</code> is a string sitting
+in the registry record. <code>sponsor_type</code> is a lookup on the sponsor&rsquo;s own registered
+class. <code>est_readout</code> is arithmetic on a date: months 01&ndash;06 are H1, 07&ndash;12 are
+H2. A language model can answer all three, and this one answered them well &mdash; 0.997, 0.976,
+0.976. But <em>well</em> is the wrong bar for a field where the answer is already written down. The
+pipeline now reads or computes them, and they are exact.</p>
+
+<p>That is the whole of the +0.007. The four fields that require actual inference &mdash; naming the
+disease, classifying the intervention, identifying the drug modalities, judging the risk flags &mdash;
+are <b>unchanged to three decimal places</b>, because it is the same adapter. On those four alone the
+model scores <b>0.893</b>. Both numbers are worth stating: the readout got more accurate, the model
+did not get better.</p>
+
+<p><b>Why the split was worth making at all</b> is clearer from the errors it removes than from the
+average. Across 1,444 trials, asking the model for those three fields produced roughly 74 wrong
+values that reading the record does not. And on <code>est_readout</code> there is direct evidence
+the generated answer was the worse one: where the computed value disagrees with the training labels,
+21 of 23 cases on the test split were the <em>teacher</em> quietly overriding its own stated rule,
+adding a realistic publication lag the instruction told it not to apply. The student had faithfully
+learned that lag. Removing the field from the model&rsquo;s job removed the error with it.</p>
+
+<p><b>The honest caveat on those three 1.000s.</b> They mean deterministic and reproducible, not
+independently adjudicated. <code>phase</code> is a verbatim copy and is genuinely exact.
+<code>est_readout</code> applies its rule perfectly every time, though the rule is itself a
+simplification. <code>sponsor_type</code> is exact <em>given</em> the registry&rsquo;s own sponsor
+class &mdash; and that class is occasionally loose, filing a handful of commercial biotechs under
+&ldquo;other&rdquo;. Inserting three 1.000s into an average is exactly what a motivated author would
+do, so it is worth being explicit: these are transcription and arithmetic, not predictions, and where
+they are wrong the registry is wrong. The model column is where the model is judged.</p>
+
+<p>There is a second, larger change the score does not show at all. The shipped readout carries the
+full trial title, start and completion dates, recruitment status, enrolment with actual-versus-
+estimated marked, a one-line design descriptor, every study arm with its description, each
+intervention <em>with its dose and schedule text</em>, and the primary outcome measures. None of that
+is generated and none of it is scored &mdash; it is simply read. The nine-field readout the score
+describes was, it turned out, missing most of what a reader wanted.</p>
 """),
   ("callout", "aside", "Why the untuned column needs a footnote", r"""
 <p>Asked with the <em>bare</em> training prompt, untuned Qwen scores <b>0.121</b> &mdash; far
