@@ -485,48 +485,35 @@ within noise of the 0.932 above &mdash; so the columns are fair to read side by 
 not the same measurement, and the gain column inherits that.</p>
 """),
   ("prose", r"""
-<h3>The last column: what actually shipped, and why it differs</h3>
+<h3>The last column: what shipped, and why it differs</h3>
 
-<p>The <b>Qwen student</b> column is the model on its own, and it is the figure the write-up of this
-project quotes. The <b>Shipped tool</b> column is the thing you would actually call &mdash; and the
-difference between them is not a better model. It is <em>the same model asked to do less</em>.</p>
+<p>The <b>Qwen student</b> column is the model on its own. The <b>Shipped tool</b> column is what you
+would actually call &mdash; and the gap between them is not a better model. It is the same model,
+asked to do less.</p>
 
-<p>Three of those seven fields were never really predictions. <code>phase</code> is a string sitting
-in the registry record. <code>sponsor_type</code> is a lookup on the sponsor&rsquo;s own registered
-class. <code>est_readout</code> is arithmetic on a date: months 01&ndash;06 are H1, 07&ndash;12 are
-H2. A language model can answer all three, and this one answered them well &mdash; 0.997, 0.976,
-0.976. But <em>well</em> is the wrong bar for a field where the answer is already written down. The
-pipeline now reads or computes them, and they are exact.</p>
+<p><b>Three of those seven fields never needed a model at all.</b> <code>phase</code> is a string
+sitting in the registry record. <code>sponsor_type</code> is a lookup on the sponsor&rsquo;s own
+registered class. <code>est_readout</code> is arithmetic on a date: months 01&ndash;06 are H1,
+07&ndash;12 are H2. The model answered all three well &mdash; 0.997, 0.976, 0.976 &mdash; but
+<em>well</em> is the wrong bar when the answer is already written down. The pipeline reads or
+computes them now, and that is the whole of the +0.007.</p>
 
-<p>That is the whole of the +0.007. The four fields that require actual inference &mdash; naming the
-disease, classifying the intervention, identifying the drug modalities, judging the risk flags &mdash;
-are <b>unchanged to three decimal places</b>, because it is the same adapter. On those four alone the
+<p><b>The other four genuinely need reading:</b> naming the disease, deciding what kind of
+intervention is under study, working out which drug modalities are present, judging the risk flags.
+Knowing that trastuzumab emtansine is an antibody-drug conjugate is pharmacology, not parsing. Those
+four are unchanged to three decimal places &mdash; it is the same adapter &mdash; and on them the
 model scores <b>0.893</b>. Both numbers are worth stating: the readout got more accurate, the model
 did not get better.</p>
 
-<p><b>Why the split was worth making at all</b> is clearer from the errors it removes than from the
-average. Across 1,444 trials, asking the model for those three fields produced roughly 74 wrong
-values that reading the record does not. And on <code>est_readout</code> there is direct evidence
-the generated answer was the worse one: where the computed value disagrees with the training labels,
-21 of 23 cases on the test split were the <em>teacher</em> quietly overriding its own stated rule,
-adding a realistic publication lag the instruction told it not to apply. The student had faithfully
-learned that lag. Removing the field from the model&rsquo;s job removed the error with it.</p>
-
-<p><b>The honest caveat on those three 1.000s.</b> They mean deterministic and reproducible, not
-independently adjudicated. <code>phase</code> is a verbatim copy and is genuinely exact.
-<code>est_readout</code> applies its rule perfectly every time, though the rule is itself a
-simplification. <code>sponsor_type</code> is exact <em>given</em> the registry&rsquo;s own sponsor
-class &mdash; and that class is occasionally loose, filing a handful of commercial biotechs under
-&ldquo;other&rdquo;. Inserting three 1.000s into an average is exactly what a motivated author would
-do, so it is worth being explicit: these are transcription and arithmetic, not predictions, and where
-they are wrong the registry is wrong. The model column is where the model is judged.</p>
-
-<p>There is a second, larger change the score does not show at all. The shipped readout carries the
-full trial title, start and completion dates, recruitment status, enrolment with actual-versus-
-estimated marked, a one-line design descriptor, every study arm with its description, each
-intervention <em>with its dose and schedule text</em>, and the primary outcome measures. None of that
-is generated and none of it is scored &mdash; it is simply read. The nine-field readout the score
-describes was, it turned out, missing most of what a reader wanted.</p>
+<p><b>Two caveats.</b> The three 1.000s mean <em>deterministic</em>, not independently checked:
+<code>phase</code> is a verbatim copy, <code>est_readout</code> applies its rule exactly (though the
+rule is itself a simplification), and <code>sponsor_type</code> is only as reliable as the
+registry&rsquo;s own sponsor class, which occasionally files a commercial biotech under
+&ldquo;other&rdquo;. And the larger change is not in the table at all: the shipped readout also
+carries the full title, the dates, recruitment status, enrolment, a one-line design descriptor, every
+study arm, each intervention <em>with its dose and schedule</em>, and the primary outcome measures.
+None of that is generated and none of it is scored &mdash; it is simply read from the record. It also
+turned out to be most of what a reader actually wanted.</p>
 """),
   ("callout", "aside", "Why the untuned column needs a footnote", r"""
 <p>Asked with the <em>bare</em> training prompt, untuned Qwen scores <b>0.121</b> &mdash; far
