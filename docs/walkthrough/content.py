@@ -319,6 +319,14 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 
 /* ── tables ── */
 .tablewrap{margin:24px 0;overflow:auto;}
+/* Provenance tag in a scorecard row: says whether a number was generated, read or computed.
+   It sits in the Field cell rather than its own column on purpose -- as a ninth column it
+   was the first thing pushed off the edge by the horizontal scroll, and it is precisely the
+   label that stops three 1.000s reading as a fudge. */
+.prov{font-family:var(--mono,monospace);font-size:10.5px;letter-spacing:.04em;
+  text-transform:uppercase;color:#8a7f6a;border:1px solid #ddd3bd;border-radius:3px;
+  padding:1px 5px;margin-left:6px;white-space:nowrap;vertical-align:middle;}
+.tablenote{font-size:14px;color:#6e6557;margin:0 0 20px;line-height:1.6;}
 table{border-collapse:collapse;width:100%;font-family:var(--serif);font-size:15.5px;}
 th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
   vertical-align:top;}
