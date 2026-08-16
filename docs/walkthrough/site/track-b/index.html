@@ -220,9 +220,11 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
    It sits in the Field cell rather than its own column on purpose -- as a ninth column it
    was the first thing pushed off the edge by the horizontal scroll, and it is precisely the
    label that stops three 1.000s reading as a fudge. */
-.prov{font-family:var(--mono,monospace);font-size:10.5px;letter-spacing:.04em;
-  text-transform:uppercase;color:#8a7f6a;border:1px solid #ddd3bd;border-radius:3px;
-  padding:1px 5px;margin-left:6px;white-space:nowrap;vertical-align:middle;}
+/* Deliberately borderless. As a bordered pill it was wide enough to wrap onto a second line
+   in the longer field names and not the short ones, so row heights alternated and the column
+   read as ragged. Plain muted small-caps costs ~20px per row and every tag now sits inline. */
+.prov{font-family:var(--mono,monospace);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:#a1937c;margin-left:7px;white-space:nowrap;}
 .tablenote{font-size:14px;color:#6e6557;margin:0 0 20px;line-height:1.6;}
 table{border-collapse:collapse;width:100%;font-family:var(--serif);font-size:15.5px;}
 th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
@@ -934,21 +936,20 @@ headline honest: it is the bar a small local model has to clear.</p>
 <tr><td><b>overall structured</b></td><td>0.476</td><td><b>0.697</b></td><td><b>0.897</b></td><td><b>0.932</b></td><td><b>+0.235</b></td><td><b>0.939</b></td></tr>
 <tr><td>valid JSON</td><td>&mdash;</td><td>1.000</td><td>1.000</td><td>1.000</td><td>&mdash;</td><td>1.000</td></tr>
 <tr><td>phase <span class="prov">read</span></td><td>0.447</td><td>0.987</td><td>1.000</td><td>0.997</td><td>+0.010</td><td><b>1.000</b></td></tr>
-<tr><td>intervention_class <span class="prov">model</span></td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.944</td><td>+0.304</td><td>0.944</td></tr>
-<tr><td>modalities (set-F1) <span class="prov">model</span></td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.862</td><td>+0.167</td><td>0.862</td></tr>
-<tr><td>primary_endpoint_type <span class="prov">model</span></td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.936</td><td>+0.296</td><td>0.936</td></tr>
+<tr><td>intervention_class</td><td>0.827</td><td>0.640</td><td>0.933</td><td>0.944</td><td>+0.304</td><td>0.944</td></tr>
+<tr><td>modalities (set-F1)</td><td>0.330</td><td>0.695</td><td>0.859</td><td>0.862</td><td>+0.167</td><td>0.862</td></tr>
+<tr><td>primary_endpoint_type</td><td>0.380</td><td>0.640</td><td>0.933</td><td>0.936</td><td>+0.296</td><td>0.936</td></tr>
 <tr><td>sponsor_type <span class="prov">computed</span></td><td>0.667</td><td>0.833</td><td>0.933</td><td>0.976</td><td>+0.143</td><td><b>1.000</b></td></tr>
 <tr><td>est_readout <span class="prov">computed</span></td><td>0.040</td><td>0.420</td><td>0.827</td><td>0.976</td><td>+0.556</td><td><b>1.000</b></td></tr>
-<tr><td>risk flags (set-F1) <span class="prov">model</span></td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td><td>0.831</td></tr>
+<tr><td>risk flags (set-F1)</td><td>0.643</td><td>0.662</td><td>0.794</td><td>0.831</td><td>+0.169</td><td>0.831</td></tr>
 </tbody></table>
 
 </div>
 <div class="prose">
-<p class="tablenote">In the <b>Shipped tool</b> column, <span class="prov">read</span> is copied
-from the registry record and <span class="prov">computed</span> is arithmetic on it &mdash; neither
-is generated. <span class="prov">model</span> marks the four fields the fine-tuned model is actually
-asked for, and those four are identical to the <b>Qwen student</b> column, because it is the same
-adapter.</p>
+<p class="tablenote">In the <b>Shipped tool</b> column the three marked rows are no longer generated:
+<span class="prov">read</span> is copied from the registry record, <span class="prov">computed</span>
+is arithmetic on it. The four unmarked rows are what the fine-tuned model is actually asked for, and
+they are identical to the <b>Qwen student</b> column &mdash; it is the same adapter.</p>
 
 <p><b>One caveat on reading across a row.</b> The <b>Qwen student</b> column is scored on the
 1,444-trial held-out set. The three comparison arms were scored on the frozen 150-trial set and have
