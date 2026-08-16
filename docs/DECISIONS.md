@@ -174,6 +174,68 @@ assigning each a drug modality. A data-pull defect, logged rather than fixed her
 
 ---
 
+## ADR-0025 — Ship the hybrid: v4's facts tier, v3's model
+
+*Decided 2026-08-16, after the natural-holdout measurement contradicted the 150-trial
+reading that ADR-0024 was written on.*
+
+**Decision:** Serve **v3's adapter behind v4's facts tier**. The readout is assembled by
+`schema/assemble.py` from three sources; the model contributes six inference fields and the
+v3 adapter is the one that produces them.
+
+**What forced it.** ADR-0024 reported v4.1 at 0.887 against v3's 0.893 on 149 trials —
+"flat, with better endpoint classification". Re-measured on **1,439 natural-distribution
+trials**, that is wrong in both directions:
+
+| field | v3 | v4.1 | delta | n=150 said |
+|---|---|---|---|---|
+| intervention_class | 0.944 | 0.930 | −0.014 | *+0.006* |
+| primary_endpoint_type | 0.936 | 0.928 | −0.008 | *+0.040* |
+| modalities | 0.863 | 0.838 | −0.025 | *−0.046* |
+| risk_flags_judgement | 0.831 | 0.776 | −0.055 | *−0.026* |
+| **overall** | **0.893** | **0.868** | **−0.025** | *−0.006* |
+
+**The +0.040 endpoint "win" was noise.** It was reported as a headline finding — that
+restoring `primary_outcomes` had overshot v3 — one message after an ADR warning against
+reading this exact test set per-field. The gap is real and uniform: every field is worse by
+roughly the same margin, which points at the prompt rather than anything modality-specific.
+
+**The insight that resolves it came from the user, not the measurement:** v4 bundled two
+separable changes.
+
+1. **The facts tier** — read title, dates, sponsor, design, arms, dosing, outcomes; compute
+   `phase`, `sponsor_type`, `est_readout`. Unambiguously good: those three go from ~0.98 as
+   generated output to exactly right, ~74 fewer field errors per 1,444 trials, and it is
+   what fixed every complaint in the human readout review.
+2. **Retraining the model on a facts-block prompt** — measured worse, on everything.
+
+Nothing forced them together; they were bundled because "v4" felt like one project. Keeping
+(1) and discarding (2) takes the best measured model AND the better readout, at zero cost:
+no retrain, no new gold, no spend.
+
+**Why it is safe.** The v3 model emits nine fields; six are used and three are discarded in
+favour of computed values. The four enums are **byte-identical** between the v3 and v4
+schemas (verified programmatically), so v3 output validates against the v4 contract.
+`fingerprint.py` deliberately still points at the v3 schema: it answers "was this adapter
+trained against this vocabulary?", and the deployed adapter is v3.
+
+**What v4.1 was better at, and what is lost:** nothing measurable. The only real loss is
+prose — v3's model never saw arms, dosing or outcomes, so its `investor_note` cannot cite a
+dose. The dose still appears in the readout, because it comes from the facts tier rather
+than the model. On the sampled comparison v3's note was arguably the better of the two.
+
+**Cost of the whole v4 exercise:** ~$26 of teacher spend and three training runs, to ship a
+facts tier and keep the model we already had. The negative results are the deliverable:
+the augment does not explain the modalities gap ($2.59 to establish), and a facts-block
+prompt makes a 4B student worse even though it makes the teacher better.
+
+**Standing lesson, third instance.** ADR-0019, ADR-0020 and now this: a conclusion drawn
+from the 150-trial set and contradicted by the 1,444-trial set. The rule is not "be careful
+with per-class rows" — that was already written down and did not prevent it. The rule is
+that **this test set may be used for the headline and for nothing else.**
+
+---
+
 ## ADR-0024 — Schema v4: the facts/inference split, and what it cost to learn
 
 *Decided 2026-08-15. Reviewing v3 readouts, essentially every complaint was about a fact

@@ -1,0 +1,96 @@
+{
+  "intervention_class": {
+    "accuracy": 0.953,
+    "macro_f1": 0.68
+  },
+  "primary_endpoint_type": {
+    "accuracy": 0.907,
+    "macro_f1": 0.9
+  },
+  "modalities": {
+    "set_f1": 0.843,
+    "macro_f1": 0.63,
+    "_error_shape": {
+      "counts": {
+        "exact": 112,
+        "partial overlap": 8,
+        "disjoint": 15,
+        "subset (predicted fewer)": 10,
+        "superset (predicted extra)": 5
+      },
+      "exact_set_accuracy": 0.747,
+      "cardinality_only_errors": 15,
+      "cardinality_only_share_of_errors": 0.395
+    },
+    "exact_set_accuracy": 0.747,
+    "_per_label": {
+      "antibody-drug conjugate": {
+        "n": 6,
+        "recall": 0.333
+      },
+      "bispecific/multispecific antibody": {
+        "n": 2,
+        "recall": 0.5
+      },
+      "cancer vaccine": {
+        "n": 8,
+        "recall": 0.5
+      },
+      "cell therapy": {
+        "n": 7,
+        "recall": 0.857
+      },
+      "cytotoxic chemotherapy": {
+        "n": 51,
+        "recall": 0.882
+      },
+      "gene therapy": {
+        "n": 1,
+        "recall": 1.0
+      },
+      "hormonal/endocrine therapy": {
+        "n": 11,
+        "recall": 0.727
+      },
+      "monoclonal antibody": {
+        "n": 37,
+        "recall": 0.946
+      },
+      "oligonucleotide/RNA therapeutic": {
+        "n": 1,
+        "recall": 0.0
+      },
+      "oncolytic virus": {
+        "n": 2,
+        "recall": 0.5
+      },
+      "other": {
+        "n": 3,
+        "recall": 0.333
+      },
+      "other protein or peptide therapeutic": {
+        "n": 6,
+        "recall": 0.333
+      },
+      "radiopharmaceutical": {
+        "n": 4,
+        "recall": 0.5
+      },
+      "targeted small molecule": {
+        "n": 61,
+        "recall": 0.885
+      }
+    }
+  },
+  "risk_flags_judgement": {
+    "set_f1": 0.786,
+    "judgement_subset_f1": 0.786,
+    "deterministic_subset_f1": 1.0,
+    "_note": "judgement_subset_f1 is the honest number for what the model is asked to reason about; the deterministic subset should be computed from the record (schema/derive.py), not generated."
+  },
+  "_overall_structured": 0.872,
+  "_n": 150,
+  "_components": 4,
+  "_scoring_note": "4 components (2 categorical accuracies, 2 set-F1s). Overalls are comparable ONLY across identical component sets: v3 averaged 7 and v4 averages 4, because phase, sponsor_type and est_readout moved to the derived tier. The v4 number is lower by construction -- the three that left all scored 0.976-0.997, i.e. above the v3 mean. The like-for-like v3 figure on the v4 components is 0.893, not 0.932.",
+  "_valid_json": 1.0
+}
