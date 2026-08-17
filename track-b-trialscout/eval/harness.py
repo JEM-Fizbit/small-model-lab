@@ -71,14 +71,50 @@ def multilabel_macro_f1(gold_sets, pred_sets):
     return sum(f1s) / len(f1s) if f1s else 0.0
 
 
+#: Below this many gold occurrences, a per-class recall moves by more than 0.05 when a SINGLE
+#: trial changes, so it cannot support a claim about that class. Chosen as the n at which one
+#: example is worth <5 recall points.
+MIN_N_FOR_CLASS_CLAIM = 20
+
+
 def per_label_recall(gold_sets, pred_sets):
-    """{label: {n, recall}} over gold occurrences — the rare-class table."""
+    """{label: {n, recall}} over gold occurrences — the rare-class table.
+
+    Each row carries what one trial is worth, because that is the number that was misread
+    three separate times in this project (ADR-0019, ADR-0020, ADR-0025). At n=4 a single
+    example moves recall by 0.25, and a row like `radiopharmaceutical 1.000 -> 0.500` is two
+    trials, not a finding. The figure now travels with the number instead of living in an ADR
+    nobody re-reads at the moment of writing the conclusion.
+    """
     out = {}
     for lab in sorted({x for s in gold_sets for x in s}):
         n = sum(1 for g in gold_sets if lab in g)
         hit = sum(1 for g, p in zip(gold_sets, pred_sets) if lab in g and lab in p)
-        out[lab] = {"n": n, "recall": round(hit / n, 3) if n else 0.0}
+        row = {"n": n, "recall": round(hit / n, 3) if n else 0.0}
+        if n:
+            row["one_trial_worth"] = round(1 / n, 3)
+            if n < MIN_N_FOR_CLASS_CLAIM:
+                row["_UNDERPOWERED"] = (
+                    f"n={n}: one trial moves this by {1/n:.2f}. Not usable as evidence "
+                    f"about this class — report it, do not conclude from it.")
+        out[lab] = row
     return out
+
+
+def _ci95(values):
+    """Half-width of the 95% CI for the mean of `values`. Approximate and deliberately crude.
+
+    The point is not precision, it is that a score should state what it can resolve. A field
+    scored on 150 trials resolves about ±0.05; on 1,444 about ±0.015. That difference is
+    exactly why a 0.046 gap read as real at n=150 and turned out to be 0.025 at n=1,439,
+    while a +0.040 "improvement" at n=150 turned out to be -0.008.
+    """
+    n = len(values)
+    if n < 2:
+        return None
+    mean = sum(values) / n
+    var = sum((v - mean) ** 2 for v in values) / (n - 1)
+    return 1.96 * (var / n) ** 0.5
 
 
 def set_f1(gold_sets, pred_sets):
@@ -169,8 +205,13 @@ def score(gold, pred_by_id, categorical=None, set_valued=None, include_est_reado
     out = {}
     for field in CATEGORICAL:
         gv = [r.get(field) for r in g]; pv = [_scalar(x.get(field)) for x in p]
-        acc = sum(1 for a, b in zip(gv, pv) if a == b) / len(gv)
-        out[field] = {"accuracy": round(acc, 3), "macro_f1": round(macro_f1(gv, pv), 3)}
+        hits = [1.0 if a == b else 0.0 for a, b in zip(gv, pv)]
+        acc = sum(hits) / len(gv)
+        block = {"accuracy": round(acc, 3), "macro_f1": round(macro_f1(gv, pv), 3)}
+        ci = _ci95(hits)
+        if ci is not None:
+            block["_resolves_to"] = round(ci, 3)
+        out[field] = block
     # est_readout exact match (v3 only -- v4 computes it from the record)
     if include_est_readout:
         out["est_readout"] = {"accuracy": round(
@@ -186,6 +227,9 @@ def score(gold, pred_by_id, categorical=None, set_valued=None, include_est_reado
         scored_ps = [[] if x is None else x for x in ps]
         per = [0.0 if pp is None else set_f1([gg], [pp]) for gg, pp in zip(gs, ps)]
         block: dict = {"set_f1": round(sum(per) / len(per), 3) if per else 0.0}
+        ci = _ci95(per)
+        if ci is not None:
+            block["_resolves_to"] = round(ci, 3)
         if n_missing:
             block["_omitted"] = n_missing
         if field == "risk_flags_judgement":
@@ -218,6 +262,20 @@ def score(gold, pred_by_id, categorical=None, set_valued=None, include_est_reado
     out["_overall_structured"] = round(sum(parts) / len(parts), 3)
     out["_n"] = len(g)
     out["_components"] = len(parts)
+    # The headline aggregates many fields and is steadier than any of them; the per-field
+    # resolution is what a reader needs before comparing two runs field by field. Reported as
+    # the widest across fields, so it is the honest bound rather than the flattering one.
+    field_cis = [b["_resolves_to"] for b in out.values()
+                 if isinstance(b, dict) and "_resolves_to" in b]
+    if field_cis:
+        worst = max(field_cis)
+        out["_field_resolution"] = round(worst, 3)
+        out["_reading_rule"] = (
+            f"n={len(g)}. Per-field differences smaller than ~{worst:.3f} are not "
+            f"distinguishable from noise here; do not report one as an improvement or a "
+            f"regression. This project has drawn a per-field conclusion from a small set and "
+            f"had a larger set overturn it three times (ADR-0019, ADR-0020, ADR-0025) -- "
+            f"including a '+0.040 improvement' at n=150 that measured -0.008 at n=1,439.")
     out["_scoring_note"] = (
         f"{len(parts)} components ({len(CATEGORICAL)} categorical accuracies"
         + (", est_readout exact match" if include_est_readout else "")

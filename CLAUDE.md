@@ -60,3 +60,10 @@ uv run python scripts/regenerate_track_a.py --all       # retrain in order + reb
 2. **Weights & data are gitignored** (`*.safetensors`, `*.gguf`, `data/raw/`, `data/gold/`, adapters) — regenerable from scripts, never committed. Notebooks (with outputs) ARE committed.
 3. **Base-model choice is measured, not assumed** — Qwen3-4B vs Gemma 4 E2B is decided by the eval harness (see `docs/DECISIONS.md`).
 4. **Teacher quality caps student quality** — Track B uses a strong teacher (Claude Sonnet) for gold labels.
+5. **Never draw a per-field or per-class conclusion from the 150-trial test set.** It is sound for a
+   headline and too coarse for anything else: per-field it resolves only to **±0.05**, and a rare
+   class with n=4 moves 0.25 when one trial changes. Three times a conclusion drawn from it has been
+   overturned by the 1,444-trial holdout — including a "+0.040 improvement" that measured −0.008
+   (ADR-0019, ADR-0020, ADR-0025). `harness.score()` now emits `_resolves_to` per field and
+   `_reading_rule` alongside the headline; **read them before comparing two runs.** Prose warnings
+   did not prevent recurrence, which is why the check now travels with the number.
