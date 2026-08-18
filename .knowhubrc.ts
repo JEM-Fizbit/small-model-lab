@@ -28,6 +28,16 @@ const config: Config = {
       overwrite: true,
       outputs: ["docs/protocols/ANTHROPIC_MODEL_REFERENCE.md"],
     },
+    // Canonical Anthropic RATES, as data. Read this file; never transcribe the
+    // markdown pricing table into code — four repos did exactly that and by
+    // 2026-08-18 held three different wrong values. Carries verified_on plus a
+    // 45-day staleness rule; audited by ai-knowledge/scripts/knowhub-doctor.sh.
+    {
+      plugin: "local",
+      pluginConfig: { path: `${LOCAL_PROTOCOLS_BASE}/data/anthropic-pricing.json` },
+      overwrite: true,
+      outputs: ["docs/protocols/data/anthropic-pricing.json"],
+    },
     // Data source (ClinicalTrials.gov v2 — TrialScout's input)
     {
       plugin: "local",
