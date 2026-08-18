@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lint the hardcoded fee card against the canonical model-reference protocol.
+"""Lint the hardcoded fee card against the canonical pricing artifact.
 
 WHY THIS EXISTS. On 2026-08-14 the fee card in ``make_gold.py`` carried a comment
 saying Sonnet 5's $2/$10 would revert to $3/$15 on 2026-09-01. That increase had been
@@ -10,6 +10,14 @@ of a moving number, no comparison between them, is a drift generator.
 The protocol carries a *Roster verified* date and a 45-day staleness guard, but that
 guard only protects a reader of the protocol. It cannot see a project that duplicated
 the numbers into code months ago. This script closes that gap: it is the comparison.
+
+UPDATED 2026-08-18: this used to regex-parse the markdown table in
+ANTHROPIC_MODEL_REFERENCE.md. Rates are now canonical as DATA in ai-knowledge at
+``protocols/data/anthropic-pricing.json`` (synced here to
+``docs/protocols/data/anthropic-pricing.json``), so the comparison reads structured
+fields instead of matching prose — the markdown table shape was itself a documented
+failure mode of this script. The markdown remains the human view and ai-knowledge's
+own ``check-anthropic-pricing.py`` keeps the two in step at source.
 
 Runs offline against the synced copy in ``docs/protocols/`` (refresh it with ``knowhub``).
 It deliberately does NOT call the Models API -- per the protocol, freshness is refreshed
@@ -23,34 +31,24 @@ Exit 0 clean, 1 on any drift or staleness.
 from __future__ import annotations
 
 import datetime as dt
+import json
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PROTOCOL = ROOT / "docs" / "protocols" / "ANTHROPIC_MODEL_REFERENCE.md"
+ARTIFACT = ROOT / "docs" / "protocols" / "data" / "anthropic-pricing.json"
 FEE_CARD = ROOT / "track-b-trialscout" / "train" / "make_gold.py"
 
-STALENESS_DAYS = 45  # must match the protocol's own guard
-
-
-def parse_protocol(text: str) -> tuple[dict[str, tuple[float, float]], dt.date | None]:
-    """Pull {model_id: (in, out)} and the Roster-verified date out of the protocol."""
-    prices: dict[str, tuple[float, float]] = {}
-    # Inventory rows: | **Name** | `model-id` | ctx | max-out | $in | $out |
-    row = re.compile(
-        r"^\|[^|]*\|\s*`([a-z0-9-]+)`\s*\|[^|]*\|[^|]*\|\s*\**\$?([\d.]+)\**\s*\|\s*\**\$?([\d.]+)\**\s*\|"
-    )
-    for line in text.splitlines():
-        m = row.match(line.strip())
-        if m:
-            prices[m.group(1)] = (float(m.group(2)), float(m.group(3)))
-
-    verified = None
-    m = re.search(r"\*\*Roster verified:\*\*\s*(\d{4}-\d{2}-\d{2})", text)
-    if m:
-        verified = dt.date.fromisoformat(m.group(1))
-    return prices, verified
+def parse_artifact(raw: str) -> tuple[dict[str, tuple[float, float]], dt.date | None, int]:
+    """Pull {model_id: (in, out)}, verified_on and the staleness window out of the JSON."""
+    data = json.loads(raw)
+    prices = {
+        model: (float(spec["input"]), float(spec["output"]))
+        for model, spec in data["models"].items()
+    }
+    prov = data["provenance"]
+    return prices, dt.date.fromisoformat(prov["verified_on"]), int(prov["staleness_days"])
 
 
 def parse_fee_card(text: str) -> dict[str, tuple[float, float]]:
@@ -68,28 +66,28 @@ def parse_fee_card(text: str) -> dict[str, tuple[float, float]]:
 
 
 def main() -> int:
-    if not PROTOCOL.exists():
-        print(f"FAIL  synced protocol missing: {PROTOCOL.relative_to(ROOT)}")
+    if not ARTIFACT.exists():
+        print(f"FAIL  synced pricing artifact missing: {ARTIFACT.relative_to(ROOT)}")
         print("      run `knowhub` to sync it from ai-knowledge")
         return 1
 
-    proto, verified = parse_protocol(PROTOCOL.read_text())
+    proto, verified, staleness = parse_artifact(ARTIFACT.read_text())
     card = parse_fee_card(FEE_CARD.read_text())
     problems: list[str] = []
 
     if not proto:
-        problems.append("parsed 0 prices from the protocol -- its table shape changed")
+        problems.append("parsed 0 prices from the artifact -- its schema changed")
     if not card:
         problems.append("parsed 0 prices from PRICING -- the dict shape changed")
 
     # Staleness: the protocol's own guard, applied on this project's behalf.
     if verified is None:
-        problems.append("protocol has no `Roster verified` date")
+        problems.append("artifact has no `verified_on` date")
     else:
         age = (dt.date.today() - verified).days
-        if age > STALENESS_DAYS:
+        if age > staleness:
             problems.append(
-                f"protocol roster is {age}d old (>{STALENESS_DAYS}d) -- "
+                f"canonical pricing is {age}d old (>{staleness}d) -- "
                 f"re-verify against platform.claude.com/docs/en/about-claude/pricing"
             )
         else:
@@ -98,12 +96,12 @@ def main() -> int:
     # Every model we actually price must match the protocol.
     for model, (cin, cout) in sorted(card.items()):
         if model not in proto:
-            problems.append(f"{model}: in fee card but not in the protocol inventory")
+            problems.append(f"{model}: in fee card but not in the canonical artifact")
             continue
         pin, pout = proto[model]
         if (cin, cout) != (pin, pout):
             problems.append(
-                f"{model}: fee card ${cin}/${cout} != protocol ${pin}/${pout}"
+                f"{model}: fee card ${cin}/${cout} != canonical ${pin}/${pout}"
             )
         else:
             print(f"ok    {model:20} ${cin}/${cout}")
@@ -112,11 +110,11 @@ def main() -> int:
         print(f"\nFAIL  {len(problems)} problem(s):")
         for p in problems:
             print(f"  - {p}")
-        print("\nCanonical source is ai-knowledge/protocols/ANTHROPIC_MODEL_REFERENCE.md.")
+        print("\nCanonical source is ai-knowledge/protocols/data/anthropic-pricing.json.")
         print("Fix it THERE, run `knowhub`, then update the fee card to match.")
         return 1
 
-    print(f"\nPASS  fee card matches the protocol ({len(card)} models)")
+    print(f"\nPASS  fee card matches the canonical artifact ({len(card)} models)")
     return 0
 
 

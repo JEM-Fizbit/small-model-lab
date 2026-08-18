@@ -1,0 +1,177 @@
+{
+  "schema": "anthropic_pricing/1",
+  "_readme": "Canonical machine-readable Anthropic list prices. Consume this file; do not transcribe its numbers into code. Human narrative, role guidance and API-shape notes live in ../ANTHROPIC_MODEL_REFERENCE.md, which is canonical for everything except the numbers below — those are canonical HERE, and the markdown table is generated-equivalent. Fix a price in this file first, then reconcile the markdown.",
+  "provenance": {
+    "source": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "roster_source": "https://platform.claude.com/docs/en/about-claude/models/overview.md",
+    "verified_on": "2026-08-18",
+    "staleness_days": 45,
+    "staleness_rule": "If today is more than staleness_days after verified_on, treat every rate here as suspect: say so when advising, and re-verify against source before quoting a cost. Check this by date comparison at read time — never call the Models API on the advice path (it cannot supply pricing anyway)."
+  },
+  "units": {
+    "currency": "USD",
+    "basis": "usd_per_million_tokens",
+    "note": "input and output are list rates. Cache and batch rates are NOT listed per model — they are fixed multipliers on the input rate (see multipliers). Deriving them prevents the half-landed correction where a base rate is fixed and its hand-copied cache column is not."
+  },
+  "multipliers": {
+    "cache_read": 0.1,
+    "cache_write_5m": 1.25,
+    "cache_write_1h": 2.0,
+    "batch": 0.5,
+    "note": "cache_write_5m applies to bare `cache_control: {type: 'ephemeral'}`. Adding `ttl: '1h'` moves the write to cache_write_1h — a 60% increase that is invisible unless the consumer models both. batch applies to BOTH directions on the Message Batches API and is routinely forgotten on asynchronous bulk jobs."
+  },
+  "models": {
+    "claude-fable-5": {
+      "input": 10.0,
+      "output": 50.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current"
+    },
+    "claude-mythos-5": {
+      "input": 10.0,
+      "output": 50.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5"
+    },
+    "claude-opus-5": {
+      "input": 5.0,
+      "output": 25.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "variants": {
+        "fast": {
+          "input": 10.0,
+          "output": 50.0,
+          "note": "speed: 'fast' (beta fast-mode-2026-02-01), Claude API only. Pricing a fast-mode call at the standard rate understates it by 2x."
+        }
+      }
+    },
+    "claude-opus-4-8": {
+      "input": 5.0,
+      "output": 25.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "variants": {
+        "fast": {
+          "input": 10.0,
+          "output": 50.0
+        }
+      }
+    },
+    "claude-opus-4-7": {
+      "input": 5.0,
+      "output": 25.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current"
+    },
+    "claude-sonnet-5": {
+      "input": 2.0,
+      "output": 10.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "note": "$2/$10 is PERMANENT. It launched as introductory pricing 'through 2026-08-31' and the scheduled rise to $3/$15 was cancelled. Any table or comment still asserting the reversion is wrong and over-budgets Sonnet 5 by 50%. Sonnet 4.6 is therefore both older and 50% dearer — never pick it for new work."
+    },
+    "claude-haiku-4-5": {
+      "input": 1.0,
+      "output": 5.0,
+      "context_tokens": 200000,
+      "max_output_tokens": 64000,
+      "status": "current",
+      "aliases": [
+        "claude-haiku-4-5-20251001"
+      ]
+    },
+    "claude-opus-4-6": {
+      "input": 5.0,
+      "output": 25.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "previous_generation"
+    },
+    "claude-sonnet-4-6": {
+      "input": 3.0,
+      "output": 15.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "previous_generation",
+      "note": "Dearer than Sonnet 5 and a generation older. Priced here only so a consumer costing historical telemetry gets it right."
+    },
+    "claude-opus-4-5": {
+      "input": 5.0,
+      "output": 25.0,
+      "context_tokens": 200000,
+      "max_output_tokens": 64000,
+      "status": "previous_generation",
+      "aliases": [
+        "claude-opus-4-5-20251101"
+      ]
+    },
+    "claude-sonnet-4-5": {
+      "input": 3.0,
+      "output": 15.0,
+      "context_tokens": 200000,
+      "max_output_tokens": 64000,
+      "status": "previous_generation",
+      "aliases": [
+        "claude-sonnet-4-5-20250929"
+      ]
+    }
+  },
+  "unknown_model_policy": {
+    "rule": "Do not silently invent a price for an unlisted model id. Either raise, or fall back to the MOST expensive rate in the model's family so the estimate over-reports rather than under-reports — and say which you did. A spend guard that quietly guesses a rate is not a guard.",
+    "family_fallback": {
+      "fable": {
+        "input": 10.0,
+        "output": 50.0
+      },
+      "mythos": {
+        "input": 10.0,
+        "output": 50.0
+      },
+      "opus": {
+        "input": 5.0,
+        "output": 25.0
+      },
+      "sonnet": {
+        "input": 3.0,
+        "output": 15.0
+      },
+      "haiku": {
+        "input": 1.0,
+        "output": 5.0
+      }
+    }
+  },
+  "caveats": {
+    "tokeniser": "Models from Opus 4.7 onward emit ~30% more tokens for the same text than 4.6-and-earlier, so comparing headline $/token across that boundary overstates the saving. Measured (small-model-lab, 2026-08-14) on 40 identical requests: Sonnet 4.6 $0.39 vs Sonnet 5 $0.49 at then-identical prices, +26%. Sonnet 5's effective rate against a 4.6-era baseline is ~$2.52/$12.60 — still cheaper than Sonnet 4.6, by ~16% rather than the headline 33%.",
+    "list_vs_billed": "These are list rates: no Batch API discount, no account-specific or negotiated discount. An estimate built from them is comparable across projects and telemetry, but it is not an invoice.",
+    "effort": "On output-heavy jobs `output_config.effort` moves spend further than model choice. Measured on structured extraction: Sonnet 5 at effort low cost 37% less than medium and agreed 0.985, while Opus 5 at 2.5x the price agreed only 0.962. Probe effort before assuming a bigger model is the upgrade."
+  },
+  "consumers": {
+    "_note": "Projects that hold a copy of these rates, and the check that keeps each honest. Keep this current — it is what makes a price correction traceable to everything it affects. Every entry's copy is also audited byte-for-byte by ai-knowledge/scripts/knowhub-doctor.sh (protocol channel).",
+    "Social-Creator-Claude": {
+      "table": "src/lib/ai/anthropic-usage-pricing.ts",
+      "check": "src/lib/ai/anthropic-usage-pricing.drift.test.ts (runs in pnpm qa:full)"
+    },
+    "pharma-signal-poc": {
+      "table": "pipeline/assess.py (_PRICING_PER_MTOK)",
+      "check": "scripts/check_anthropic_pricing.py"
+    },
+    "small-model-lab": {
+      "table": "track-b-trialscout/train/make_gold.py (PRICING)",
+      "check": "scripts/check_fee_card.py"
+    },
+    "aigent-alpha": {
+      "table": "src/aigent_alpha/catalyst/llm.py (MODEL_PRICES)",
+      "check": "scripts/check_anthropic_pricing.py + tests/test_model_selection.py",
+      "note": "Also holds src/aigent_alpha/em/charter.py EM_MODEL_PRICES, deliberately FROZEN for the EM-Q3 epoch by docs/specs/2026-08-10-em-q3-lane-a-charter.md. It pins Sonnet 5 at $3/$15 (50% above canonical). Changing it is a charter amendment, not a drift fix; the check reports the divergence as a WARN."
+    }
+  }
+}
