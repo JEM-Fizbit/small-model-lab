@@ -3,9 +3,9 @@
 > Model ID naming conventions, current inventory, and best practices for referencing Claude models in the Anthropic API.
 
 **Applies to:** Anthropic Claude API, `@anthropic-ai/sdk`
-**Last Updated:** 2026-08-18
-**Version:** 1.7
-**Roster verified:** 2026-08-14
+**Last Updated:** 2026-09-01
+**Version:** 1.8
+**Roster verified:** 2026-09-01
 
 > **Docs host:** the canonical model docs now live at `platform.claude.com/docs/en/...`; `docs.anthropic.com/en/...` 301-redirects there. Any automation that *fetches* the docs should target the canonical host directly — a scheduled job that depends on a redirect surviving is a latent failure.
 
@@ -135,12 +135,11 @@ This table is **the one place** role→id resolution lives. The `MODEL_EFFORT_SE
 
 | Model | ID | Retirement Date |
 |-------|----|-----------------|
-| Opus 4.1 | `claude-opus-4-1` | **2026-08-05** — migrate to `claude-opus-5` |
 | Mythos Preview | `claude-mythos-preview` | TBD — migrate to `claude-mythos-5` (Glasswing only) |
 
 ### Retired (404 on use)
 
-Sonnet 4 and Opus 4 (2026-06-15), Haiku 3 (2026-04-20), Sonnet 3.7 and Haiku 3.5 (2026-02-19), Opus 3 (2026-01-05), both Sonnet 3.5 snapshots (2025-10-28), Sonnet 3 and Claude 2.x (2025-07-21). Replacements: → `claude-sonnet-5`, `claude-haiku-4-5`, or `claude-opus-5` by tier.
+Opus 4.1 (2026-08-05), Sonnet 4 and Opus 4 (2026-06-15), Haiku 3 (2026-04-20), Sonnet 3.7 and Haiku 3.5 (2026-02-19), Opus 3 (2026-01-05), both Sonnet 3.5 snapshots (2025-10-28), Sonnet 3 and Claude 2.x (2025-07-21). Replacements: → `claude-sonnet-5`, `claude-haiku-4-5`, or `claude-opus-5` by tier.
 
 > **Note:** This inventory is a point-in-time snapshot, refreshed monthly and on model drops. For live capability data (context window, max output, per-feature support) query the Models API — `client.models.retrieve("claude-opus-5")` returns `max_input_tokens`, `max_tokens`, and a `capabilities` tree — rather than trusting this table. Verify current models at [Anthropic's model docs](https://platform.claude.com/docs/en/docs/about-claude/models).
 
@@ -278,6 +277,7 @@ try {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8 | 2026-09-01 | Monthly roster verification. The Current Model Inventory needed no change — no model launched since 1.7, and every model ID, context, max-output, and pricing value matches the docs (Fable 5 $10/$50, Opus 5 $5/$25, Sonnet 5 $2/$10, Haiku 4.5 $1/$5; `data/anthropic-pricing.json` reconciles clean). One mechanical correction: **Opus 4.1 moved from Deprecated to Retired** — its 2026-08-05 retirement date has passed and the docs now list `claude-opus-4-1-20250805` as Retired, so the Deprecated table was asserting a future retirement for a model that already 404s. Mythos Preview remains the only deprecated model. Also brought the document footer's version stamp (still reading 1.5 / 2026-07-26) into line with the header. Role resolution table untouched. |
 | 1.5 | 2026-07-26 | Monthly roster verification. The Current Model Inventory needed no change — no model launched or retired since 1.4, and every pricing, context, and max-output value matches the docs. Mechanical corrections elsewhere: **dateless IDs are pinned snapshots, not evergreen pointers** — the "alias always resolves to the latest snapshot" claim is true only for pre-4.6 models, so the Model-ID-Format paragraph, the alias-vs-pinned table, and the behaviour-drift troubleshooting entry were corrected (drift on a current-gen ID is *serving infrastructure* — router, safety classifiers, sampling — not a silent weight swap). Fixed **Opus 4.5 and Sonnet 4.5 context: 1M → 200k** (the full 1M window is a 4.6-and-later feature). Deprecations trued up: **Sonnet 4 and Opus 4 retired 2026-06-15** and **Haiku 3 retired 2026-04-20** (listed as pending-with-TBD and with a wrong 04-19 date) moved to Retired, leaving Opus 4.1 as the only deprecated model; added `claude-mythos-preview` (now deprecated, migrate to `claude-mythos-5`). Role resolution table untouched. |
 | 1.7 | 2026-08-18 | **Prices are now canonical as data, not prose.** Added [`data/anthropic-pricing.json`](https://github.com/JEM-Fizbit/ai-knowledge/blob/main/protocols/data/anthropic-pricing.json) — per-model-id rates plus `verified_on`, the staleness rule, cache/batch multipliers, an explicit unknown-model policy, and the list of consuming projects — and `scripts/check-anthropic-pricing.py`, which reconciles it against the markdown table and applies the staleness guard. Motivation: an audit of the estate on 2026-08-18 found the same rates hand-copied into four repos in three different states of wrongness — pharma-signal-poc at Opus $15/$75 (3x, two generations stale), Social-Creator-Claude and aigent-alpha both at Sonnet 5 $3/$15 (50% high, on the cancelled-reversion premise this protocol corrected in 1.6). The 1.6 correction reached the protocol and none of the code, because markdown cannot be imported. Each consumer now reads the JSON and is audited by `knowhub-doctor.sh`, which was extended to cover non-markdown managed outputs. |
 | 1.6 | 2026-08-14 | Corrected the **Sonnet 5 price to a permanent $2/$10** — the scheduled 2026-09-01 rise to $3/$15 was cancelled, and this table asserting otherwise over-budgeted every Sonnet 5 estimate by ~50% while making the older, dearer Sonnet 4.6 look competitive. Added a **Pricing notes** block: the 4.7+ tokeniser emitting ~30% more tokens (measured +26%), cache/batch multipliers incl. the routinely-forgotten 50% Batch API discount, and the finding that **`effort` outweighs model choice on output-heavy jobs** (low vs medium: −37% cost, 0.985 agreement; Opus 5 at 2.5× the price agreed only 0.962). |
@@ -289,6 +289,6 @@ try {
 
 ---
 
-**Protocol Version**: 1.5
-**Last Updated**: 2026-07-26
+**Protocol Version**: 1.8
+**Last Updated**: 2026-09-01
 **Original Source**: Social-Creator-Claude project (production incident from using invalid `-latest` aliases)
