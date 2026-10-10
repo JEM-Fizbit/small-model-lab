@@ -58,6 +58,7 @@ PRICING = {
     "claude-fable-5":    {"in": 10.0, "out": 50.0},
     "claude-opus-5":     {"in":  5.0, "out": 25.0},
     "claude-sonnet-5":   {"in":  2.0, "out": 10.0},   # cheapest Sonnet AND the newest
+    "claude-haiku-5-5":  {"in":  0.1, "out":  0.5},   # base card (prompts <= 100k tokens)
     "claude-haiku-4-5":  {"in":  1.0, "out":  5.0},
 }
 # Sonnet 4.6 ($3/$15) is deliberately absent: previous-generation, and 50% DEARER than
@@ -71,7 +72,7 @@ PRICING = {
 # `temperature` now returns 400. Depth is controlled by `output_config.effort` instead,
 # and adaptive thinking is on by default — which shares the max_tokens budget with the
 # response, so the old 700 can truncate a readout before it is emitted.
-NO_SAMPLING_PARAMS = ("claude-sonnet-5", "claude-opus-5", "claude-fable-5", "claude-opus-4-8")
+NO_SAMPLING_PARAMS = ("claude-sonnet-5", "claude-opus-5", "claude-fable-5", "claude-opus-4-8", "claude-haiku-5-5")
 
 TOP_PHARMA = ("Pfizer, Roche, Genentech, Novartis, Merck, AstraZeneca, Bristol-Myers Squibb, "
               "Johnson & Johnson, Janssen, AbbVie, Sanofi, GSK, Amgen, Gilead, Takeda, "

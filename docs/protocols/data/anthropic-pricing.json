@@ -4,29 +4,52 @@
   "provenance": {
     "source": "https://platform.claude.com/docs/en/about-claude/pricing",
     "roster_source": "https://platform.claude.com/docs/en/about-claude/models/overview.md",
-    "verified_on": "2026-08-18",
+    "verified_on": "2026-10-10",
     "staleness_days": 45,
     "staleness_rule": "If today is more than staleness_days after verified_on, treat every rate here as suspect: say so when advising, and re-verify against source before quoting a cost. Check this by date comparison at read time — never call the Models API on the advice path (it cannot supply pricing anyway)."
   },
   "units": {
     "currency": "USD",
     "basis": "usd_per_million_tokens",
-    "note": "input and output are list rates. Cache and batch rates are NOT listed per model — they are fixed multipliers on the input rate (see multipliers). Deriving them prevents the half-landed correction where a base rate is fixed and its hand-copied cache column is not."
+    "note": "input and output are list rates. Cache and batch rates are NOT listed per model — they are multipliers on the input rate (see multipliers). Deriving them prevents the half-landed correction where a base rate is fixed and its hand-copied cache column is not. A model may carry `multiplier_overrides`; where present, the override wins over the global multiplier for that model only. A model may also carry `long_context`: a second rate card that replaces input/output for any request whose prompt (all input tokens, cache reads and writes included) exceeds `threshold_prompt_tokens`. The multipliers apply unchanged to whichever card is in force. A consumer that ignores `long_context` prices such a request at the base card and UNDER-reports it 5x — the unsafe direction — so a consumer that can see prompt length must honour it, and one that cannot must say so."
   },
   "multipliers": {
     "cache_read": 0.1,
     "cache_write_5m": 1.25,
     "cache_write_1h": 2.0,
     "batch": 0.5,
-    "note": "cache_write_5m applies to bare `cache_control: {type: 'ephemeral'}`. Adding `ttl: '1h'` moves the write to cache_write_1h — a 60% increase that is invisible unless the consumer models both. batch applies to BOTH directions on the Message Batches API and is routinely forgotten on asynchronous bulk jobs."
+    "note": "cache_write_5m applies to bare `cache_control: {type: 'ephemeral'}`. Adding `ttl: '1h'` moves the write to cache_write_1h — a 60% increase that is invisible unless the consumer models both. batch applies to BOTH directions on the Message Batches API and is routinely forgotten on asynchronous bulk jobs. These are the DEFAULTS: since 2026-09-01 cache_read is no longer uniform — Fable 5.1 and Mythos 5.1 read cache at 0.025x, and Opus 5.5 (2026-09-22) and Sonnet 5.5 (2026-09-28) at 0.05x, each carried as a per-model `multiplier_overrides.cache_read`. A consumer that applies the global 0.1 to those models over-reports their cache reads 4x and 2x respectively (the safe direction, but wrong). Haiku 5.5 uses the standard multipliers, applied to whichever of its two rate cards the prompt length selects."
   },
   "models": {
+    "claude-fable-5-1": {
+      "input": 10.0,
+      "output": 50.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.025
+      },
+      "note": "Released 2026-09-01. Same input/output as Fable 5; cache reads are 0.025x input ($0.25/MTok), a quarter of the Fable 5 rate. Cache writes and batch are unchanged."
+    },
+    "claude-mythos-5-1": {
+      "input": 10.0,
+      "output": 50.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.025
+      },
+      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5.1"
+    },
     "claude-fable-5": {
       "input": 10.0,
       "output": 50.0,
       "context_tokens": 1000000,
       "max_output_tokens": 128000,
-      "status": "current"
+      "status": "current",
+      "note": "Superseded by claude-fable-5-1 (2026-09-01) at the same input/output price; listed as legacy in the docs but still active (retires no sooner than 2027-06-09). Kept in the priced table so historical telemetry costs correctly — cache reads stay at the standard 0.1x."
     },
     "claude-mythos-5": {
       "input": 10.0,
@@ -34,7 +57,25 @@
       "context_tokens": 1000000,
       "max_output_tokens": 128000,
       "status": "current",
-      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5"
+      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5. Superseded by claude-mythos-5-1."
+    },
+    "claude-opus-5-5": {
+      "input": 4.0,
+      "output": 20.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.05
+      },
+      "variants": {
+        "fast": {
+          "input": 8.0,
+          "output": 40.0,
+          "note": "speed: 'fast' (beta fast-mode-2026-02-01), Claude API only."
+        }
+      },
+      "note": "Released 2026-09-22; the current Opus and Claude Code's default from v2.1.280. Cheaper than Opus 5 on every line: cache reads are 0.05x input ($0.20/MTok, the same as Sonnet 5's); cache writes and batch use the standard multipliers ($5 / $8 writes, $2 / $10 batch)."
     },
     "claude-opus-5": {
       "input": 5.0,
@@ -42,6 +83,7 @@
       "context_tokens": 1000000,
       "max_output_tokens": 128000,
       "status": "current",
+      "note": "Superseded by claude-opus-5-5 (2026-09-22) and listed as legacy in the docs, but still active (retires no sooner than 2027-07-24). It is the pin for code that forces tool_choice or disables thinking, both of which 400 on Opus 5.5. Also the family_fallback rate for an unknown opus id, as the dearest current Opus.",
       "variants": {
         "fast": {
           "input": 10.0,
@@ -70,13 +112,38 @@
       "max_output_tokens": 128000,
       "status": "current"
     },
+    "claude-sonnet-5-5": {
+      "input": 2.0,
+      "output": 10.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.05
+      },
+      "note": "Released 2026-09-28; the current Sonnet. Same $2/$10 as Sonnet 5, but cache reads are 0.05x input ($0.10/MTok) — half Sonnet 5's $0.20. This entry said 'standard 0.1x, no override' from 2026-10-01 to 2026-10-10; corrected against the pricing page on the 2026-10-10 pass, so a consumer updated in that window over-reports Sonnet 5.5 cache reads 2x. Batch $1/$5. Not a drop-in for Sonnet 5: five breaking changes (see ../ANTHROPIC_MODEL_REFERENCE.md), so a consumer may not swap the id purely to follow the roster."
+    },
     "claude-sonnet-5": {
       "input": 2.0,
       "output": 10.0,
       "context_tokens": 1000000,
       "max_output_tokens": 128000,
       "status": "current",
-      "note": "$2/$10 is PERMANENT. It launched as introductory pricing 'through 2026-08-31' and the scheduled rise to $3/$15 was cancelled. Any table or comment still asserting the reversion is wrong and over-budgets Sonnet 5 by 50%. Sonnet 4.6 is therefore both older and 50% dearer — never pick it for new work."
+      "note": "$2/$10 is PERMANENT. It launched as introductory pricing 'through 2026-08-31' and the scheduled rise to $3/$15 was cancelled. Any table or comment still asserting the reversion is wrong and over-budgets Sonnet 5 by 50%. Sonnet 4.6 is therefore both older and 50% dearer — never pick it for new work. Superseded by claude-sonnet-5-5 (2026-09-28) at the same price; listed as legacy in the docs but still active (retires no sooner than 2027-06-30)."
+    },
+    "claude-haiku-5-5": {
+      "input": 0.1,
+      "output": 0.5,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "long_context": {
+        "threshold_prompt_tokens": 100000,
+        "input": 0.5,
+        "output": 2.5,
+        "note": "Priced per request: a prompt over 100K tokens pays this card on the whole request, cache hits included; earlier requests keep the card they were billed at. Batch and cache multipliers apply to this card the same way."
+      },
+      "note": "Released 2026-10-07; the current Haiku and the only current-generation model with two rate cards. Base card $0.10/$0.50 (cache read $0.01, 5m write $0.125, batch $0.05/$0.25) for prompts up to 100K tokens; $0.50/$2.50 above. 1M context and 128K output (Haiku 4.5: 200K/64K); same 4.7-generation tokeniser, so the same text costs ~30% more tokens than on Haiku 4.5 — net ~7x cheaper per request on the base card, not 10x. Not a drop-in for Haiku 4.5: five breaking changes (see ../ANTHROPIC_MODEL_REFERENCE.md), so a consumer may not swap the id purely to follow the roster."
     },
     "claude-haiku-4-5": {
       "input": 1.0,
@@ -86,7 +153,8 @@
       "status": "current",
       "aliases": [
         "claude-haiku-4-5-20251001"
-      ]
+      ],
+      "note": "Superseded by claude-haiku-5-5 (2026-10-07). Still Active in the docs with a retirement commitment to 2026-10-15 only and no deprecation notice yet (60 days' notice is guaranteed, so it cannot retire before 2026-12-09). Also the family_fallback rate for an unknown haiku id, as the dearest Haiku per token."
     },
     "claude-opus-4-6": {
       "input": 5.0,
@@ -118,10 +186,11 @@
       "output": 15.0,
       "context_tokens": 200000,
       "max_output_tokens": 64000,
-      "status": "previous_generation",
+      "status": "deprecated",
       "aliases": [
         "claude-sonnet-4-5-20250929"
-      ]
+      ],
+      "note": "Deprecated 2026-09-30, retires 2026-11-30; docs recommend claude-sonnet-5-5. Priced here only so a consumer costing historical telemetry gets it right."
     }
   },
   "unknown_model_policy": {
