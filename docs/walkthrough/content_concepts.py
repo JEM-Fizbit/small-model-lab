@@ -802,6 +802,14 @@ position. A token is just data flowing through them.</p>
 <p>And the weights in the picture are a tiny slice: <em>one output of one layer</em>. Our tiny GPT stacks
 6 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
 the ~17M parameters. One layer's <code>W</code> might be 384×1536 (~590k numbers); the whole model is ~17M.</p>
+<p>The token embedding table alone holds 8,192 × 384 = <strong>3,145,728 parameters</strong>.
+The six blocks, learned position embeddings, final normalisation and separate output head bring
+that to <strong>17,045,504</strong>. <a href="../track-a/#model-architecture">See the whole model as a diagram</a>,
+or <a href="../track-a/#parameter-count">follow the full parameter count in Part 1 →</a>.</p>
+<p><strong>Model dimensions are design choices; parameter values are learned.</strong> Choose a
+baseline around the task and its data, compute, memory and response-time limits, then use controlled
+comparisons and evaluations on unseen examples to justify changes.
+<a href="../track-a/#upgrades">Part 1 explains how we chose our tiny model's dimensions →</a></p>
 <p>And a linear layer transforms <em>one token at a time</em>. The model's real job (read a <em>string</em>
 of tokens and predict the next) needs tokens to share information, which is <em>attention</em>'s job
 (next section), not the linear layers. After the stack, the last position's vector is read out to predict

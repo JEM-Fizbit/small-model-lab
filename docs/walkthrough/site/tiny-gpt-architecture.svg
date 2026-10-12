@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="3850" viewBox="0 0 720 3850" role="img" aria-labelledby="title desc">
+<title id="title">Inside our tiny GPT: from text to the next token</title>
+<desc id="desc">A beginner guide to the tuned GPT. Text pieces become IDs; learned token and position vectors are added. Attention is causal: current and earlier positions only. Training changes the learned numbers; generation reuses them. Input-dependent activation vectors pass through six pre-norm transformer blocks, each containing attention and a feedforward multilayer perceptron, plus layer norms and residual connections. Final LayerNorm acts within each token vector, an untied head computes vocabulary scores, softmax makes probabilities, and sampling chooses the next token. Learned parameters total exactly 17,045,504. A block inset explains all 1,774,464 parameters and the GELU nonlinearity.</desc>
+<rect width="720" height="3850" fill="#f7f3ea"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#6e6557"/></marker></defs>
+<text x="40" y="37" fill="#963d2c" font-family="Arial" font-size="19" font-weight="bold" text-anchor="start">SMALL-MODEL-LAB  /  THE TUNED MODEL</text>
+<text x="40" y="86" fill="#231f18" font-family="Georgia" font-size="42" font-weight="normal" text-anchor="start">Inside our tiny GPT</text>
+<text x="40" y="125" fill="#963d2c" font-family="Georgia" font-size="29" font-weight="normal" text-anchor="start">17,045,504 learned parameters</text>
+<text x="40" y="162" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">A language model predicts the next piece of text.</text>
+<text x="40" y="204" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Training adjusts these numbers to improve predictions.</text>
+<text x="40" y="233" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Generation reuses them unchanged to continue your text.</text>
+<g transform="translate(0,88)">
+<path d="M40 187 H680" stroke="#ddd4c2" stroke-width="2"/>
+<text x="40" y="222" fill="#963d2c" font-family="Arial" font-size="19" font-weight="bold" text-anchor="start">1  /  TURN TEXT INTO VECTORS</text>
+<text x="40" y="259" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">Tokens are pieces of text, each mapped to an integer ID.</text>
+<text x="40" y="289" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">A position is its index in the sequence: 0, 1, 2, …</text>
+<text x="40" y="320" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">A vector is a list of numbers. An embedding is a learned</text>
+<text x="40" y="349" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">vector looked up for a token or a position.</text>
+<g transform="translate(0,70)">
+<rect x="40" y="315" width="240" height="60" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="160" y="352" fill="#231f18" font-family="Georgia" font-size="25" font-weight="normal" text-anchor="middle">Text pieces</text>
+<path d="M286 345 L370 345" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="380" y="315" width="300" height="60" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="530" y="352" fill="#231f18" font-family="Georgia" font-size="25" font-weight="normal" text-anchor="middle">Token IDs</text>
+<path d="M530 375 L195 442" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="525" y="408" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="middle">Position index</text>
+<path d="M525 420 L525 442" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="450" width="310" height="177" rx="12" fill="#f0e2dc" stroke="#963d2c" stroke-width="1.5"/>
+<text x="195" y="483" fill="#963d2c" font-family="Georgia" font-size="24" font-weight="bold" text-anchor="middle">Token embedding table</text>
+<text x="195" y="516" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="middle">8,192 tokens × 384</text>
+<text x="195" y="549" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="middle">3,145,728 parameters</text>
+<text x="195" y="577" fill="#6e6557" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="middle">18.45% of the model</text>
+<text x="195" y="606" fill="#6e6557" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="middle">Look up the token’s vector</text>
+<rect x="370" y="450" width="310" height="177" rx="12" fill="#eee8db" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="483" fill="#8c6a2a" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="middle">Position embedding table</text>
+<text x="525" y="516" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="middle">256 positions × 384</text>
+<text x="525" y="549" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="middle">98,304 parameters</text>
+<text x="525" y="577" fill="#6e6557" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="middle">0.58% of the model</text>
+<text x="525" y="606" fill="#6e6557" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="middle">Look up the position’s vector</text>
+<path d="M195 627 L334 664" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M525 627 L386 664" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<circle cx="360" cy="672" r="25" fill="#f7f3ea" stroke="#6e6557" stroke-width="2"/>
+<text x="360" y="682" fill="#231f18" font-family="Georgia" font-size="32" font-weight="normal" text-anchor="middle">+</text>
+<text x="40" y="716" fill="#231f18" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Adding position vectors gives the model a sense of order.</text>
+<rect x="40" y="736" width="640" height="139" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="62" y="769" fill="#3d6a72" font-family="Georgia" font-size="24" font-weight="bold" text-anchor="start">Now 384 numbers flow forward per position.</text>
+<text x="62" y="802" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">The stored table entries are learned parameters.</text>
+<text x="62" y="830" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">The flowing vectors are activations: values computed</text>
+<text x="62" y="858" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">from this input, not newly learned weights.</text>
+<path d="M360 875 L360 909" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="40" y="944" fill="#3d6a72" font-family="Arial" font-size="19" font-weight="bold" text-anchor="start">2  /  BUILD A CONTEXT-AWARE REPRESENTATION</text>
+<rect x="40" y="965" width="640" height="503" rx="12" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="64" y="1002" fill="#3d6a72" font-family="Georgia" font-size="30" font-weight="bold" text-anchor="start">Six transformer blocks</text>
+<text x="64" y="1038" fill="#3d6a72" font-family="Georgia" font-size="26" font-weight="normal" text-anchor="start">10,646,784 parameters · 62.46%</text>
+<rect x="66" y="1060" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1089" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 1</text>
+<rect x="212" y="1065" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1088" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1081 L411 1081" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1065" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1088" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<path d="M360 1102 L360 1110" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="66" y="1111" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1140" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 2</text>
+<rect x="212" y="1116" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1139" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1132 L411 1132" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1116" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1139" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<path d="M360 1153 L360 1161" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="66" y="1162" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1191" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 3</text>
+<rect x="212" y="1167" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1190" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1183 L411 1183" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1167" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1190" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<path d="M360 1204 L360 1212" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="66" y="1213" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1242" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 4</text>
+<rect x="212" y="1218" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1241" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1234 L411 1234" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1218" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1241" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<path d="M360 1255 L360 1263" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="66" y="1264" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1293" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 5</text>
+<rect x="212" y="1269" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1292" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1285 L411 1285" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1269" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1292" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<path d="M360 1306 L360 1314" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="66" y="1315" width="588" height="42" rx="7" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="84" y="1344" fill="#3d6a72" font-family="Georgia" font-size="23" font-weight="bold" text-anchor="start">Block 6</text>
+<rect x="212" y="1320" width="168" height="32" rx="5" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="296" y="1343" fill="#3d6a72" font-family="Georgia" font-size="21" font-weight="bold" text-anchor="middle">Attention</text>
+<path d="M386 1336 L411 1336" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="419" y="1320" width="212" height="32" rx="5" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="525" y="1343" fill="#8c6a2a" font-family="Georgia" font-size="20" font-weight="bold" text-anchor="middle">Feedforward MLP</text>
+<text x="64" y="1399" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Each also has layer norms and residual connections.</text>
+<text x="64" y="1428" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Same structure; different learned weights in each block.</text>
+<text x="40" y="1509" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">Attention uses current and earlier positions, never future</text>
+<text x="40" y="1539" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">tokens. The MLP transforms each position independently,</text>
+<text x="40" y="1569" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">using the same weights at every position.</text>
+<path d="M360 1587 L360 1620" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="40" y="1660" fill="#963d2c" font-family="Arial" font-size="19" font-weight="bold" text-anchor="start">3  /  TURN THE LAST VECTOR INTO A NEXT-TOKEN GUESS</text>
+<rect x="40" y="1684" width="640" height="168" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="64" y="1720" fill="#3d6a72" font-family="Georgia" font-size="28" font-weight="bold" text-anchor="start">Final LayerNorm</text>
+<text x="64" y="1754" fill="#231f18" font-family="Georgia" font-size="24" font-weight="normal" text-anchor="start">384 scales + 384 shifts = 768 parameters</text>
+<text x="64" y="1787" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Normalises feature values within each token vector,</text>
+<text x="64" y="1816" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">then scales and shifts them. It does not mix positions.</text>
+<path d="M360 1852 L360 1885" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="1893" width="640" height="228" rx="12" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="64" y="1929" fill="#8c6a2a" font-family="Georgia" font-size="29" font-weight="bold" text-anchor="start">Separate output head</text>
+<text x="64" y="1965" fill="#231f18" font-family="Georgia" font-size="27" font-weight="normal" text-anchor="start">384 values in; 8,192 scores out</text>
+<text x="64" y="1998" fill="#6e6557" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="start">That is a shape, not the number of learned parameters.</text>
+<text x="64" y="2033" fill="#231f18" font-family="Georgia" font-size="25" font-weight="normal" text-anchor="start">384 × 8,192 = 3,145,728 weights</text>
+<text x="64" y="2067" fill="#231f18" font-family="Georgia" font-size="24" font-weight="normal" text-anchor="start">+ 8,192 biases = 3,153,920 parameters</text>
+<text x="64" y="2102" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">18.50% · Untied: it does not reuse the input table.</text>
+<path d="M360 2121 L360 2154" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="2162" width="640" height="198" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="64" y="2198" fill="#3d6a72" font-family="Georgia" font-size="28" font-weight="bold" text-anchor="start">Softmax, then sampling</text>
+<text x="64" y="2233" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Temperature adjusts randomness by rescaling scores (logits).</text>
+<text x="64" y="2264" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Softmax makes probabilities summing to 1 at each position.</text>
+<text x="64" y="2295" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Use the last position’s chances to choose the next token.</text>
+<text x="64" y="2326" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Append and repeat; no learned parameters in these steps.</text>
+<path d="M40 2370 H680" stroke="#ddd4c2" stroke-width="2"/>
+<text x="40" y="2410" fill="#3d6a72" font-family="Arial" font-size="19" font-weight="bold" text-anchor="start">OPEN ONE BLOCK  /  THE ORDER OF OPERATIONS</text>
+<text x="40" y="2451" fill="#3d6a72" font-family="Georgia" font-size="30" font-weight="normal" text-anchor="start">1,774,464 learned parameters</text>
+<text x="40" y="2484" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Same 384-number input and output width at each position.</text>
+<rect x="40" y="2510" width="640" height="133" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="64" y="2545" fill="#231f18" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">1  Normalise, apply attention, add the incoming vector.</text>
+<text x="64" y="2580" fill="#231f18" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="start">2  Normalise, apply MLP, add that stage’s incoming vector.</text>
+<text x="64" y="2615" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Adding back the input is a residual (skip) connection.</text>
+<text x="40" y="2670" fill="#3d6a72" font-family="Arial" font-size="18" font-weight="bold" text-anchor="start">PARAMETER INVENTORY FOR THOSE TWO STAGES</text>
+<g transform="translate(0,182)">
+<rect x="40" y="2510" width="640" height="220" rx="12" fill="#e6eeec" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="64" y="2544" fill="#3d6a72" font-family="Georgia" font-size="25" font-weight="bold" text-anchor="start">Attention: lets positions share information</text>
+<rect x="64" y="2563" width="140" height="72" rx="8" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="134" y="2592" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="bold" text-anchor="middle">Query</text>
+<text x="134" y="2621" fill="#231f18" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="middle">384 × 384</text>
+<rect x="215" y="2563" width="140" height="72" rx="8" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="285" y="2592" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="bold" text-anchor="middle">Key</text>
+<text x="285" y="2621" fill="#231f18" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="middle">384 × 384</text>
+<rect x="366" y="2563" width="140" height="72" rx="8" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="436" y="2592" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="bold" text-anchor="middle">Value</text>
+<text x="436" y="2621" fill="#231f18" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="middle">384 × 384</text>
+<rect x="517" y="2563" width="140" height="72" rx="8" fill="#fbf8f1" stroke="#3d6a72" stroke-width="1.5"/>
+<text x="587" y="2592" fill="#3d6a72" font-family="Georgia" font-size="22" font-weight="bold" text-anchor="middle">Output</text>
+<text x="587" y="2621" fill="#231f18" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="middle">384 × 384</text>
+<text x="64" y="2668" fill="#231f18" font-family="Georgia" font-size="24" font-weight="normal" text-anchor="start">4 matrices: 589,824 weights + 1,536 biases</text>
+<text x="64" y="2704" fill="#3d6a72" font-family="Georgia" font-size="25" font-weight="bold" text-anchor="start">= 591,360 parameters</text>
+<rect x="40" y="2763" width="640" height="284" rx="12" fill="#efe7d4" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="64" y="2798" fill="#8c6a2a" font-family="Georgia" font-size="25" font-weight="bold" text-anchor="start">Feedforward MLP = multilayer perceptron</text>
+<text x="64" y="2832" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">Two linear layers, with GELU between them.</text>
+<rect x="64" y="2853" width="110" height="61" rx="7" fill="#fbf8f1" stroke="#8c6a2a" stroke-width="1.5"/>
+<rect x="249" y="2847" width="222" height="73" rx="7" fill="#fbf8f1" stroke="#8c6a2a" stroke-width="1.5"/>
+<rect x="546" y="2853" width="110" height="61" rx="7" fill="#fbf8f1" stroke="#8c6a2a" stroke-width="1.5"/>
+<text x="119" y="2893" fill="#231f18" font-family="Georgia" font-size="26" font-weight="normal" text-anchor="middle">384</text>
+<text x="360" y="2877" fill="#8c6a2a" font-family="Georgia" font-size="28" font-weight="bold" text-anchor="middle">1,536</text>
+<text x="360" y="2906" fill="#6e6557" font-family="Georgia" font-size="21" font-weight="normal" text-anchor="middle">GELU</text>
+<text x="601" y="2893" fill="#231f18" font-family="Georgia" font-size="26" font-weight="normal" text-anchor="middle">384</text>
+<path d="M175 2883 L239 2883" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M481 2883 L536 2883" fill="none" stroke="#6e6557" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="64" y="2950" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">GELU adds a smooth bend: this can learn nonlinear</text>
+<text x="64" y="2978" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">patterns instead of collapsing into one linear map.</text>
+<text x="64" y="3017" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">1,179,648 weights + 1,920 biases = 1,181,568</text>
+<rect x="40" y="3065" width="640" height="134" rx="12" fill="#fbf8f1" stroke="#ddd4c2" stroke-width="1.5"/>
+<text x="64" y="3100" fill="#3d6a72" font-family="Georgia" font-size="25" font-weight="bold" text-anchor="start">Two layer norms: + 1,536 parameters</text>
+<text x="64" y="3131" fill="#231f18" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">2 × (384 learned scales + 384 shifts)</text>
+<text x="64" y="3163" fill="#6e6557" font-family="Georgia" font-size="23" font-weight="normal" text-anchor="start">One before attention; one before the MLP.</text>
+<text x="40" y="3240" fill="#231f18" font-family="Georgia" font-size="25" font-weight="bold" text-anchor="start">591,360 + 1,181,568 + 1,536 = 1,774,464</text>
+<text x="40" y="3279" fill="#3d6a72" font-family="Georgia" font-size="24" font-weight="normal" text-anchor="start">× 6 blocks = 10,646,784 parameters in the stack</text>
+<text x="40" y="3330" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">384, 1,536 and 384 above are vector widths.</text>
+<text x="40" y="3360" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">Weights are reused; longer context adds no block weights.</text>
+<text x="40" y="3390" fill="#6e6557" font-family="Georgia" font-size="22" font-weight="normal" text-anchor="start">GELU and residual additions add no learned parameters.</text>
+<text x="40" y="3450" fill="#6e6557" font-family="Georgia" font-size="20" font-weight="normal" text-anchor="start">Boxes show structure, not proportional parameter areas.</text>
+</g></g></g></svg>

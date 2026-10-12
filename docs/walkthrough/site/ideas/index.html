@@ -1062,7 +1062,7 @@ is a <em>weighted sum</em> of all the inputs plus an offset. Stack the per-outpu
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="321.0" y="681" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block pairs attention (reads context) with an MLP (multi-layer perceptron: stacked linear layers, like ①②). Head → next-token probs.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the token + position embeddings; ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, applied to every token (fixed after training).</text>
 </svg><figcaption><span class="fignum" id="fig-6">Fig.&nbsp;6</span>A linear layer, drawn. ① one output (a "neuron") is a weighted sum of the numbers in one token's vector; ② stack a row of weights per output → the matrix W, so the layer is y = Wx + b (a vector in, a new vector out); ③ one such layer is a tiny slice of the whole ~17M-parameter model, whose weights are shared across every&nbsp;token.</figcaption></figure>
 <aside class="callout key"><div class="callout-title">Parameters vs. tokens: the part people mix up</div><div class="callout-body">
@@ -1073,6 +1073,14 @@ position. A token is just data flowing through them.</p>
 <p>And the weights in the picture are a tiny slice: <em>one output of one layer</em>. Our tiny GPT stacks
 6 blocks (each with several <code>W</code>s) plus the embedding and the head; add them all up and you get
 the ~17M parameters. One layer's <code>W</code> might be 384×1536 (~590k numbers); the whole model is ~17M.</p>
+<p>The token embedding table alone holds 8,192 × 384 = <strong>3,145,728 parameters</strong>.
+The six blocks, learned position embeddings, final normalisation and separate output head bring
+that to <strong>17,045,504</strong>. <a href="../track-a/#model-architecture">See the whole model as a diagram</a>,
+or <a href="../track-a/#parameter-count">follow the full parameter count in Part 1 →</a>.</p>
+<p><strong>Model dimensions are design choices; parameter values are learned.</strong> Choose a
+baseline around the task and its data, compute, memory and response-time limits, then use controlled
+comparisons and evaluations on unseen examples to justify changes.
+<a href="../track-a/#upgrades">Part 1 explains how we chose our tiny model's dimensions →</a></p>
 <p>And a linear layer transforms <em>one token at a time</em>. The model's real job (read a <em>string</em>
 of tokens and predict the next) needs tokens to share information, which is <em>attention</em>'s job
 (next section), not the linear layers. After the stack, the last position's vector is read out to predict

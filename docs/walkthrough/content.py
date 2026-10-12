@@ -660,7 +660,7 @@ LINEAR_SVG = r'''<svg viewBox="0 0 800 754" role="img" aria-label="A linear laye
 <rect x="271" y="618" width="100" height="50" rx="6" fill="none" stroke="#8c6a2a" stroke-width="2.4"/>
 <text x="321.0" y="681" text-anchor="middle" font-size="11" fill="#8c6a2a" font-weight="400" >↑ a layer like ①② is one W in here</text>
 <text x="58" y="703" text-anchor="start" font-size="11" fill="#6e6557" font-weight="400" >Each block pairs attention (reads context) with an MLP (multi-layer perceptron: stacked linear layers, like ①②). Head → next-token probs.</text>
-<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the embedding tables (8,192 tokens × 384 numbers); ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
+<text x="58" y="721" text-anchor="start" font-size="10.5" fill="#6e6557" font-weight="400" >Of the ~17M parameters: ~3.24M the token + position embeddings; ~10.6M the 6 blocks' shared W's; ~3.15M the head.</text>
 <text x="58" y="739" text-anchor="start" font-size="11.5" fill="#231f18" font-weight="700" >So a token's 384 numbers are a tiny slice; the bulk is the model's shared weights, applied to every token (fixed after training).</text>
 </svg>'''
 
@@ -1193,8 +1193,9 @@ attention heads in parallel.</p>
  "blocks": [
   ("prose", r"""
 <p>Attention gathers information across positions. The other half of a transformer block is a
-small <strong>MLP</strong>: two linear layers with a nonlinear &ldquo;bend&rdquo; (a GELU
-activation) between them, applied to each position on its own, giving the model room to
+small <strong>MLP (multilayer perceptron)</strong>, also called the <em>feedforward network</em>:
+two linear layers with a nonlinear &ldquo;bend&rdquo; (a GELU activation) between them. The same
+learned weights are applied to each position independently, giving the model room to
 &ldquo;think&rdquo; about what attention just collected. A <strong>block</strong> is simply:
 attention, then MLP. A GPT is just this block stacked <code>n_layer</code> times.</p>
 <p>Two supporting tricks make deep stacks trainable, and they're worth naming because they're
@@ -1203,8 +1204,9 @@ everywhere in modern models:</p>
 <li><strong>Residual connections</strong> (<code>x = x + sublayer(x)</code>). Instead of
 replacing its input, each sub-layer <em>adds an adjustment</em> to it. This keeps a clean
 signal flowing through even a deep stack, which is what makes deep networks learnable at all.</li>
-<li><strong>LayerNorm</strong>: a normalisation step that keeps the numbers in a sane range so
-the maths stays stable.</li>
+<li><strong>LayerNorm</strong>: normalises the feature values <em>within each token's vector</em>,
+then applies learned scales and shifts. This helps keep the maths stable; it does not mix
+information between token positions.</li>
 </ul>
 """),
   ("prose", r"""
@@ -1224,8 +1226,9 @@ think, add back). That &ldquo;add back&rdquo; is the residual connection.</p>
 <ul>
 <li><code>self.tok</code> is an <b>embedding</b> table turning each token id into a vector of
 <code>n_embd</code> learnable numbers (its meaning, to be discovered during training).</li>
-<li><code>self.pos</code> is a second embedding for <em>position</em>, because attention has no
-built-in sense of order; we must tell it where each token sits.</li>
+<li><code>self.pos</code> is a second embedding for <em>position</em>: the token's index in the
+sequence (0, 1, 2, …). It looks up a learned vector for that index and adds it to the token's
+embedding vector, giving the model information about where the token sits.</li>
 <li><code>self.blocks</code> is the stack of transformer blocks, run in sequence.</li>
 <li><code>self.head</code> is a final layer that turns each position's vector into a
 <strong>score for every possible next character</strong>. Those scores are called
@@ -1394,9 +1397,10 @@ language&rdquo; and &ldquo;is coherent&rdquo; is the job of the upgrades stage t
 to do &mdash; every part visible, nothing hidden &mdash; and then produced text nobody could read.
 That raised the obvious question: what is actually holding it back? The question came from the
 output, not from the plan.</p>
-<p>Notebook 02 keeps the <em>exact same architecture</em> and layers on the six changes that
-actually improve a from-scratch run. Holding the architecture fixed is deliberate: it isolates
-what each upgrade buys. One of these, the tokenizer, does most of the work.</p>
+<p>Notebook 02 keeps the same transformer design, with a wider, deeper model, and combines
+six changes in one run. The comparison shows what the bundle achieves; it does not isolate
+how much each change contributes. That would require controlled comparisons, changing one
+thing at a time.</p>
 """),
   ("table", r"""
 <table>
@@ -1415,6 +1419,18 @@ what each upgrade buys. One of these, the tokenizer, does most of the work.</p>
 <tr><td>Training corpus</td><td>4,000 stories</td><td><b>25,000 stories</b></td>
     <td>more text to learn from; a one-line change to the loader</td></tr>
 </tbody></table>
+"""),
+  ("prose", r"""
+<p>Why 8,192 tokens, 384 embedding dimensions and six layers? These were practical design choices,
+refined after seeing the first model’s output; we did not establish that they were optimal. In a
+production project, a team would start by defining what the model needs to do and the limits on data,
+training compute, memory and response time. It would use experience and prior research to choose a
+baseline, then run targeted comparisons: does a different tokenizer represent the text more
+efficiently, does extra depth improve performance enough to justify its cost, or would the same
+budget be better spent on more training data? Evaluations on unseen examples and realistic tasks
+would guide those decisions. The aim is to find a design that meets the application’s needs reliably
+within its constraints. Our small model illustrates the training mechanics; a production development
+process adds the evidence needed to justify the design.</p>
 """),
  ],
 },
@@ -1476,6 +1492,98 @@ amount that grows with depth keeps the signal's size stable from the first layer
 Everything else (attention, the block, the embeddings, the head) is identical to notebook 01.</p>
 """),
   ("output", "02", "STD = 0.02", "model size"),
+  ("prose", r"""
+<h3 id="parameter-count">Where all 17.05 million parameters live</h3>
+<p><strong>8,192 tokens × 384 numbers = 3,145,728 parameters</strong>, but that counts only the
+<strong>token embedding table</strong>: the vectors looked up at the input. Notebook 02's tuned
+model also learns position embeddings, the processing inside six transformer blocks, and an
+output head. Here is the complete count for this model, separate from Notebook 01's smaller
+character-level model in <a href="#block">§6</a>:</p>
+"""),
+  ("prose", r"""
+<figure class="imgfig" id="model-architecture">
+<div class="tablewrap" tabindex="0" role="region" aria-label="Architecture diagram: scroll horizontally on narrow screens">
+<a href="../tiny-gpt-architecture.svg" aria-label="Open the tiny GPT architecture diagram at full size">
+<img src="../tiny-gpt-architecture.svg" width="720" height="3850" loading="lazy"
+     style="min-width:640px;height:auto"
+     alt="The tuned GPT's 17,045,504 parameters: token and position embeddings feed six causal transformer blocks, final LayerNorm and a separate output head. An inset explains attention, the feedforward MLP, pre-normalisation and residual additions. Counts and operations are explained in the text below."
+     aria-describedby="architecture-caption"/>
+</a>
+</div>
+<figcaption id="architecture-caption">From text to the next-token prediction, with the learned
+parameters counted at each stage. The block inset separates execution order from parameter counts.
+On narrow screens, scroll across the diagram or <a href="../tiny-gpt-architecture.svg">open it at full size</a>.</figcaption>
+</figure>
+"""),
+  ("table", r"""
+<table>
+<thead><tr><th scope="col">Component</th><th scope="col">Calculation</th><th scope="col">Parameters</th></tr></thead>
+<tbody>
+<tr><th scope="row">Token embeddings</th><td>8,192 × 384</td><td>3,145,728</td></tr>
+<tr><th scope="row">Learned position embeddings</th><td>256 × 384</td><td>98,304</td></tr>
+<tr><th scope="row">Six transformer blocks</th><td>6 × 1,774,464</td><td>10,646,784</td></tr>
+<tr><th scope="row">Final layer normalisation</th><td>2 × 384</td><td>768</td></tr>
+<tr><th scope="row">Separate output head</th><td>384 × 8,192 + 8,192 biases</td><td>3,153,920</td></tr>
+<tr><th scope="row">Total</th><td>All five components</td><td><strong>17,045,504 ≈ 17.05 million</strong></td></tr>
+</tbody></table>
+"""),
+  ("prose", r"""
+<p>The <strong>transformer blocks</strong> hold most of the parameters. All six have the same
+architecture and parameter count, but each block has its <strong>own learned weights</strong>.
+Within a block, those weights are shared across token positions: there is no separate set for
+every token.</p>
+<p>The <strong>position embeddings</strong> are the learned vectors added to the token embeddings
+at the input, as in <a href="#block">§6</a>. This model has 256 possible context positions.
+The <strong>final LayerNorm</strong> normalises the feature values within each position's vector
+before the output head reads it. Its 384 learned scales and 384 shifts account for
+<strong>768 parameters</strong>; it does not mix positions.</p>
+<p>The <strong>output head</strong> maps each final 384-number vector to 8,192 vocabulary scores,
+one for each possible next token. <strong>384 → 8,192 describes the input and output shapes</strong>;
+the parameter count is <strong>384 × 8,192 = 3,145,728 weights</strong>, plus
+<strong>8,192 biases</strong>, totalling <strong>3,153,920</strong>. This is a separate,
+<em>untied</em> matrix: it does not reuse the input embedding table.</p>
+<p>These scores are called <strong>logits</strong>. At generation time, <strong>softmax</strong>
+converts the last position's temperature-adjusted scores into probabilities that sum to 1; it has no learned
+parameters. Sampling uses those probabilities to choose the next token, which is appended to
+the input for the next step (<a href="#generate">the generation loop in §9</a>).</p>
+<h3 id="block-size">What determines the size of a transformer block?</h3>
+<p>Start with the model's <strong>width: 384 numbers per token position</strong>. A token is a
+piece of text mapped to an ID (<a href="../ideas/#tokens">the token primer</a>); its position is
+where that piece sits in the sequence. The embedding table's stored numbers are learned
+<strong>parameters</strong>. Once looked up, added to position embeddings and processed by the
+blocks, the flowing vectors are <strong>activations</strong>: input-dependent values computed
+using those parameters. Producing another vector does not create or learn another set of weights.</p>
+<p>Every block receives and returns a vector of width 384, so the blocks fit together and their
+residual connections can add vectors of the same size. A whole transformer block includes
+<strong>attention and an MLP</strong>, plus normalisation and residual connections; the MLP is
+just one part. Two sets of learned matrices do most of the work:</p>
+<ul>
+<li><strong>Attention mixes information across token positions</strong>, drawing on the current
+and earlier positions. Its query, key and value projections each map 384 numbers to 384 numbers,
+and the output projection does the same. That makes <strong>4 × 384 × 384 = 589,824
+weights</strong>. The code packs the first three into one larger matrix, but the count is the same.</li>
+<li><strong>The feedforward MLP transforms each position independently</strong>, using the same
+weights at every position. Its first layer expands 384 numbers to 1,536, GELU adds a nonlinear
+bend, and its second layer brings 1,536 back to 384. The wider middle gives the block more room
+to transform features before returning to the shared width. We chose a <strong>4× expansion</strong>, so these two matrices contain
+<strong>384 × 1,536 + 1,536 × 384 = 1,179,648 weights</strong>.</li>
+</ul>
+<p>Add <strong>3,456 biases</strong> across those projections and feedforward layers, plus
+<strong>1,536 learned scales and offsets</strong> in the block's two layer normalisations, and
+one block totals <strong>1,774,464 parameters</strong>. Six separately learned blocks therefore
+contribute <strong>6 × 1,774,464 = 10,646,784</strong>.</p>
+<p>Width, the feedforward expansion multiplier and the number of blocks are related design
+choices. Keeping the multiplier fixed, block parameters grow roughly with the <strong>square of
+width</strong>: doubling width makes the matrices about four times as large. Doubling the number
+of blocks instead doubles the stack's parameter count. A larger expansion multiplier increases
+the feedforward part. These choices trade capacity against memory and compute, so their value
+needs evaluation rather than an assumption that bigger is always better.</p>
+<p>Vocabulary size determines the input embedding table and output head, but does not change
+these block matrices at a fixed width. A longer context makes attention do more work without
+enlarging those matrices, although this model's learned position table grows with its maximum
+context length. The six attention heads divide the 384 numbers into 64 per head; at a fixed
+width, changing the number of heads does not multiply the projection parameter count.</p>
+"""),
   ("callout", "aside", "Same idea, written tighter", r"""
 <p>You'll notice this code is more densely packed than notebook 01's. It's the same components
 (attention, block, GPT) just written compactly now that the concepts are familiar. If you can
@@ -1543,14 +1651,14 @@ Jack took the necklace home and he took it home with him. He said: "This is my p
 <p>Real words. Names that persist across sentences (&ldquo;Timmy,&rdquo; &ldquo;Jack&rdquo;).
 Dialogue with quotation marks. The arc of a little story. It still wanders and contradicts
 itself (it's a 17-million-parameter model trained for twenty minutes on a laptop) but set it
-beside the character-level gibberish from the from-scratch pass and the leap is unmistakable. <em>Same
-architecture.</em> The difference is almost entirely the five upgrades, and mostly the tokenizer.</p>
+beside the character-level gibberish from the from-scratch pass and the leap is unmistakable.
+The six upgrades work together here; this comparison does not measure their individual contributions.</p>
 """),
   ("callout", "tryit", "Want to feel each upgrade?", r"""
 <p>The notebooks invite an <em>ablation</em>: turn one upgrade off, re-run, compare.</p>
 <ul>
-<li><b>Tokenizer:</b> notebook 01 already <em>is</em> the &ldquo;no-BPE&rdquo; version; compare
-its samples to these.</li>
+<li><b>Tokenizer:</b> compare character-level and BPE tokenisation while holding the other
+settings fixed. Notebook 01 changes several settings, so it is not a tokenizer-only comparison.</li>
 <li><b>Init:</b> remove the depth-scaling and watch the early loss misbehave.</li>
 <li><b>Schedule:</b> swap in a constant learning rate; the final loss creeps up.</li>
 <li><b>Capacity:</b> push the steps or layers higher for more.</li>

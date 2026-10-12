@@ -355,8 +355,8 @@ def main():
     (SITE / "index.html").write_text(_externalize_links(html_l))
     written.append(("index.html (landing)", len(html_l), 0))
 
-    # --- Root assets: social card + PNG favicons (Safari/iOS don't take SVG) ---
-    for name in ("og-image.png", "favicon.png", "apple-touch-icon.png"):
+    # --- Root assets: social card, favicons and the full-size architecture diagram ---
+    for name in ("og-image.png", "favicon.png", "apple-touch-icon.png", "tiny-gpt-architecture.svg"):
         src = Path(__file__).resolve().parent / "assets" / name
         if src.exists():
             (SITE / name).write_bytes(src.read_bytes())
