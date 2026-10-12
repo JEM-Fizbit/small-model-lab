@@ -805,7 +805,7 @@ the ~17M parameters. One layer's <code>W</code> might be 384×1536 (~590k number
 <p>The token embedding table alone holds 8,192 × 384 = <strong>3,145,728 parameters</strong>.
 The six blocks, learned position embeddings, final normalisation and separate output head bring
 that to <strong>17,045,504</strong>. <a href="../track-a/#model-architecture">See the whole model as a diagram</a>,
-or <a href="../track-a/#parameter-count">follow the full parameter count in Part 1 →</a>.</p>
+or <a href="../model/#parameter-count">open the full model reference and parameter count →</a>.</p>
 <p><strong>Model dimensions are design choices; parameter values are learned.</strong> Choose a
 baseline around the task and its data, compute, memory and response-time limits, then use controlled
 comparisons and evaluations on unseen examples to justify changes.

@@ -17,6 +17,8 @@ Block tuple kinds (handled in build.render_block):
   ("table", html)
 """
 
+from content_model import MAIN_BLOCKS
+
 META = {
     "title": "Build a tiny GPT from scratch: Part 1 · Pre-training",
     "subtitle": "Pre-training a language model from nothing, on a laptop: the real code, explained.",
@@ -36,6 +38,9 @@ line by line, for someone who is curious but doesn't necessarily write Python.</
   and how the pieces fit (with all the diagrams). This page assumes that groundwork and focuses on
   building it; each step links back to the matching idea in Part 0.</p>
 </div>
+
+<p class="reference-link"><strong>Model reference:</strong>
+<a href="../model/">Inside the tuned GPT — components, diagrams and all 17.05 million parameters →</a></p>
 
 <p class="readnote"><strong>How to read this.</strong> Top to bottom. Each step is the plain idea in a
 line or two, then the actual code in a dark box, then a &ldquo;what this says&rdquo; translation. You can
@@ -332,6 +337,12 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 }
 
 
+.reference-link{max-width:720px;border-left:2px solid var(--accent);padding-left:16px;}
+.reference-jumps{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:24px;
+  font-size:16px;border-top:1px solid var(--line);padding-top:16px;}
+.reference-jumps strong{flex-basis:100%;font-weight:600;}
+@media(max-width:680px){.model-tally th,.model-tally td{padding-left:6px;padding-right:6px;}}
+
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
   font-family:var(--serif);line-height:1.65;background:transparent;border:none;
@@ -424,7 +435,7 @@ footer strong{color:var(--soft);}
 </head>
 <body>
 
-<nav class="topnav"><div class="inner">
+<nav class="topnav" aria-label="Site navigation"><div class="inner">
 {% for n in nav %}{% if n.href %}<a href="{{ n.href }}"{% if n.active %} class="active"{% endif %}>{{ n.label }}</a>{% else %}<span class="muted">{{ n.label }}{% if n.note %} <em>({{ n.note }})</em>{% endif %}</span>{% endif %}{% endfor %}
 <a class="hub" href="{{ hub_url }}"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
 </div></nav>
@@ -438,13 +449,16 @@ footer strong{color:var(--soft);}
 </nav>
 
 <div class="layout">
-  <nav class="toc">
+  <nav class="toc" aria-label="Contents">
     <p class="toctitle">Contents</p>
     {% for t in toc %}
       {% if t.part %}<div class="toc-part">{{ t.part }}</div>
       {% else %}<a href="#{{ t.id }}"><span class="toc-num">{{ t.num }}</span>{{ t.title }}</a>{% endif %}
     {% endfor %}
-    {% if primer %}<div class="toc-part">Reference</div>
+    <div class="toc-part">Reference</div>
+    {% if meta.is_model_reference %}<a href="../track-a/#tuned-model"><span class="toc-num">←</span>Back to Part 1 · §11</a>
+    {% else %}<a href="../model/"><span class="toc-num">↪</span>Inside the tuned GPT</a>{% endif %}
+    {% if primer %}
     <a href="#primer"><span class="toc-num">↪</span>Python primer</a>{% endif %}
   </nav>
 
@@ -1055,7 +1069,7 @@ M-series Mac it reports the GPU.</p>
 Notebook 01 uses the simplest scheme imaginable: <strong>one number per character</strong>.
 Every distinct character it sees (every letter, space, comma) gets its own id. It's
 inefficient, but maximally transparent: you can see <em>exactly</em> what the model sees.</p>
-<p>(<a href="../ideas/#tokens">Part 0</a> described a token as a word or word-piece; here we start one notch simpler, one token per <em>character</em>, for maximum transparency, then switch to word-chunks in <a href="#bpe">§11</a>.)</p>
+<p>(<a href="../ideas/#tokens">Part 0</a> described a token as a word or word-piece; here we start one notch simpler, one token per <em>character</em>, for maximum transparency, then switch to word-chunks in <a href="#bpe">§12</a>.)</p>
 <p>The text itself is <strong>TinyStories</strong>: thousands of very simple children's
 stories, written with a small vocabulary on purpose, so that a small model can actually learn
 coherent English from them.</p>
@@ -1471,7 +1485,12 @@ process adds the evidence needed to justify the design.</p>
 },
 
 {
- "id": "bpe", "num": "11", "title": "The big win: word-chunks, not letters",
+ "id": "tuned-model", "num": "11", "title": "Inside the tuned model: architecture & parameters",
+ "blocks": MAIN_BLOCKS,
+},
+
+{
+ "id": "bpe", "num": "12", "title": "The big win: word-chunks, not letters",
  "blocks": [
   ("prose", r"""
 <p>Working one character at a time forces the model to waste most of its capacity re-learning
@@ -1505,7 +1524,7 @@ sub-word idea.</p>
 },
 
 {
- "id": "init", "num": "12", "title": "Init & stability: why deep stacks blow up",
+ "id": "init", "num": "13", "title": "Init & stability: why deep stacks blow up",
  "blocks": [
   ("prose", r"""
 <p>The model code in notebook 02 is the same architecture, but with one substantive change:
@@ -1527,135 +1546,6 @@ amount that grows with depth keeps the signal's size stable from the first layer
 Everything else (attention, the block, the embeddings, the head) is identical to notebook 01.</p>
 """),
   ("output", "02", "STD = 0.02", "model size"),
-  ("prose", r"""
-<h3 id="parameter-count">Where all 17.05 million parameters live</h3>
-<p>The model-size output counts all the learned numbers, from the first lookup to the final
-prediction. Follow that path first; then we can add up what each part contributes.</p>
-"""),
-  ("prose", r"""
-<figure class="imgfig model-figure" id="model-architecture" aria-labelledby="architecture-caption">
-<ol class="model-flow">
-<li>
-<span class="model-step">1 · Embed</span>
-<strong>Token + position</strong>
-<p>Look up the two learned vectors and add them.</p>
-<span class="model-shape">384 values per token position</span>
-</li>
-<li>
-<span class="model-step">2 · Process</span>
-<strong>Six transformer blocks</strong>
-<div class="model-stack" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
-<p>Attention shares context; the MLP transforms each position.</p>
-<span class="model-shape">384 values in and out of each block</span>
-</li>
-<li>
-<span class="model-step">3 · Predict</span>
-<strong>Normalise, then score</strong>
-<p>Final LayerNorm, then the separate output head.</p>
-<span class="model-shape">8,192 scores; softmax gives probabilities, sampling picks the next token</span>
-</li>
-</ol>
-<figcaption id="architecture-caption">The model reuses this path for every next-token prediction.
-The six blocks have the same structure and separate learned weights.
-<a href="../tiny-gpt-architecture.svg">Open the fully annotated reference</a>.</figcaption>
-</figure>
-"""),
-  ("prose", r"""
-<p><strong>8,192 tokens × 384 numbers = 3,145,728 parameters</strong> counts only the token
-embedding table. The position table, six blocks, final normalisation and output head bring
-Notebook 02's total to <strong>17,045,504</strong>. Here is the complete count, separate from
-Notebook 01's smaller character-level model in <a href="#block">§6</a>:</p>
-"""),
-  ("table", r"""
-<table>
-<thead><tr><th scope="col">Component</th><th scope="col">Calculation</th><th scope="col">Parameters</th></tr></thead>
-<tbody>
-<tr><th scope="row">Token embeddings</th><td>8,192 × 384</td><td>3,145,728</td></tr>
-<tr><th scope="row">Learned position embeddings</th><td>256 × 384</td><td>98,304</td></tr>
-<tr><th scope="row">Six transformer blocks</th><td>6 × 1,774,464</td><td>10,646,784</td></tr>
-<tr><th scope="row">Final layer normalisation</th><td>2 × 384</td><td>768</td></tr>
-<tr><th scope="row">Separate output head</th><td>384 × 8,192 + 8,192 biases</td><td>3,153,920</td></tr>
-<tr><th scope="row">Total</th><td>All five components</td><td><strong>17,045,504 ≈ 17.05 million</strong></td></tr>
-</tbody></table>
-"""),
-  ("prose", r"""
-<p>The <strong>transformer blocks</strong> hold most of the parameters. All six have the same
-architecture and parameter count, but each block has its <strong>own learned weights</strong>.
-Within a block, those weights are shared across token positions: there is no separate set for
-every token.</p>
-<p>The <strong>position embeddings</strong> are the learned vectors added to the token embeddings
-at the input, as in <a href="#block">§6</a>. This model has 256 possible context positions.
-The <strong>final LayerNorm</strong> normalises the feature values within each position's vector
-before the output head reads it. Its 384 learned scales and 384 shifts account for
-<strong>768 parameters</strong>; it does not mix positions.</p>
-<p>The <strong>output head</strong> maps each final 384-number vector to 8,192 vocabulary scores,
-one for each possible next token. <strong>384 → 8,192 describes the input and output shapes</strong>;
-the parameter count is <strong>384 × 8,192 = 3,145,728 weights</strong>, plus
-<strong>8,192 biases</strong>, totalling <strong>3,153,920</strong>. This is a separate,
-<em>untied</em> matrix: it does not reuse the input embedding table.</p>
-<p>These scores are called <strong>logits</strong>. At generation time, <strong>softmax</strong>
-converts the last position's temperature-adjusted scores into probabilities that sum to 1; it has no learned
-parameters. Sampling uses those probabilities to choose the next token, which is appended to
-the input for the next step (<a href="#generate">the generation loop in §9</a>).</p>
-<h3 id="block-size">What determines the size of a transformer block?</h3>
-<p>Start with the model's <strong>width: 384 numbers per token position</strong>. A token is a
-piece of text mapped to an ID (<a href="../ideas/#tokens">the token primer</a>); its position is
-where that piece sits in the sequence. The embedding table's stored numbers are learned
-<strong>parameters</strong>. Once looked up, added to position embeddings and processed by the
-blocks, the flowing vectors are <strong>activations</strong>: input-dependent values computed
-using those parameters. Producing another vector does not create or learn another set of weights.</p>
-<p>Every block receives and returns a vector of width 384, so the blocks fit together and their
-residual connections can add vectors of the same size. A whole transformer block includes
-<strong>attention and an MLP</strong>, plus normalisation and residual connections; the MLP is
-just one part. Within each block, the two stages run in this order:</p>
-<figure class="imgfig model-figure" id="block-flow" aria-labelledby="block-flow-caption">
-<div class="block-flow">
-<div>
-<span class="model-step">First · Gather context</span>
-<div class="block-route"><span>Norm</span><span aria-hidden="true">→</span><strong>Attention</strong><span aria-hidden="true">→</span><span aria-label="add incoming vector">+</span></div>
-<div class="block-skip">incoming vector</div>
-<p>Use information from the current and earlier positions, never future tokens.</p>
-</div>
-<div>
-<span class="model-step">Then · Transform features</span>
-<div class="block-route mlp"><span>Norm</span><span aria-hidden="true">→</span><strong>MLP</strong><span aria-hidden="true">→</span><span aria-label="add this stage's incoming vector">+</span></div>
-<div class="block-skip">this stage’s incoming vector</div>
-<p>The same feedforward weights work on each position independently.</p>
-<span class="model-shape">384 → 1,536 · GELU · 384</span>
-</div>
-</div>
-<figcaption id="block-flow-caption">Each stage normalises its input, computes an adjustment,
-then adds that stage's incoming vector back. This addition is the residual connection.
-The MLP is one part of the block.</figcaption>
-</figure>
-<p>The width and the MLP's expansion determine the sizes of the two main sets of matrices:</p>
-<ul>
-<li><strong>Attention mixes information across token positions</strong>, drawing on the current
-and earlier positions. Its query, key and value projections each map 384 numbers to 384 numbers,
-and the output projection does the same. That makes <strong>4 × 384 × 384 = 589,824
-weights</strong>. The code packs the first three into one larger matrix, but the count is the same.</li>
-<li><strong>The feedforward MLP transforms each position independently</strong>, using the same
-weights at every position. Its first layer expands 384 numbers to 1,536, GELU adds a nonlinear
-bend, and its second layer brings 1,536 back to 384. The wider middle gives the block more room
-to transform features before returning to the shared width. We chose a <strong>4× expansion</strong>, so these two matrices contain
-<strong>384 × 1,536 + 1,536 × 384 = 1,179,648 weights</strong>.</li>
-</ul>
-<p>Add <strong>3,456 biases</strong> across those projections and feedforward layers, plus
-<strong>1,536 learned scales and offsets</strong> in the block's two layer normalisations, and
-one block totals <strong>1,774,464 parameters</strong>. Six separately learned blocks therefore
-contribute <strong>6 × 1,774,464 = 10,646,784</strong>.</p>
-<p>Width, the feedforward expansion multiplier and the number of blocks are related design
-choices. Keeping the multiplier fixed, block parameters grow roughly with the <strong>square of
-width</strong>: doubling width makes the matrices about four times as large. Doubling the number
-of blocks instead doubles the stack's parameter count. A larger expansion multiplier increases
-the feedforward part. These choices trade capacity against memory and compute, so their value
-needs evaluation rather than an assumption that bigger is always better.</p>
-<p>Vocabulary size determines the input embedding table and output head, but does not change
-these block matrices at a fixed width. A longer context makes attention do more work without
-enlarging those matrices, although this model's learned position table grows with its maximum
-context length. The six attention heads divide the 384 numbers into 64 per head; at a fixed
-width, changing the number of heads does not multiply the projection parameter count.</p>
-"""),
   ("callout", "aside", "Same idea, written tighter", r"""
 <p>You'll notice this code is more densely packed than notebook 01's. It's the same components
 (attention, block, GPT) just written compactly now that the concepts are familiar. If you can
@@ -1665,7 +1555,7 @@ read notebook 01's version, you can read this one.</p>
 },
 
 {
- "id": "schedule", "num": "13", "title": "A smarter training schedule",
+ "id": "schedule", "num": "14", "title": "A smarter training schedule",
  "blocks": [
   ("prose", r"""
 <p>Two upgrades live in the training loop. Both are about <em>stability</em>: letting us train
@@ -1699,7 +1589,7 @@ notebook 01's, because the vocabulary is different now; it's the <em>shape</em> 
 },
 
 {
- "id": "result", "num": "14", "title": "The payoff: from gibberish to little stories",
+ "id": "result", "num": "15", "title": "The payoff: from gibberish to little stories",
  "blocks": [
   ("prose", r"""
 <p>Same generation loop as before, but now each step samples a word-chunk, not a single
@@ -1740,7 +1630,7 @@ settings fixed. Notebook 01 changes several settings, so it is not a tokenizer-o
 },
 
 {
- "id": "ceiling", "num": "15", "title": "The honest ceiling, and where this leads",
+ "id": "ceiling", "num": "16", "title": "The honest ceiling, and where this leads",
  "blocks": [
   ("prose", r"""
 <p>Even fully tuned, this is a 17-million-parameter model that trained for about twenty minutes on
@@ -1793,7 +1683,7 @@ choosing it is the real design lever, and the root of &ldquo;LLM bias.&rdquo;</l
 
 # ====================== PART IV — USE IT ============================
 {
- "id": "use", "num": "16", "title": "Using the model you built",
+ "id": "use", "num": "17", "title": "Using the model you built",
  "part": "Use the thing you built",
  "part_banner": "Stage 4 · Use the thing you built (notebook 03)",
  "blocks": [
@@ -1834,7 +1724,7 @@ twenty minutes of training. Load once at the top of a session, then generate as 
 },
 
 {
- "id": "temperature", "num": "17", "title": "The one knob worth feeling: temperature",
+ "id": "temperature", "num": "18", "title": "The one knob worth feeling: temperature",
  "blocks": [
   ("prose", r"""
 <p>You met <code>temperature</code> in the generation code. It's the single most tangible dial
@@ -1861,7 +1751,7 @@ with.</p>
 },
 
 {
- "id": "endstory", "num": "18", "title": "Knowing when to stop: the end-of-story token",
+ "id": "endstory", "num": "19", "title": "Knowing when to stop: the end-of-story token",
  "blocks": [
   ("prose", r"""
 <p>You can now generate text and shape it with temperature, but how does the model know when a
@@ -2095,6 +1985,7 @@ a.row:hover .row-title{color:var(--accent);}
     {% if concepts_live %}<a href="ideas/">Concepts</a>{% endif %}
     <a href="track-a/">Pre-training</a>
     {% if track_b_live %}<a href="track-b/">Post-training</a>{% endif %}
+    <a href="model/">Model reference</a>
     <a class="hub" target="_blank" rel="noopener" href="{{ hub_url }}"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
   </nav>
 </div></header>

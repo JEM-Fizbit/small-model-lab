@@ -229,6 +229,12 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 }
 
 
+.reference-link{max-width:720px;border-left:2px solid var(--accent);padding-left:16px;}
+.reference-jumps{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:24px;
+  font-size:16px;border-top:1px solid var(--line);padding-top:16px;}
+.reference-jumps strong{flex-basis:100%;font-weight:600;}
+@media(max-width:680px){.model-tally th,.model-tally td{padding-left:6px;padding-right:6px;}}
+
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
   font-family:var(--serif);line-height:1.65;background:transparent;border:none;
@@ -321,8 +327,8 @@ footer strong{color:var(--soft);}
 </head>
 <body>
 
-<nav class="topnav"><div class="inner">
-<a href="../">Home</a><a href="../ideas/"><span class="pnum">Part 0 · </span>Concepts</a><a href="../track-a/"><span class="pnum">Part 1 · </span>Pre-training</a><a href="./" class="active"><span class="pnum">Part 2 · </span>Post-training</a>
+<nav class="topnav" aria-label="Site navigation"><div class="inner">
+<a href="../">Home</a><a href="../ideas/"><span class="pnum">Part 0 · </span>Concepts</a><a href="../track-a/"><span class="pnum">Part 1 · </span>Pre-training</a><a href="./" class="active"><span class="pnum">Part 2 · </span>Post-training</a><a href="../model/">Model reference</a>
 <a target="_blank" rel="noopener" class="hub" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
 </div></nav>
 
@@ -361,52 +367,54 @@ its vocabulary.</p>
 </nav>
 
 <div class="layout">
-  <nav class="toc">
+  <nav class="toc" aria-label="Contents">
     <p class="toctitle">Contents</p>
-    
+
       <div class="toc-part">Orientation</div>
-      
-    
+
+
       <a href="#shift"><span class="toc-num">0</span>The shift: don't build, adapt</a>
-    
+
       <div class="toc-part">Teaching the model the task</div>
-      
-    
+
+
       <a href="#task"><span class="toc-num">1</span>The task, and the contract</a>
-    
+
       <a href="#distill"><span class="toc-num">2</span>Distillation: a strong model writes the textbook</a>
-    
+
       <a href="#pipeline"><span class="toc-num">3</span>The data pipeline (and not burning money)</a>
-    
+
       <div class="toc-part">Fine-tuning</div>
-      
-    
+
+
       <a href="#lora"><span class="toc-num">4</span>LoRA: a small patch on a big model</a>
-    
+
       <a href="#eval"><span class="toc-num">5</span>Evaluation: the part that makes it real</a>
-    
+
       <div class="toc-part">The result</div>
-      
-    
+
+
       <a href="#result"><span class="toc-num">6</span>The result</a>
-    
+
       <a href="#ab"><span class="toc-num">7</span>Decide by eval, not by faith</a>
-    
+
       <a href="#ceiling"><span class="toc-num">8</span>Can you beat the teacher? (The error-mining loop)</a>
-    
+
       <div class="toc-part">Ship it</div>
-      
-    
+
+
       <a href="#serve"><span class="toc-num">9</span>Packaging it as a callable expert</a>
-    
+
       <a href="#arc"><span class="toc-num">10</span>The arc, closed: running it yourself</a>
-    
+
     <div class="toc-part">Reference</div>
+    <a href="../model/"><span class="toc-num">↪</span>Inside the tuned GPT</a>
+
     <a href="#primer"><span class="toc-num">↪</span>Python primer</a>
   </nav>
 
   <main>
-    
+
     <section id="shift">
       <p class="part-banner">Stage 1 · Orientation</p>
       <div class="sec-head">
@@ -431,7 +439,7 @@ nothing per call, needs no internet, and answers in seconds: things a frontier A
 offer at once.</p>
 </div></aside>
     </section>
-    
+
     <section id="task">
       <p class="part-banner">Stage 2 · Teaching the model the task</p>
       <div class="sec-head">
@@ -621,9 +629,9 @@ pluggable into a spreadsheet or a pipeline. It's also why the <em>same</em> reci
 extraction task (SEC filings, lab reports, support tickets), not just trials.</p>
 </div></aside>
     </section>
-    
+
     <section id="distill">
-      
+
       <div class="sec-head">
         <span class="sec-num">2</span>
         <h2>Distillation: a strong model writes the textbook</h2>
@@ -706,9 +714,9 @@ the tedious annotation. Cheap, fast, scalable labeled data is one of the biggest
 and the same move works for <em>any</em> structured-extraction task, not just trials.</p>
 </div></aside>
     </section>
-    
+
     <section id="pipeline">
-      
+
       <div class="sec-head">
         <span class="sec-num">3</span>
         <h2>The data pipeline (and not burning money)</h2>
@@ -745,7 +753,7 @@ learned the <em>task</em> versus memorised the training set. Every score in §6 
 Keeping it frozen is what makes the numbers trustworthy.</p>
 </div></aside>
     </section>
-    
+
     <section id="lora">
       <p class="part-banner">Stage 3 · Fine-tuning</p>
       <div class="sec-head">
@@ -810,9 +818,9 @@ text, so the model learns to <em>produce</em> readouts, not echo inputs.</p>
 28 MB adapter. That's the whole trained model: a small delta you apply on top of the public base.</p>
 </div>
     </section>
-    
+
     <section id="eval">
-      
+
       <div class="sec-head">
         <span class="sec-num">5</span>
         <h2>Evaluation: the part that makes it real</h2>
@@ -947,7 +955,7 @@ and <code>indication</code>, free text too, isn't auto-scored at all. Automatic 
 model-graded where necessary.</p>
 </div></aside>
     </section>
-    
+
     <section id="result">
       <p class="part-banner">Stage 4 · The result</p>
       <div class="sec-head">
@@ -1055,9 +1063,9 @@ of each rare class, and a model cannot learn from what it has barely seen. The s
 average and loses the long tail, which is exactly where a specialist reader would notice.</p>
 </div></aside>
     </section>
-    
+
     <section id="ab">
-      
+
       <div class="sec-head">
         <span class="sec-num">7</span>
         <h2>Decide by eval, not by faith</h2>
@@ -1077,9 +1085,9 @@ check whether a checkpoint is text-only before you plan around it). The honest v
 the arm that didn't work and why it doesn't change the conclusion.</p>
 </div></aside>
     </section>
-    
+
     <section id="ceiling">
-      
+
       <div class="sec-head">
         <span class="sec-num">8</span>
         <h2>Can you beat the teacher? (The error-mining loop)</h2>
@@ -1157,7 +1165,7 @@ boundary before concluding the model is weak.</em> A genuinely self-improving sy
 cheap, non-gameable <em>verifier</em> of truth. Fixing your own schema is the part you can do today.</p>
 </div></aside>
     </section>
-    
+
     <section id="serve">
       <p class="part-banner">Stage 5 · Ship it</p>
       <div class="sec-head">
@@ -1198,9 +1206,9 @@ the result against the schema before returning it. The annotations (<code>readOn
 expert&rdquo; the whole pipeline was for.</p>
 </div>
     </section>
-    
+
     <section id="arc">
-      
+
       <div class="sec-head">
         <span class="sec-num">10</span>
         <h2>The arc, closed: running it yourself</h2>
@@ -1243,7 +1251,7 @@ for now, the arc ends here.</p>
 <a href="../">the lab home</a>.</p>
 </div></aside>
     </section>
-    
+
 
     <section id="primer" class="primer-sec">
       <p class="primer-kicker">Reference appendix</p>

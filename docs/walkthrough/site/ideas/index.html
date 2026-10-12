@@ -229,6 +229,12 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 }
 
 
+.reference-link{max-width:720px;border-left:2px solid var(--accent);padding-left:16px;}
+.reference-jumps{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:24px;
+  font-size:16px;border-top:1px solid var(--line);padding-top:16px;}
+.reference-jumps strong{flex-basis:100%;font-weight:600;}
+@media(max-width:680px){.model-tally th,.model-tally td{padding-left:6px;padding-right:6px;}}
+
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
   font-family:var(--serif);line-height:1.65;background:transparent;border:none;
@@ -321,8 +327,8 @@ footer strong{color:var(--soft);}
 </head>
 <body>
 
-<nav class="topnav"><div class="inner">
-<a href="../">Home</a><a href="./" class="active"><span class="pnum">Part 0 · </span>Concepts</a><a href="../track-a/"><span class="pnum">Part 1 · </span>Pre-training</a><a href="../track-b/"><span class="pnum">Part 2 · </span>Post-training</a>
+<nav class="topnav" aria-label="Site navigation"><div class="inner">
+<a href="../">Home</a><a href="./" class="active"><span class="pnum">Part 0 · </span>Concepts</a><a href="../track-a/"><span class="pnum">Part 1 · </span>Pre-training</a><a href="../track-b/"><span class="pnum">Part 2 · </span>Post-training</a><a href="../model/">Model reference</a>
 <a target="_blank" rel="noopener" class="hub" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
 </div></nav>
 
@@ -357,38 +363,40 @@ where it's built.</p>
 </nav>
 
 <div class="layout">
-  <nav class="toc">
+  <nav class="toc" aria-label="Contents">
     <p class="toctitle">Contents</p>
-    
+
       <div class="toc-part">The idea</div>
-      
-    
+
+
       <a href="#what"><span class="toc-num">1</span>What a model actually does</a>
-    
+
       <a href="#tokens"><span class="toc-num">2</span>Text becomes numbers (tokens)</a>
-    
+
       <a href="#embed"><span class="toc-num">3</span>Tokens become vectors (embeddings)</a>
-    
+
       <a href="#linear"><span class="toc-num">4</span>The linear layer (the core operation)</a>
-    
+
       <a href="#activation"><span class="toc-num">5</span>The bend (activations)</a>
-    
+
       <a href="#attention"><span class="toc-num">6</span>Attention: letting tokens talk</a>
-    
+
       <div class="toc-part">Learning</div>
-      
-    
+
+
       <a href="#learn"><span class="toc-num">7</span>How it learns: loss, gradients, gradient descent</a>
-    
+
       <a href="#generate"><span class="toc-num">8</span>Generating text, and the one knob: temperature</a>
-    
+
       <a href="#ceiling"><span class="toc-num">9</span>The honest ceiling, and where this goes</a>
-    
-    
+
+    <div class="toc-part">Reference</div>
+    <a href="../model/"><span class="toc-num">↪</span>Inside the tuned GPT</a>
+
   </nav>
 
   <main>
-    
+
     <section id="what">
       <p class="part-banner">Part 0 · Concepts</p>
       <div class="sec-head">
@@ -443,9 +451,9 @@ of billions, the largest into the trillions. The dials are turned only once, dur
 actually touch at generation is temperature (§8).</p>
 </div></aside>
     </section>
-    
+
     <section id="tokens">
-      
+
       <div class="sec-head">
         <span class="sec-num">2</span>
         <h2>Text becomes numbers (tokens)</h2>
@@ -561,9 +569,9 @@ reference: &ldquo;fetch row #1234.&rdquo;) Where <em>meaning</em> enters is what
 <strong>embedding</strong>, next.</p>
 </div></aside>
     </section>
-    
+
     <section id="embed">
-      
+
       <div class="sec-head">
         <span class="sec-num">3</span>
         <h2>Tokens become vectors (embeddings)</h2>
@@ -937,9 +945,9 @@ equally-good vector.) Tokens used in similar contexts get pushed toward similar 
 the clusters above emerge on their own, with no one labelling them.</p>
 </div></aside>
     </section>
-    
+
     <section id="linear">
-      
+
       <div class="sec-head">
         <span class="sec-num">4</span>
         <h2>The linear layer (the core operation)</h2>
@@ -1111,7 +1119,7 @@ the ~17M parameters. One layer's <code>W</code> might be 384×1536 (~590k number
 <p>The token embedding table alone holds 8,192 × 384 = <strong>3,145,728 parameters</strong>.
 The six blocks, learned position embeddings, final normalisation and separate output head bring
 that to <strong>17,045,504</strong>. <a href="../track-a/#model-architecture">See the whole model as a diagram</a>,
-or <a href="../track-a/#parameter-count">follow the full parameter count in Part 1 →</a>.</p>
+or <a href="../model/#parameter-count">open the full model reference and parameter count →</a>.</p>
 <p><strong>Model dimensions are design choices; parameter values are learned.</strong> Choose a
 baseline around the task and its data, compute, memory and response-time limits, then use controlled
 comparisons and evaluations on unseen examples to justify changes.
@@ -1122,9 +1130,9 @@ of tokens and predict the next) needs tokens to share information, which is <em>
 the next token. <a href="../track-a/#block">Part 1 builds the block →</a></p>
 </div></aside>
     </section>
-    
+
     <section id="activation">
-      
+
       <div class="sec-head">
         <span class="sec-num">5</span>
         <h2>The bend (activations)</h2>
@@ -1186,9 +1194,9 @@ so stacking layers buys new shapes instead of collapsing into one.</p>
 <text x="630" y="244" font-size="11" fill="#5f6c33">★ what our tiny GPT uses</text>
 </svg><figcaption><span class="fignum" id="fig-7">Fig.&nbsp;7</span>The three bends, plotted: each takes the number a linear layer just produced (in) and reshapes it (out). Set against the dashed no-bend line, you can see exactly what nonlinearity adds. Note ReLU and GELU are unbounded; only the sigmoid squashes into a range, and that bounding isn't the job (it's incidental, even costly). The tiny kink, stacked thousands of times, is what lets the network model curves instead of only straight&nbsp;lines.</figcaption></figure>
     </section>
-    
+
     <section id="attention">
-      
+
       <div class="sec-head">
         <span class="sec-num">6</span>
         <h2>Attention: letting tokens talk</h2>
@@ -1250,7 +1258,7 @@ Attention itself wasn't new; the breakthrough was showing that with enough of it
 machinery could be thrown away.</p>
 </div></aside>
     </section>
-    
+
     <section id="learn">
       <p class="part-banner">Part 0 · How learning works</p>
       <div class="sec-head">
@@ -1382,9 +1390,9 @@ gradient efficiently. It's the engine that makes training millions of parameters
 <a href="../track-a/#train">Part 1 runs the training loop →</a></p>
 </div></aside>
     </section>
-    
+
     <section id="generate">
-      
+
       <div class="sec-head">
         <span class="sec-num">8</span>
         <h2>Generating text, and the one knob: temperature</h2>
@@ -1445,9 +1453,9 @@ adventurously: varied, riskier, sometimes incoherent. It's the dial between &ldq
 <text x="30" y="310" font-size="10.5" fill="#6e6557">the draws come from outside the top five — that’s where the surprises (good and bad) come from.</text>
 </svg><figcaption><span class="fignum" id="fig-12">Fig.&nbsp;12</span>Temperature, measured on the real model: the same scores sampled two ways. Low temperature concentrates the draws on the favourite; high temperature hands nearly half of them to the long tail of everything&nbsp;else.</figcaption></figure>
     </section>
-    
+
     <section id="ceiling">
-      
+
       <div class="sec-head">
         <span class="sec-num">9</span>
         <h2>The honest ceiling, and where this goes</h2>
@@ -1472,9 +1480,9 @@ useful clinical-trial expert, the same concepts doing a real job. ← back to
 <a href="../">the lab home</a>.</p>
 </div></aside>
     </section>
-    
 
-    
+
+
   </main>
 </div>
 

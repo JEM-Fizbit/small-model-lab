@@ -216,6 +216,7 @@ def _externalize_links(html: str) -> str:
     """External links (absolute http/https hrefs) open in a new tab; internal links are
     all relative (../track-b/, #fig-7) and keep the current tab. Applied to the final
     HTML so every page and any future link gets the behaviour automatically."""
+    html = re.sub(r'(?m)^[ \t]+$', '', html)  # Jinja control lines leave indentation behind.
     return re.sub(r'<a (?=[^>]*href="https?://)(?![^>]*\btarget=)',
                   '<a target="_blank" rel="noopener" ', html)
 
@@ -261,6 +262,7 @@ def _render_chapter(tmpl, *, meta, hero, sections, primer, nav, footer_note, foo
 
 
 def main():
+    import content_model
     import content  # local import so a syntax error there points cleanly here
 
     env = Environment(loader=BaseLoader(), autoescape=False)
@@ -301,6 +303,8 @@ def main():
                           "active": active == "track-b"})
         else:
             items.append({"label": part(2, "Post-training"), "href": None, "note": "coming"})
+        items.append({"label": "Model reference", "href": href("model"),
+                      "active": active == "model"})
         return items
 
     # --- Part 0 · Concepts → site/ideas/  (no code → no Python primer) ---
@@ -346,6 +350,19 @@ def main():
         (SITE / "track-b").mkdir(parents=True, exist_ok=True)
         (SITE / "track-b" / "index.html").write_text(_externalize_links(html_b))
         written.append(("track-b/index.html", len(html_b), len(content_b.SECTIONS)))
+
+    # --- Tuned-model reference → site/model/ (same chapter typography and navigation) ---
+    html_model = _render_chapter(
+        page_tmpl, meta=content_model.META, hero=content_model.HERO,
+        sections=content_model.SECTIONS, primer="", nav=nav_for("model"),
+        footer_note="The tuned-model reference for <strong>small-model-lab</strong>.",
+        footer_gen="Model explanations and parameter counts, assembled by <code>build.py</code> "
+                   "from the same content used in Part 1.",
+        hub_url=HUB_URL,
+    )
+    (SITE / "model").mkdir(parents=True, exist_ok=True)
+    (SITE / "model" / "index.html").write_text(_externalize_links(html_model))
+    written.append(("model/index.html", len(html_model), len(content_model.SECTIONS)))
 
     # --- Landing hub → site/index.html ---
     html_l = landing_tmpl.render(meta=content.LANDING_META, landing=content.LANDING,

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Inside the tuned GPT · Model reference</title>
+<meta name="description" content="The model's components, definitions and all 17,045,504 learned parameters."/>
+<meta property="og:title" content="Inside the tuned GPT · Model reference"/>
+<meta property="og:description" content="The model's components, definitions and all 17,045,504 learned parameters."/>
+<meta property="og:type" content="article"/>
+<link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="64x64" href="../favicon.png"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%23f7f3ea%22%2F%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2259%22%20height%3D%2259%22%20rx%3D%228%22%20fill%3D%22none%22%20stroke%3D%22%23ddd4c2%22%20stroke-width%3D%222%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2246%22%20text-anchor%3D%22middle%22%20font-family%3D%22Georgia%2Cserif%22%20font-style%3D%22italic%22%20font-size%3D%2242%22%20fill%3D%22%23963d2c%22%3E%C2%A7%3C%2Ftext%3E%3C%2Fsvg%3E"/>
+<meta property="og:image" content="https://jem-fizbit.github.io/small-model-lab/og-image.png"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ── small-model-lab · "The Monograph" chapter stylesheet ─────────────────────────
+   Warm paper, Newsreader serif, IBM Plex Mono labels, one madder accent.
+   Drop-in replacement for the <style> block in content.py's TEMPLATE:
+   every selector below matches the existing markup. */
+
+:root{
+  --ink:#231f18; --soft:#6e6557; --faint:#998f7d;
+  --line:#ddd4c2; --line-soft:#e8e1d2;
+  --bg:#f7f3ea; --panel:#fbf8f1;
+  --accent:#963d2c; --accent-soft:#f0e2dc;
+  --code-bg:#f0eadb; --code-line:#e0d7c2;
+  --teal:#3d6a72; --olive:#5f6c33;
+  --serif:'Newsreader',Charter,'Iowan Old Style',Georgia,serif;
+  --sans:'Newsreader',Charter,Georgia,serif; /* serif-first identity; --sans kept for selector compat */
+  --mono:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+.tablewrap,.codefig .hl,.term pre,.diagram{scrollbar-width:thin;scrollbar-color:#cfc5ae transparent;}
+.tablewrap::-webkit-scrollbar,.codefig .hl::-webkit-scrollbar,.term pre::-webkit-scrollbar,.diagram::-webkit-scrollbar{height:8px;width:8px;}
+.tablewrap::-webkit-scrollbar-thumb,.codefig .hl::-webkit-scrollbar-thumb,.term pre::-webkit-scrollbar-thumb,.diagram::-webkit-scrollbar-thumb{background:#cfc5ae;border-radius:4px;}
+.tablewrap::-webkit-scrollbar-track,.codefig .hl::-webkit-scrollbar-track,.term pre::-webkit-scrollbar-track,.diagram::-webkit-scrollbar-track{background:transparent;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);
+  font-size:18px;line-height:1.7;-webkit-font-smoothing:antialiased;
+  font-optical-sizing:auto;}
+::selection{background:var(--accent-soft);}
+
+/* labels — the one non-serif voice */
+.kicker,.toctitle,.toc-part,.part-banner,.gloss-tag,.term-tag,.callout-title,
+.primer-kicker,.codebar .srcname{
+  font-family:var(--mono)!important;text-transform:uppercase;letter-spacing:.16em;
+  font-size:11px;font-weight:500;}
+
+/* ── top nav ── */
+.topnav{background:var(--bg);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;}
+.topnav .inner{max-width:1140px;margin:0 auto;padding:14px 24px;display:flex;gap:34px;
+  align-items:baseline;font-family:var(--mono);font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.12em;}
+.topnav a{color:var(--soft);text-decoration:none;white-space:nowrap;}
+.topnav a:hover{color:var(--accent);}
+.topnav a.active{color:var(--accent);font-weight:600;
+  border-bottom:1px solid var(--accent);padding-bottom:2px;}
+.topnav .pnum{color:var(--faint);}
+.topnav a:hover .pnum,.topnav a.active .pnum{color:var(--accent);}
+.topnav a.hub{margin-left:auto;color:var(--faint);}
+.topnav a.hub:hover{color:var(--accent);}
+.topnav .muted{color:var(--faint);white-space:nowrap;}
+.topnav .muted em{font-style:normal;font-size:10px;opacity:.85;}
+.topnav .hub-short{display:none;}
+
+/* ── hero — same paper, ruled, no gradient ── */
+.hero{background:var(--bg);color:var(--ink);padding:72px 24px 52px;
+  border-bottom:1px solid var(--line);}
+.hero .inner{max-width:1140px;margin:0 auto;}
+.hero .kicker{color:var(--accent);margin:0 0 18px;}
+.hero h1{font-family:var(--serif);font-weight:500;font-size:50px;line-height:1.06;
+  margin:0 0 22px;letter-spacing:-.022em;max-width:780px;}
+.hero .lede{font-size:20px;line-height:1.62;color:var(--soft);margin:0 0 26px;max-width:680px;}
+.bigidea{background:transparent;border:none;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--line);border-radius:0;padding:20px 0;margin:30px 0;max-width:680px;}
+.bigidea p{margin:0 0 10px;font-size:17.5px;color:var(--ink);}
+.bigidea p:last-child{margin:0;color:var(--soft);font-size:16px;}
+.hero .readnote{font-size:15.5px;color:var(--soft);font-family:var(--serif);line-height:1.65;
+  border-top:none;padding-top:0;margin-top:26px;max-width:680px;}
+.hero a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+.hero a:hover{border-color:var(--accent);}
+
+/* ── layout ── */
+.layout{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:236px 1fr;
+  gap:56px;padding:48px 24px 80px;}
+nav.toc{position:sticky;top:64px;align-self:start;font-family:var(--serif);font-size:14.5px;
+  max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:none;}
+nav.toc::-webkit-scrollbar{display:none;}
+nav.toc .toctitle{color:var(--faint);margin:0 0 12px;}
+nav.toc a{display:grid;grid-template-columns:30px 1fr;align-items:baseline;color:var(--soft);text-decoration:none;padding:4.5px 0;
+  line-height:1.45;}
+nav.toc a:hover{color:var(--accent);}
+nav.toc .toc-part{color:var(--accent);margin:20px 0 8px;font-size:10.5px;
+  border-top:1px solid var(--line);padding-top:12px;}
+nav.toc .toc-num{color:var(--faint);font-family:var(--mono);font-size:11px;
+  font-variant-numeric:tabular-nums;}
+
+main{min-width:0;max-width:720px;}
+section{margin:0 0 8px;padding:38px 0 6px;border-top:1px solid var(--line);scroll-margin-top:64px;}
+section:first-of-type{border-top:none;padding-top:0;}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin:0 0 16px;}
+.sec-num{font-family:var(--serif);font-style:italic;font-weight:400;font-size:26px;
+  color:var(--accent);background:transparent;border-radius:0;padding:0;
+  letter-spacing:0;white-space:nowrap;flex:none;}
+.sec-num::before{content:"§ ";}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:30px;letter-spacing:-.015em;
+  margin:0;line-height:1.18;}
+.part-banner{color:var(--accent);margin:8px 0 0;}
+
+/* ── prose ── */
+.prose{margin:0 0 4px;}
+.prose p{margin:0 0 18px;text-wrap:pretty;}
+.prose h3{font-family:var(--serif);font-size:21px;font-weight:600;margin:28px 0 10px;
+  letter-spacing:-.01em;}
+.prose strong{font-weight:600;}
+.prose em{font-style:italic;}
+.prose code,.gloss code,.callout code,td code,.primer code{font-family:var(--mono);
+  font-size:.82em;background:var(--code-bg);color:#4a4234;padding:1px 6px;border-radius:3px;
+  overflow-wrap:anywhere;}
+figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
+  background:var(--code-bg);color:#4a4234;padding:0 4px;border-radius:3px;
+  overflow-wrap:anywhere;}
+.prose a,.gloss a,.callout a{color:var(--accent);text-decoration:none;
+  border-bottom:1px solid var(--accent-soft);}
+.prose a:hover,.gloss a:hover,.callout a:hover{border-color:var(--accent);}
+
+/* ── code figures — quiet parchment inset, no window chrome ── */
+.codefig{margin:26px 0;border-radius:3px;overflow:hidden;
+  box-shadow:none;border:1px solid var(--code-line);background:var(--code-bg);}
+.codebar{background:#e9e2cf;display:flex;align-items:baseline;gap:7px;padding:8px 16px;
+  border-bottom:1px solid var(--code-line);}
+.codebar .dot{display:none;}
+.codebar .srcname{margin-left:0;color:var(--accent);font-size:10.5px;}
+.codefig .hl{margin:0;padding:18px 20px;overflow:auto;background:var(--code-bg);
+  font-family:var(--mono);font-size:13px;line-height:1.6;}
+.codefig .hl pre{margin:0;}
+.codefig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--soft);
+  line-height:1.4;background:var(--bg);padding:10px 16px;border-top:1px solid var(--code-line);}
+
+/* pygments (light, muted — replaces monokai) */
+.hl pre{color:#3a342a;}
+.hl .c,.hl .c1,.hl .ch,.hl .cm,.hl .cs,.hl .cpf{color:#9a8f7a;font-style:italic;}
+.hl .k,.hl .kc,.hl .kd,.hl .kn,.hl .kp,.hl .kr,.hl .kt,.hl .ow{color:var(--accent);}
+.hl .s,.hl .s1,.hl .s2,.hl .sa,.hl .sb,.hl .sc,.hl .se,.hl .si,.hl .sx,.hl .sr,.hl .ss,.hl .sd{color:var(--olive);}
+.hl .m,.hl .mi,.hl .mf,.hl .mh,.hl .mo,.hl .il{color:var(--teal);}
+.hl .nf,.hl .fm,.hl .nc,.hl .nd,.hl .ne,.hl .nx{color:#234a5c;}
+.hl .nb,.hl .bp,.hl .vm{color:#234a5c;}
+.hl .o,.hl .p,.hl .pm{color:#6e6557;}
+.hl .n,.hl .nn,.hl .nv,.hl .na,.hl .nt,.hl .kt{color:#3a342a;}
+.hl .err{border:none;color:#3a342a;}
+.hl .gp{color:var(--faint);}
+
+/* ── gloss ("what this says") — ruled, not boxed ── */
+.gloss{background:transparent;border:none;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--line);border-radius:0;padding:16px 0 8px;margin:22px 0 26px;
+  font-size:16px;}
+.gloss-tag{color:var(--accent);margin:0 0 10px;}
+.gloss p{margin:0 0 12px;}
+.gloss ul{margin:0 0 12px;padding-left:22px;}
+.gloss li{margin:0 0 7px;}
+.gloss b{color:var(--ink);font-weight:600;}
+
+/* ── terminal output — quiet rule, no panel ── */
+.term{margin:20px 0 24px;border-radius:0 3px 3px 0;overflow:hidden;
+  border:1px solid var(--code-line);border-left:2px solid var(--accent);
+  background:#f1ece0;padding:12px 16px 14px;}
+.term-tag{color:var(--soft);background:transparent;padding:0 0 8px;border-bottom:none;}
+.term pre{margin:0;padding:0;background:transparent;color:var(--ink);
+  font-family:var(--mono);font-size:12.5px;line-height:1.55;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;}
+
+/* ── figures ── */
+.imgfig{margin:26px 0;text-align:center;background:var(--panel);
+  border:1px solid var(--line);border-radius:3px;padding:20px 18px 8px;
+  box-shadow:none;}
+/* a too-wide diagram (viewBox > 760) breaks out past the 720 prose column into the
+   content cell, so it renders near 1:1 instead of being squished. Reset on narrow. */
+.imgfig.wide{width:800px;max-width:none;padding-left:8px;padding-right:8px;
+  margin-left:0;margin-right:auto;}
+/* restore caption side-breathing for wide figures (the panel shrinks side padding to 8px for SVG
+   breathing room, but captions need the same 18px gap as every other figure) */
+.imgfig.wide figcaption{padding-left:10px;padding-right:10px;}
+.imgfig img{max-width:100%;border:none;border-radius:0;
+  box-shadow:none;background:transparent;mix-blend-mode:multiply;}
+.imgfig figcaption{font-family:var(--serif);font-style:italic;font-size:14.5px;
+  color:var(--soft);margin-top:20px;line-height:1.4;}
+.fignum{font-weight:600;font-style:normal;color:var(--accent);margin-right:8px;
+  scroll-margin-top:64px;font-family:var(--mono);font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.1em;}
+.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto;}
+.diagram text{font-family:var(--serif);}
+.diagram figcaption{margin-top:20px;}
+
+/* Page-native model figures: use the chapter's type, not the standalone poster. */
+.model-figure{scroll-margin-top:84px;}
+.model-flow,.block-flow{display:grid;gap:24px;margin:0;padding:0;list-style:none;
+  text-align:left;font-family:var(--serif);font-size:16px;line-height:1.4;}
+.model-flow{grid-template-columns:repeat(3,minmax(0,1fr));}
+.model-flow>li{position:relative;margin:0;padding:0;}
+.model-flow>li:not(:last-child)::after{content:"→";position:absolute;right:-19px;top:44px;
+  color:var(--faint);font-size:20px;}
+.model-step{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.model-flow strong{display:block;font-size:17px;font-weight:600;margin-bottom:8px;}
+.model-flow p,.block-flow p{font-size:16px;line-height:1.4;margin:0 0 10px;text-wrap:pretty;}
+.model-shape{display:block;font-size:14px;color:var(--soft);}
+.model-stack{display:flex;gap:4px;margin:10px 0 12px;}
+.model-stack span{display:grid;place-items:center;flex:1;height:26px;border:1px solid var(--line);
+  color:var(--teal);font-family:var(--mono);font-size:11px;}
+.block-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px;}
+.block-route{display:grid;grid-template-columns:auto 18px 1fr 18px 24px;align-items:center;
+  gap:4px;text-align:center;border:1px solid var(--line);border-radius:3px;padding:10px 8px;}
+.block-route strong{font-weight:600;color:var(--teal);}
+.block-route.mlp strong{color:#8c6a2a;}
+.block-skip{border:solid var(--line);border-width:0 1px 1px;margin:0 19px 10px;
+  text-align:center;font-size:13px;color:var(--soft);line-height:1.4;padding:4px;}
+.block-skip::after{content:"↑";float:right;margin-right:-25px;margin-top:-9px;
+  color:var(--soft);font-size:17px;}
+.block-flow .model-shape{margin-top:8px;}
+.model-figure figcaption{text-align:left;}
+@media(max-width:680px){
+  .model-flow,.block-flow{grid-template-columns:1fr;gap:28px;}
+  .model-flow>li:not(:last-child)::after{content:"↓";top:auto;bottom:-25px;left:0;right:auto;}
+  .model-stack{max-width:220px;}
+  .model-flow strong{font-size:17px;}
+}
+
+
+.reference-link{max-width:720px;border-left:2px solid var(--accent);padding-left:16px;}
+.reference-jumps{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:24px;
+  font-size:16px;border-top:1px solid var(--line);padding-top:16px;}
+.reference-jumps strong{flex-basis:100%;font-weight:600;}
+@media(max-width:680px){.model-tally th,.model-tally td{padding-left:6px;padding-right:6px;}}
+
+/* ── callouts — one family, ruled; label color carries the variant ── */
+.callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
+  font-family:var(--serif);line-height:1.65;background:transparent;border:none;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--line);}
+.callout-title{margin:0 0 9px;font-weight:500;}
+.callout-body p{margin:0 0 10px;}
+.callout-body p:last-child{margin:0;}
+.callout-body ul{margin:6px 0 0;padding-left:20px;}
+.callout-body li{margin:0 0 6px;}
+.callout.key{background:transparent;border-color:var(--ink) transparent var(--line);}
+.callout.key .callout-title{color:var(--accent);}
+.callout.tryit .callout-title{color:var(--olive);}
+.callout.aside{border-top-color:var(--line);}
+.callout.aside .callout-title{color:var(--faint);}
+.callout.math .callout-title{color:var(--teal);}
+.callout.insight .callout-title{color:var(--accent);}
+.callout.math .formula{font-family:var(--mono);font-size:14.5px;background:var(--code-bg);
+  border:1px solid var(--code-line);border-radius:3px;padding:12px 14px;margin:6px 0 12px;
+  text-align:center;color:#4a4234;overflow:auto;}
+
+/* ── tables ── */
+.tablewrap{margin:24px 0;overflow:auto;}
+/* Provenance tag in a scorecard row: says whether a number was generated, read or computed.
+   It sits in the Field cell rather than its own column on purpose -- as a ninth column it
+   was the first thing pushed off the edge by the horizontal scroll, and it is precisely the
+   label that stops three 1.000s reading as a fudge. */
+/* Deliberately borderless. As a bordered pill it was wide enough to wrap onto a second line
+   in the longer field names and not the short ones, so row heights alternated and the column
+   read as ragged. Plain muted small-caps costs ~20px per row and every tag now sits inline. */
+.prov{font-family:var(--mono,monospace);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;color:#a1937c;margin-left:7px;white-space:nowrap;}
+.tablenote{font-size:14px;color:#6e6557;margin:0 0 20px;line-height:1.6;}
+table{border-collapse:collapse;width:100%;font-family:var(--serif);font-size:15.5px;}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);
+  vertical-align:top;}
+th{font-family:var(--mono);font-weight:500;color:var(--soft);border-bottom:1px solid var(--ink);
+  background:transparent;font-size:11px;text-transform:uppercase;letter-spacing:.12em;}
+td:first-child{font-weight:600;}
+
+/* ── python primer appendix ── */
+.primer-panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  padding:6px 26px 16px;margin-top:10px;}
+section.primer-sec .sec-num{background:transparent;color:var(--teal);}
+.primer-kicker{color:var(--teal);margin:8px 0 0;}
+dl.primer{margin:18px 0;}
+dl.primer dt{display:block;font-family:var(--mono);font-size:13px;color:#4a4234;
+  background:var(--code-bg);border:1px solid var(--code-line);border-bottom:1px dashed var(--code-line);
+  border-radius:3px 3px 0 0;padding:10px 16px 9px;margin:18px 0 0;}
+dl.primer dd{margin:0 0 18px;font-size:15.5px;background:var(--bg);
+  border:1px solid var(--code-line);border-top:none;border-radius:0 0 3px 3px;padding:11px 16px 13px;}
+
+/* ── footer ── */
+footer{border-top:1px solid var(--line);padding:28px 24px 60px;text-align:left;
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.9;}
+footer p{margin:0 auto 10px;text-wrap:pretty;max-width:1140px;}
+footer p:last-child{margin-bottom:0;}
+footer .seg{display:inline-block;}
+footer code{font-family:var(--mono);background:var(--code-bg);padding:1px 6px;border-radius:3px;}
+footer a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft);}
+footer a:hover{border-color:var(--accent);}
+footer strong{color:var(--soft);}
+
+/* ── page jump buttons ── */
+.pagenav{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:8px;}
+.pagenav a{width:38px;height:38px;border-radius:2px;display:flex;align-items:center;
+  justify-content:center;background:var(--bg);color:var(--accent);border:1px solid var(--line);
+  text-decoration:none;font-size:16px;line-height:1;box-shadow:none;font-family:var(--serif);
+  transition:background .12s,color .12s,border-color .12s;}
+.pagenav a:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+@media (max-width:920px){.pagenav{right:12px;bottom:12px;}}
+
+/* ── responsive ── */
+@media (max-width:920px){
+  .layout{grid-template-columns:1fr;gap:0;}
+  nav.toc{display:none;}
+  .hero h1{font-size:38px;}
+  body{font-size:17px;}
+  .imgfig.wide{width:auto;max-width:100%;padding:20px 18px 8px;margin-left:0;margin-right:0;}
+}
+@media (max-width:680px){
+  .diagram{overflow-x:auto;}
+  .diagram svg{min-width:640px;}
+  .topnav .inner{flex-wrap:wrap;padding:9px 16px;gap:5px 13px;font-size:10px;letter-spacing:.08em;}
+  .topnav .pnum{display:none;}
+  .topnav .hub-long{display:none;}
+  .topnav .hub-short{display:inline;}
+}
+@media print{.pagenav,.topnav{display:none;}}
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Site navigation"><div class="inner">
+<a href="../">Home</a><a href="../ideas/"><span class="pnum">Part 0 · </span>Concepts</a><a href="../track-a/"><span class="pnum">Part 1 · </span>Pre-training</a><a href="../track-b/"><span class="pnum">Part 2 · </span>Post-training</a><a href="./" class="active">Model reference</a>
+<a target="_blank" rel="noopener" class="hub" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566"><span class="hub-long">AI Knowledge Hub ↗</span><span class="hub-short">Hub ↗</span></a>
+</div></nav>
+
+<header class="hero" id="top"><div class="inner">
+<p class="kicker">small-model-lab · Model reference</p>
+<h1>Inside the tuned GPT</h1>
+<p class="lede">A guide to the model in Notebook 02: what flows through it, what each
+component does, and where all <strong>17,045,504 learned parameters</strong> live.</p>
+<p><a href="../track-a/#tuned-model">← Return to Part 1 · §11, the tuned model</a></p>
+<nav class="reference-jumps" aria-label="On this reference page">
+<strong>On this page</strong>
+<a href="#overview">The whole path</a>
+<a href="#embeddings">Tokens &amp; embeddings</a>
+<a href="#block-size">Inside a block</a>
+<a href="#prediction">The output head</a>
+<a href="#parameter-count">All parameters</a>
+</nav>
+</div></header>
+
+<nav class="pagenav" aria-label="Page jump">
+  <a href="#top" title="Top" aria-label="Scroll to top">&uarr;</a>
+  <a href="#bottom" title="Bottom" aria-label="Scroll to bottom">&darr;</a>
+  <a href="../" title="Home" aria-label="small-model-lab home">&#8962;</a>
+</nav>
+
+<div class="layout">
+  <nav class="toc" aria-label="Contents">
+    <p class="toctitle">Contents</p>
+
+      <a href="#overview"><span class="toc-num">1</span>The whole path</a>
+
+      <a href="#embeddings"><span class="toc-num">2</span>Tokens, positions and embeddings</a>
+
+      <a href="#block-size"><span class="toc-num">3</span>Inside a transformer block</a>
+
+      <a href="#prediction"><span class="toc-num">4</span>From the final vector to the next token</a>
+
+      <a href="#parameter-count"><span class="toc-num">5</span>All 17,045,504 parameters</a>
+
+    <div class="toc-part">Reference</div>
+    <a href="../track-a/#tuned-model"><span class="toc-num">←</span>Back to Part 1 · §11</a>
+
+
+  </nav>
+
+  <main>
+
+    <section id="overview">
+
+      <div class="sec-head">
+        <span class="sec-num">1</span>
+        <h2>The whole path</h2>
+      </div>
+      <div class="prose"><p>A language model predicts the next piece of text. Training adjusts its learned parameters to improve predictions; generation reuses them unchanged to continue the text.</p></div>
+<div class="prose">
+<figure class="imgfig model-figure" id="model-architecture" aria-labelledby="architecture-caption">
+<ol class="model-flow">
+<li>
+<span class="model-step">1 · Embed</span>
+<strong>Token + position</strong>
+<p>Look up the two learned vectors and add them.</p>
+<span class="model-shape">384 values per token position</span>
+</li>
+<li>
+<span class="model-step">2 · Process</span>
+<strong>Six transformer blocks</strong>
+<div class="model-stack" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+<p>Attention shares context; the MLP transforms each position.</p>
+<span class="model-shape">384 values in and out of each block</span>
+</li>
+<li>
+<span class="model-step">3 · Predict</span>
+<strong>Normalise, then score</strong>
+<p>Final LayerNorm, then the separate output head.</p>
+<span class="model-shape">8,192 scores; softmax gives probabilities, sampling picks the next token</span>
+</li>
+</ol>
+<figcaption id="architecture-caption">The model reuses this path for every next-token prediction.
+The six blocks have the same structure and separate learned weights.
+</figcaption>
+</figure>
+</div>
+    </section>
+
+    <section id="embeddings">
+
+      <div class="sec-head">
+        <span class="sec-num">2</span>
+        <h2>Tokens, positions and embeddings</h2>
+      </div>
+      <div class="prose">
+<p>A <strong>token</strong> is a piece of text mapped to an integer ID. Its <strong>position</strong>
+is its index in the sequence: 0, 1, 2, and so on. A <strong>vector</strong> is a list of numbers;
+an <strong>embedding</strong> is a learned vector looked up for a token or a position.</p>
+<p>The token table contains <strong>8,192 × 384 = 3,145,728 parameters</strong> (18.45% of this model).
+The position table contains <strong>256 × 384 = 98,304 parameters</strong> (0.58%). Look up one vector
+from each table and add them: 384 numbers then flow forward per position. Adding the position vector
+gives the model a sense of order.</p>
+<p>The stored table entries are learned <strong>parameters</strong>. The flowing vectors are
+<strong>activations</strong>, computed from this input using those parameters. Producing another
+vector does not create or learn another set of weights.</p>
+<p><a href="../ideas/#embed">Revisit embeddings in Concepts</a> ·
+<a href="../track-a/#bpe">See the tokenizer built in Part 1</a></p>
+</div>
+    </section>
+
+    <section id="block-size">
+
+      <div class="sec-head">
+        <span class="sec-num">3</span>
+        <h2>Inside a transformer block</h2>
+      </div>
+      <div class="prose">
+<p>The <strong>transformer blocks</strong> hold most of the parameters. All six have the same
+architecture and parameter count, but each block has its <strong>own learned weights</strong>.
+Within a block, those weights are shared across token positions: there is no separate set for
+every token.</p>
+</div>
+<div class="prose">
+<p>Start with the model's <strong>width: 384 numbers per token position</strong>. A token is a
+piece of text mapped to an ID (<a href="../ideas/#tokens">the token primer</a>); its position is
+where that piece sits in the sequence. The embedding table's stored numbers are learned
+<strong>parameters</strong>. Once looked up, added to position embeddings and processed by the
+blocks, the flowing vectors are <strong>activations</strong>: input-dependent values computed
+using those parameters. Producing another vector does not create or learn another set of weights.</p>
+<p>Every block receives and returns a vector of width 384, so the blocks fit together and their
+residual connections can add vectors of the same size. A whole transformer block includes
+<strong>attention and an MLP</strong>, plus normalisation and residual connections; the MLP is
+just one part. Within each block, the two stages run in this order:</p>
+<figure class="imgfig model-figure" id="block-flow" aria-labelledby="block-flow-caption">
+<div class="block-flow">
+<div>
+<span class="model-step">First · Gather context</span>
+<div class="block-route"><span>Norm</span><span aria-hidden="true">→</span><strong>Attention</strong><span aria-hidden="true">→</span><span aria-label="add incoming vector">+</span></div>
+<div class="block-skip">incoming vector</div>
+<p>Use information from the current and earlier positions, never future tokens.</p>
+</div>
+<div>
+<span class="model-step">Then · Transform features</span>
+<div class="block-route mlp"><span>Norm</span><span aria-hidden="true">→</span><strong>MLP</strong><span aria-hidden="true">→</span><span aria-label="add this stage's incoming vector">+</span></div>
+<div class="block-skip">this stage’s incoming vector</div>
+<p>The same feedforward weights work on each position independently.</p>
+<span class="model-shape">384 → 1,536 → 384; GELU between the layers</span>
+</div>
+</div>
+<figcaption id="block-flow-caption">Each stage normalises its input, computes an adjustment,
+then adds that stage's incoming vector back. This addition is the residual connection.
+The MLP is one part of the block.</figcaption>
+</figure>
+<p>The width and the MLP's expansion determine the sizes of the two main sets of matrices:</p>
+<ul>
+<li><strong>Attention mixes information across token positions</strong>, drawing on the current
+and earlier positions. Its query, key and value projections each map 384 numbers to 384 numbers,
+and the output projection does the same. That makes <strong>4 × 384 × 384 = 589,824
+weights</strong>. The code packs the first three into one larger matrix, but the count is the same.</li>
+<li><strong>The feedforward MLP transforms each position independently</strong>, using the same
+weights at every position. Its first layer expands 384 numbers to 1,536, GELU adds a nonlinear
+bend, and its second layer brings 1,536 back to 384. The wider middle gives the block more room
+to transform features before returning to the shared width. We chose a <strong>4× expansion</strong>, so these two matrices contain
+<strong>384 × 1,536 + 1,536 × 384 = 1,179,648 weights</strong>.</li>
+</ul>
+<p>Add <strong>3,456 biases</strong> across those projections and feedforward layers, plus
+<strong>1,536 learned scales and offsets</strong> in the block's two layer normalisations, and
+one block totals <strong>1,774,464 parameters</strong>. Six separately learned blocks therefore
+contribute <strong>6 × 1,774,464 = 10,646,784</strong>.</p>
+<p>Width, the feedforward expansion multiplier and the number of blocks are related design
+choices. Keeping the multiplier fixed, block parameters grow roughly with the <strong>square of
+width</strong>: doubling width makes the matrices about four times as large. Doubling the number
+of blocks instead doubles the stack's parameter count. A larger expansion multiplier increases
+the feedforward part. These choices trade capacity against memory and compute, so their value
+needs evaluation rather than an assumption that bigger is always better.</p>
+<p>Vocabulary size determines the input embedding table and output head, but does not change
+these block matrices at a fixed width. A longer context makes attention do more work without
+enlarging those matrices, although this model's learned position table grows with its maximum
+context length. The six attention heads divide the 384 numbers into 64 per head; at a fixed
+width, changing the number of heads does not multiply the projection parameter count.</p>
+</div>
+<div class="prose">
+<h3 id="block-inventory">The complete inventory for one block</h3>
+<p>MLP means <strong>multilayer perceptron</strong>: here, two linear layers with GELU between them.
+GELU supplies a nonlinear bend; GELU and residual additions have no learned parameters.</p>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th scope="col">Component</th><th scope="col">Weights, scales &amp; offsets</th><th scope="col">Parameters</th></tr></thead>
+<tbody>
+<tr><th scope="row">Attention</th><td>589,824 weights + 1,536 biases</td><td>591,360</td></tr>
+<tr><th scope="row">Feedforward MLP</th><td>1,179,648 weights + 1,920 biases</td><td>1,181,568</td></tr>
+<tr><th scope="row">Two layer norms</th><td>2 × (384 scales + 384 shifts)</td><td>1,536</td></tr>
+<tr><th scope="row">One block</th><td>All three components</td><td><strong>1,774,464</strong></td></tr>
+</tbody></table>
+</div>
+<div class="prose"><p>Six blocks contribute <strong>10,646,784 parameters</strong>, or 62.46% of the model. The diagrams show structure, not proportional parameter areas. <a href="../track-a/#init">Continue to initialization and stability in Part 1 →</a></p></div>
+    </section>
+
+    <section id="prediction">
+
+      <div class="sec-head">
+        <span class="sec-num">4</span>
+        <h2>From the final vector to the next token</h2>
+      </div>
+      <div class="prose"><p>The <strong>final LayerNorm</strong> normalises the feature values within each position's vector
+before the output head reads it. Its 384 learned scales and 384 shifts account for
+<strong>768 parameters</strong>; it does not mix positions.</p>
+<p>The <strong>output head</strong> maps each final 384-number vector to 8,192 vocabulary scores,
+one for each possible next token. <strong>384 → 8,192 describes the input and output shapes</strong>;
+the parameter count is <strong>384 × 8,192 = 3,145,728 weights</strong>, plus
+<strong>8,192 biases</strong>, totalling <strong>3,153,920</strong>. This is a separate,
+<em>untied</em> matrix: it does not reuse the input embedding table.</p>
+<p>These scores are called <strong>logits</strong>. At generation time, <strong>softmax</strong>
+converts the last position's temperature-adjusted scores into probabilities that sum to 1; it has no learned
+parameters. Sampling uses those probabilities to choose the next token, which is appended to
+the input for the next step (<a href="../track-a/#generate">the generation loop in §9</a>).</p>
+</div>
+<div class="prose"><p>The separate output head holds 18.50% of this model's parameters. Temperature adjustment, softmax and sampling add no learned parameters.</p></div>
+    </section>
+
+    <section id="parameter-count">
+
+      <div class="sec-head">
+        <span class="sec-num">5</span>
+        <h2>All 17,045,504 parameters</h2>
+      </div>
+      <div class="prose"><p>Add the two embedding tables, six blocks, final LayerNorm and separate output head. The 384-to-8,192 output shape is not itself a parameter count: the matrix and biases are what we count.</p></div>
+<div class="tablewrap">
+<table class="model-tally">
+<thead><tr><th scope="col">Component</th><th scope="col">Calculation</th><th scope="col">Parameters</th></tr></thead>
+<tbody>
+<tr><th scope="row">Token embeddings</th><td>8,192 × 384</td><td>3,145,728</td></tr>
+<tr><th scope="row">Learned position embeddings</th><td>256 × 384</td><td>98,304</td></tr>
+<tr><th scope="row">Six transformer blocks</th><td>6 × 1,774,464</td><td>10,646,784</td></tr>
+<tr><th scope="row">Final layer normalisation</th><td>2 × 384</td><td>768</td></tr>
+<tr><th scope="row">Separate output head</th><td>384 × 8,192 + 8,192 biases</td><td>3,153,920</td></tr>
+<tr><th scope="row">Total</th><td>All five components</td><td><strong>17,045,504 ≈ 17.05 million</strong></td></tr>
+</tbody></table>
+</div>
+<div class="prose">
+<p>These were practical design choices, not established optima.
+<a href="../track-a/#upgrades">Part 1 explains how they were chosen and what a production
+development process would test</a>.</p>
+<p><a href="../track-a/#tuned-model">← Return to the tuned-model section in Part 1</a></p>
+</div>
+    </section>
+
+
+
+  </main>
+</div>
+
+<footer id="bottom">
+  <p>Model explanations and parameter counts, assembled by <code>build.py</code> from the same content used in Part 1.</p>
+  <p>Built in collaboration with Claude (via Claude Code): John directed, co-wrote, and made every
+  editorial call; Claude drafted much of the prose and most of the code and diagrams.
+  <span class="seg">Spotted an error, or have a comment?</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/issues">Open a GitHub issue</a>.</span></p>
+  <p><span class="seg">Open source:
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab">github.com/JEM-Fizbit/small-model-lab</a>&nbsp;·</span>
+  <span class="seg">notebooks
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/01_tiny_gpt_from_scratch.ipynb">01</a>,
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/02_tiny_gpt_tuned.ipynb">02</a>,
+  <a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/notebooks/03_tiny_gpt_chat.ipynb">03</a>&nbsp;·</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/docs/GETTING_STARTED.md">getting
+  started</a>&nbsp;·</span>
+  <span class="seg">The tuned-model reference for <strong>small-model-lab</strong>.</span></p>
+  <p><span class="seg"><a target="_blank" rel="noopener" href="https://github.com/JEM-Fizbit/small-model-lab/blob/main/LICENSE">MIT-licensed</a>
+  © 2026 John E. Milad.</span>
+  <span class="seg">Builds on <a target="_blank" rel="noopener" href="https://github.com/karpathy/nanoGPT">nanoGPT</a> (Karpathy),</span>
+  <span class="seg"><a target="_blank" rel="noopener" href="https://github.com/ml-explore/mlx">Apple MLX</a>,</span>
+  <span class="seg">and the <a target="_blank" rel="noopener" href="https://huggingface.co/datasets/roneneldan/TinyStories">TinyStories</a>
+  dataset</span>
+  <span class="seg">(Eldan &amp; Li, Microsoft Research).</span></p>
+  <p><span class="seg">Part of <strong>John E. Milad's</strong>
+  <a target="_blank" rel="noopener" href="https://possible-meeting-f8b.notion.site/AI-Knowledge-Hub-718881b895cb4666a2fcfc1887b77566">AI Knowledge Hub</a></span>
+  <span class="seg">— a curated, hands-on library for the AI era.</span></p>
+</footer>
+
+</body>
+</html>
