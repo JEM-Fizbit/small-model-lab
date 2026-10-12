@@ -194,6 +194,41 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .diagram text{font-family:var(--serif);}
 .diagram figcaption{margin-top:20px;}
 
+/* Page-native model figures: use the chapter's type, not the standalone poster. */
+.model-figure{scroll-margin-top:84px;}
+.model-flow,.block-flow{display:grid;gap:24px;margin:0;padding:0;list-style:none;
+  text-align:left;font-family:var(--serif);font-size:16px;line-height:1.4;}
+.model-flow{grid-template-columns:repeat(3,minmax(0,1fr));}
+.model-flow>li{position:relative;margin:0;padding:0;}
+.model-flow>li:not(:last-child)::after{content:"→";position:absolute;right:-19px;top:44px;
+  color:var(--faint);font-size:20px;}
+.model-step{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.model-flow strong{display:block;font-size:17px;font-weight:600;margin-bottom:8px;}
+.model-flow p,.block-flow p{font-size:16px;line-height:1.4;margin:0 0 10px;text-wrap:pretty;}
+.model-shape{display:block;font-size:14px;color:var(--soft);}
+.model-stack{display:flex;gap:4px;margin:10px 0 12px;}
+.model-stack span{display:grid;place-items:center;flex:1;height:26px;border:1px solid var(--line);
+  color:var(--teal);font-family:var(--mono);font-size:11px;}
+.block-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px;}
+.block-route{display:grid;grid-template-columns:auto 18px 1fr 18px 24px;align-items:center;
+  gap:4px;text-align:center;border:1px solid var(--line);border-radius:3px;padding:10px 8px;}
+.block-route strong{font-weight:600;color:var(--teal);}
+.block-route.mlp strong{color:#8c6a2a;}
+.block-skip{border:solid var(--line);border-width:0 1px 1px;margin:0 19px 10px;
+  text-align:center;font-size:13px;color:var(--soft);line-height:1.4;padding:4px;}
+.block-skip::after{content:"↑";float:right;margin-right:-25px;margin-top:-9px;
+  color:var(--soft);font-size:17px;}
+.block-flow .model-shape{margin-top:8px;}
+.model-figure figcaption{text-align:left;}
+@media(max-width:680px){
+  .model-flow,.block-flow{grid-template-columns:1fr;gap:28px;}
+  .model-flow>li:not(:last-child)::after{content:"↓";top:auto;bottom:-25px;left:0;right:auto;}
+  .model-stack{max-width:220px;}
+  .model-flow strong{font-size:17px;}
+}
+
+
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
   font-family:var(--serif);line-height:1.65;background:transparent;border:none;

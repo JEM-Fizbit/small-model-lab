@@ -194,6 +194,41 @@ figcaption code{font-family:var(--mono);font-size:.78em;font-style:normal;
 .diagram text{font-family:var(--serif);}
 .diagram figcaption{margin-top:20px;}
 
+/* Page-native model figures: use the chapter's type, not the standalone poster. */
+.model-figure{scroll-margin-top:84px;}
+.model-flow,.block-flow{display:grid;gap:24px;margin:0;padding:0;list-style:none;
+  text-align:left;font-family:var(--serif);font-size:16px;line-height:1.4;}
+.model-flow{grid-template-columns:repeat(3,minmax(0,1fr));}
+.model-flow>li{position:relative;margin:0;padding:0;}
+.model-flow>li:not(:last-child)::after{content:"→";position:absolute;right:-19px;top:44px;
+  color:var(--faint);font-size:20px;}
+.model-step{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.model-flow strong{display:block;font-size:17px;font-weight:600;margin-bottom:8px;}
+.model-flow p,.block-flow p{font-size:16px;line-height:1.4;margin:0 0 10px;text-wrap:pretty;}
+.model-shape{display:block;font-size:14px;color:var(--soft);}
+.model-stack{display:flex;gap:4px;margin:10px 0 12px;}
+.model-stack span{display:grid;place-items:center;flex:1;height:26px;border:1px solid var(--line);
+  color:var(--teal);font-family:var(--mono);font-size:11px;}
+.block-flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px;}
+.block-route{display:grid;grid-template-columns:auto 18px 1fr 18px 24px;align-items:center;
+  gap:4px;text-align:center;border:1px solid var(--line);border-radius:3px;padding:10px 8px;}
+.block-route strong{font-weight:600;color:var(--teal);}
+.block-route.mlp strong{color:#8c6a2a;}
+.block-skip{border:solid var(--line);border-width:0 1px 1px;margin:0 19px 10px;
+  text-align:center;font-size:13px;color:var(--soft);line-height:1.4;padding:4px;}
+.block-skip::after{content:"↑";float:right;margin-right:-25px;margin-top:-9px;
+  color:var(--soft);font-size:17px;}
+.block-flow .model-shape{margin-top:8px;}
+.model-figure figcaption{text-align:left;}
+@media(max-width:680px){
+  .model-flow,.block-flow{grid-template-columns:1fr;gap:28px;}
+  .model-flow>li:not(:last-child)::after{content:"↓";top:auto;bottom:-25px;left:0;right:auto;}
+  .model-stack{max-width:220px;}
+  .model-flow strong{font-size:17px;}
+}
+
+
 /* ── callouts — one family, ruled; label color carries the variant ── */
 .callout{border-radius:0;padding:16px 0 18px;margin:26px 0;font-size:16.5px;
   font-family:var(--serif);line-height:1.65;background:transparent;border:none;
@@ -1475,26 +1510,42 @@ Everything else (attention, the block, the embeddings, the head) is identical to
 <div class="term"><div class="term-tag">model size</div><pre>Model: 17.0M parameters  (uniform-guess baseline ln(vocab) = 9.01)</pre></div>
 <div class="prose">
 <h3 id="parameter-count">Where all 17.05 million parameters live</h3>
-<p><strong>8,192 tokens × 384 numbers = 3,145,728 parameters</strong>, but that counts only the
-<strong>token embedding table</strong>: the vectors looked up at the input. Notebook 02's tuned
-model also learns position embeddings, the processing inside six transformer blocks, and an
-output head. Here is the complete count for this model, separate from Notebook 01's smaller
-character-level model in <a href="#block">§6</a>:</p>
+<p>The model-size output counts all the learned numbers, from the first lookup to the final
+prediction. Follow that path first; then we can add up what each part contributes.</p>
 </div>
 <div class="prose">
-<figure class="imgfig" id="model-architecture">
-<div class="tablewrap" tabindex="0" role="region" aria-label="Architecture diagram: scroll horizontally on narrow screens">
-<a href="../tiny-gpt-architecture.svg" aria-label="Open the tiny GPT architecture diagram at full size">
-<img src="../tiny-gpt-architecture.svg" width="720" height="3850" loading="lazy"
-     style="min-width:640px;height:auto"
-     alt="The tuned GPT's 17,045,504 parameters: token and position embeddings feed six causal transformer blocks, final LayerNorm and a separate output head. An inset explains attention, the feedforward MLP, pre-normalisation and residual additions. Counts and operations are explained in the text below."
-     aria-describedby="architecture-caption"/>
-</a>
-</div>
-<figcaption id="architecture-caption">From text to the next-token prediction, with the learned
-parameters counted at each stage. The block inset separates execution order from parameter counts.
-On narrow screens, scroll across the diagram or <a href="../tiny-gpt-architecture.svg">open it at full size</a>.</figcaption>
+<figure class="imgfig model-figure" id="model-architecture" aria-labelledby="architecture-caption">
+<ol class="model-flow">
+<li>
+<span class="model-step">1 · Embed</span>
+<strong>Token + position</strong>
+<p>Look up the two learned vectors and add them.</p>
+<span class="model-shape">384 values per token position</span>
+</li>
+<li>
+<span class="model-step">2 · Process</span>
+<strong>Six transformer blocks</strong>
+<div class="model-stack" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
+<p>Attention shares context; the MLP transforms each position.</p>
+<span class="model-shape">384 values in and out of each block</span>
+</li>
+<li>
+<span class="model-step">3 · Predict</span>
+<strong>Normalise, then score</strong>
+<p>Final LayerNorm, then the separate output head.</p>
+<span class="model-shape">8,192 scores; softmax gives probabilities, sampling picks the next token</span>
+</li>
+</ol>
+<figcaption id="architecture-caption">The model reuses this path for every next-token prediction.
+The six blocks have the same structure and separate learned weights.
+<a href="../tiny-gpt-architecture.svg">Open the fully annotated reference</a>.</figcaption>
 </figure>
+</div>
+<div class="prose">
+<p><strong>8,192 tokens × 384 numbers = 3,145,728 parameters</strong> counts only the token
+embedding table. The position table, six blocks, final normalisation and output head bring
+Notebook 02's total to <strong>17,045,504</strong>. Here is the complete count, separate from
+Notebook 01's smaller character-level model in <a href="#block">§6</a>:</p>
 </div>
 <div class="tablewrap">
 <table>
@@ -1537,7 +1588,28 @@ using those parameters. Producing another vector does not create or learn anothe
 <p>Every block receives and returns a vector of width 384, so the blocks fit together and their
 residual connections can add vectors of the same size. A whole transformer block includes
 <strong>attention and an MLP</strong>, plus normalisation and residual connections; the MLP is
-just one part. Two sets of learned matrices do most of the work:</p>
+just one part. Within each block, the two stages run in this order:</p>
+<figure class="imgfig model-figure" id="block-flow" aria-labelledby="block-flow-caption">
+<div class="block-flow">
+<div>
+<span class="model-step">First · Gather context</span>
+<div class="block-route"><span>Norm</span><span aria-hidden="true">→</span><strong>Attention</strong><span aria-hidden="true">→</span><span aria-label="add incoming vector">+</span></div>
+<div class="block-skip">incoming vector</div>
+<p>Use information from the current and earlier positions, never future tokens.</p>
+</div>
+<div>
+<span class="model-step">Then · Transform features</span>
+<div class="block-route mlp"><span>Norm</span><span aria-hidden="true">→</span><strong>MLP</strong><span aria-hidden="true">→</span><span aria-label="add this stage's incoming vector">+</span></div>
+<div class="block-skip">this stage’s incoming vector</div>
+<p>The same feedforward weights work on each position independently.</p>
+<span class="model-shape">384 → 1,536 · GELU · 384</span>
+</div>
+</div>
+<figcaption id="block-flow-caption">Each stage normalises its input, computes an adjustment,
+then adds that stage's incoming vector back. This addition is the residual connection.
+The MLP is one part of the block.</figcaption>
+</figure>
+<p>The width and the MLP's expansion determine the sizes of the two main sets of matrices:</p>
 <ul>
 <li><strong>Attention mixes information across token positions</strong>, drawing on the current
 and earlier positions. Its query, key and value projections each map 384 numbers to 384 numbers,
