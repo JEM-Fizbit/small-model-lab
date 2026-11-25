@@ -4,7 +4,7 @@
   "provenance": {
     "source": "https://platform.claude.com/docs/en/about-claude/pricing",
     "roster_source": "https://platform.claude.com/docs/en/about-claude/models/overview.md",
-    "verified_on": "2026-10-10",
+    "verified_on": "2026-11-16",
     "staleness_days": 45,
     "staleness_rule": "If today is more than staleness_days after verified_on, treat every rate here as suspect: say so when advising, and re-verify against source before quoting a cost. Check this by date comparison at read time — never call the Models API on the advice path (it cannot supply pricing anyway)."
   },
@@ -21,6 +21,42 @@
     "note": "cache_write_5m applies to bare `cache_control: {type: 'ephemeral'}`. Adding `ttl: '1h'` moves the write to cache_write_1h — a 60% increase that is invisible unless the consumer models both. batch applies to BOTH directions on the Message Batches API and is routinely forgotten on asynchronous bulk jobs. These are the DEFAULTS: since 2026-09-01 cache_read is no longer uniform — Fable 5.1 and Mythos 5.1 read cache at 0.025x, and Opus 5.5 (2026-09-22) and Sonnet 5.5 (2026-09-28) at 0.05x, each carried as a per-model `multiplier_overrides.cache_read`. A consumer that applies the global 0.1 to those models over-reports their cache reads 4x and 2x respectively (the safe direction, but wrong). Haiku 5.5 uses the standard multipliers, applied to whichever of its two rate cards the prompt length selects."
   },
   "models": {
+    "claude-fable-5-2": {
+      "input": 8.0,
+      "output": 40.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.025
+      },
+      "variants": {
+        "fast": {
+          "input": 16.0,
+          "output": 80.0,
+          "note": "speed: 'fast', no beta header. Claude API Messages requests; the docs also list both Google Cloud channels and Foundry deployments hosted on Anthropic (fast is a separate -fast deployment there)."
+        }
+      },
+      "note": "Released 2026-11-09; the current Fable and successor to claude-fable-5-1 at a lower price. Cache reads 0.025x input ($0.20/MTok); cache writes and batch use the standard multipliers ($10 / $16 writes, $4 / $20 batch). Own rate limit; no Priority Tier."
+    },
+    "claude-mythos-5-2": {
+      "input": 8.0,
+      "output": 40.0,
+      "context_tokens": 1000000,
+      "max_output_tokens": 128000,
+      "status": "current",
+      "multiplier_overrides": {
+        "cache_read": 0.025
+      },
+      "variants": {
+        "fast": {
+          "input": 16.0,
+          "output": 80.0,
+          "note": "speed: 'fast' on the Claude API."
+        }
+      },
+      "availability": "Verified organizations only (Anthropic verification programs such as the Cyber Verification Program; limited availability); capability and pricing twin of Fable 5.2"
+    },
     "claude-fable-5-1": {
       "input": 10.0,
       "output": 50.0,
@@ -30,7 +66,7 @@
       "multiplier_overrides": {
         "cache_read": 0.025
       },
-      "note": "Released 2026-09-01. Same input/output as Fable 5; cache reads are 0.025x input ($0.25/MTok), a quarter of the Fable 5 rate. Cache writes and batch are unchanged."
+      "note": "Released 2026-09-01; superseded by claude-fable-5-2 (2026-11-09) and listed as legacy in the docs, still active (retires no sooner than 2027-09-01). Same input/output as Fable 5; cache reads are 0.025x input ($0.25/MTok). Cache writes and batch are unchanged."
     },
     "claude-mythos-5-1": {
       "input": 10.0,
@@ -41,7 +77,7 @@
       "multiplier_overrides": {
         "cache_read": 0.025
       },
-      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5.1"
+      "availability": "Verified organizations only (limited availability); capability and pricing twin of Fable 5.1. Superseded by claude-mythos-5-2."
     },
     "claude-fable-5": {
       "input": 10.0,
@@ -57,7 +93,7 @@
       "context_tokens": 1000000,
       "max_output_tokens": 128000,
       "status": "current",
-      "availability": "Project Glasswing participants only; capability and pricing twin of Fable 5. Superseded by claude-mythos-5-1."
+      "availability": "Verified organizations only (limited availability); capability and pricing twin of Fable 5. Superseded by claude-mythos-5-1."
     },
     "claude-opus-5-5": {
       "input": 4.0,
